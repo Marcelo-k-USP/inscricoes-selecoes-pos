@@ -1,4 +1,4 @@
-# Inscrições versão 2
+# Inscrições nova versão (recomeçado do zero, usando Laravel 11)
 
 Permite ...
     
