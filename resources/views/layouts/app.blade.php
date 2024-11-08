@@ -1,33 +1,53 @@
 @extends('laravel-usp-theme::master')
 
-{{-- Blocos do laravel-usp-theme --}}
-{{-- Ative ou desative cada bloco --}}
+@section('styles')
+@parent
+  <link rel="stylesheet" href="css/inscricoes.css">
+  <style>
+    .atendente-menubar {
+      border-bottom-style: solid !important;
+      border-bottom-width: medium !important;
+      border-bottom-color: orange !important;
+    }
 
-{{-- Target:card-header; class:card-header-sticky --}}
-@include('laravel-usp-theme::blocos.sticky')
+    .admin-menubar {
+      border-bottom-style: solid !important;
+      border-bottom-width: medium !important;
+      border-bottom-color: red !important;
+    }
 
-{{-- Target: button, a; class: btn-spinner, spinner --}}
-@include('laravel-usp-theme::blocos.spinner')
-
-{{-- Target: table; class: datatable-simples --}}
-@include('laravel-usp-theme::blocos.datatable-simples')
-
-{{-- Fim de blocos do laravel-usp-theme --}}
-
-@section('title')
-  @parent
+  </style>
 @endsection
 
-@section('styles')
-  @parent
-  <style>
-    /*seus estilos*/
-  </style>
+@section('content')
+  @include('messages.flash')
+  @include('messages.errors')
 @endsection
 
 @section('javascripts_bottom')
   @parent
   <script>
-    // Seu código .js
+    $(function() {
+
+      // vamos confirmar ao apagar um registro
+      $(".delete-item").on("click", function() {
+        return confirm("Tem certeza que deseja deletar?")
+      })
+
+      // ativando tooltip global
+      $('[data-toggle="tooltip"]').tooltip({
+        container: 'body',
+        html: true
+      })
+
+      // vamos aplicar o estilo de perfil no menubar
+      @if (session('perfil') == 'atendente')
+        $('#menu').find('.navbar').addClass('atendente-menubar')
+      @endif
+      @if (session('perfil') == 'admin')
+        $('#menu').find('.navbar').addClass('admin-menubar')
+      @endif
+
+    })
   </script>
 @endsection

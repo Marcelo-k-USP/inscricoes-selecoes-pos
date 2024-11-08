@@ -1,0 +1,39 @@
+@extends('master')
+
+@section('styles')
+@parent
+<style>
+    .disable-links {
+        pointer-events: none;
+    }
+
+</style>
+@endsection
+
+@section('content')
+@parent
+
+@include('common.list-table-modal')
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <div class="card-title form-inline my-0">
+                    <a href="processos">Processos</a> <i class="fas fa-angle-right mx-2"></i> {{ $processo->nome }}
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-7">
+                        @include('processos.partials.principal-card') {{-- Principal --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@endsection

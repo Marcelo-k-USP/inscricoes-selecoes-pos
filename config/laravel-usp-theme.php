@@ -1,88 +1,85 @@
 <?php
+# menu principal
+$menu = [
+    [
+        'text' => '<i class="fas fa-sitemap ml-2"></i> Processos',
+        'url' => 'processos',
+        'can' => 'processos.viewAny',
+    ],
+    [
+        'text' => '<span class="text-danger"><i class="fas fa-tools ml-2"></i> Admin</span>',
+        'url' => 'admin',
+        'can' => 'perfiladmin',
+    ]
+];
 
+# para menu direito
 $admin = [
     [
-        'text' => '<i class="fas fa-atom"></i>  SubItem 1',
-        'url' => 'subitem1',
+        'text' => '<i class="fas fa-users ml-2"></i> Meu Perfil',
+        'url' => 'users/meuperfil',
+        'can' => 'usuario',
     ],
-    [
-        'text' => 'SubItem 2',
-        'url' =>  '/subitem2',
-        'can' => 'admin',
-    ],
+];
+
+$trocarPerfil = [
     [
         'type' => 'divider',
+        'can' => 'trocarPerfil',
     ],
     [
         'type' => 'header',
-        'text' => 'Cabeçalho',
+        'text' => '<b><i class="fas fa-id-badge"></i>  Trocar perfil</b>',
+        'can' => 'trocarPerfil',
     ],
     [
-        'text' => 'SubItem 3',
-        'url' => 'subitem3',
-    ],
-];
-
-$submenu2 = [
-    [
-        'text' => 'SubItem 1',
-        'url' => 'subitem1',
-    ],
-    [
-        'text' => 'SubItem 2',
-        'url' => 'subitem2',
+        'text' => '&nbsp; Admin',
+        'url' => 'users/perfil/admin',
         'can' => 'admin',
     ],
-];
-
-$menu = [
     [
-        'text' => '<i class="fas fa-home"></i> Home',
-        'url' => 'home',
+        'text' => '&nbsp; Atendente',
+        'url' => 'users/perfil/atendente',
+        'can' => 'atendente',
     ],
     [
-        # este item de menu será substituido no momento da renderização
-        'key' => 'menu_dinamico',
-    ],
-    [
-        'text' => 'Drop Down',
-        'submenu' => $submenu2,
-        'can' => '',
-    ],
-    [
-        'text' => 'Está logado',
-        'url' => config('app.url') . '/logado', // com caminho absoluto
-        'can' => 'user',
-    ],
-    [
-        'text' => 'Menu gerente',
-        'url' => 'gerente',
-        'can' => 'gerente',
-    ],
-    [
-        'text' => 'Menu admin',
-        'submenu' => $admin,
-        'can' => 'admin',
+        'text' => '&nbsp; Usuário',
+        'url' => 'users/perfil/usuario',
+        'can' => 'trocarPerfil',
     ],
 ];
 
 $right_menu = [
     [
-        // menu utilizado para views da biblioteca senhaunica-socialite.
-        'key' => 'senhaunica-socialite',
+        'key' => 'laravel-tools',
+        'can' => 'perfiladmin',
     ],
     [
-        'key' => 'laravel-tools',
+        'key' => 'senhaunica-socialite',
+        'can' => 'perfiladmin',
+    ],
+    [
+        'text' => '<span class="badge badge-danger">Admin</span>',
+        'url' => '#',
+        'can' => 'perfiladmin',
+    ],
+    // [
+    //     'text' => '<span class="badge badge-danger">Desassumir identidade</span>',
+    //     'url' => 'users/desassumir',
+    //     'can' => 'desassumir',
+    // ],
+    [
+        'text' => '<span class="badge badge-warning">Atendente</span>',
+        'url' => '#',
+        'can' => 'perfilatendente',
     ],
     [
         'text' => '<i class="fas fa-cog"></i>',
         'title' => 'Configurações',
-        'target' => '_blank',
-        'url' => config('app.url') . '/item1',
+        'submenu' => array_merge($admin, $trocarPerfil),
         'align' => 'right',
     ],
 ];
-
 
 return [
     # valor default para a tag title, dentro da section title.
@@ -109,7 +106,7 @@ return [
     'right_menu' => $right_menu,
 
     # mensagens flash - https://uspdev.github.io/laravel#31-mensagens-flash
-    'mensagensFlash' => true,
+    'mensagensFlash' => false,
 
     # container ou container-fluid
     'container' => 'container-fluid',

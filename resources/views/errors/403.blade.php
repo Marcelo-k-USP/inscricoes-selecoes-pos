@@ -1,15 +1,11 @@
-@extends('layouts.app')
+@extends('master')
 
 @section('content')
-  @if (Gate::check('user'))
-    <h4 class="text-warning">
-      <i class="fas fa-exclamation-triangle"></i> Acesso negado!!
-    </h4>
-    Você não tem privilégios para acessar esse recurso.
-  @else
-    <div class="h4 text-primary">
-      <a href="{{ route('login') }}"><i class="fas fa-sign-in-alt"></i></a>
-    </div>
-    Faça <a href="{{ route('login') }}">login</a> para acessar esta página.
-  @endif
+@parent
+<div class="h4 text-danger">Sem acesso!</div>
+Você tentou acessar um recurso não autorizado. Se acredita que deveria ter acesso, contate a equipe de suporte! 
+<br>
+<br>
+<a href="javascript:history.back()">Voltar à página anterior</a>
+
 @endsection
