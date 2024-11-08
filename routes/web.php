@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ProcessoController;
+use App\Http\Controllers\SelecaoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
 
@@ -16,6 +17,9 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 // PROCESSOS
 Route::resource('processos', ProcessoController::class)->except(['create', 'destroy', 'edit']);
+
+// SELEÇÕES
+Route::resource('selecoes', SelecaoController::class)->parameters(['selecoes' => 'selecao'])->except(['create', 'destroy', 'edit']);
 
 // USERS
 Route::get('search/partenome', [UserController::class, 'partenome']);

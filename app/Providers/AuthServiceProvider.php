@@ -14,6 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         #Processo::Class => ProcessoPolicy::class,
+        #Selecao::Class => SelecaoPolicy::class,
     ];
 
     /**
@@ -76,6 +77,7 @@ class AuthServiceProvider extends ServiceProvider
 
         # policies
         Gate::resource('processos', 'App\Policies\ProcessoPolicy');
+        Gate::resource('selecoes', 'App\Policies\SelecaoPolicy');
         Gate::resource('users', 'App\Policies\UserPolicy');
     }
 }

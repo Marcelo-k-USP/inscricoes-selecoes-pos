@@ -7,6 +7,11 @@ $menu = [
         'can' => 'processos.viewAny',
     ],
     [
+        'text' => '<i class="fas fa-tasks ml-2"></i> Seleções',
+        'url' => 'selecoes',
+        'can' => 'selecoes.viewAny',
+    ],
+    [
         'text' => '<span class="text-danger"><i class="fas fa-tools ml-2"></i> Admin</span>',
         'url' => 'admin',
         'can' => 'perfiladmin',

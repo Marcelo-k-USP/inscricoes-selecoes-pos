@@ -34,6 +34,22 @@ class Processo extends Model
     }
 
     /**
+     * retorna todos os processos
+     * utilizado nas views common, para o select
+     */
+    public static function allToSelect()
+    {
+        $processos = SELF::get();
+        $ret = [];
+        foreach ($processos as $processo) {
+            if (Gate::allows('processos.view', $processo)) {
+            $ret[$processo->id] = $processo->nome;
+            }
+        }
+        return $ret;
+    }
+
+    /**
      * Menu Processos, lista os processos que o usuário pode ver
      *
      * @return coleção de processos
@@ -41,6 +57,14 @@ class Processo extends Model
     public static function listarProcessos()
     {
         return SELF::get();
+    }
+
+    /**
+     * Processo possui seleções
+     */
+    public function selecoes()
+    {
+        return $this->hasMany('App\Models\Selecao');
     }
 
     /**

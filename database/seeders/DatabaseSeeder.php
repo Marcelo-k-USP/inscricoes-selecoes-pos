@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             SetorReplicadoSeeder::class,    // adiciona todos os setores da unidade do replicado
-            ProcessoSeeder::class           // adiciona processos
+            ProcessoSeeder::class,          // adiciona processos
+            SelecaoSeeder::class,           // adiciona seleções
         ]);
     }
 }

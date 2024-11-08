@@ -2,13 +2,13 @@
 
 namespace App\Policies;
 
+use App\Models\Selecao;
 use App\Models\Processo;
-use App\Models\Setor;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
 
-class ProcessoPolicy
+class SelecaoPolicy
 {
     use HandlesAuthorization;
 
@@ -29,11 +29,10 @@ class ProcessoPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\Selecao  $selecao
      * @return mixed
      */
-    public function view(User $user, Processo $processo)
+    public function view(User $user, Selecao $selecao)
     {
         /* admin */
         if (Gate::allows('perfiladmin')) {
@@ -44,10 +43,10 @@ class ProcessoPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User      $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, Processo $processo)
     {
         /* admin */
         if (Gate::allows('perfiladmin')) {
@@ -89,7 +88,7 @@ class ProcessoPolicy
      * @param  \App\Models\Processo  $processo
      * @return mixed
      */
-    public function restore(User $user, Fila $fila)
+    public function restore(User $user, Processo $processo)
     {
         //
     }
