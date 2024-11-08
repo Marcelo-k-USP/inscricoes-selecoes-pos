@@ -16,7 +16,7 @@ Route::get('callback', [LoginController::class, 'handleProviderCallback']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 // PROCESSOS
-Route::resource('processos', ProcessoController::class)->except(['create', 'destroy', 'edit']);
+Route::resource('processos', ProcessoController::class);
 
 // SELEÇÕES
 Route::resource('selecoes', SelecaoController::class)->parameters(['selecoes' => 'selecao'])->except(['create', 'destroy', 'edit']);

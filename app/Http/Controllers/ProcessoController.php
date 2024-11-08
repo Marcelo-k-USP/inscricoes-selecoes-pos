@@ -2,77 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProcessoRequest;
 use App\Models\Processo;
-use App\Utils\JSONForms;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Spatie\SimpleExcel\SimpleExcelWriter;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 
 class ProcessoController extends Controller
 {
-
-    // crud generico
-    protected $data = [
-        'title' => 'Processos',
-        'url' => 'processos', // caminho da rota do resource
-        'modal' => true,
-        'showId' => false,
-        'viewBtn' => true,
-        'editBtn' => false,
-        'model' => 'App\Models\Processo',
-    ];
-
     public function __construct()
     {
         $this->middleware('auth');
     }
 
     /**
-     * Lista os processos
+     * Mostra lista de processos
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('processos.viewAny');
         \UspTheme::activeUrl('processos');
+        
+        $processos = Processo::all();
+        $fields = Processo::getFields();
 
-        $processos = Processo::listarProcessos();
-        return view('processos.index')->with(['data' => (object) $this->data, 'processos' => $processos]);
-    }
-
-    /**
-     * Criar novo processo
-     */
-    public function store(ProcessoRequest $request)
-    {
-        $this->authorize('processos.create');
-
-        $processo = Processo::create($request->all());
-
-        $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
-        return redirect('/' . $this->data['url'] . '/' . $processo->id);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Processo $processo)
-    {
-        $this->authorize('processos.view', $processo);
-
-        # aqui tem de validar dados do post
-        ####################
-
-        $processo->fill($request->all());
-
-        $processo->save();
-
-        $request->session()->flash('alert-info', 'Dados editados com sucesso');
-        return back();
+        if ($request->ajax()) {
+            // formatado para datatables
+            #return response(['data' => $processos]);
+        } else {
+            $modal['url'] = 'processos';
+            $modal['title'] = 'Editar processo';
+            return view('processos.tree', compact('processos', 'fields', 'modal'));
+        }
     }
 
     /**
@@ -81,18 +43,76 @@ class ProcessoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Processo $processo)
+    public function show(Request $request, $id)
     {
-        $this->authorize('processos.view', $processo);
+        #usando no ajax, somente para admin
+        $this->authorize('admin');
         \UspTheme::activeUrl('processos');
 
         if ($request->ajax()) {
-            return $processo;
+            # preenche os dados do form de edição de um processo
+            return Processo::find($id);
         } else {
-            $data = (object) $this->data;
-            $dashboard = new \StdClass;
-
-            return view('processos.show', compact(['processo', 'data', 'dashboard']));
+            # desativado por enquanto
+            return false;
+            $setor = Processo::find($id);
+            return view('processos.show', compact('processo'));
         }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->authorize('admin');
+        $request->validate(Processo::rules);
+
+        $processo = Processo::create($request->all());
+
+        $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
+        return Redirect::to(URL::previous() . "#" . strtolower($processo->id));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     *
+     * Por enquanto somente para admin (masaki, 12/2020)
+     */
+    public function update(Request $request, $id)
+    {
+        $this->authorize('admin');
+        $request->validate(Processo::rules);
+
+        $processo = Processo::find($id);
+        $processo->fill($request->all());
+        $processo->save();
+
+        $request->session()->flash('alert-info', 'Dados editados com sucesso');
+        return Redirect::to(URL::previous() . "#" . strtolower($processo->id));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, $id)
+    {
+        $this->authorize('admin');
+
+        $processo = Processo::find($id);
+        $processo->delete();
+
+        $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
+        return back();
     }
 }

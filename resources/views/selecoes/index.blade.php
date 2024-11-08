@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-md-12 form-inline">
-        <span class="h4 mt-2">Filas</span>
+        <span class="h4 mt-2">Seleções</span>
         @include('partials.datatable-filter-box', ['otable'=>'oTable'])
         @if(Gate::check('processos.viewAny'))
             @include('common.list-table-modal-btn-create')
