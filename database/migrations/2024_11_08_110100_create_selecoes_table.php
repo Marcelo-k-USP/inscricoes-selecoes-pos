@@ -16,6 +16,7 @@ class CreateSelecoesTable extends Migration
         Schema::create('selecoes', function (Blueprint $table) {
             $table->id();
             $table->string('nome', 100);
+            $table->string('estado', 90);
             $table->string('descricao', 255)->nullable();
             $table->foreignId('processo_id')->constrained('processos');
             $table->timestamps();

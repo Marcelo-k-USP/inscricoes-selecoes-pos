@@ -1,6 +1,6 @@
 <div class="form-group row">
-    {!! Html::label($col['label'] ?? $col['name'], $col['name'])->class('col-form-label col-sm-2')->toHtml() !!}
+    {{ html()->label($col['label'] ?? $col['name'], $col['name'])->class('col-form-label col-sm-2') }}
     <div class="col-sm-10">
-        {!! Html::input('text', $col['name'], null)->class('form-control')->toHtml() !!}
+        {{ html()->input('text', $col['name'])->class('form-control') }}
     </div>
 </div>

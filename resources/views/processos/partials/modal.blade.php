@@ -11,9 +11,9 @@
             <div class="modal-body">
 
                 <div class="list_table_div_form">
-                    {!! Html::form('post', '')->open() !!}
+                    {{ html()->form('post', '')->open() }}
                         @method('POST')
-                        {!! Html::input('hidden', 'id')->toHtml() !!}
+                        {{ html()->hidden('id') }}
 
                         @foreach ($fields as $col)
                             @if (empty($col['type']) || $col['type'] == 'text')
@@ -28,7 +28,7 @@
 
                             <button type="submit" class="btn btn-primary">Salvar</button>
                         </div>
-                    {!! Html::form()->close() !!}
+                    {{ html()->form()->close() }}
                 </div>
 
             </div>

@@ -1,7 +1,7 @@
  <div class="list_table_div_form">
-     {!! Html::form('post', $data->url)->open() !!}
+    {{ html()->form('post', $data->url)->open() }} 
         @method('POST')
-        {!! Html::input('hidden', 'id')->toHtml() !!}
+        {{ html()->hidden('id') }}
 
         @foreach ($data->model::getFields() as $col)
             @if (empty($col['type']))
@@ -18,5 +18,5 @@
 
             <button type="submit" class="btn btn-primary">Salvar</button>
         </div>
-     {!! Html::form()->close() !!}
+    {{ html()->form()->close() }}
  </div>

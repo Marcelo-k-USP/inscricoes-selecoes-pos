@@ -1,4 +1,4 @@
-@extends('master')
+    @extends('master')
 
 @section('content')
 @parent
@@ -27,7 +27,9 @@
         <tr>
             <td>{{ $selecao->processo->nome }}</td>
             <td>
+                @include('selecoes.partials.status-small')
                 <a class="mr-2" href="selecoes/{{ $selecao->id }}">{{ $selecao->nome }}</a>
+                @include('selecoes.partials.status-muted')
             </td>
             <td>{{ $selecao->descricao }}</td>
         </tr>

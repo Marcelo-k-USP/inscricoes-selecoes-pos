@@ -21,6 +21,7 @@ class SelecaoSeeder extends Seeder
         $selecoes = [
             [
                 'nome' => 'teste 1',
+                'estado' => 'Em produção',
                 'descricao' => 'Processo Seletivo 1',
                 'processo_id' => $processo_id_POSALUNOREGULAR
             ]

@@ -12,8 +12,10 @@
 <div class="card mb-3" id="card-fila-principal">
     <div class="card-header">
         Informações básicas
-        &nbsp; | &nbsp;
-        @include('common.list-table-btn-edit', ['row'=>$selecao])
+        @if($selecao->estado != 'Desativada')
+            &nbsp; | &nbsp;
+            @includewhen($selecao->estado != 'Desativada', 'common.list-table-btn-edit', ['row' => $selecao])
+        @endif
     </div>
     <div class="card-body">
         <span class="text-muted">Processo:</span> {{ $selecao->processo->nome }}<br>
