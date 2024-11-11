@@ -31,7 +31,9 @@
       @foreach ($inscricoes as $inscricao)
         <tr>
           <td>
-            
+            @if ($user = $inscricao->pessoas('Autor'))
+              {{ Str::limit($user->name ?? '', 20) }}
+            @endif
           </td>
           <td>
             ({{ $inscricao->selecao->processo->nome }})
@@ -43,7 +45,7 @@
           </td>
           <td class="text-right">
             <span class="d-none">{{ $inscricao->updated_at }}</span>
-            {{ formatarData($inscricao->updated_at) }}
+            {{ formatarData($inscricao->atualizadaEm) }}
           </td>
         </tr>
       @endforeach

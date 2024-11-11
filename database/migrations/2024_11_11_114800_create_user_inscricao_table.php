@@ -18,6 +18,7 @@ class CreateUserInscricaoTable extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('inscricao_id')->constrained('inscricoes')->onDelete('cascade');
 
+            $table->string('papel', 20);
             $table->timestamps();
         });
     }

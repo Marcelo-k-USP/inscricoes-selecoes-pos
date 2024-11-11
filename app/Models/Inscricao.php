@@ -24,12 +24,33 @@ class Inscricao extends Model
     protected $casts = [
         'created_at' => 'date:d/m/Y',
         'updated_at' => 'date:d/m/Y',
+        'atualizadaEm' => 'date:d/m/Y',
     ];
 
     /**
-     * Lista as inscrições
+     * The accessors to append to the model's array form.
      *
-     * Vamos considerar chamados de seleções encerradas
+     * @var array
+     */
+    protected $appends = ['atualizadoEm'];
+
+    /**
+     * Valores possiveis para pivot do relacionamento com users
+     */
+    #
+    public static function pessoaPapeis($formSelect = false)
+    {
+        if ($formSelect) {
+            return [
+                'Autor' => 'Autor',
+            ];
+        } else {
+            return ['Autor'];
+        }
+    }
+
+    /**
+     * Lista as inscrições
      *
      * @return Collection
      */
@@ -37,6 +58,31 @@ class Inscricao extends Model
     {
         $inscricoes = SELF::get();
         return $inscricoes;
+    }
+
+    /**
+     * Mostra as pessoas que tem vínculo com a inscrição.
+     *
+     * Se informado $pivot, retorna somente o 1o. User, se não, retorna a lista completa
+     *
+     * @param $pivot Papel da pessoa na inscrição (autor, null = todos)
+     * @return App\Models\User|Collection
+     */
+    public function pessoas($pivot = null)
+    {
+        if ($pivot) {
+            return $this->users()->wherePivot('papel', $pivot)->first();
+        } else {
+            return $this->users()->withPivot('papel');
+        }
+    }
+    
+    /**
+     * Accessor: retorna a data da última atualização da inscrição
+     */
+    public function getAtualizadaEmAttribute()
+    {
+        return $this->updated_at;
     }
 
     /**

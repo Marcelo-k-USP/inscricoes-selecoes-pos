@@ -88,7 +88,7 @@ class InscricaoController extends Controller
             // vamos salvar sem evento pois o autor ainda não está cadastrado
             $inscricao->saveQuietly();
 
-            $inscricao->users()->attach(\Auth::user());
+            $inscricao->users()->attach(\Auth::user(), ['papel' => 'Autor']);
 
             // agora sim vamos disparar o evento
             event('eloquent.created: App\Models\Inscricao', $inscricao);
@@ -111,7 +111,7 @@ class InscricaoController extends Controller
         $this->authorize('inscricoes.view', $inscricao);
         \UspTheme::activeUrl('inscricoes');
 
-        $autor = $inscricao->users()->first();
+        $autor = $inscricao->users()->wherePivot('papel', 'Autor')->first();
         $status_list = $inscricao->selecao->getStatusToSelect();
 
         return view('inscricoes/show', compact('autor', 'inscricao', 'status_list'));

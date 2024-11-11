@@ -18,6 +18,11 @@
   </div>
   @endcannot
 
+  <span class="text-muted">Criado por:</span>
+  @if ($autor)
+    {{ $autor->name }}
+  @endif
+  
   <span class="text-muted">Criado em:</span> {{ $inscricao->created_at->format('d/m/Y H:i') }}<br>
   <br>
 </div>
