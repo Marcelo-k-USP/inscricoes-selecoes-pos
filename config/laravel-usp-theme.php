@@ -2,6 +2,16 @@
 # menu principal
 $menu = [
     [
+        'text' => '<i class="far fa-plus-square"></i> Nova Inscrição',
+        'url' => 'inscricoes/create',
+        'can' => 'inscricoes.viewAny',
+    ],
+    [
+        'text' => '<i class="far fa-list-alt"></i> Minhas Inscrições',
+        'url' => 'inscricoes',
+        'can' => 'inscricoes.viewAny',
+    ],
+    [
         'text' => '<i class="fas fa-sitemap ml-2"></i> Processos',
         'url' => 'processos',
         'can' => 'processos.viewAny',

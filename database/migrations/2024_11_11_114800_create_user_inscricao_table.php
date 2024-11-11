@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSelecoesTable extends Migration
+class CreateUserInscricaoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateSelecoesTable extends Migration
      */
     public function up()
     {
-        Schema::create('selecoes', function (Blueprint $table) {
+        Schema::create('user_inscricao', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 100);
-            $table->string('estado', 90);
-            $table->string('descricao', 255)->nullable();
-            $table->foreignId('processo_id')->constrained('processos');
-            $table->json('settings')->nullable();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('inscricao_id')->constrained('inscricoes')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateSelecoesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('selecoes');
+        Schema::dropIfExists('user_inscricao');
     }
 }

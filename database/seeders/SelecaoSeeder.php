@@ -23,7 +23,10 @@ class SelecaoSeeder extends Seeder
                 'nome' => 'teste 1',
                 'estado' => 'Em andamento',
                 'descricao' => 'Processo Seletivo 1',
-                'processo_id' => $processo_id_POSALUNOREGULAR
+                'processo_id' => $processo_id_POSALUNOREGULAR,
+                'settings' => '{
+                    "instrucoes": "Preencher ..."
+                }'
             ]
         ];
  

@@ -10,8 +10,18 @@ class Selecao extends Model
 {
     use HasFactory;
 
-    # materiais não segue convenção do laravel para nomes de tabela
+    use \Glorand\Model\Settings\Traits\HasSettingsField;
+
+    # seleções não segue convenção do laravel para nomes de tabela
     protected $table = 'selecoes';
+
+    public $defaultSettings = [
+        'instrucoes' => '',
+    ];
+
+    public $settingsRules = [
+        'instrucoes' => 'nullable',
+    ];
 
     # valores default na criação de nova seleção
     protected $attributes = [
@@ -126,6 +136,38 @@ class Selecao extends Model
     public static function listarSelecoes()
     {
         return SELF::get();
+    }
+
+    /**
+     * Mostra lista de processos e respectivas seleções
+     * para selecionar e criar nova inscrição
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public static function listarSelecoesParaNovaInscricao()
+    {
+        # primeiro vamos pegar todas as seleções
+        $processos = Processo::get();
+
+        # e depois filtrar as que não pode
+        foreach ($processos as &$processo) {
+            # primeiro vamos pegar todas as seleções
+            $selecoes = $processo->selecoes;
+
+            # agora vamos remover as seleções onde não se pode inscrever
+            # a ordem de liberação é relevante !!!!
+            $selecoes = $selecoes->filter(function ($selecao, $key) {
+
+                # bloqueia as seleções que não estão em andamento
+                if ($selecao->estado != 'Em andamento') {
+                    return false;
+                }
+
+                return true;
+            });
+            $processo->selecoes = $selecoes;
+        }
+        return $processos;
     }
 
     /**

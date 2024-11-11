@@ -34,4 +34,15 @@ if (!function_exists('md2html')) {
         $html .= $markdownConverter->convertToHtml($markdown);
         return $html;
     }
+
+    if (!function_exists('formatarData')) {
+        function formatarData($data)
+        {
+            if ($data->format('d/m/Y') == date('d/m/Y')) {
+                return 'Hoje, ' . $data->format('H:i');
+            } else {
+                return $data->format('d \d\e M.');
+            }
+        }
+    }
 }

@@ -76,6 +76,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         # policies
+        Gate::resource('inscricoes', 'App\Policies\InscricaoPolicy');
         Gate::resource('processos', 'App\Policies\ProcessoPolicy');
         Gate::resource('selecoes', 'App\Policies\SelecaoPolicy');
         Gate::resource('users', 'App\Policies\UserPolicy');

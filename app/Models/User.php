@@ -185,6 +185,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Relacionamento n:n com inscrição:
+     */
+    public function inscricoes()
+    {
+        return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao')->withTimestamps();
+    }
+    
+    /**
      * Relacionamento n:n com setor, atributo funcao:
      *  - Gerente, Usuario
      */
