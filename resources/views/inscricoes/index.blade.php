@@ -31,9 +31,11 @@
       @foreach ($inscricoes as $inscricao)
         <tr>
           <td>
-            @if ($user = $inscricao->pessoas('Autor'))
-              {{ Str::limit($user->name ?? '', 20) }}
-            @endif
+            <a href="inscricoes/{{ $inscricao->id }}">
+              @if ($user = $inscricao->pessoas('Autor'))
+                {{ Str::limit($user->name ?? '', 20) }}
+              @endif
+            </a>
           </td>
           <td>
             ({{ $inscricao->selecao->processo->nome }})
