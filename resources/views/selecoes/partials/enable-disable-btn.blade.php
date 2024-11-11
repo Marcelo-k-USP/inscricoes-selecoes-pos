@@ -17,8 +17,8 @@
         <button type="submit" class="btn btn-sm {{($selecao->estado == 'Em elaboração') ? 'btn-warning' : 'btn-secondary'}}" {{($selecao->estado == 'Em elaboração') ? 'disabled' : ''}} name="estado" value="Em elaboração">
             Em elaboração
         </button>
-        <button type="submit" class="btn btn-sm {{($selecao->estado == 'Em produção') ? 'btn-success' : 'btn-secondary'}}" {{($selecao->estado == 'Em produção') ? 'disabled' : ''}} name="estado" value="Em produção">
-            Em produção
+        <button type="submit" class="btn btn-sm {{($selecao->estado == 'Em andamento') ? 'btn-success' : 'btn-secondary'}}" {{($selecao->estado == 'Em andamento') ? 'disabled' : ''}} name="estado" value="Em andamento">
+            Em andamento
         </button>
         <button type="submit" class="btn btn-sm {{($selecao->estado == 'Desativada') ? 'btn-danger' : 'btn-secondary'}}" {{($selecao->estado == 'Desativada') ? 'disabled' : ''}} name="estado" value="Desativada">
             Desativada

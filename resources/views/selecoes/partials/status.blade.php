@@ -1,4 +1,4 @@
-@if ($row->estado == 'Em produção')
+@if ($row->estado == 'Em andamento')
     <span class="badge badge-success"> {{ $row->estado }} </span>
 @elseif ($row->estado == 'Em elaboração')
     <span class="badge badge-warning"> {{ $row->estado }} </span>

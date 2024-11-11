@@ -62,7 +62,7 @@ class Selecao extends Model
      */
     public static function estados()
     {
-        return ['Em elaboração', 'Em produção', 'Desativada'];
+        return ['Em elaboração', 'Em andamento', 'Encerrada'];
     }
     
     /**
