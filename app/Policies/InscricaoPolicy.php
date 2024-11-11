@@ -44,4 +44,16 @@ class InscricaoPolicy
     {
         return true;
     }
+
+    /**
+     * Determine whether the user can update the inscrição.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Inscricao  $inscricao
+     * @return mixed
+     */
+    public function update(User $user, Inscricao $inscricao)
+    {
+        return true;
+    }
 }
