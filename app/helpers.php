@@ -1,7 +1,6 @@
 <?php
 
-//coloque o seu helper aqui
-
+use Illuminate\Support\Str;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
@@ -43,6 +42,17 @@ if (!function_exists('md2html')) {
             } else {
                 return $data->format('d \d\e M.');
             }
+        }
+    }
+
+    if (!function_exists('getModeloTiposArquivo')) {
+        function getModeloTiposArquivo($modelo)
+        {
+            $modeloClasse = "App\\Models\\" . Str::studly($modelo);
+            if (method_exists($modeloClasse, 'tiposArquivo')) {
+                return $modeloClasse::tiposArquivo();
+            }
+            return [];
         }
     }
 }

@@ -32,7 +32,9 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes');
 
         $inscricoes = Inscricao::listarInscricoes();
-        return view('inscricoes/index', compact('inscricoes'));
+        $modelo = 'Selecao';
+        $max_upload_size = config('inscricoes.upload_max_filesize');
+        return view('inscricoes/index', compact('inscricoes', 'modelo', 'max_upload_size'));
     }
 
     /**
@@ -113,7 +115,8 @@ class InscricaoController extends Controller
 
         $autor = $inscricao->users()->wherePivot('papel', 'Autor')->first();
         $status_list = $inscricao->selecao->getStatusToSelect();
-
-        return view('inscricoes/show', compact('autor', 'inscricao', 'status_list'));
+        $modelo = 'Inscricao';
+        $max_upload_size = config('inscricoes.upload_max_filesize');
+        return view('inscricoes/show', compact('autor', 'inscricao', 'status_list', 'modelo', 'max_upload_size'));
     }
 }

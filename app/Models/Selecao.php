@@ -52,6 +52,11 @@ class Selecao extends Model
             'name' => 'descricao',
             'label' => 'Descrição',
         ],
+        [
+            'name' => 'arquivos',
+            'label' => 'Arquivos',
+            'type' => 'files',
+        ],
     ];
 
     // uso no crud generico
@@ -67,6 +72,14 @@ class Selecao extends Model
         return $fields;
     }
 
+    /**
+     * Retorna os tipos de arquivo possíveis na seleção.
+     */
+    public static function tiposArquivo()
+    {
+        return ['Edital'];
+    }
+    
     /**
      * lista de estados padrão. Usado no factory.
      */
@@ -170,6 +183,29 @@ class Selecao extends Model
         return $processos;
     }
 
+    /**
+     * Valores possiveis para pivot do relacionamento com arquivos
+     */
+    #
+    public static function arquivoTipos($formSelect = false)
+    {
+        if ($formSelect) {
+            return [
+                'Edital' => 'Edital',
+            ];
+        } else {
+            return ['Edital'];
+        }
+    }
+    
+    /**
+     * relacionamento com arquivos
+     */
+    public function arquivos()
+    {
+        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_selecao')->withPivot('tipo')->withTimestamps();
+    }
+    
     /**
      * Relacionamento: seleção pertence a processo
      */
