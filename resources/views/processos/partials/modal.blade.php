@@ -14,18 +14,19 @@
                     {{ html()->form('post', '')->open() }}
                         @method('POST')
                         {{ html()->hidden('id') }}
-
+                        
+                        @php
+                            $modo = 'create';
+                        @endphp
                         @foreach ($fields as $col)
                             @if (empty($col['type']) || $col['type'] == 'text')
-                                @include('common.list-table-modal-text')
+                                @include('common.list-table-form-text')
                             @elseif ($col['type'] == 'select')
-                                @include('common.list-table-modal-select')
+                                @include('common.list-table-form-select')
                             @endif
                         @endforeach
                         <div class="text-right">
-                            {{-- vamos adicionar o botão do modal quando for o caso --}}
-                            @yield('form-dismiss-btn')
-
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                             <button type="submit" class="btn btn-primary">Salvar</button>
                         </div>
                     {{ html()->form()->close() }}

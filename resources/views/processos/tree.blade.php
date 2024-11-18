@@ -15,9 +15,7 @@
 @parent
 <script>
     $(document).ready(function() {
-
-        // se houver anchor na url, vamos abrir os detalhes 
-        if (location.hash) {
+        if (location.hash) {    // se houver anchor na url, vamos abrir os detalhes 
             $('#detalhes_' + location.hash.substring(1)).collapse('show')
             console.log('abrindo #detalhes_' + window.location.hash.substring(1))
         }
@@ -29,6 +27,5 @@
             });
         });
     })
-
 </script>
 @endsection

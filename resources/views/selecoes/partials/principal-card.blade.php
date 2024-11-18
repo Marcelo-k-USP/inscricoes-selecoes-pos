@@ -9,17 +9,13 @@
 </style>
 @endsection
 
-<div class="card mb-3" id="card-fila-principal">
+<div class="card mb-3 w-100" id="card-fila-principal">
     <div class="card-header">
         Informações básicas
-        @if ($selecao->estado != 'Encerrada')
-            &nbsp; | &nbsp;
-            @includewhen($selecao->estado != 'Encerrada', 'common.list-table-btn-edit', ['row' => $selecao])
-        @endif
     </div>
     <div class="card-body">
-        <span class="text-muted">Processo:</span> {{ $selecao->processo->nome }}<br>
-        <span class="text-muted">Nome:</span> {{ $selecao->nome }}<br>
-        <span class="text-muted">Descrição:</span> {{ $selecao->descricao }}<br>
+        <div class="list_table_div_form">
+            @include('common.list-table-form-contents')
+        </div>
     </div>
 </div>

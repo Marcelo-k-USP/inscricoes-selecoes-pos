@@ -38,12 +38,25 @@ class SelecaoController extends Controller
         \UspTheme::activeUrl('selecoes');
 
         $data = (object) $this->data;
-        $selecoes = Selecao::listarSelecoes();
-        $modelo = 'Selecao';
+        $modelos = Selecao::listarSelecoes();
+        $tipo_modelo = 'Selecao';
         $max_upload_size = config('inscricoes.upload_max_filesize');
-        return view('selecoes.index', compact('data', 'selecoes', 'modelo', 'max_upload_size'));
+        return view('selecoes.index', compact('data', 'modelos', 'tipo_modelo', 'max_upload_size'));
     }
 
+    public function create()
+    {
+        $this->authorize('selecoes.create');
+        \UspTheme::activeUrl('selecoes');
+
+        $data = (object) $this->data;
+        $modelo = new Selecao;
+        $tipo_modelo = 'Selecao';
+        $modo = 'create';
+        $max_upload_size = config('inscricoes.upload_max_filesize');
+        return view('selecoes.edit', compact('data', 'modelo', 'tipo_modelo', 'modo', 'max_upload_size'));
+}
+    
     /**
      * Criar nova seleção
      */
@@ -56,9 +69,32 @@ class SelecaoController extends Controller
         $selecao = Selecao::create($request->all());
 
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
-        return redirect('/' . $this->data['url'] . '/' . $selecao->id);
+        return redirect('/selecoes');
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.view', $selecao);
+        \UspTheme::activeUrl('selecoes');
+
+        if ($request->ajax()) {
+            return $selecao;
+        } else {
+            $data = (object) $this->data;
+            $modelo = $selecao;
+            $tipo_modelo = 'Selecao';
+            $modo = 'edit';
+            $max_upload_size = config('inscricoes.upload_max_filesize');
+            return view('selecoes.edit', compact('data', 'modelo', 'tipo_modelo', 'modo', 'max_upload_size'));
+        }
+    }
+    
     /**
      * Update the specified resource in storage.
      *
@@ -71,6 +107,7 @@ class SelecaoController extends Controller
         $this->authorize('selecoes.view', $selecao);
 
         $atualizacao = [];
+        $mudanca_status = false;
 
         // nome
         if ($selecao->nome != $request->nome && !empty($request->nome)) {
@@ -82,6 +119,7 @@ class SelecaoController extends Controller
         
         // estado
         if ($selecao->estado != $request->estado && !empty($request->estado)) {
+            $mudanca_status = true;
             array_push($atualizacao, 'estado');
             $selecao->estado = $request->estado;
         }
@@ -105,27 +143,17 @@ class SelecaoController extends Controller
         $selecao->save();
         
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
-        return back();
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request, Selecao $selecao)
-    {
-        $this->authorize('selecoes.view', $selecao);
-        \UspTheme::activeUrl('selecoes');
-
-        if ($request->ajax()) {
-            return $selecao;
-        } else {
+        if ($mudanca_status) {
+            \UspTheme::activeUrl('selecoes');
+            
             $data = (object) $this->data;
-            $modelo = 'Selecao';
+            $modelo = $selecao;
+            $tipo_modelo = 'Selecao';
+            $modo = 'edit';
             $max_upload_size = config('inscricoes.upload_max_filesize');
-            return view('selecoes.show', compact('selecao', 'data', 'modelo', 'max_upload_size'));
+            return view('selecoes.edit', compact('data', 'modelo', 'tipo_modelo', 'modo', 'max_upload_size'));
         }
+        else
+            return redirect('/selecoes');
     }
 }

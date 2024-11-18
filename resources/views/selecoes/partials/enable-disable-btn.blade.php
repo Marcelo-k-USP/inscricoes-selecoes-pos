@@ -6,21 +6,20 @@
         cursor: not-allowed;
         pointer-events: all !important;
     }
-
 </style>
 @endsection
 
-{{ html()->form('post', url('selecoes/' . $selecao->id))->attribute('name', 'form_estado')->open() }}
+{{ html()->form('post', url('selecoes/edit/' . $selecao->id))->attribute('name', 'form_estado')->open() }}
     @method('put')
     @csrf
     <div class="btn-group enable-disable-btn">
-        <button type="submit" class="btn btn-sm {{($selecao->estado == 'Em elaboração') ? 'btn-warning' : 'btn-secondary'}}" {{($selecao->estado == 'Em elaboração') ? 'disabled' : ''}} name="estado" value="Em elaboração">
+        <button type="submit" class="btn btn-sm {{ ($selecao->estado == 'Em elaboração') ? 'btn-warning' : 'btn-secondary' }}" {{ ($selecao->estado == 'Em elaboração') ? 'disabled' : '' }} name="estado" value="Em elaboração">
             Em elaboração
         </button>
-        <button type="submit" class="btn btn-sm {{($selecao->estado == 'Em andamento') ? 'btn-success' : 'btn-secondary'}}" {{($selecao->estado == 'Em andamento') ? 'disabled' : ''}} name="estado" value="Em andamento">
+        <button type="submit" class="btn btn-sm {{ ($selecao->estado == 'Em andamento') ? 'btn-success' : 'btn-secondary' }}" {{ ($selecao->estado == 'Em andamento') ? 'disabled' : '' }} name="estado" value="Em andamento">
             Em andamento
         </button>
-        <button type="submit" class="btn btn-sm {{($selecao->estado == 'Encerrada') ? 'btn-danger' : 'btn-secondary'}}" {{($selecao->estado == 'Encerrada') ? 'disabled' : ''}} name="estado" value="Encerrada">
+        <button type="submit" class="btn btn-sm {{ ($selecao->estado == 'Encerrada') ? 'btn-danger' : 'btn-secondary' }}" {{ ($selecao->estado == 'Encerrada') ? 'disabled' : '' }} name="estado" value="Encerrada">
             Encerrada
         </button>
     </div>

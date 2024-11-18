@@ -16,7 +16,7 @@
                         @if ($processo->selecoes && $processo->selecoes->isNotEmpty())
                             <b>Seleções</b><br>
                             <div class="ml-2">
-                                @foreach($processo->selecoes as $selecao)
+                                @foreach ($processo->selecoes as $selecao)
                                     <a href="selecoes/{{ $selecao->id }}">{{ $selecao->nome }} <i class="fas fa-share"></i></a><br>
                                 @endforeach
                             </div>
@@ -27,13 +27,3 @@
         </div>
     </div>
 </div>
-
-@section('javascript_bottom')
-@parent
-<script>
-    $document.ready(function() {
-
-    })
-
-</script>
-@endsection

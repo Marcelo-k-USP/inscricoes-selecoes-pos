@@ -27,7 +27,11 @@ Route::resource('inscricoes', InscricaoController::class)->parameters(['inscrico
 Route::resource('processos', ProcessoController::class);
 
 // SELEÇÕES
-Route::resource('selecoes', SelecaoController::class)->parameters(['selecoes' => 'selecao'])->except(['create', 'destroy', 'edit']);
+Route::get('selecoes/create', [SelecaoController::class, 'create'])->name('selecoes.create');
+Route::post('selecoes/create', [SelecaoController::class, 'store'])->name('selecoes.store');
+Route::get('selecoes/edit/{selecao}/', [SelecaoController::class, 'edit'])->name('selecoes.edit');
+Route::put('selecoes/edit/{selecao}/', [SelecaoController::class, 'update'])->name('selecoes.update');
+Route::resource('selecoes', SelecaoController::class)->parameters(['selecoes' => 'selecao'])->except(['show', 'create', 'store', 'edit', 'update', 'destroy']);
 
 // USERS
 Route::get('search/partenome', [UserController::class, 'partenome']);
