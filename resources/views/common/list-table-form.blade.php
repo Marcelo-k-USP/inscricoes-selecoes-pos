@@ -8,8 +8,6 @@
                 @include('common.list-table-modal-text')
             @elseif ($col['type'] == 'select')
                 @include('common.list-table-modal-select')
-            @elseif ($col['type'] == 'files')
-                @include('common.list-table-modal-files')
             @endif
         @endforeach
         

@@ -20,8 +20,8 @@
         <button type="submit" class="btn btn-sm {{($selecao->estado == 'Em andamento') ? 'btn-success' : 'btn-secondary'}}" {{($selecao->estado == 'Em andamento') ? 'disabled' : ''}} name="estado" value="Em andamento">
             Em andamento
         </button>
-        <button type="submit" class="btn btn-sm {{($selecao->estado == 'Desativada') ? 'btn-danger' : 'btn-secondary'}}" {{($selecao->estado == 'Desativada') ? 'disabled' : ''}} name="estado" value="Desativada">
-            Desativada
+        <button type="submit" class="btn btn-sm {{($selecao->estado == 'Encerrada') ? 'btn-danger' : 'btn-secondary'}}" {{($selecao->estado == 'Encerrada') ? 'disabled' : ''}} name="estado" value="Encerrada">
+            Encerrada
         </button>
     </div>
 {{ html()->form()->close() }}

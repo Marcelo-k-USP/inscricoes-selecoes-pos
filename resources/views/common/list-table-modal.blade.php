@@ -3,7 +3,7 @@ $data->modal = true; ?>
 
 {{-- o botao vai aqui em cima para poder incluir no form --}}
 @section('form-dismiss-btn')
-<button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
 @endsection
 
 <!-- Modal -->
@@ -17,9 +17,7 @@ $data->modal = true; ?>
                 </button>
             </div>
             <div class="modal-body">
-
                 @include('common.list-table-form')
-
             </div>
             {{-- <div class="modal-footer"></div> --}}
         </div>
@@ -30,7 +28,6 @@ $data->modal = true; ?>
 @parent
 <script>
     $(document).ready(function() {
-
         $('#modalForm').on('shown.bs.modal', function() {
             $(this).find(':input[type=text]').filter(':visible:first').focus();
         })
@@ -55,8 +52,6 @@ $data->modal = true; ?>
                 console.log('inputs', inputs);
             });
         }
-
-    })
-
+    });
 </script>
 @endsection

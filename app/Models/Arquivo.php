@@ -12,7 +12,7 @@ class Arquivo extends Model
     /**
      * relacionamento com seleção
      */
-    public function selecao()
+    public function selecoes()
     {
         return $this->belongsToMany('App\Models\Selecao', 'arquivo_selecao')->withPivot('tipo')->withTimestamps();
     }
@@ -20,7 +20,7 @@ class Arquivo extends Model
     /**
      * relacionamento com inscrição
      */
-    public function inscricao()
+    public function inscricoes()
     {
         return $this->belongsToMany('App\Models\Inscricao', 'arquivo_inscricao')->withPivot('tipo')->withTimestamps();
     }

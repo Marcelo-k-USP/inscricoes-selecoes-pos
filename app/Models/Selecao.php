@@ -52,11 +52,6 @@ class Selecao extends Model
             'name' => 'descricao',
             'label' => 'Descrição',
         ],
-        [
-            'name' => 'arquivos',
-            'label' => 'Arquivos',
-            'type' => 'files',
-        ],
     ];
 
     // uso no crud generico
@@ -77,7 +72,7 @@ class Selecao extends Model
      */
     public static function tiposArquivo()
     {
-        return ['Edital'];
+        return ['Edital', 'teste'];
     }
     
     /**

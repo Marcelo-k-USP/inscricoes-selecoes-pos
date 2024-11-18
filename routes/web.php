@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\ProcessoController;
@@ -35,6 +36,9 @@ Route::get('users/perfil/{perfil}', [UserController::class, 'trocarPerfil']);
 // Route::get('users/{user}/assumir', [UserController::class, 'assumir']);
 Route::get('users/meuperfil', [UserController::class, 'meuperfil']);
 Route::resource('users', UserController::class);
+
+// ARQUIVOS
+Route::resource('arquivos', ArquivoController::class);
 
 // ADMIN
 Route::get('admin', [AdminController::class, 'index']);

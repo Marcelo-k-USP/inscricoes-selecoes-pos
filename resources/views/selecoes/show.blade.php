@@ -22,10 +22,18 @@
                         @include('selecoes.partials.enable-disable-btn')
                     </div>
                 </div>
-                <div class="card-body {{ $selecao->estado == 'Desativada' ? 'disable-links': '' }}">
+                <div class="card-body {{ $selecao->estado == 'Encerrada' ? 'disable-links': '' }}">
                     <div class="row">
                         <div class="col-md-7">
                             @include('selecoes.partials.principal-card') {{-- Principal --}}
+                        </div>
+                        <div class="col-md-5">
+                            @php
+                                $tipo_modelo = 'Seleção';
+                                $modelo = $selecao;
+                                $condicao_ativa = ($selecao->estado != 'Encerrada');
+                            @endphp
+                            @include('common.card-arquivos')
                         </div>
                     </div>
                 </div>

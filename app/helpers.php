@@ -55,4 +55,10 @@ if (!function_exists('md2html')) {
             return [];
         }
     }
+
+    if (!function_exists('fixJson')) {
+        function fixJson($json) {
+            return trim(json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), '"');
+        }
+    }
 }

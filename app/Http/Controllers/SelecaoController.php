@@ -104,33 +104,6 @@ class SelecaoController extends Controller
         
         $selecao->save();
         
-        // arquivos
-        //     verifica se tem arquivos novos e adiciona
-        foreach ($request->arquivos as $request_arquivo) {
-            $achou = false;
-            foreach ($selecao->arquivos as $selecao_arquivo)
-                if ($request_arquivo->id == $selecao_arquivo->id) {
-                    $achou = true;
-                    break;
-                }
-
-            if (!$achou)
-                $selecao->arquivos->attach($request_arquivo->id, ['tipo' => $request_arquivo->tipo]);
-        }
-        //     verifica se algum arquivo foi removido e remove
-        foreach ($selecao->arquivos as $selecao_arquivo) {
-            $achou = false;
-            foreach ($request->arquivos as $request_arquivo)
-                if ($selecao_arquivo->id == $request_arquivo->id) {
-                    $achou = true;
-                    break;
-                }
-            
-            if (!$achou)
-                $selecao->arquivos->detach($request_arquivo->id);
-        }
-        // falta gravar o conteúdo do arquivo no servidor também, não só o código acima de gravar no banco de dados as informações sobre ele
-
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
         return back();
     }

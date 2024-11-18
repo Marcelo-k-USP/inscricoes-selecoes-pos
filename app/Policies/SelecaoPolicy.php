@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Models\Selecao;
-use App\Models\Processo;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
@@ -29,10 +28,10 @@ class SelecaoPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\Selecao  $selecao
+     * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function view(User $user, Selecao $selecao)
+    public function view(User $user)
     {
         /* admin */
         if (Gate::allows('perfiladmin')) {
@@ -43,10 +42,10 @@ class SelecaoPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User     $user
      * @return mixed
      */
-    public function create(User $user, Processo $processo)
+    public function create(User $user)
     {
         /* admin */
         if (Gate::allows('perfiladmin')) {
@@ -57,11 +56,10 @@ class SelecaoPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\User     $user
      * @return mixed
      */
-    public function update(User $user, Processo $processo)
+    public function update(User $user)
     {
         /* admin */
         if (Gate::allows('perfiladmin')) {
@@ -72,11 +70,10 @@ class SelecaoPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\User     $user
      * @return mixed
      */
-    public function delete(User $user, Processo $processo)
+    public function delete(User $user)
     {
         //
     }
@@ -84,11 +81,10 @@ class SelecaoPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\User     $user
      * @return mixed
      */
-    public function restore(User $user, Processo $processo)
+    public function restore(User $user)
     {
         //
     }
@@ -96,11 +92,10 @@ class SelecaoPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\User     $user
      * @return mixed
      */
-    public function forceDelete(User $user, Processo $processo)
+    public function forceDelete(User $user)
     {
         //
     }

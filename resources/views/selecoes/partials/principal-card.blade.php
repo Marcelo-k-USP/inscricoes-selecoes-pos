@@ -12,9 +12,9 @@
 <div class="card mb-3" id="card-fila-principal">
     <div class="card-header">
         Informações básicas
-        @if($selecao->estado != 'Desativada')
+        @if ($selecao->estado != 'Encerrada')
             &nbsp; | &nbsp;
-            @includewhen($selecao->estado != 'Desativada', 'common.list-table-btn-edit', ['row' => $selecao])
+            @includewhen($selecao->estado != 'Encerrada', 'common.list-table-btn-edit', ['row' => $selecao])
         @endif
     </div>
     <div class="card-body">
