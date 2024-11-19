@@ -1,4 +1,4 @@
-# Inscrições nova versão (recomeçado do zero, usando Laravel 11)
+# Seleções Pós (Laravel 11)
 
 Permite ...
     
@@ -7,8 +7,8 @@ Permite ...
 * Inicio
 
 ```bash
-    git clone git@github.com:uspdev/inscricoes inscricoes
-    cd inscricoes
+    git clone git@github.com:uspdev/selecoes-pos selecoes-pos
+    cd selecoes-pos
     composer update
     cp .env.example .env
     php artisan key:generate
@@ -19,7 +19,7 @@ Permite ...
 
 ```bash
     git remote remove origin
-    git remote add origin git@github.com:uspdev/inscricoes
+    git remote add origin git@github.com:uspdev/selecoes-pos
     git push -u origin main
 ```
 
@@ -69,7 +69,7 @@ php artisan migrate
 ### Básico
 
 ```sh
-git clone git@github.com:uspdev/inscricoes
+git clone git@github.com:uspdev/selecoes-pos
 composer install
 cp .env.example .env
 php artisan key:generate
@@ -134,10 +134,10 @@ Para as filas de envio de email o sistema precisa de um gerenciador que mantenha
 
     sudo apt install supervisor
 
-Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/supervisor/conf.d/inscricoes_queue_worker_default.conf` com o conteúdo abaixo:
+Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/supervisor/conf.d/selecoes_pos_queue_worker_default.conf` com o conteúdo abaixo:
 
-    [program:inscricoes_queue_worker_default]
-    command=/usr/bin/php /home/sistemas/inscricoes/artisan queue:listen --queue=default --tries=3 --timeout=60
+    [program:selecoes_pos_queue_worker_default]
+    command=/usr/bin/php /home/sistemas/selecoes-pos/artisan queue:listen --queue=default --tries=3 --timeout=60
     process_num=1
     username=www-data
     numprocs=1
@@ -147,12 +147,12 @@ Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/super
     autorestart=unexpected
     startretries=3
     stopsignal=QUIT
-    stderr_logfile=/var/log/supervisor/inscricoes_queue_worker_default.log
+    stderr_logfile=/var/log/supervisor/selecoes_pos_queue_worker_default.log
 
 Ajustes necessários:
 
     command=<ajuste o caminho da aplicação>
-    username=<nome do usuário do processo do inscricoes>
+    username=<nome do usuário do processo do selecoes-pos>
     stderr_logfile = <aplicacao>/storage/logs/<seu arquivo de log>
 
 Reinicie o **Supervisor**
