@@ -23,12 +23,22 @@ class SelecaoRequest extends FormRequest
      */
     public function rules()
     {
-
         $rules = [
+            'categoria_id' => 'required|numeric',
             'nome' => ['required', 'max:100'],
             'descricao' => ['max:255'],
-            'categoria_id' => 'required|numeric',
         ];
         return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'categoria_id.required' => 'A categoria é obrigatória!',
+            'categoria_id.numeric' => 'A categoria é inválida!',
+            'nome.required' => 'O nome da seleção é obrigatório!',
+            'nome.max' => 'O nome da seleção não pode exceder 100 caracteres!',
+            'descricao.max' => 'A descrição da seleção não pode exceder 255 caracteres!',
+        ];
     }
 }

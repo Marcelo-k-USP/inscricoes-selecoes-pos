@@ -87,7 +87,7 @@ class SelecaoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Selecao $selecao)
+    public function update(SelecaoRequest $request, Selecao $selecao)
     {
         $this->authorize('selecoes.view', $selecao);
 
