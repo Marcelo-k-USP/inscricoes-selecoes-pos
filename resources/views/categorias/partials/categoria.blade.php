@@ -3,7 +3,7 @@
         <span class="h4 mt-2">Categorias</span>
         &nbsp; &nbsp;
         <button type="button" class="btn btn-sm btn-success" onclick="add_form()">
-            <i class="fas fa-plus"></i> Novo
+            <i class="fas fa-plus"></i> Nova
         </button>
     </div>
 </div>
