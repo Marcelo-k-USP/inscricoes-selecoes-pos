@@ -141,6 +141,9 @@ class ArquivoController extends Controller
         
         $this->authorize($tipo_modelo_plural . '.update', $modelo);
 
+        if (Storage::exists($arquivo->caminho))
+            Storage::delete($arquivo->caminho);
+
         $arquivo->{$tipo_modelo_plural}()->detach($modelo->id, ['tipo' => $request->tipo_arquivo]);
         $arquivo->delete();
 
