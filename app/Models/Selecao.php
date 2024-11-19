@@ -68,6 +68,22 @@ class Selecao extends Model
     }
 
     /**
+     * retorna todas as seleções autorizadas para o usuário
+     * utilizado nas views common, para o select
+     */
+    public static function allToSelect()
+    {
+        $selecoes = SELF::get();
+        $ret = [];
+        foreach ($selecoes as $selecao) {
+            if (Gate::allows('selecoes.view', $selecao)) {
+            $ret[$selecao->id] = $selecao->nome . ' (' . $selecao->processo->nome . ')';
+            }
+        }
+        return $ret;
+    }
+
+    /**
      * Retorna os tipos de arquivo possíveis na seleção.
      */
     public static function tiposArquivo()
@@ -178,21 +194,6 @@ class Selecao extends Model
         return $processos;
     }
 
-    /**
-     * Valores possiveis para pivot do relacionamento com arquivos
-     */
-    #
-    public static function arquivoTipos($formSelect = false)
-    {
-        if ($formSelect) {
-            return [
-                'Edital' => 'Edital',
-            ];
-        } else {
-            return ['Edital'];
-        }
-    }
-    
     /**
      * relacionamento com arquivos
      */

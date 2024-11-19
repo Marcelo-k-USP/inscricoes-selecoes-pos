@@ -28,7 +28,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($inscricoes as $inscricao)
+      @foreach ($modelos as $inscricao)
         <tr>
           <td>
             <a href="inscricoes/{{ $inscricao->id }}">
@@ -61,15 +61,14 @@
   <script src="https://cdn.datatables.net/fixedheader/3.1.8/js/dataTables.fixedHeader.min.js"></script>
   <script>
     $(document).ready(function() {
-
       oTable = $('.tabela-inscricoes').DataTable({
         dom: 't',
-        "paging": false,
-        "sort": true,
-        "order": [
-          [0, "desc"]
+        'paging': false,
+        'sort': true,
+        'order': [
+          [0, 'desc']
         ],
-        "fixedHeader": true,
+        'fixedHeader': true,
         columnDefs: [{
           targets: 1,
           orderable: false
@@ -93,7 +92,6 @@
       $('#dt-search').keyup(function() {
         localStorage.setItem('datatableFilter', $(this).val())
       })
-
     })
   </script>
 @endsection

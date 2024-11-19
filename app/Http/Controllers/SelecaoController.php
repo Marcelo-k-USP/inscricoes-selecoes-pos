@@ -8,7 +8,6 @@ use App\Models\Processo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class SelecaoController extends Controller
 {
@@ -59,10 +58,12 @@ class SelecaoController extends Controller
         $processo = Processo::find($request->processo_id);
         $this->authorize('selecoes.create', $processo);
 
+        $selecao = Selecao::create($request->all());
+
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
 
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact(Selecao::create($request->all()), 'edit'));
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
 
     /**

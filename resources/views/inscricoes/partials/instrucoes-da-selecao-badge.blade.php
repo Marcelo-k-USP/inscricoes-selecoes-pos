@@ -11,7 +11,6 @@
       .hand-cursor {
         cursor: pointer;
       }
-
     </style>
   @endsection
 @endonce

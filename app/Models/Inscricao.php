@@ -15,25 +15,35 @@ class Inscricao extends Model
     # inscrições não segue convenção do laravel para nomes de tabela
     protected $table = 'inscricoes';
     
-    /**
-     * The attributes that should be mutated to dates.
-     * https://laravel.com/docs/8.x/eloquent-mutators#date-casting
-     *
-     * @var array
-     */
-    protected $casts = [
-        'created_at' => 'date:d/m/Y',
-        'updated_at' => 'date:d/m/Y',
-        'atualizadaEm' => 'date:d/m/Y',
+    protected $fillable = [
+        'selecao_id',
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['atualizadoEm'];
+    // uso no crud generico
+    protected const fields = [
+    ];
 
+    // uso no crud generico
+    public static function getFields()
+    {
+        $fields = SELF::fields;
+        foreach ($fields as &$field) {
+            if (substr($field['name'], -3) == '_id') {
+                $class = '\\App\\Models\\' . $field['model'];
+                $field['data'] = $class::allToSelect();
+            }
+        }
+        return $fields;
+    }
+
+    /**
+     * Retorna os tipos de arquivo possíveis na seleção.
+     */
+    public static function tiposArquivo()
+    {
+        return ['tipo 1', 'tipo 2'];
+    }
+    
     /**
      * Valores possiveis para pivot do relacionamento com users
      */
@@ -83,6 +93,14 @@ class Inscricao extends Model
     public function getAtualizadaEmAttribute()
     {
         return $this->updated_at;
+    }
+
+    /**
+     * relacionamento com arquivos
+     */
+    public function arquivos()
+    {
+        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_inscricao')->withPivot('tipo')->withTimestamps();
     }
 
     /**
