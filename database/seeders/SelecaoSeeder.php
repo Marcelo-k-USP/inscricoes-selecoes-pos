@@ -16,14 +16,14 @@ class SelecaoSeeder extends Seeder
      */
     public function run()
     {
-        $categoria_id_POSALUNOREGULAR = Categoria::where('nome', 'Pós Aluno Regular')->first()->id;
+        $categoria_id_ALUNOREGULAR = Categoria::where('nome', 'Aluno Regular')->first()->id;
         
         $selecoes = [
             [
                 'nome' => 'teste 1',
                 'estado' => 'Em andamento',
                 'descricao' => 'Processo Seletivo 1',
-                'categoria_id' => $categoria_id_POSALUNOREGULAR,
+                'categoria_id' => $categoria_id_ALUNOREGULAR,
                 'settings' => '{
                     "instrucoes": "Preencher ..."
                 }'
