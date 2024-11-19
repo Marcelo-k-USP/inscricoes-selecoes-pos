@@ -2,11 +2,11 @@
 
 @section('content')
 @parent
-@if($processos != null)
-    @include('processos.partials.processo')
-    @include('processos.partials.modal')
+@if ($categorias != null)
+    @include('categorias.partials.categoria')
+    @include('categorias.partials.modal')
 @else
-    Sem processo
+    Sem categoria
 @endif
 
 @endsection

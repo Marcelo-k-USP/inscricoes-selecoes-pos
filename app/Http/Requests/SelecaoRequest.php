@@ -27,7 +27,7 @@ class SelecaoRequest extends FormRequest
         $rules = [
             'nome' => ['required', 'max:100'],
             'descricao' => ['max:255'],
-            'processo_id' => 'required|numeric',
+            'categoria_id' => 'required|numeric',
         ];
         return $rules;
     }

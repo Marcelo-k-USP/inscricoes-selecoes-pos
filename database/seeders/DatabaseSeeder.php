@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Processo;
+use App\Models\Categoria;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             SetorReplicadoSeeder::class,    // adiciona todos os setores da unidade do replicado
-            ProcessoSeeder::class,          // adiciona processos
+            CategoriaSeeder::class,         // adiciona categorias
             SelecaoSeeder::class,           // adiciona seleções
         ]);
     }

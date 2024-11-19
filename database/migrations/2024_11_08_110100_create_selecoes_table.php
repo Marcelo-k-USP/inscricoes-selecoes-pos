@@ -18,7 +18,7 @@ class CreateSelecoesTable extends Migration
             $table->string('nome', 100);
             $table->string('estado', 90);
             $table->string('descricao', 255)->nullable();
-            $table->foreignId('processo_id')->constrained('processos');
+            $table->foreignId('categoria_id')->constrained('categorias');
             $table->json('settings')->nullable();
             $table->timestamps();
         });

@@ -35,8 +35,8 @@
                     ->attribute('enctype', 'multipart/form-data')
                     ->attribute('id', 'form_principal')
                     ->open() }}
-                    @method($modo == 'edit' ? 'PUT' : 'POST')
                     @csrf
+                    @method($modo == 'edit' ? 'PUT' : 'POST')
                     {{ html()->hidden('id') }}
                     <div class="card-body {{ ($modo == 'edit') && ($selecao->estado == 'Encerrada') ? 'disable-links': '' }}">
                         <div class="row">

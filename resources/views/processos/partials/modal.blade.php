@@ -1,17 +1,17 @@
-<!-- Modal que atende adicionar e editar processos -->
+<!-- Modal que atende adicionar e editar categorias -->
 <div class="modal fade" id="modalForm" data-backdrop="static" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">Adicionar/Editar processos</h5>
+                <h5 class="modal-title" id="modalLabel">Adicionar/Editar categorias</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-
                 <div class="list_table_div_form">
                     {{ html()->form('post', '')->open() }}
+                        @csrf
                         @method('POST')
                         {{ html()->hidden('id') }}
                         
@@ -48,7 +48,7 @@
         })
 
         edit_form = function(id) {
-            $.get('processos/' + id
+            $.get('categorias/' + id
                 , function(row) {
                     console.log(row);
                     // mudando para PUT
@@ -62,10 +62,10 @@
                     });
 
                     // Ajustando action
-                    $('#modalForm').find('form').attr('action', 'processos/' + id);
+                    $('#modalForm').find('form').attr('action', 'categorias/' + id);
 
                     // Ajustando o title
-                    $('#modalLabel').html('Editar processo');
+                    $('#modalLabel').html('Editar categoria');
 
                     $("#modalForm").modal();
                     console.log('inputs', inputs);
@@ -73,23 +73,19 @@
         }
 
         add_form = function(id) {
-
             $("#modalForm :input").filter("input[type='text']").val('');
 
             // preenchendo o form com os valores a serem editados
             $("#modalForm select").val(id);
 
             // Ajustando action
-            $('#modalForm').find('form').attr('action', 'processos');
+            $('#modalForm').find('form').attr('action', 'categorias');
 
-            $('#modalLabel').html('Adicionar processo');
+            $('#modalLabel').html('Adicionar categoria');
             $('#modalForm :input').filter("input[name='_method']").val('POST');
 
             $("#modalForm").modal();
-            
         }
-
     })
-
 </script>
 @endsection

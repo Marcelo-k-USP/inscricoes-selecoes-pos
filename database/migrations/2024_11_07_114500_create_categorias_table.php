@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProcessosTable extends Migration
+class CreateCategoriasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateProcessosTable extends Migration
      */
     public function up()
     {
-        Schema::create('processos', function (Blueprint $table) {
+        Schema::create('categorias', function (Blueprint $table) {
             $table->id();
             $table->string('nome', 100);
             $table->string('descricao', 255)->nullable();
@@ -28,6 +28,6 @@ class CreateProcessosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('processos');
+        Schema::dropIfExists('categorias');
     }
 }

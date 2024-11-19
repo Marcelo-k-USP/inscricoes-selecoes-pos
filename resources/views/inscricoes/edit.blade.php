@@ -34,7 +34,7 @@
             @else
               Nova Inscrição
             @endif
-            para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->processo->nome }})<br />
+            para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})<br />
             <span class="text-muted">{{ $inscricao->selecao->descricao }}</span><br />
           </div>
         </div>
@@ -45,8 +45,8 @@
           ->attribute('enctype', 'multipart/form-data')
           ->attribute('id', 'form_principal')
           ->open() }}
-          @method($modo == 'edit' ? 'PUT' : 'POST')
           @csrf
+          @method($modo == 'edit' ? 'PUT' : 'POST')
           {{ html()->hidden('id') }}
           <input type="hidden" name="selecao_id" value="{{ $inscricao->selecao->id }}">
           <div class="card-body">

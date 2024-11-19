@@ -13,7 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        #Processo::Class => ProcessoPolicy::class,
+        #Categoria::Class => CategoriaPolicy::class,
         #Selecao::Class => SelecaoPolicy::class,
     ];
 
@@ -40,7 +40,7 @@ class AuthServiceProvider extends ServiceProvider
 
         # perfis
         # o perfil é o modo como o usuário se apresenta
-        # ideal para mostrar os menus e a lista de processos
+        # ideal para mostrar os menus e a lista de categorias
         Gate::define('perfiladmin', function ($user) {
             if (session('perfil') != 'admin') {
                 return false;
@@ -77,7 +77,7 @@ class AuthServiceProvider extends ServiceProvider
 
         # policies
         Gate::resource('inscricoes', 'App\Policies\InscricaoPolicy');
-        Gate::resource('processos', 'App\Policies\ProcessoPolicy');
+        Gate::resource('categorias', 'App\Policies\CategoriaPolicy');
         Gate::resource('selecoes', 'App\Policies\SelecaoPolicy');
         Gate::resource('users', 'App\Policies\UserPolicy');
     }

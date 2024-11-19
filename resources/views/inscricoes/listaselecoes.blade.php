@@ -17,12 +17,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($processos as $processo)
-            @if($processo->selecoes->count())
+        @foreach ($categorias as $categoria)
+            @if($categoria->selecoes->count())
             <tr>
                 <td>
-                    {{ $processo->nome }}
-                    @foreach ($processo->selecoes as $selecao)
+                    {{ $categoria->nome }}
+                    @foreach ($categoria->selecoes as $selecao)
                     <div class="ml-3">
                         <a href="inscricoes/create/{{ $selecao['id'] }}">{{ $selecao->nome }}</a> - {{ $selecao->descricao }}
                     </div>

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SelecaoRequest;
+use App\Models\Categoria;
 use App\Models\Selecao;
-use App\Models\Processo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -55,8 +55,8 @@ class SelecaoController extends Controller
      */
     public function store(SelecaoRequest $request)
     {
-        $processo = Processo::find($request->processo_id);
-        $this->authorize('selecoes.create', $processo);
+        $categoria = Categoria::find($request->categoria_id);
+        $this->authorize('selecoes.create', $categoria);
 
         $selecao = Selecao::create($request->all());
 
@@ -109,10 +109,10 @@ class SelecaoController extends Controller
             $selecao->descricao = $request->descricao;
         }
 
-        // processo_id
-        if ($selecao->processo_id != $request->processo_id && !empty($request->processo_id)) {
-            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Processo antigo: ' . $selecao->processo_id . ' - Novo processo: ' . $request->processo_id);
-            $selecao->processo_id = $request->processo_id;
+        // categoria_id
+        if ($selecao->categoria_id != $request->categoria_id && !empty($request->categoria_id)) {
+            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Categoria antiga: ' . $selecao->categoria_id . ' - Nova categoria: ' . $request->categoria_id);
+            $selecao->categoria_id = $request->categoria_id;
         }
         
         $selecao->save();

@@ -12,9 +12,9 @@ $menu = [
         'can' => 'inscricoes.viewAny',
     ],
     [
-        'text' => '<i class="fas fa-sitemap ml-2"></i> Processos',
-        'url' => 'processos',
-        'can' => 'processos.viewAny',
+        'text' => '<i class="fas fa-sitemap ml-2"></i> Categorias',
+        'url' => 'categorias',
+        'can' => 'categorias.viewAny',
     ],
     [
         'text' => '<i class="fas fa-tasks ml-2"></i> Seleções',

@@ -31,17 +31,17 @@ class Selecao extends Model
     protected $fillable = [
         'nome',
         'descricao',
-        'processo_id',
+        'categoria_id',
         'estado',
     ];
 
     // uso no crud generico
     protected const fields = [
         [
-            'name' => 'processo_id',
-            'label' => 'Processo',
+            'name' => 'categoria_id',
+            'label' => 'Categoria',
             'type' => 'select',
-            'model' => 'Processo',
+            'model' => 'Categoria',
             'data' => [],
         ],
         [
@@ -77,7 +77,7 @@ class Selecao extends Model
         $ret = [];
         foreach ($selecoes as $selecao) {
             if (Gate::allows('selecoes.view', $selecao)) {
-            $ret[$selecao->id] = $selecao->nome . ' (' . $selecao->processo->nome . ')';
+            $ret[$selecao->id] = $selecao->nome . ' (' . $selecao->categoria->nome . ')';
             }
         }
         return $ret;
@@ -163,7 +163,7 @@ class Selecao extends Model
     }
 
     /**
-     * Mostra lista de processos e respectivas seleções
+     * Mostra lista de categorias e respectivas seleções
      * para selecionar e criar nova inscrição
      *
      * @return \Illuminate\Http\Response
@@ -171,12 +171,12 @@ class Selecao extends Model
     public static function listarSelecoesParaNovaInscricao()
     {
         # primeiro vamos pegar todas as seleções
-        $processos = Processo::get();
+        $categorias = Categoria::get();
 
         # e depois filtrar as que não pode
-        foreach ($processos as &$processo) {
+        foreach ($categorias as &$categoria) {
             # primeiro vamos pegar todas as seleções
-            $selecoes = $processo->selecoes;
+            $selecoes = $categoria->selecoes;
 
             # agora vamos remover as seleções onde não se pode inscrever
             # a ordem de liberação é relevante !!!!
@@ -189,9 +189,9 @@ class Selecao extends Model
 
                 return true;
             });
-            $processo->selecoes = $selecoes;
+            $categoria->selecoes = $selecoes;
         }
-        return $processos;
+        return $categorias;
     }
 
     /**
@@ -203,10 +203,10 @@ class Selecao extends Model
     }
     
     /**
-     * Relacionamento: seleção pertence a processo
+     * Relacionamento: seleção pertence a categoria
      */
-    public function processo()
+    public function categoria()
     {
-        return $this->belongsTo('App\Models\Processo');
+        return $this->belongsTo('App\Models\Categoria');
     }
 }

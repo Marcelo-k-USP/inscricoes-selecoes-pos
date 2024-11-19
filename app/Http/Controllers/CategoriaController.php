@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Processo;
+use App\Models\Categoria;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 
-class ProcessoController extends Controller
+class CategoriaController extends Controller
 {
     public function __construct()
     {
@@ -17,23 +17,23 @@ class ProcessoController extends Controller
     }
 
     /**
-     * Mostra lista de processos
+     * Mostra lista de categorias
      */
     public function index(Request $request)
     {
-        $this->authorize('processos.viewAny');
-        \UspTheme::activeUrl('processos');
+        $this->authorize('categorias.viewAny');
+        \UspTheme::activeUrl('categorias');
         
-        $processos = Processo::all();
-        $fields = Processo::getFields();
+        $categorias = Categoria::all();
+        $fields = Categoria::getFields();
 
         if ($request->ajax()) {
             // formatado para datatables
-            #return response(['data' => $processos]);
+            #return response(['data' => $categorias]);
         } else {
-            $modal['url'] = 'processos';
-            $modal['title'] = 'Editar processo';
-            return view('processos.tree', compact('processos', 'fields', 'modal'));
+            $modal['url'] = 'categorias';
+            $modal['title'] = 'Editar categoria';
+            return view('categorias.tree', compact('categorias', 'fields', 'modal'));
         }
     }
 
@@ -47,16 +47,16 @@ class ProcessoController extends Controller
     {
         #usando no ajax, somente para admin
         $this->authorize('admin');
-        \UspTheme::activeUrl('processos');
+        \UspTheme::activeUrl('categorias');
 
         if ($request->ajax()) {
-            # preenche os dados do form de edição de um processo
-            return Processo::find($id);
+            # preenche os dados do form de edição de uma categoria
+            return Categoria::find($id);
         } else {
             # desativado por enquanto
             return false;
-            $setor = Processo::find($id);
-            return view('processos.show', compact('processo'));
+            $setor = Categoria::find($id);
+            return view('categorias.show', compact('categoria'));
         }
     }
 
@@ -69,12 +69,12 @@ class ProcessoController extends Controller
     public function store(Request $request)
     {
         $this->authorize('admin');
-        $request->validate(Processo::rules);
+        $request->validate(Categoria::rules);
 
-        $processo = Processo::create($request->all());
+        $categoria = Categoria::create($request->all());
 
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
-        return Redirect::to(URL::previous() . "#" . strtolower($processo->id));
+        return Redirect::to(URL::previous() . "#" . strtolower($categoria->id));
     }
 
     /**
@@ -89,14 +89,14 @@ class ProcessoController extends Controller
     public function update(Request $request, $id)
     {
         $this->authorize('admin');
-        $request->validate(Processo::rules);
+        $request->validate(Categoria::rules);
 
-        $processo = Processo::find($id);
-        $processo->fill($request->all());
-        $processo->save();
+        $categoria = Categoria::find($id);
+        $categoria->fill($request->all());
+        $categoria->save();
 
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
-        return Redirect::to(URL::previous() . "#" . strtolower($processo->id));
+        return Redirect::to(URL::previous() . "#" . strtolower($categoria->id));
     }
 
     /**
@@ -109,8 +109,8 @@ class ProcessoController extends Controller
     {
         $this->authorize('admin');
 
-        $processo = Processo::find($id);
-        $processo->delete();
+        $categoria = Categoria::find($id);
+        $categoria->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         return back();

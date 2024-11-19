@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use \App\Models\Selecao;
-use \App\Models\Processo;
+use \App\Models\Categoria;
 use \App\Models\User;
 
 class SelecaoSeeder extends Seeder
@@ -16,14 +16,14 @@ class SelecaoSeeder extends Seeder
      */
     public function run()
     {
-        $processo_id_POSALUNOREGULAR = Processo::where('nome', 'Pós Aluno Regular')->first()->id;
+        $categoria_id_POSALUNOREGULAR = Categoria::where('nome', 'Pós Aluno Regular')->first()->id;
         
         $selecoes = [
             [
                 'nome' => 'teste 1',
                 'estado' => 'Em andamento',
                 'descricao' => 'Processo Seletivo 1',
-                'processo_id' => $processo_id_POSALUNOREGULAR,
+                'categoria_id' => $categoria_id_POSALUNOREGULAR,
                 'settings' => '{
                     "instrucoes": "Preencher ..."
                 }'

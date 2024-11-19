@@ -38,7 +38,7 @@
             </a>
           </td>
           <td>
-            ({{ $inscricao->selecao->processo->nome }})
+            ({{ $inscricao->selecao->categoria->nome }})
             {{ $inscricao->selecao->nome }}
           </td>
           <td class="text-right">

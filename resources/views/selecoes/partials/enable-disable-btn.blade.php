@@ -10,8 +10,8 @@
 @endsection
 
 {{ html()->form('post', url('selecoes/edit/' . $selecao->id))->attribute('name', 'form_estado')->open() }}
-    @method('put')
     @csrf
+    @method('put')
     <div class="btn-group enable-disable-btn">
         <button type="submit" class="btn btn-sm {{ ($selecao->estado == 'Em elaboração') ? 'btn-warning' : 'btn-secondary' }}" {{ ($selecao->estado == 'Em elaboração') ? 'disabled' : '' }} name="estado" value="Em elaboração">
             Em elaboração

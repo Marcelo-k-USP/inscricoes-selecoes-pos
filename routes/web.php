@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArquivoController;
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
-use App\Http\Controllers\ProcessoController;
 use App\Http\Controllers\SelecaoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
@@ -25,8 +25,8 @@ Route::post('inscricoes/create/{selecao}', [InscricaoController::class, 'store']
 Route::get('inscricoes/edit/{inscricao}', [InscricaoController::class, 'edit'])->name('inscricoes.edit');
 Route::put('inscricoes/edit/{inscricao}', [InscricaoController::class, 'update'])->name('inscricoes.update');
 
-// PROCESSOS
-Route::resource('processos', ProcessoController::class);
+// CATEGORIAS
+Route::resource('categorias', CategoriaController::class);
 
 // SELEÇÕES
 Route::get('selecoes', [SelecaoController::class, 'index'])->name('selecoes.index');

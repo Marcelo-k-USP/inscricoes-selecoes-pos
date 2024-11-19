@@ -45,7 +45,7 @@ class InscricaoController extends Controller
     }
 
     /**
-     * Mostra lista de seleções e respectivos processos
+     * Mostra lista de seleções e respectivas categorias
      * para selecionar e criar nova inscrição
      *
      * @param Illuminate\Http\Request $request
@@ -59,8 +59,8 @@ class InscricaoController extends Controller
             'filtro' => 'nullable|string',
         ]);
 
-        $processos = Selecao::listarSelecoesParaNovaInscricao();
-        return view('inscricoes.listaselecoes', compact('processos'));
+        $categorias = Selecao::listarSelecoesParaNovaInscricao();
+        return view('inscricoes.listaselecoes', compact('categorias'));
     }
 
     /**

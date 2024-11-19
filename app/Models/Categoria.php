@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 
-class Processo extends Model
+class Categoria extends Model
 {
     use HasFactory;
 
@@ -38,33 +38,33 @@ class Processo extends Model
     }
 
     /**
-     * retorna todos os processos
+     * retorna todas as categorias
      * utilizado nas views common, para o select
      */
     public static function allToSelect()
     {
-        $processos = SELF::get();
+        $categorias = SELF::get();
         $ret = [];
-        foreach ($processos as $processo) {
-            if (Gate::allows('processos.view', $processo)) {
-            $ret[$processo->id] = $processo->nome;
+        foreach ($categorias as $categoria) {
+            if (Gate::allows('categorias.view', $categoria)) {
+            $ret[$categoria->id] = $categoria->nome;
             }
         }
         return $ret;
     }
 
     /**
-     * Menu Processos, lista os processos que o usuário pode ver
+     * Menu Categorias, lista as categorias que o usuário pode ver
      *
-     * @return coleção de processos
+     * @return coleção de categorias
      */
-    public static function listarProcessos()
+    public static function listarCategorias()
     {
         return SELF::get();
     }
 
     /**
-     * Processo possui seleções
+     * Categoria possui seleções
      */
     public function selecoes()
     {
@@ -76,7 +76,7 @@ class Processo extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\Models\User', 'user_processo')
+        return $this->belongsToMany('App\Models\User', 'user_categoria')
             ->orderBy('users.name')
             ->withTimestamps();
     }

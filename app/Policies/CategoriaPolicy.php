@@ -2,13 +2,13 @@
 
 namespace App\Policies;
 
-use App\Models\Processo;
+use App\Models\Categoria;
 use App\Models\Setor;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
 
-class ProcessoPolicy
+class CategoriaPolicy
 {
     use HandlesAuthorization;
 
@@ -29,11 +29,11 @@ class ProcessoPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Categoria  $categoria
      * @return mixed
      */
-    public function view(User $user, Processo $processo)
+    public function view(User $user, Categoria $categoria)
     {
         /* admin */
         if (Gate::allows('perfiladmin')) {
@@ -58,11 +58,11 @@ class ProcessoPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Categoria  $categoria
      * @return mixed
      */
-    public function update(User $user, Processo $processo)
+    public function update(User $user, Categoria $categoria)
     {
         /* admin */
         if (Gate::allows('perfiladmin')) {
@@ -73,11 +73,11 @@ class ProcessoPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Categoria  $categoria
      * @return mixed
      */
-    public function delete(User $user, Processo $processo)
+    public function delete(User $user, Categoria $categoria)
     {
         //
     }
@@ -85,8 +85,8 @@ class ProcessoPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Categoria  $categoria
      * @return mixed
      */
     public function restore(User $user, Fila $fila)
@@ -97,11 +97,11 @@ class ProcessoPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \App\Models\User      $user
-     * @param  \App\Models\Processo  $processo
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Categoria  $categoria
      * @return mixed
      */
-    public function forceDelete(User $user, Processo $processo)
+    public function forceDelete(User $user, Categoria $categoria)
     {
         //
     }

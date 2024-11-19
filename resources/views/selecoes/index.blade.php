@@ -6,7 +6,7 @@
         <div class="col-md-12 form-inline">
             <span class="h4 mt-2">Seleções</span>
             @include('partials.datatable-filter-box', ['otable'=>'oTable'])
-            @if(Gate::check('processos.viewAny'))
+            @if(Gate::check('categorias.viewAny'))
                 <a href="{{ route('selecoes.create') }}" class="btn btn-sm btn-success">
                     <i class="fas fa-plus"></i> Nova
                 </a>
@@ -17,7 +17,7 @@
     <table class="table table-striped table-hover datatable-nopagination display responsive" style="width:100%">
         <thead>
             <tr>
-                <td>Processo</td>
+                <td>Categoria</td>
                 <td>Nome</td>
                 <td>Descrição</td>
             </tr>
@@ -25,7 +25,7 @@
         <tbody>
             @foreach ($modelos as $selecao)
             <tr>
-                <td>{{ $selecao->processo->nome }}</td>
+                <td>{{ $selecao->categoria->nome }}</td>
                 <td>
                     @include('selecoes.partials.status-small')
                     <a class="mr-2" href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->nome }}</a>
