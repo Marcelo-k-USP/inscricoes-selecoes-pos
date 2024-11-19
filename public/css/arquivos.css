@@ -45,21 +45,24 @@
     text-decoration: none;
 }
 .arquivo-acoes{
-    width: 0;
-    height: 0;
+    width: 0px;
+    height: 24px;
     overflow: hidden;
-    transition: all .5s;
     display: flex;
+    align-items: center;
+    transition: width .5s;
 }
 .arquivos-lista ul li.modo-visualizacao:hover .arquivo-acoes{
     width: 73px;
-    height: auto;
 }
 
 .arquivos-lista .btn-arquivo-acao{
     font-size: 13px;
     padding: 0px 5px;
     margin-right: 4px;
+    position: relative;
+    top: -2px;
+    line-height: normal;
 }
 .arquivos-lista .btn-arquivo-acao.btn-editar{
     padding-right: 3px;
@@ -83,6 +86,11 @@
     left: -2px;
     width: calc(100% + 4px);
     font-size: 14px;
+}
+.editar-nome-arquivo-form .btns-wrapper{ 
+    position: relative;
+    top: -2px;
+    align-items: center;
 }
 .editar-nome-arquivo-form{
     height: 24px;

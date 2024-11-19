@@ -3,25 +3,32 @@ $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
 
     $('input[id^="input_arquivo_"]').change(function() {
-        $('#modal_processando').modal('show');
-        $('#form_arquivo_' + $(this).attr('id').split('_')[2]).submit();
-    });
-
-    $('.btn-editar.btn-arquivo-acao, .limpar-edicao-nome').click(function() {
-        $(this).parent().parent().parent().toggleClass('modo-edicao');
-        $(this).parent().parent().parent().toggleClass('modo-visualizacao');
+        var i_tipo_arquivo = $(this).attr('id').split('_')[2];
+        submete_form('arquivos', 'post', i_tipo_arquivo);
     });
 });
 
-function ativar_exclusao_arquivo(arquivo) {
-    if (confirm('Tem certeza que deseja deletar ' + arquivo + '?')) {
-        $('#modal_processando').modal('show');
-        return true;
-    } else
-        return false;
+function toggle_modo_edicao(element, arquivo_id) {
+    var li = $(element).closest('li');
+    li.toggleClass('modo-edicao');
+    li.toggleClass('modo-visualizacao');
+    $('#nome_arquivo_' + arquivo_id).val($('#nome_arquivo_original_' + arquivo_id).val());
 }
 
-function ativar_alteracao_arquivo() {
+function excluir_arquivo(arquivo_id, arquivo_nome) {
+    if (confirm('Tem certeza que deseja deletar ' + arquivo_nome + '?'))
+        submete_form('arquivos/' + arquivo_id, 'delete');
+}
+
+function alterar_arquivo(arquivo_id) {
+    $('#nome_arquivo').val($('#nome_arquivo_' + arquivo_id).val());
+    submete_form('arquivos/' + arquivo_id, 'patch');
+}
+
+function submete_form(acao, metodo, i_tipo_arquivo) {
+    $('#tipo_arquivo').val($('#tipo_arquivo_' + i_tipo_arquivo).val());
     $('#modal_processando').modal('show');
-    return true;
+    $('#form_principal').attr({ action: acao });
+    $('<input>').attr({ type: 'hidden', name: '_method', value: metodo }).appendTo('#form_principal');
+    $('#form_principal').submit();
 }

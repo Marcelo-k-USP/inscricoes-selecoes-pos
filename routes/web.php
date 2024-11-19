@@ -19,19 +19,19 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 // INSCRIÇÕES
 Route::get('inscricoes/create', [InscricaoController::class, 'listaSelecoes']);
-Route::get('inscricoes/create/{selecao}/', [InscricaoController::class, 'create'])->name('inscricoes.create');
-Route::post('inscricoes/create/{selecao}/', [InscricaoController::class, 'store'])->name('inscricoes.store');
+Route::get('inscricoes/create/{selecao}', [InscricaoController::class, 'create'])->name('inscricoes.create');
+Route::post('inscricoes/create/{selecao}', [InscricaoController::class, 'store'])->name('inscricoes.store');
 Route::resource('inscricoes', InscricaoController::class)->parameters(['inscricoes' => 'inscricao'])->except(['create', 'store']);
 
 // PROCESSOS
 Route::resource('processos', ProcessoController::class);
 
 // SELEÇÕES
+Route::get('selecoes', [SelecaoController::class, 'index'])->name('selecoes.index');
 Route::get('selecoes/create', [SelecaoController::class, 'create'])->name('selecoes.create');
 Route::post('selecoes/create', [SelecaoController::class, 'store'])->name('selecoes.store');
-Route::get('selecoes/edit/{selecao}/', [SelecaoController::class, 'edit'])->name('selecoes.edit');
-Route::put('selecoes/edit/{selecao}/', [SelecaoController::class, 'update'])->name('selecoes.update');
-Route::resource('selecoes', SelecaoController::class)->parameters(['selecoes' => 'selecao'])->except(['show', 'create', 'store', 'edit', 'update', 'destroy']);
+Route::get('selecoes/edit/{selecao}', [SelecaoController::class, 'edit'])->name('selecoes.edit');
+Route::put('selecoes/edit/{selecao}', [SelecaoController::class, 'update'])->name('selecoes.update');
 
 // USERS
 Route::get('search/partenome', [UserController::class, 'partenome']);

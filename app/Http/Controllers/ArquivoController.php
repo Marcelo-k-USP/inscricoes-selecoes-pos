@@ -36,15 +36,15 @@ class ArquivoController extends Controller
      */
     public function store(Request $request)
     {
-        $tipo_modelo_plural = $this->obtemModeloPlural($request->tipo_modelo);
-        $classe_modelo = $this->obtemClasseModelo($request->tipo_modelo);
+        $tipo_modelo = fixJson($request->tipo_modelo);
+        $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
+        $classe_modelo = $this->obtemClasseModelo($tipo_modelo);
         $modelo = $classe_modelo::find($request->modelo_id);
         
         $request->validate([
             'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('inscricoes.upload_max_filesize'),
             'modelo_id' => 'required|integer|exists:' . $tipo_modelo_plural . ',id',
         ]);
-
         $this->authorize($tipo_modelo_plural . '.update', $modelo);
 
         foreach ($request->arquivo as $arq) {
@@ -58,8 +58,10 @@ class ArquivoController extends Controller
             $arquivo->{$tipo_modelo_plural}()->attach($modelo->id, ['tipo' => $request->tipo_arquivo]);
         }
 
-        $request->session()->flash('alert-success', 'Arquivo(s) adicionado(s) com sucesso!');
-        return redirect()->back();
+        $request->session()->flash('alert-info', 'Arquivo(s) adicionado(s) com sucesso');
+        
+        \UspTheme::activeUrl($tipo_modelo_plural);
+        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, 'edit'));
     }
 
     /**
@@ -102,15 +104,15 @@ class ArquivoController extends Controller
      */
     public function update(Request $request, Arquivo $arquivo)
     {
-        $tipo_modelo_plural = $this->obtemModeloPlural($request->tipo_modelo);
-        $classe_modelo = $this->obtemClasseModelo($request->tipo_modelo);
+        $tipo_modelo = fixJson($request->tipo_modelo);
+        $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
+        $classe_modelo = $this->obtemClasseModelo($tipo_modelo);
         $modelo = $classe_modelo::find($request->modelo_id);
         
         $request->validate(
             ['nome_arquivo' => 'required'],
             ['nome_arquivo.required' => 'O nome do arquivo é obrigatório!']
         );
-
         $this->authorize($tipo_modelo_plural . '.update', $modelo);
 
         $nome_antigo = $arquivo->nome_original;
@@ -118,8 +120,10 @@ class ArquivoController extends Controller
         $arquivo->nome_original = $request->nome_arquivo . '.' . $extensao;
         $arquivo->update();
 
-        request()->session()->flash('alert-success', 'Arquivo renomeado com sucesso!');
-        return Redirect::to(URL::previous() . "#card_arquivos");
+        $request->session()->flash('alert-info', 'Arquivo renomeado com sucesso');
+        
+        \UspTheme::activeUrl($tipo_modelo_plural);
+        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, 'edit'));
     }
 
     /**
@@ -130,8 +134,9 @@ class ArquivoController extends Controller
      */
     public function destroy(Request $request, Arquivo $arquivo)
     {
-        $tipo_modelo_plural = $this->obtemModeloPlural($request->tipo_modelo);
-        $classe_modelo = $this->obtemClasseModelo($request->tipo_modelo);
+        $tipo_modelo = fixJson($request->tipo_modelo);
+        $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
+        $classe_modelo = $this->obtemClasseModelo($tipo_modelo);
         $modelo = $classe_modelo::find($request->modelo_id);
         
         $this->authorize($tipo_modelo_plural . '.update', $modelo);
@@ -139,12 +144,14 @@ class ArquivoController extends Controller
         $arquivo->{$tipo_modelo_plural}()->detach($modelo->id, ['tipo' => $request->tipo_arquivo]);
         $arquivo->delete();
 
-        $request->session()->flash('alert-success', 'O arquivo ' . $arquivo->nome_original . ' foi excluído com sucesso!');
-        return Redirect::to(URL::previous() . "#card_arquivos");
+        $request->session()->flash('alert-info', 'Arquivo removido com sucesso');
+        
+        \UspTheme::activeUrl($tipo_modelo_plural);
+        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, 'edit'));
     }
 
     private function obtemModeloPlural($tipo_modelo) {
-        switch (fixJson($tipo_modelo)) {
+        switch ($tipo_modelo) {
             case 'Seleção':
                 return 'selecoes';
             case 'Inscrição':
@@ -153,11 +160,18 @@ class ArquivoController extends Controller
     }
 
     private function obtemClasseModelo($tipo_modelo) {
-        switch (fixJson($tipo_modelo)) {
+        switch ($tipo_modelo) {
             case 'Seleção':
                 return Selecao::class;
             case 'Inscrição':
                 return Inscricao::class;
         }
+    }
+
+    private function monta_compact($classe_modelo, $modelo, $tipo_modelo, $modo) {
+        $data = (object) ('App\\Http\\Controllers\\' . class_basename($classe_modelo) . 'Controller')::$data;
+        $max_upload_size = config('inscricoes.upload_max_filesize');
+    
+        return compact('data', 'modelo', 'tipo_modelo', 'modo', 'max_upload_size');
     }
 }

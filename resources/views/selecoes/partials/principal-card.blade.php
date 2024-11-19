@@ -5,7 +5,6 @@
         border: 1px solid coral;
         border-top: 3px solid coral;
     }
-
 </style>
 @endsection
 
@@ -16,6 +15,9 @@
     <div class="card-body">
         <div class="list_table_div_form">
             @include('common.list-table-form-contents')
+        </div>
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
         </div>
     </div>
 </div>

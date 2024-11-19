@@ -31,7 +31,10 @@
                         @endif
                     </div>
                 </div>
-                {{ html()->form('post', $data->url . ($modo == 'edit' ? ('/edit/' . $selecao->id) : '/create'))->attribute('enctype', 'multipart/form-data')->open() }}
+                {{ html()->form('post', $data->url . (($modo == 'edit') ? ('/edit/' . $selecao->id) : '/create'))
+                    ->attribute('enctype', 'multipart/form-data')
+                    ->attribute('id', 'form_principal')
+                    ->open() }}
                     @method($modo == 'edit' ? 'PUT' : 'POST')
                     {{ html()->hidden('id') }}
                     <div class="card-body {{ ($modo == 'edit') && ($selecao->estado == 'Encerrada') ? 'disable-links': '' }}">
@@ -40,12 +43,9 @@
                                 @include('selecoes.partials.principal-card')    {{-- Principal --}}
                             </div>
                             <div class="col-md-5">
-                                @include('common.card-arquivos')                {{-- Arquivos --}}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 text-right">
-                                <button type="submit" class="btn btn-primary">Salvar</button>
+                                @if ($modo == 'edit')
+                                    @include('common.card-arquivos')            {{-- Arquivos --}}
+                                @endif
                             </div>
                         </div>
                     </div>
