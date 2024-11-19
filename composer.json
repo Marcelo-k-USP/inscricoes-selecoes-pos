@@ -1,5 +1,5 @@
 {
-    "name": "uspdev/selecoes-pos",
+    "name": "ipuspdev/selecoes-pos",
     "type": "project",
     "description": "Seleções Pós",
     "authors": [
@@ -10,7 +10,7 @@
         }
     ],
     "keywords": [
-        "uspdev",
+        "ipuspdev",
         "selecoes-pos"
     ],
     "license": "MIT",
