@@ -1,6 +1,6 @@
 @if (count($categoria->selecoes) > 0)
     <a href="#detalhes_{{ \Str::lower($categoria->id) }}" class="btn btn-sm text-primary" data-toggle="collapse" role="button">
-        <span class="badge badge-success">{{ count($categoria->selecoes) }} seleções</span>
+        <span class="badge badge-success">{{ count($categoria->selecoes) }} {{ (count($categoria->selecoes) == 1) ? 'seleção' : 'seleções' }}</span>
     </a>
 @else
     &nbsp;
