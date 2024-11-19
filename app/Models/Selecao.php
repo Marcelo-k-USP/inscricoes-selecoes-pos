@@ -12,7 +12,7 @@ class Selecao extends Model
 
     use \Glorand\Model\Settings\Traits\HasSettingsField;
 
-    # seleções não segue convenção do laravel para nomes de tabela
+    # selecoes não segue convenção do laravel para nomes de tabela
     protected $table = 'selecoes';
 
     public $defaultSettings = [
@@ -58,12 +58,11 @@ class Selecao extends Model
     public static function getFields()
     {
         $fields = SELF::fields;
-        foreach ($fields as &$field) {
+        foreach ($fields as &$field)
             if (substr($field['name'], -3) == '_id') {
                 $class = '\\App\\Models\\' . $field['model'];
                 $field['data'] = $class::allToSelect();
             }
-        }
         return $fields;
     }
 
@@ -75,11 +74,9 @@ class Selecao extends Model
     {
         $selecoes = SELF::get();
         $ret = [];
-        foreach ($selecoes as $selecao) {
-            if (Gate::allows('selecoes.view', $selecao)) {
-            $ret[$selecao->id] = $selecao->nome . ' (' . $selecao->categoria->nome . ')';
-            }
-        }
+        foreach ($selecoes as $selecao)
+            if (Gate::allows('selecoes.view', $selecao))
+                $ret[$selecao->id] = $selecao->nome . ' (' . $selecao->categoria->nome . ')';
         return $ret;
     }
 
@@ -202,6 +199,14 @@ class Selecao extends Model
         return $this->belongsToMany('App\Models\Arquivo', 'arquivo_selecao')->withPivot('tipo')->withTimestamps();
     }
     
+    /**
+     * relacionamento com linhas de pesquisa
+     */
+    public function linhaspesquisa()
+    {
+        return $this->belongsToMany('App\Models\LinhaPesquisa', 'linhapesquisa_selecao', 'selecao_id', 'linhapesquisa_id')->withTimestamps();
+    }
+
     /**
      * Relacionamento: seleção pertence a categoria
      */

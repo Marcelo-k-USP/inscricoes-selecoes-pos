@@ -20,9 +20,9 @@ class SelecaoSeeder extends Seeder
         
         $selecoes = [
             [
-                'nome' => 'teste 1',
+                'nome' => 'Seleção 2025',
                 'estado' => 'Em andamento',
-                'descricao' => 'Processo Seletivo 1',
+                'descricao' => 'Processo Seletivo 2025 Aluno Regular',
                 'categoria_id' => $categoria_id_ALUNOREGULAR,
                 'settings' => '{
                     "instrucoes": "Preencher ..."

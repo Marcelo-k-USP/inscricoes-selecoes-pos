@@ -45,11 +45,9 @@ class Categoria extends Model
     {
         $categorias = SELF::get();
         $ret = [];
-        foreach ($categorias as $categoria) {
-            if (Gate::allows('categorias.view', $categoria)) {
-            $ret[$categoria->id] = $categoria->nome;
-            }
-        }
+        foreach ($categorias as $categoria)
+            if (Gate::allows('categorias.view', $categoria))
+                $ret[$categoria->id] = $categoria->nome;
         return $ret;
     }
 
