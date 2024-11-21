@@ -9,7 +9,7 @@
 </style>
 @endsection
 
-{{ html()->form('post', url('selecoes/edit/' . $selecao->id))->attribute('name', 'form_estado')->open() }}
+{{ html()->form('post', url('selecoes/edit-status/' . $selecao->id))->attribute('name', 'form_estado')->open() }}
     @csrf
     @method('put')
     <div class="btn-group enable-disable-btn">

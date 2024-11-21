@@ -1,5 +1,18 @@
 <?php
-# menu principal
+
+$admin = [
+    [
+        'text' => '<i class="fas fa-boxes"></i> Categorias',
+        'url' => 'categorias',
+        'can' => 'categorias.viewAny',
+    ],
+    [
+        'text' => '<i class="fa fa-bookmark"></i> Linhas de Pesquisa',
+        'url' => 'linhaspesquisa',
+        'can' => 'linhaspesquisa.viewAny',
+    ],
+];
+
 $menu = [
     [
         'text' => '<i class="far fa-plus-square"></i> Nova Inscrição',
@@ -12,28 +25,14 @@ $menu = [
         'can' => 'inscricoes.viewAny',
     ],
     [
-        'text' => '<i class="fas fa-sitemap ml-2"></i> Categorias',
-        'url' => 'categorias',
-        'can' => 'categorias.viewAny',
-    ],
-    [
         'text' => '<i class="fas fa-tasks ml-2"></i> Seleções',
         'url' => 'selecoes',
         'can' => 'selecoes.viewAny',
     ],
     [
-        'text' => '<span class="text-danger"><i class="fas fa-tools ml-2"></i> Admin</span>',
-        'url' => 'admin',
-        'can' => 'perfiladmin',
-    ]
-];
-
-# para menu direito
-$admin = [
-    [
-        'text' => '<i class="fas fa-users ml-2"></i> Meu Perfil',
-        'url' => 'users/meuperfil',
-        'can' => 'usuario',
+        'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Administração',
+        'submenu' => $admin,
+        'can' => 'admin',
     ],
 ];
 
@@ -78,11 +77,6 @@ $right_menu = [
         'url' => '#',
         'can' => 'perfiladmin',
     ],
-    // [
-    //     'text' => '<span class="badge badge-danger">Desassumir identidade</span>',
-    //     'url' => 'users/desassumir',
-    //     'can' => 'desassumir',
-    // ],
     [
         'text' => '<span class="badge badge-warning">Atendente</span>',
         'url' => '#',

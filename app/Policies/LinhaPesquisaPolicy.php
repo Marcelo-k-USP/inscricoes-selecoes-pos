@@ -2,13 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\Categoria;
-use App\Models\Setor;
+use App\Models\LinhaPesquisa;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
 
-class CategoriaPolicy
+class LinhaPesquisaPolicy
 {
     use HandlesAuthorization;
 
@@ -29,11 +28,11 @@ class CategoriaPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User       $user
-     * @param  \App\Models\Categoria  $categoria
+     * @param  \App\Models\User           $user
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return mixed
      */
-    public function view(User $user, Categoria $categoria)
+    public function view(User $user, LinhaPesquisa $linhapesquisa)
     {
         /* admin */
         if (Gate::allows('perfiladmin')) {
@@ -58,11 +57,11 @@ class CategoriaPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User       $user
-     * @param  \App\Models\Categoria  $categoria
+     * @param  \App\Models\User           $user
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return mixed
      */
-    public function update(User $user, Categoria $categoria)
+    public function update(User $user, LinhaPesquisa $linhapesquisa)
     {
         /* admin */
         if (Gate::allows('perfiladmin')) {
@@ -73,11 +72,11 @@ class CategoriaPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User       $user
-     * @param  \App\Models\Categoria  $categoria
+     * @param  \App\Models\User           $user
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return mixed
      */
-    public function delete(User $user, Categoria $categoria)
+    public function delete(User $user, LinhaPesquisa $linhapesquisa)
     {
         //
     }
@@ -85,11 +84,11 @@ class CategoriaPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\Models\User       $user
-     * @param  \App\Models\Categoria  $categoria
+     * @param  \App\Models\User           $user
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return mixed
      */
-    public function restore(User $user, Categoria $categoria)
+    public function restore(User $user, LinhaPesquisa $linhapesquisa)
     {
         //
     }
@@ -97,11 +96,11 @@ class CategoriaPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param  \App\Models\User       $user
-     * @param  \App\Models\Categoria  $categoria
+     * @param  \App\Models\User           $user
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return mixed
      */
-    public function forceDelete(User $user, Categoria $categoria)
+    public function forceDelete(User $user, LinhaPesquisa $linhapesquisa)
     {
         //
     }

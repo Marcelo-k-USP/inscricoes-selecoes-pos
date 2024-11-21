@@ -15,7 +15,7 @@
     @php
         $selecao = $modelo;
         $tipo_modelo = 'Seleção';
-        $condicao_ativa = ($modo == 'edit') ? ($selecao->estado != 'Encerrada') : true;
+        $condicao_ativa = true;
     @endphp
     <div class="row">
         <div class="col-md-12">

@@ -2,11 +2,11 @@
 
 @section('content')
 @parent
-@if ($categorias != null)
-    @include('categorias.partials.main')
-    @include('categorias.partials.modal')
+@if ($linhaspesquisa != null)
+    @include('linhaspesquisa.partials.main')
+    @include('linhaspesquisa.partials.modal')
 @else
-    Sem categoria
+    Sem linhas de pesquisa
 @endif
 
 @endsection

@@ -97,12 +97,6 @@ class SelecaoController extends Controller
             $selecao->nome = $request->nome;
         }
         
-        // estado
-        if ($selecao->estado != $request->estado && !empty($request->estado)) {
-            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Status antigo: ' . $selecao->estado . ' - Novo status: ' . $request->estado);
-            $selecao->estado = $request->estado;
-        }
-
         // descrição
         if ($selecao->descricao != $request->descricao && !empty($request->descricao)) {
             Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Descrição antiga: ' . $selecao->descricao . ' - Nova descrição: ' . $request->descricao);
@@ -115,6 +109,24 @@ class SelecaoController extends Controller
             $selecao->categoria_id = $request->categoria_id;
         }
         
+        $selecao->save();
+        
+        $request->session()->flash('alert-info', 'Dados editados com sucesso');
+        
+        \UspTheme::activeUrl('selecoes');
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
+    }
+
+    public function updateStatus(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.view', $selecao);
+
+        // estado
+        if ($selecao->estado != $request->estado && !empty($request->estado)) {
+            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Status antigo: ' . $selecao->estado . ' - Novo status: ' . $request->estado);
+            $selecao->estado = $request->estado;
+        }
+
         $selecao->save();
         
         $request->session()->flash('alert-info', 'Dados editados com sucesso');

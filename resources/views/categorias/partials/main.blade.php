@@ -14,7 +14,7 @@
         <tr>
             <td>
                 <div>
-                    <a name="{{ \Str::lower($categoria->id) }}" class="font-weight-bold">{{ $categoria->nome }}</a>
+                    <a name="{{ \Str::lower($categoria->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $categoria->nome }}</a>
                     @can('perfiladmin')
                         @include('categorias.partials.edit-modal')
                         @include('categorias.partials.btn-delete')

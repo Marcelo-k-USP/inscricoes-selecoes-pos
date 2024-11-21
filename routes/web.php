@@ -6,6 +6,7 @@ use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
+use App\Http\Controllers\LinhaPesquisaController;
 use App\Http\Controllers\SelecaoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
@@ -28,12 +29,16 @@ Route::put('inscricoes/edit/{inscricao}', [InscricaoController::class, 'update']
 // CATEGORIAS
 Route::resource('categorias', CategoriaController::class);
 
+// LINHAS DE PESQUISA
+Route::resource('linhaspesquisa', LinhaPesquisaController::class);
+
 // SELEÇÕES
 Route::get('selecoes', [SelecaoController::class, 'index'])->name('selecoes.index');
 Route::get('selecoes/create', [SelecaoController::class, 'create'])->name('selecoes.create');
 Route::post('selecoes/create', [SelecaoController::class, 'store'])->name('selecoes.store');
 Route::get('selecoes/edit/{selecao}', [SelecaoController::class, 'edit'])->name('selecoes.edit');
 Route::put('selecoes/edit/{selecao}', [SelecaoController::class, 'update'])->name('selecoes.update');
+Route::put('selecoes/edit-status/{selecao}', [SelecaoController::class, 'updateStatus'])->name('selecoes.update-status');
 
 // USERS
 Route::get('search/partenome', [UserController::class, 'partenome']);

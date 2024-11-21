@@ -18,6 +18,11 @@ class LinhaPesquisa extends Model
         'codpes_docente',
     ];
 
+    public const rules = [
+        'nome' => ['required', 'max:100'],
+        'codpes_docente' => ['required', 'integer'],
+    ];
+    
     // uso no crud generico
     protected const fields = [
         [
