@@ -25,7 +25,7 @@
                         @if ($modo == 'edit')
                             <a href="selecoes">Seleções</a>
                             <i class="fas fa-angle-right mx-2"></i> {{ $selecao->nome }} | &nbsp;
-                            @include('selecoes.partials.enable-disable-btn')
+                            @include('selecoes.partials.btn-enable-disable')
                         @else
                             Nova Seleção
                         @endif

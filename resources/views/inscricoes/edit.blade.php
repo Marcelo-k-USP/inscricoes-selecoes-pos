@@ -38,7 +38,7 @@
             <span class="text-muted">{{ $inscricao->selecao->descricao }}</span><br />
           </div>
         </div>
-        @include('inscricoes.partials.instrucoes-da-selecao-badge')
+        @include('inscricoes.partials.badge-instrucoes-da-selecao')
         @include('inscricoes.partials.instrucoes-da-selecao')
         <input type="hidden" name="selecao_id" value="{{ $inscricao->selecao->id }}">
         <div class="card-body">
