@@ -40,6 +40,10 @@ Route::get('selecoes/edit/{selecao}', [SelecaoController::class, 'edit'])->name(
 Route::put('selecoes/edit/{selecao}', [SelecaoController::class, 'update'])->name('selecoes.update');
 Route::put('selecoes/edit-status/{selecao}', [SelecaoController::class, 'updateStatus'])->name('selecoes.update-status');
 
+// SELEÇÕES - LINHAS DE PESQUISA
+Route::post('selecoes/{selecao}/linhaspesquisa', [SelecaoController::class, 'storeLinhaPesquisa']);
+Route::delete('selecoes/{selecao}/linhaspesquisa/{linhapesquisa}', [SelecaoController::class, 'destroyLinhaPesquisa']);
+
 // USERS
 Route::get('search/partenome', [UserController::class, 'partenome']);
 Route::get('users/perfil/{perfil}', [UserController::class, 'trocarPerfil']);

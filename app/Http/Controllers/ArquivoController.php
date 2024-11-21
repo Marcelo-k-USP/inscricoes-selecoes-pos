@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Arquivo;
 use App\Models\Inscricao;
+use App\Models\LinhaPesquisa;
 use App\Models\Selecao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -173,8 +174,9 @@ class ArquivoController extends Controller
 
     private function monta_compact($classe_modelo, $modelo, $tipo_modelo, $modo) {
         $data = (object) ('App\\Http\\Controllers\\' . class_basename($classe_modelo) . 'Controller')::$data;
+        $linhaspesquisa = LinhaPesquisa::all();
         $max_upload_size = config('inscricoes.upload_max_filesize');
     
-        return compact('data', 'modelo', 'tipo_modelo', 'modo', 'max_upload_size');
+        return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');
     }
 }

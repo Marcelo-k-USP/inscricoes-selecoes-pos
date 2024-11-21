@@ -28,7 +28,7 @@ function alterar_arquivo(arquivo_id) {
 function submete_form(acao, metodo, i_tipo_arquivo) {
     $('#tipo_arquivo').val($('#tipo_arquivo_' + i_tipo_arquivo).val());
     $('#modal_processando').modal('show');
-    $('#form_principal').attr({ action: acao });
-    $('<input>').attr({ type: 'hidden', name: '_method', value: metodo }).appendTo('#form_principal');
-    $('#form_principal').submit();
+    $('#form_arquivos').attr({ action: acao });
+    $('<input>').attr({ type: 'hidden', name: '_method', value: metodo }).appendTo('#form_arquivos');
+    $('#form_arquivos').submit();
 }

@@ -87,7 +87,6 @@ class InscricaoController extends Controller
     public function store(InscricaoRequest $request)
     {
         $selecao = Selecao::find($request->selecao_id);
-        \Illuminate\Support\Facades\Log::info('$request->selecao_id: ' . $request->selecao_id);
         $this->authorize('inscricoes.create', $selecao);
 
         $inscricao = Inscricao::create($request->all());

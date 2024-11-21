@@ -31,26 +31,19 @@
                         @endif
                     </div>
                 </div>
-                {{ html()->form('post', $data->url . (($modo == 'edit') ? ('/edit/' . $selecao->id) : '/create'))
-                    ->attribute('enctype', 'multipart/form-data')
-                    ->attribute('id', 'form_principal')
-                    ->open() }}
-                    @csrf
-                    @method($modo == 'edit' ? 'PUT' : 'POST')
-                    {{ html()->hidden('id') }}
-                    <div class="card-body {{ ($modo == 'edit') && ($selecao->estado == 'Encerrada') ? 'disable-links': '' }}">
-                        <div class="row">
-                            <div class="col-md-7">
-                                @include('selecoes.partials.principal-card')    {{-- Principal --}}
-                            </div>
-                            <div class="col-md-5">
-                                @if ($modo == 'edit')
-                                    @include('common.card-arquivos')            {{-- Arquivos --}}
-                                @endif
-                            </div>
+                <div class="card-body {{ ($modo == 'edit') && ($selecao->estado == 'Encerrada') ? 'disable-links': '' }}">
+                    <div class="row">
+                        <div class="col-md-7">
+                            @include('selecoes.show.card-principal')        {{-- Principal --}}
+                            @include('selecoes.show.card-linhaspesquisa')   {{-- Linhas de Pesquisa --}}
+                        </div>
+                        <div class="col-md-5">
+                            @if ($modo == 'edit')
+                                @include('common.card-arquivos')            {{-- Arquivos --}}
+                            @endif
                         </div>
                     </div>
-                {{ html()->form()->close() }}
+                </div>
             </div>
         </div>
     </div>

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SelecaoRequest;
 use App\Models\Categoria;
+use App\Models\LinhaPesquisa;
 use App\Models\Selecao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class SelecaoController extends Controller
@@ -135,11 +138,57 @@ class SelecaoController extends Controller
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
 
+    /**
+     * Adicionar linhas de pesquisa relacionadas à seleção
+     * autorizado a qualquer um que tenha acesso à seleção
+     * request->codpes = required, int
+     */
+    public function storeLinhaPesquisa(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $request->validate([
+            'id' => 'required',
+        ],
+        [
+            'id.required' => 'Linha de pesquisa obrigatória',
+        ]);
+
+        $linhapesquisa = LinhaPesquisa::where('id', $request->id)->first();
+
+        $existia = $selecao->linhaspesquisa()->detach($linhapesquisa);
+
+        $selecao->linhaspesquisa()->attach($linhapesquisa);
+
+        if (!$existia)
+            $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi adicionada à essa seleção.');
+        else
+            $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' já estava vinculada à essa seleção.');
+
+        return Redirect::to(URL::previous() . '#card_linhaspesquisa');
+    }
+
+    /**
+     * Remove linhas de pesquisa relacionadas à seleção
+     * $user = required
+     */
+    public function destroyLinhaPesquisa(Request $request, Selecao $selecao, LinhaPesquisa $linhapesquisa)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $selecao->linhaspesquisa()->detach($linhapesquisa);
+
+        $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi removida dessa seleção.');
+
+        return Redirect::to(URL::previous() . '#card_linhaspesquisa');
+    }
+
     private function monta_compact($modelo, $modo) {
         $data = (object) self::$data;
         $tipo_modelo = 'Selecao';
+        $linhaspesquisa = LinhaPesquisa::all();
         $max_upload_size = config('inscricoes.upload_max_filesize');
     
-        return compact('data', 'modelo', 'tipo_modelo', 'modo', 'max_upload_size');
+        return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');
     }
 }

@@ -40,28 +40,19 @@
         </div>
         @include('inscricoes.partials.instrucoes-da-selecao-badge')
         @include('inscricoes.partials.instrucoes-da-selecao')
-
-        {{ html()->form('post', $data->url . (($modo == 'edit') ? ('/edit/' . $inscricao->id) : '/create/' . $inscricao->selecao->id))
-          ->attribute('enctype', 'multipart/form-data')
-          ->attribute('id', 'form_principal')
-          ->open() }}
-          @csrf
-          @method($modo == 'edit' ? 'PUT' : 'POST')
-          {{ html()->hidden('id') }}
-          <input type="hidden" name="selecao_id" value="{{ $inscricao->selecao->id }}">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-7">
-                @include('inscricoes.partials.principal-card')    {{-- Principal --}}
-              </div>
-              <div class="col-md-5">
-                @if ($modo == 'edit')
-                  @include('common.card-arquivos')                {{-- Arquivos --}}
-                @endif
-              </div>
+        <input type="hidden" name="selecao_id" value="{{ $inscricao->selecao->id }}">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-7">
+              @include('inscricoes.show.card-principal')    {{-- Principal --}}
+            </div>
+            <div class="col-md-5">
+              @if ($modo == 'edit')
+                @include('common.card-arquivos')            {{-- Arquivos --}}
+              @endif
             </div>
           </div>
-        {{ html()->form()->close() }}
+        </div>
       </div>
     </div>
   </div>
