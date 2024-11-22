@@ -10,12 +10,12 @@
   </style>
 @endsection
 
-{{ html()->form('post', $data->url . (($modo == 'edit') ? ('/edit/' . $selecao->id) : '/create'))
+{{ html()->form('post', $data->url . '/edit/' . $selecao->id)
   ->attribute('enctype', 'multipart/form-data')
   ->attribute('id', 'form_arquivos')
   ->open() }}
   @csrf
-  @method($modo == 'edit' ? 'PUT' : 'POST')
+  @method('PUT')
   {{ html()->hidden('id') }}
   <a name="card_arquivos"></a>
   <div class="card bg-light mb-3 w-100" id="card-arquivos">
