@@ -222,4 +222,12 @@ class Selecao extends Model
     {
         return $this->belongsTo('App\Models\Categoria');
     }
+
+    /**
+     * Relacionamento: seleção pertence a programa
+     */
+    public function programa()
+    {
+        return $this->belongsTo('App\Models\Programa');
+    }
 }

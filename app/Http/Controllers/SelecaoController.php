@@ -114,6 +114,10 @@ class SelecaoController extends Controller
 
         // programa_id
         if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
+            if ($selecao->linhaspesquisa->count() > 0) {
+                $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa do programa antigo cadastradas para esta seleção!');
+                return back();
+            }
             Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Programa antigo: ' . $selecao->programa_id . ' - Novo programa: ' . $request->programa_id);
             $selecao->programa_id = $request->programa_id;
         }
@@ -192,7 +196,7 @@ class SelecaoController extends Controller
     private function monta_compact($modelo, $modo) {
         $data = (object) self::$data;
         $tipo_modelo = 'Selecao';
-        $linhaspesquisa = LinhaPesquisa::all();
+        $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa($modelo->programa);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
     
         return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');

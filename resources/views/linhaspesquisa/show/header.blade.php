@@ -1,6 +1,6 @@
 <div class="d-flex">
   <b>
-    {{ $linhapesquisa->nome }} ({{ $linhapesquisa->codpes_docente }})
+    {{ $linhapesquisa->nome }}
   </b>
   <div class="hidden-btn d-none ml-auto">
     @includewhen(Gate::check('update', $selecao), 'common.btn-delete-sm', [

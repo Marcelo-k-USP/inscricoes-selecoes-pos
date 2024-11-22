@@ -66,8 +66,7 @@ class Inscricao extends Model
      */
     public static function listarInscricoes()
     {
-        $inscricoes = SELF::get();
-        return $inscricoes;
+        return SELF::get();
     }
 
     /**

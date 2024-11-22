@@ -23,7 +23,7 @@
                             <div class="col-sm-8">
                                 <select class="form-control" name="id">
                                     @foreach ($linhaspesquisa as $linhapesquisa)
-                                        <option value='{{ $linhapesquisa->id }}'>{{ $linhapesquisa->nome }} ({{ $linhapesquisa->codpes_docente }})</option>
+                                        <option value='{{ $linhapesquisa->id }}'>{{ $linhapesquisa->nome }}</option>
                                     @endforeach
                                 </select>
                             </div>

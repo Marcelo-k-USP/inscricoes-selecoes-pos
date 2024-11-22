@@ -67,18 +67,16 @@ class LinhaPesquisa extends Model
         $ret = [];
         foreach ($linhaspesquisa as $linhapesquisa)
             if (Gate::allows('linhaspesquisa.view', $linhapesquisa))
-                $ret[$linhapesquisa->id] = $linhapesquisa->nome . ' (' . $linhapesquisa->programa->nome . ')';
+                $ret[$linhapesquisa->id] = $linhapesquisa->nome;
         return $ret;
     }
 
-    /**
-     * Menu Linhas de Pesquisa, lista as linhas de pesquisa
-     *
-     * @return coleção de linhas de pesquisa
-     */
-    public static function listarLinhasPesquisa()
+    public static function listarLinhasPesquisa(Programa $programa)
     {
-        return SELF::get();
+        if ($programa->id > 0)
+            return SELF::where('programa_id', $programa->id)->get();
+        else
+            return SELF::get();
     }
 
     /**
@@ -87,5 +85,13 @@ class LinhaPesquisa extends Model
     public function selecoes()
     {
         return $this->belongsToMany('App\Models\Selecao', 'linhapesquisa_selecao', 'linhapesquisa_id', 'selecao_id')->withTimestamps();
+    }
+
+    /**
+     * Relacionamento: linha de pesquisa pertence a programa
+     */
+    public function programa()
+    {
+        return $this->belongsTo('App\Models\Programa');
     }
 }

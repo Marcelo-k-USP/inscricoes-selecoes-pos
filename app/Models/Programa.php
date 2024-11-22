@@ -52,16 +52,6 @@ class Programa extends Model
     }
 
     /**
-     * Menu Programas, lista os programas que o usuário pode ver
-     *
-     * @return coleção de programas
-     */
-    public static function listarProgramas()
-    {
-        return SELF::get();
-    }
-
-    /**
      * Programa possui seleções
      */
     public function selecoes()

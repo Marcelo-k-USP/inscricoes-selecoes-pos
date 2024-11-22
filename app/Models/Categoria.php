@@ -52,16 +52,6 @@ class Categoria extends Model
     }
 
     /**
-     * Menu Categorias, lista as categorias que o usuário pode ver
-     *
-     * @return coleção de categorias
-     */
-    public static function listarCategorias()
-    {
-        return SELF::get();
-    }
-
-    /**
      * Categoria possui seleções
      */
     public function selecoes()
