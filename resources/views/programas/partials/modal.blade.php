@@ -1,9 +1,9 @@
-<!-- Modal que atende adicionar e editar categorias -->
+<!-- Modal que atende adicionar e editar programas -->
 <div class="modal fade" id="modalForm" data-backdrop="static" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">Adicionar/Editar Categorias</h5>
+                <h5 class="modal-title" id="modalLabel">Adicionar/Editar Programas</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -48,7 +48,7 @@
         })
 
         edit_form = function(id) {
-            $.get('categorias/' + id
+            $.get('programas/' + id
                 , function(row) {
                     console.log(row);
                     // mudando para PUT
@@ -62,10 +62,10 @@
                     });
 
                     // Ajustando action
-                    $('#modalForm').find('form').attr('action', 'categorias/' + id);
+                    $('#modalForm').find('form').attr('action', 'programas/' + id);
 
                     // Ajustando o title
-                    $('#modalLabel').html('Editar categoria');
+                    $('#modalLabel').html('Editar Programa');
 
                     $("#modalForm").modal();
                     console.log('inputs', inputs);
@@ -79,9 +79,9 @@
             $("#modalForm select").val(id);
 
             // Ajustando action
-            $('#modalForm').find('form').attr('action', 'categorias');
+            $('#modalForm').find('form').attr('action', 'programas');
 
-            $('#modalLabel').html('Adicionar Categoria');
+            $('#modalLabel').html('Adicionar Programa');
             $('#modalForm :input').filter("input[name='_method']").val('POST');
 
             $("#modalForm").modal();

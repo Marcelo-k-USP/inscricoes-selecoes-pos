@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\LinhaPesquisa;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
@@ -29,14 +28,14 @@ class LinhaPesquisaController extends Controller
 
         # para o form de adicionar pessoas
         $modal_pessoa['url'] = 'linhas de pesquisa';
-        $modal_pessoa['title'] = 'Adicionar pessoa';
+        $modal_pessoa['title'] = 'Adicionar Pessoa';
 
         if ($request->ajax()) {
             // formatado para datatables
             #return response(['data' => $linhaspesquisa]);
         } else {
             $modal['url'] = 'linhaspesquisa';
-            $modal['title'] = 'Editar linha de pesquisa';
+            $modal['title'] = 'Editar Linha de Pesquisa';
             return view('linhaspesquisa.tree', compact('linhaspesquisa', 'fields', 'modal', 'modal_pessoa'));
         }
     }

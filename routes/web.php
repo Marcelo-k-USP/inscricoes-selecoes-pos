@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\LinhaPesquisaController;
+use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\SelecaoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
@@ -28,6 +29,9 @@ Route::put('inscricoes/edit/{inscricao}', [InscricaoController::class, 'update']
 
 // CATEGORIAS
 Route::resource('categorias', CategoriaController::class);
+
+// PROGRAMAS
+Route::resource('programas', ProgramaController::class);
 
 // LINHAS DE PESQUISA
 Route::resource('linhaspesquisa', LinhaPesquisaController::class);

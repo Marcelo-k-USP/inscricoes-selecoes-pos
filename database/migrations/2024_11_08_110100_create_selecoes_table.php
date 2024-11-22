@@ -19,6 +19,7 @@ class CreateSelecoesTable extends Migration
             $table->string('estado', 90);
             $table->string('descricao', 255)->nullable();
             $table->foreignId('categoria_id')->constrained('categorias');
+            $table->foreignId('programa_id')->constrained('programas');
             $table->json('settings')->nullable();
             $table->timestamps();
         });

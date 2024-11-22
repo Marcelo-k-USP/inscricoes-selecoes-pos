@@ -4,9 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\LinhaPesquisa;
+use App\Models\Programa;
 use App\Models\Selecao;
 
-class LinhasPesquisaSeeder extends Seeder
+class LinhaPesquisaSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,22 +16,29 @@ class LinhasPesquisaSeeder extends Seeder
      */
     public function run()
     {
+        $programa_id_PROGRAMA1 = Programa::where('nome', 'Programa 1')->first()->id;
+        $programa_id_PROGRAMA2 = Programa::where('nome', 'Programa 2')->first()->id;
+        
         $linhaspesquisa = [
             [
                 'nome' => 'Desenvolvimento e Aprendizagem',
                 'codpes_docente' => 1543022,
+                'programa_id' => $programa_id_PROGRAMA1,
             ],
             [
                 'nome' => 'Psicologia, Instituições e Sociedade: Mediações do Desenvolvimento Humano',
                 'codpes_docente' => 1543022,
+                'programa_id' => $programa_id_PROGRAMA1,
             ],
             [
                 'nome' => 'Psicologia Escolar, Educação e Políticas Públicas',
                 'codpes_docente' => 1543022,
+                'programa_id' => $programa_id_PROGRAMA1,
             ],
             [
                 'nome' => 'Psicanálise e Política: Cultura e Desenvolvimento Humano',
                 'codpes_docente' => 1543022,
+                'programa_id' => $programa_id_PROGRAMA2,
             ],
         ];
  

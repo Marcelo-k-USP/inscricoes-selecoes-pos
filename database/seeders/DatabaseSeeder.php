@@ -19,9 +19,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             SetorReplicadoSeeder::class,    // adiciona todos os setores da unidade do replicado
+            ProgramaSeeder::class,          // adiciona programas
             CategoriaSeeder::class,         // adiciona categorias
             SelecaoSeeder::class,           // adiciona seleções
-            LinhasPesquisaSeeder::class,    // adiciona linhas de pesquisa
+            LinhaPesquisaSeeder::class,    // adiciona linhas de pesquisa
         ]);
     }
 }

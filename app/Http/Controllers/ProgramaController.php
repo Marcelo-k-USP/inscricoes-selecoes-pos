@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Categoria;
+use App\Models\Programa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 
-class CategoriaController extends Controller
+class ProgramaController extends Controller
 {
     public function __construct()
     {
@@ -20,19 +20,19 @@ class CategoriaController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('categorias.viewAny');
-        \UspTheme::activeUrl('categorias');
+        $this->authorize('programas.viewAny');
+        \UspTheme::activeUrl('programas');
         
-        $categorias = Categoria::all();
-        $fields = Categoria::getFields();
+        $programas = Programa::all();
+        $fields = Programa::getFields();
 
         if ($request->ajax()) {
             // formatado para datatables
-            #return response(['data' => $categorias]);
+            #return response(['data' => $programas]);
         } else {
-            $modal['url'] = 'categorias';
-            $modal['title'] = 'Editar Categoria';
-            return view('categorias.tree', compact('categorias', 'fields', 'modal'));
+            $modal['url'] = 'programas';
+            $modal['title'] = 'Editar Programa';
+            return view('programas.tree', compact('programas', 'fields', 'modal'));
         }
     }
 
@@ -46,15 +46,15 @@ class CategoriaController extends Controller
     {
         #usando no ajax, somente para admin
         $this->authorize('admin');
-        \UspTheme::activeUrl('categorias');
+        \UspTheme::activeUrl('programas');
 
         if ($request->ajax()) {
-            # preenche os dados do form de edição de uma categoria
-            return Categoria::find($id);
+            # preenche os dados do form de edição de um programa
+            return Programa::find($id);
         } else {
             # desativado por enquanto
             return false;
-            return view('categorias.show', compact('categoria'));
+            return view('programas.show', compact('programa'));
         }
     }
 
@@ -67,12 +67,12 @@ class CategoriaController extends Controller
     public function store(Request $request)
     {
         $this->authorize('admin');
-        $request->validate(Categoria::rules);
+        $request->validate(Programa::rules);
 
-        $categoria = Categoria::create($request->all());
+        $programa = Programa::create($request->all());
 
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
-        return Redirect::to(URL::previous() . "#" . strtolower($categoria->id));
+        return Redirect::to(URL::previous() . "#" . strtolower($programa->id));
     }
 
     /**
@@ -85,11 +85,11 @@ class CategoriaController extends Controller
     public function update(Request $request, $id)
     {
         $this->authorize('admin');
-        $request->validate(Categoria::rules);
+        $request->validate(Programa::rules);
 
-        $categoria = Categoria::find($id);
-        $categoria->fill($request->all());
-        $categoria->save();
+        $programa = Programa::find($id);
+        $programa->fill($request->all());
+        $programa->save();
 
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
         return back();
@@ -105,8 +105,8 @@ class CategoriaController extends Controller
     {
         $this->authorize('admin');
 
-        $categoria = Categoria::find($id);
-        $categoria->delete();
+        $programa = Programa::find($id);
+        $programa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         return back();

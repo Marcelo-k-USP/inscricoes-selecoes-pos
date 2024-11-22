@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use \App\Models\Selecao;
 use \App\Models\Categoria;
+use \App\Models\Programa;
+use \App\Models\Selecao;
 use \App\Models\User;
 
 class SelecaoSeeder extends Seeder
@@ -17,13 +18,15 @@ class SelecaoSeeder extends Seeder
     public function run()
     {
         $categoria_id_ALUNOREGULAR = Categoria::where('nome', 'Aluno Regular')->first()->id;
-        
+        $programa_id_PROGRAMA1 = Programa::where('nome', 'Programa 1')->first()->id;
+
         $selecoes = [
             [
                 'nome' => 'Seleção 2025',
                 'estado' => 'Em andamento',
                 'descricao' => 'Processo Seletivo 2025 Aluno Regular',
                 'categoria_id' => $categoria_id_ALUNOREGULAR,
+                'programa_id' => $programa_id_PROGRAMA1,
                 'settings' => '{
                     "instrucoes": "Preencher ..."
                 }'

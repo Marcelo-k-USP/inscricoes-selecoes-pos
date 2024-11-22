@@ -7,6 +7,11 @@ $admin = [
         'can' => 'categorias.viewAny',
     ],
     [
+        'text' => '<i class="fa fa-map-marker"></i> Programas',
+        'url' => 'programas',
+        'can' => 'programas.viewAny',
+    ],
+    [
         'text' => '<i class="fa fa-bookmark"></i> Linhas de Pesquisa',
         'url' => 'linhaspesquisa',
         'can' => 'linhaspesquisa.viewAny',
@@ -32,7 +37,7 @@ $menu = [
     [
         'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Administração',
         'submenu' => $admin,
-        'can' => 'admin',
+        'can' => 'perfiladmin',
     ],
 ];
 
