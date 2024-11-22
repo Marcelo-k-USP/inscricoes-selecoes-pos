@@ -85,7 +85,7 @@ class Selecao extends Model
      */
     public static function tiposArquivo()
     {
-        return ['Edital', 'teste'];
+        return ['Edital', 'Normas para Isenção de Taxa'];
     }
     
     /**
