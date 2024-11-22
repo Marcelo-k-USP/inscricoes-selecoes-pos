@@ -140,7 +140,7 @@ class UserController extends Controller
         if ($request->term) {
             $results = [];
             if (config('selecoes-pos.usar_replicado')) {
-                $pessoas = \Uspdev\Replicado\Pessoa::procurarPorNome($request->term, true, true, 'SERVIDOR', getenv('REPLICADO_CODUNDCLG'));
+                $pessoas = \Uspdev\Replicado\Pessoa::procurarPorNome($request->term, true, true, 'SERVIDOR', getenv('REPLICADO_CODUNDCLG'), $request->tipvinext);
                 // limitando a resposta em 50 elementos
                 $pessoas = array_slice($pessoas, 0, 50);
 
@@ -187,7 +187,6 @@ class UserController extends Controller
 
                 // formatando para select2
                 foreach ($pessoas as $pessoa) {
-                    \Illuminate\Support\Facades\Log::info('4');
                     $results[] = [
                         'text' => $pessoa['codpes'] . ' ' . $pessoa['nompesttd'],
                         'id' => $pessoa['codpes'],

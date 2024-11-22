@@ -49,7 +49,11 @@
             ajax: {
                 url: params => 'search/' + ($.isNumeric(params.term) ? 'codpes' : 'partenome'),
                 dataType: 'json',
-                delay: 1000
+                delay: 1000,
+                data: params => ({
+                    term: params.term,
+                    tipvinext: 'Docente'
+                })
             },
             dropdownParent: modalForm,
             minimumInputLength: 4,
