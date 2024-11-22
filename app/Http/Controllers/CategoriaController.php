@@ -95,7 +95,7 @@ class CategoriaController extends Controller
         $categoria->save();
 
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
-        return Redirect::to(URL::previous() . "#" . strtolower($categoria->id));
+        return back();
     }
 
     /**

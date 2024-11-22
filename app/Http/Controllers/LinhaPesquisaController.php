@@ -99,7 +99,7 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa->save();
 
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
-        return Redirect::to(URL::previous() . "#" . strtolower($linhapesquisa->id));
+        return back();
     }
 
     /**
