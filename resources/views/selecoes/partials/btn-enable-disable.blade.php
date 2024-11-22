@@ -12,6 +12,7 @@
 {{ html()->form('post', url('selecoes/edit-status/' . $selecao->id))->attribute('name', 'form_estado')->open() }}
     @csrf
     @method('put')
+    {{ html()->hidden('id') }}
     <div class="btn-group btn-enable-disable">
         <button type="submit" class="btn btn-sm {{ ($selecao->estado == 'Em elaboração') ? 'btn-warning' : 'btn-secondary' }}" {{ ($selecao->estado == 'Em elaboração') ? 'disabled' : '' }} name="estado" value="Em elaboração">
             Em elaboração

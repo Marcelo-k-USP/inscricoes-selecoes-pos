@@ -40,7 +40,7 @@ class InscricaoController extends Controller
         $data = self::$data;
         $modelos = Inscricao::listarInscricoes();
         $tipo_modelo = 'Inscricao';
-        $max_upload_size = config('inscricoes.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
         return view('inscricoes.index', compact('data', 'modelos', 'tipo_modelo', 'max_upload_size'));
     }
 
@@ -133,7 +133,7 @@ class InscricaoController extends Controller
     private function monta_compact($modelo, $modo) {
         $data = (object) self::$data;
         $tipo_modelo = 'Inscricao';
-        $max_upload_size = config('inscricoes.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
     
         return compact('data', 'modelo', 'tipo_modelo', 'modo', 'max_upload_size');
     }

@@ -13,7 +13,7 @@
   <div class="card-header">
     Linhas de Pesquisa
     <span class="badge badge-pill badge-primary">{{ is_null($selecao->linhaspesquisa) ? 0 : $selecao->linhaspesquisa->count() }}</span>
-    @includewhen(Gate::check('update', $selecao), 'linhaspesquisa.partials.add-modal-linhapesquisa')
+    @includewhen(Gate::check('update', $selecao), 'linhaspesquisa.partials.modal-add')
   </div>
   <div class="card-body">
     <div class="accordion" id="accordionLinhasPesquisa">
@@ -21,7 +21,7 @@
         @foreach ($selecao->linhaspesquisa as $linhapesquisa)
           <div class="card linhapesquisa-item">
             <div class="card-header" style="font-size:15px">
-              @include('linhaspesquisa.show.header-linhapesquisa')
+              @include('linhaspesquisa.show.header')
             </div>
           </div>
         @endforeach

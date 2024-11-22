@@ -43,7 +43,7 @@ class ArquivoController extends Controller
         $modelo = $classe_modelo::find($request->modelo_id);
         
         $request->validate([
-            'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('inscricoes.upload_max_filesize'),
+            'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('selecoes-pos.upload_max_filesize'),
             'modelo_id' => 'required|integer|exists:' . $tipo_modelo_plural . ',id',
         ]);
         $this->authorize($tipo_modelo_plural . '.update', $modelo);
@@ -175,7 +175,7 @@ class ArquivoController extends Controller
     private function monta_compact($classe_modelo, $modelo, $tipo_modelo, $modo) {
         $data = (object) ('App\\Http\\Controllers\\' . class_basename($classe_modelo) . 'Controller')::$data;
         $linhaspesquisa = LinhaPesquisa::all();
-        $max_upload_size = config('inscricoes.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
     
         return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');
     }

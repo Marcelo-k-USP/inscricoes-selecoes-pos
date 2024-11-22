@@ -1,14 +1,13 @@
 @extends('master')
 
 @section('content')
-@parent
-@if ($linhaspesquisa != null)
-    @include('linhaspesquisa.partials.main')
+    @parent
+    @if ($linhaspesquisa != null)
+        @include('linhaspesquisa.partials.main')
+    @else
+        Sem linhas de pesquisa
+    @endif
     @include('linhaspesquisa.partials.modal')
-@else
-    Sem linhas de pesquisa
-@endif
-
 @endsection
 
 @section('javascripts_bottom')

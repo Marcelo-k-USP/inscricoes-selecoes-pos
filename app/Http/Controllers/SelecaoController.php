@@ -41,7 +41,7 @@ class SelecaoController extends Controller
         $data = self::$data;
         $modelos = Selecao::listarSelecoes();
         $tipo_modelo = 'Selecao';
-        $max_upload_size = config('inscricoes.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
         return view('selecoes.index', compact('data', 'modelos', 'tipo_modelo', 'max_upload_size'));
     }
 
@@ -187,7 +187,7 @@ class SelecaoController extends Controller
         $data = (object) self::$data;
         $tipo_modelo = 'Selecao';
         $linhaspesquisa = LinhaPesquisa::all();
-        $max_upload_size = config('inscricoes.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
     
         return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');
     }

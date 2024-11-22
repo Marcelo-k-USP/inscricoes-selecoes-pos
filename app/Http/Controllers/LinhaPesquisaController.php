@@ -27,13 +27,17 @@ class LinhaPesquisaController extends Controller
         $linhaspesquisa = LinhaPesquisa::all();
         $fields = LinhaPesquisa::getFields();
 
+        # para o form de adicionar pessoas
+        $modal_pessoa['url'] = 'linhas de pesquisa';
+        $modal_pessoa['title'] = 'Adicionar pessoa';
+
         if ($request->ajax()) {
             // formatado para datatables
             #return response(['data' => $linhaspesquisa]);
         } else {
             $modal['url'] = 'linhaspesquisa';
             $modal['title'] = 'Editar linha de pesquisa';
-            return view('linhaspesquisa.tree', compact('linhaspesquisa', 'fields', 'modal'));
+            return view('linhaspesquisa.tree', compact('linhaspesquisa', 'fields', 'modal', 'modal_pessoa'));
         }
     }
 
@@ -51,7 +55,9 @@ class LinhaPesquisaController extends Controller
 
         if ($request->ajax()) {
             # preenche os dados do form de edição de uma linha de pesquisa
-            return LinhaPesquisa::find($id);
+            $linhapesquisa = LinhaPesquisa::find($id);
+            $linhapesquisa->codpes_docente = $linhapesquisa->codpes_docente . ' ' . (new UserController)->codpes(new Request(['term' => $linhapesquisa->codpes_docente]));
+            return $linhapesquisa;
         } else {
             # desativado por enquanto
             return false;

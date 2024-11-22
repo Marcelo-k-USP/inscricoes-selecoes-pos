@@ -17,6 +17,7 @@
                     {{ html()->form('post', 'selecoes/' . $selecao->id . '/linhaspesquisa')->open() }}
                         @csrf
                         @method('post')
+                        {{ html()->hidden('id') }}
                         <div class="form-group row">
                             <div class="col-form-label col-sm-3">Linha de Pesquisa</div>
                             <div class="col-sm-8">

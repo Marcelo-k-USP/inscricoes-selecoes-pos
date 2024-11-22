@@ -19,8 +19,8 @@
           <div>
             Inscrições<br>
             <div class="ml-3">
-              UPLOAD_MAX_FILESIZE: {{ config('inscricoes.upload_max_filesize') }} MB<br>
-              Admins: {{ config('inscricoes.admins') }}
+              UPLOAD_MAX_FILESIZE: {{ config('selecoes-pos.upload_max_filesize') }} MB<br>
+              Admins: {{ config('selecoes-pos.admins') }}
             </div>
           </div>
           <div>

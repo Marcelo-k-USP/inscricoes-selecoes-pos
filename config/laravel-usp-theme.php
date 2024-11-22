@@ -38,6 +38,11 @@ $menu = [
 
 $trocarPerfil = [
     [
+        'text' => '<i class="fas fa-users ml-2"></i> Meu Perfil',
+        'url' => 'users/meuperfil',
+        'can' => 'usuario',
+    ],
+    [
         'type' => 'divider',
         'can' => 'trocarPerfil',
     ],
@@ -85,7 +90,7 @@ $right_menu = [
     [
         'text' => '<i class="fas fa-cog"></i>',
         'title' => 'Configurações',
-        'submenu' => array_merge($admin, $trocarPerfil),
+        'submenu' => $trocarPerfil,
         'align' => 'right',
     ],
 ];

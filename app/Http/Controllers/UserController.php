@@ -139,13 +139,55 @@ class UserController extends Controller
         $this->authorize('usuario');
         if ($request->term) {
             $results = [];
-            if (config('inscricoes.usar_replicado')) {
+            if (config('selecoes-pos.usar_replicado')) {
                 $pessoas = \Uspdev\Replicado\Pessoa::procurarPorNome($request->term, true, true, 'SERVIDOR', getenv('REPLICADO_CODUNDCLG'));
                 // limitando a resposta em 50 elementos
                 $pessoas = array_slice($pessoas, 0, 50);
 
                 // formatando para select2
                 foreach ($pessoas as $pessoa) {
+                    $results[] = [
+                        'text' => $pessoa['codpes'] . ' ' . $pessoa['nompesttd'],
+                        'id' => $pessoa['codpes'],
+                    ];
+                }
+            }
+
+            # mesmo pegando do replicado vamos pegar da base local também
+            $pessoas = User::where('name', 'like', '%' . $request->term . '%')->get()->take(1);
+            foreach ($pessoas as $pessoa) {
+                $results[] = [
+                    'text' => $pessoa->codpes . ' ' . $pessoa->name,
+                    'id' => "$pessoa->codpes",
+                ];
+            }
+
+            # removendo duplicados
+            $results = array_map("unserialize", array_unique(array_map("serialize", $results)));
+
+            # vamos regerar o indice. Pode ser que tenha jeito melhor de eliminar duplicados
+            $results = array_values($results);
+
+            return response(compact('results'));
+        }
+    }
+
+    /**
+     * Permite fazer buscas ajax por codpes, formatado para datatables
+     */
+    public function codpes(Request $request)
+    {
+        $this->authorize('usuario');
+        if ($request->term) {
+            $results = [];
+            if (config('selecoes-pos.usar_replicado')) {
+                $pessoas = \Uspdev\Replicado\Pessoa::procurarPorCodigoOuNome($request->term, true);
+                // limitando a resposta em 50 elementos
+                $pessoas = array_slice($pessoas, 0, 50);
+
+                // formatando para select2
+                foreach ($pessoas as $pessoa) {
+                    \Illuminate\Support\Facades\Log::info('4');
                     $results[] = [
                         'text' => $pessoa['codpes'] . ' ' . $pessoa['nompesttd'],
                         'id' => $pessoa['codpes'],
