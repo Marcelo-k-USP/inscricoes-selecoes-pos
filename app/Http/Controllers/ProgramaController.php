@@ -106,6 +106,14 @@ class ProgramaController extends Controller
         $this->authorize('admin');
 
         $programa = Programa::find($id);
+        if ($programa->selecoes()->exists()) {
+            $request->session()->flash('alert-danger', 'Há seleções para este programa!');
+            return back();
+        }
+        if ($programa->linhaspesquisa()->exists()) {
+            $request->session()->flash('alert-danger', 'Há linhas de pesquisa para este programa!');
+            return back();
+        }
         $programa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');

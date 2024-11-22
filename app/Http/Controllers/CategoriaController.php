@@ -106,6 +106,10 @@ class CategoriaController extends Controller
         $this->authorize('admin');
 
         $categoria = Categoria::find($id);
+        if ($categoria->selecoes()->exists()) {
+            $request->session()->flash('alert-danger', 'Há seleções para esta categoria!');
+            return back();
+        }
         $categoria->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');

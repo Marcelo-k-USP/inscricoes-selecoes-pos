@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LinhaPesquisa;
+use App\Models\Selecao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
@@ -112,6 +113,10 @@ class LinhaPesquisaController extends Controller
         $this->authorize('admin');
 
         $linhapesquisa = LinhaPesquisa::find($id);
+        if ($linhapesquisa->selecoes()->exists()) {
+            $request->session()->flash('alert-danger', 'Há seleções para esta linha de pesquisa!');
+            return back();
+        }
         $linhapesquisa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
