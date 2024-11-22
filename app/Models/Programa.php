@@ -46,7 +46,7 @@ class Programa extends Model
         $programas = SELF::get();
         $ret = [];
         foreach ($programas as $programa)
-            if (Gate::allows('programas.view', $categoria))
+            if (Gate::allows('programas.view', $programa))
                 $ret[$programa->id] = $programa->nome;
         return $ret;
     }

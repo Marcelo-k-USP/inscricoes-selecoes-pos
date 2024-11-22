@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoriaRequest extends FormRequest
+class ProgramaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,6 @@ class CategoriaRequest extends FormRequest
      */
     public function rules()
     {
-
         $rules = [
             'nome' => ['required', 'max:100'],
             'descricao' => ['max:255'],
@@ -34,9 +33,9 @@ class CategoriaRequest extends FormRequest
     public function messages()
     {
         return [
-            'nome.required' => 'O nome da categoria é obrigatório!',
-            'nome.max' => 'O nome da categoria não pode exceder 100 caracteres!',
-            'descricao.max' => 'A descrição da categoria não pode exceder 255 caracteres!',
+            'nome.required' => 'O nome do programa é obrigatório!',
+            'nome.max' => 'O nome do programa não pode exceder 100 caracteres!',
+            'descricao.max' => 'A descrição do programa não pode exceder 255 caracteres!',
         ];
     }
 }

@@ -27,6 +27,7 @@ class SelecaoRequest extends FormRequest
             'categoria_id' => 'required|numeric',
             'nome' => ['required', 'max:100'],
             'descricao' => ['max:255'],
+            'programa_id' => 'required|numeric',
         ];
         return $rules;
     }
@@ -39,6 +40,8 @@ class SelecaoRequest extends FormRequest
             'nome.required' => 'O nome da seleção é obrigatório!',
             'nome.max' => 'O nome da seleção não pode exceder 100 caracteres!',
             'descricao.max' => 'A descrição da seleção não pode exceder 255 caracteres!',
+            'programa_id.required' => 'O programa é obrigatório!',
+            'programa_id.numeric' => 'O programa é inválido!',
         ];
     }
 }

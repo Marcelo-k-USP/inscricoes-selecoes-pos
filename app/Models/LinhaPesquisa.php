@@ -16,11 +16,13 @@ class LinhaPesquisa extends Model
     protected $fillable = [
         'nome',
         'codpes_docente',
+        'programa_id',
     ];
 
     public const rules = [
         'nome' => ['required', 'max:100'],
         'codpes_docente' => ['required', 'integer'],
+        'programa_id' => ['required', 'integer'],
     ];
     
     // uso no crud generico
@@ -32,6 +34,13 @@ class LinhaPesquisa extends Model
         [
             'name' => 'codpes_docente',
             'label' => 'Docente Responsável',
+        ],
+        [
+            'name' => 'programa_id',
+            'label' => 'Programa',
+            'type' => 'select',
+            'model' => 'Programa',
+            'data' => [],
         ],
     ];
 
@@ -58,7 +67,7 @@ class LinhaPesquisa extends Model
         $ret = [];
         foreach ($linhaspesquisa as $linhapesquisa)
             if (Gate::allows('linhaspesquisa.view', $linhapesquisa))
-                $ret[$linhapesquisa->id] = $linhapesquisa->nome . ' (' . $linhapesquisa->codpes_docente . ')';
+                $ret[$linhapesquisa->id] = $linhapesquisa->nome . ' (' . $linhapesquisa->programa->nome . ')';
         return $ret;
     }
 

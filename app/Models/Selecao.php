@@ -32,6 +32,7 @@ class Selecao extends Model
         'nome',
         'descricao',
         'categoria_id',
+        'programa_id',
         'estado',
     ];
 
@@ -51,6 +52,13 @@ class Selecao extends Model
         [
             'name' => 'descricao',
             'label' => 'Descrição',
+        ],
+        [
+            'name' => 'programa_id',
+            'label' => 'Programa',
+            'type' => 'select',
+            'model' => 'Programa',
+            'data' => [],
         ],
     ];
 

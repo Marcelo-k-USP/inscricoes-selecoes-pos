@@ -94,6 +94,12 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.view', $selecao);
 
+        // categoria_id
+        if ($selecao->categoria_id != $request->categoria_id && !empty($request->categoria_id)) {
+            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Categoria antiga: ' . $selecao->categoria_id . ' - Nova categoria: ' . $request->categoria_id);
+            $selecao->categoria_id = $request->categoria_id;
+        }
+        
         // nome
         if ($selecao->nome != $request->nome && !empty($request->nome)) {
             Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Nome antigo: ' . $selecao->nome . ' - Novo nome: ' . $request->nome);
@@ -106,10 +112,10 @@ class SelecaoController extends Controller
             $selecao->descricao = $request->descricao;
         }
 
-        // categoria_id
-        if ($selecao->categoria_id != $request->categoria_id && !empty($request->categoria_id)) {
-            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Categoria antiga: ' . $selecao->categoria_id . ' - Nova categoria: ' . $request->categoria_id);
-            $selecao->categoria_id = $request->categoria_id;
+        // programa_id
+        if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
+            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Programa antigo: ' . $selecao->programa_id . ' - Novo programa: ' . $request->programa_id);
+            $selecao->programa_id = $request->programa_id;
         }
         
         $selecao->save();

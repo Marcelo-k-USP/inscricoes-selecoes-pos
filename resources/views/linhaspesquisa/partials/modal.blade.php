@@ -105,7 +105,7 @@
 
         add_form = function() {
             $("#modalForm :input").filter("input[type='text']").val('');
-            $('#modalForm select').empty().val(null).trigger('change');
+            $('#modalForm select[name^="codpes_"]').empty().val(null).trigger('change');
 
             // Ajustando action
             $('#modalForm').find('form').attr('action', 'linhaspesquisa');
