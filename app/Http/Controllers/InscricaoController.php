@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InscricaoRequest;
 use App\Models\Inscricao;
 use App\Models\Selecao;
+use App\Utils\JSONForms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
@@ -21,7 +22,7 @@ class InscricaoController extends Controller
         'editBtn' => false,
         'model' => 'App\Models\Inscricao',
     ];
-    
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -72,10 +73,11 @@ class InscricaoController extends Controller
     {
         $this->authorize('inscricoes.create');
 
-        \UspTheme::activeUrl('inscricoes');
+        \UspTheme::activeUrl('inscricoes/create');
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
+        $form = JSONForms::generateForm($selecao);
+        return view('inscricoes.edit', $this->monta_compact($inscricao, $form, 'create'));
     }
 
     /**
@@ -89,12 +91,15 @@ class InscricaoController extends Controller
         $selecao = Selecao::find($request->selecao_id);
         $this->authorize('inscricoes.create', $selecao);
 
-        $inscricao = Inscricao::create($request->all());
+        $inscricao = new Inscricao;
+        $inscricao->selecao_id = $selecao->id;
+        $inscricao->extras = json_encode($request->extras);
+        $inscricao->save();
 
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
 
-        \UspTheme::activeUrl('inscricoes');
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+        \UspTheme::activeUrl('inscricoes/create');
+        return view('inscricoes.edit', $this->monta_compact($inscricao, null, 'edit'));
     }
 
     /**
@@ -106,9 +111,10 @@ class InscricaoController extends Controller
     public function edit(Request $request, Inscricao $inscricao)
     {
         $this->authorize('inscricoes.view', $inscricao);
-        
+
         \UspTheme::activeUrl('inscricoes');
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+        $form = JSONForms::generateForm($inscricao->selecao, $inscricao);
+        return view('inscricoes.edit', $this->monta_compact($inscricao, $form, 'edit'));
     }
 
     /**
@@ -123,18 +129,18 @@ class InscricaoController extends Controller
         $this->authorize('inscricoes.view', $inscricao);
 
         $inscricao->save();
-        
+
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
-        
+
         \UspTheme::activeUrl('inscricoes');
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+        return view('inscricoes.edit', $this->monta_compact($inscricao, null, 'edit'));
     }
 
-    private function monta_compact($modelo, $modo) {
+    private function monta_compact($modelo, $form, $modo) {
         $data = (object) self::$data;
         $tipo_modelo = 'Inscricao';
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
-    
-        return compact('data', 'modelo', 'tipo_modelo', 'modo', 'max_upload_size');
+
+        return compact('data', 'modelo', 'tipo_modelo', 'form', 'modo', 'max_upload_size');
     }
 }

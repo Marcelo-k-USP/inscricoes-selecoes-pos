@@ -10,7 +10,7 @@
   </style>
 @endsection
 
-{{ html()->form('post', $data->url . '/edit/' . $selecao->id)
+{{ html()->form('post', $data->url . '/edit/' . $modelo->id)
   ->attribute('enctype', 'multipart/form-data')
   ->attribute('id', 'form_arquivos')
   ->open() }}

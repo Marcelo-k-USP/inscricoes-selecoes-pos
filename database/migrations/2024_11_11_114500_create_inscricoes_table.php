@@ -15,6 +15,7 @@ class CreateInscricoesTable extends Migration
     {
         Schema::create('inscricoes', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->json('extras')->nullable();
 
             /* Relacionamentos */
             $table->foreignId('selecao_id')->constrained('selecoes');

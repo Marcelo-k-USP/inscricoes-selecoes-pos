@@ -4,7 +4,7 @@
 @parent
   <div class="row">
     <div class="col-md-12 form-inline">
-      <span class="h4 mt-2">Nova inscrição</span>
+      <span class="h4 mt-2">Nova Inscrição</span>
       @include('partials.datatable-filter-box', ['otable'=>'oTable'])
     </div>
   </div>
@@ -57,9 +57,10 @@
   <script>
     $(document).ready(function() {
       oTable = $('.nova-inscricao').DataTable({
-        dom: 't'
-        , "paging": false
-        , "sort": false
+        dom:
+          't',
+          'paging': false,
+          'sort': false
       });
     });
   </script>

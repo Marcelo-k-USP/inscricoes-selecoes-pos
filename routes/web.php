@@ -23,7 +23,7 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('inscricoes', [InscricaoController::class, 'index'])->name('inscricoes.index');
 Route::get('inscricoes/create', [InscricaoController::class, 'listaSelecoes'])->name('inscricoes.create');
 Route::get('inscricoes/create/{selecao}', [InscricaoController::class, 'create'])->name('inscricoes.create');
-Route::post('inscricoes/create/{selecao}', [InscricaoController::class, 'store'])->name('inscricoes.store');
+Route::post('inscricoes/create', [InscricaoController::class, 'store'])->name('inscricoes.store');
 Route::get('inscricoes/edit/{inscricao}', [InscricaoController::class, 'edit'])->name('inscricoes.edit');
 Route::put('inscricoes/edit/{inscricao}', [InscricaoController::class, 'update'])->name('inscricoes.update');
 

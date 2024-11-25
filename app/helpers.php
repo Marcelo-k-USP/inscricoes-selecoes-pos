@@ -43,6 +43,14 @@ if (!function_exists('md2html')) {
         }
     }
 
+    if (!function_exists('formatarDataHora')) {
+        function formatarDataHora($data_hora)
+        {
+            // parece haver um bug nesta versão do Carbon que, se a data for nula, ele formata uma data anterior que ele formatou ao invés de retornar null
+            return ((is_null($data_hora)) ? '' : Carbon::parse($data_hora)->format('d/m/Y H:i:s'));
+        }
+    }
+
     if (!function_exists('getModeloTiposArquivo')) {
         function getModeloTiposArquivo($modelo)
         {

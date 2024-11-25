@@ -40,7 +40,6 @@
         </div>
         @include('inscricoes.partials.badge-instrucoes-da-selecao')
         @include('inscricoes.partials.instrucoes-da-selecao')
-        <input type="hidden" name="selecao_id" value="{{ $inscricao->selecao->id }}">
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">

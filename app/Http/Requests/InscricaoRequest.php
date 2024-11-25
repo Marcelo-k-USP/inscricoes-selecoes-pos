@@ -24,6 +24,7 @@ class InscricaoRequest extends FormRequest
     public function rules()
     {
         $rules = [
+            'extras' => 'nullable',
         ];
         return $rules;
     }

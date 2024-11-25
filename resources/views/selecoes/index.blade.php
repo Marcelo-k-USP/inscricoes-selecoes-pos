@@ -47,7 +47,8 @@
   <script>
     $(document).ready(function() {
       oTable = $('.datatable-nopagination').DataTable({
-        dom: 't',
+        dom:
+          't',
           'paging': false
         });
       });

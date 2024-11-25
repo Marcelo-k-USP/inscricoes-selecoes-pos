@@ -32,10 +32,16 @@
         @foreach ($modelos as $inscricao)
           <tr>
             <td>
-              <a href="inscricoes/{{ $inscricao->id }}">
-                @if ($user = $inscricao->pessoas('Autor'))
-                  {{ Str::limit($user->name ?? '', 20) }}
-                @endif
+              <a href="inscricoes/edit/{{ $inscricao->id }}">
+                @php
+                  $nome = null;
+                  if (!is_null($inscricao->extras)) {
+                    $extras = json_decode($inscricao->extras);
+                    if ($extras && property_exists($extras, 'nome'))
+                      $nome = Str::limit($extras->nome, 20);
+                  }
+                @endphp
+                {{ $nome }}
               </a>
             </td>
             <td>
@@ -44,11 +50,11 @@
             </td>
             <td class="text-right">
               <span class="d-none">{{ $inscricao->created_at }}</span>
-              {{ formatarData($inscricao->created_at) }}
+              {{ formatarDataHora($inscricao->created_at) }}
             </td>
             <td class="text-right">
               <span class="d-none">{{ $inscricao->updated_at }}</span>
-              {{ formatarData($inscricao->updated_at) }}
+              {{ formatarDataHora($inscricao->updated_at) }}
             </td>
           </tr>
         @endforeach
@@ -68,7 +74,8 @@
     $(document).ready(function() {
 
       oTable = $('.tabela-inscricoes').DataTable({
-        dom: 't',
+        dom:
+        't',
         'paging': false,
         'sort': true,
         'order': [

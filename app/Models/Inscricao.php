@@ -14,13 +14,20 @@ class Inscricao extends Model
 
     # inscrições não segue convenção do laravel para nomes de tabela
     protected $table = 'inscricoes';
-    
+
     protected $fillable = [
         'selecao_id',
     ];
 
     // uso no crud generico
     protected const fields = [
+        [
+            'name' => 'selecao_id',
+            'label' => 'Seleção',
+            'type' => 'hidden',
+            'model' => 'Selecao',
+            'data' => [],
+        ],
     ];
 
     // uso no crud generico
@@ -43,7 +50,7 @@ class Inscricao extends Model
     {
         return ['tipo 1', 'tipo 2'];
     }
-    
+
     /**
      * Valores possiveis para pivot do relacionamento com users
      */
@@ -85,7 +92,7 @@ class Inscricao extends Model
             return $this->users()->withPivot('papel');
         }
     }
-    
+
     /**
      * Accessor: retorna a data da última atualização da inscrição
      */
