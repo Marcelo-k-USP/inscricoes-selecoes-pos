@@ -47,7 +47,7 @@
           </td>
           <td class="text-right">
             <span class="d-none">{{ $inscricao->updated_at }}</span>
-            {{ formatarData($inscricao->atualizadaEm) }}
+            {{ formatarData($inscricao->updated_at) }}
           </td>
         </tr>
       @endforeach

@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
@@ -37,11 +38,8 @@ if (!function_exists('md2html')) {
     if (!function_exists('formatarData')) {
         function formatarData($data)
         {
-            if ($data->format('d/m/Y') == date('d/m/Y')) {
-                return 'Hoje, ' . $data->format('H:i');
-            } else {
-                return $data->format('d \d\e M.');
-            }
+            // parece haver um bug nesta versão do Carbon que, se a data for nula, ele formata uma data anterior que ele formatou ao invés de retornar null
+            return ((is_null($data)) ? '' : Carbon::parse($data)->format('d/m/Y'));
         }
     }
 

@@ -20,6 +20,8 @@
                 <td>Categoria</td>
                 <td>Nome</td>
                 <td>Descrição</td>
+                <td>Início</td>
+                <td>Fim</td>
             </tr>
         </thead>
         <tbody>
@@ -32,6 +34,8 @@
                     @include('selecoes.partials.status-muted')
                 </td>
                 <td>{{ $selecao->descricao }}</td>
+                <td>{{ formatarData($selecao->data_inicio) }}</td>
+                <td>{{ formatarData($selecao->data_fim) }}</td>
             </tr>
             @endforeach
         </tbody>
