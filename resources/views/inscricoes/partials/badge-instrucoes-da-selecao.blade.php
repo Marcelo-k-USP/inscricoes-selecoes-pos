@@ -4,13 +4,13 @@
   </span>
 @endif
 
-@Once
-  @section('styles')
-    @parent
-    <style>
-      .hand-cursor {
-        cursor: pointer;
-      }
-    </style>
-  @endsection
+@once
+@section('styles')
+@parent
+  <style>
+    .hand-cursor {
+      cursor: pointer;
+    }
+  </style>
+@endsection
 @endonce

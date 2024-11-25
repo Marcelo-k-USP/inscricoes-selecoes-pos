@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-  @parent
+@parent
   <div class="row">
     <div class="col-md-12 form-inline">
       <div class="d-none d-sm-block h4 mt-2">
@@ -18,41 +18,46 @@
     </div>
   </div>
 
-  <table class="table table-striped tabela-inscricoes display responsive" style="width:100%">
-    <thead>
-      <tr>
-        <th>Inscrito</th>
-        <th>Seleção</th>
-        <th class="text-right">Efetuada em</th>
-        <th class="text-right">Atualização</th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach ($modelos as $inscricao)
+  @if (isset($modelos) && ($modelos->count() > 0))
+    <table class="table table-striped tabela-inscricoes display responsive" style="width:100%">
+      <thead>
         <tr>
-          <td>
-            <a href="inscricoes/{{ $inscricao->id }}">
-              @if ($user = $inscricao->pessoas('Autor'))
-                {{ Str::limit($user->name ?? '', 20) }}
-              @endif
-            </a>
-          </td>
-          <td>
-            ({{ $inscricao->selecao->categoria->nome }})
-            {{ $inscricao->selecao->nome }}
-          </td>
-          <td class="text-right">
-            <span class="d-none">{{ $inscricao->created_at }}</span>
-            {{ formatarData($inscricao->created_at) }}
-          </td>
-          <td class="text-right">
-            <span class="d-none">{{ $inscricao->updated_at }}</span>
-            {{ formatarData($inscricao->updated_at) }}
-          </td>
+          <th>Inscrito</th>
+          <th>Seleção</th>
+          <th class="text-right">Efetuada em</th>
+          <th class="text-right">Atualização</th>
         </tr>
-      @endforeach
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @foreach ($modelos as $inscricao)
+          <tr>
+            <td>
+              <a href="inscricoes/{{ $inscricao->id }}">
+                @if ($user = $inscricao->pessoas('Autor'))
+                  {{ Str::limit($user->name ?? '', 20) }}
+                @endif
+              </a>
+            </td>
+            <td>
+              ({{ $inscricao->selecao->categoria->nome }})
+              {{ $inscricao->selecao->nome }}
+            </td>
+            <td class="text-right">
+              <span class="d-none">{{ $inscricao->created_at }}</span>
+              {{ formatarData($inscricao->created_at) }}
+            </td>
+            <td class="text-right">
+              <span class="d-none">{{ $inscricao->updated_at }}</span>
+              {{ formatarData($inscricao->updated_at) }}
+            </td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
+  @else
+    <br />
+    Você não realizou nenhuma inscrição para nossos processos seletivos.
+  @endif
 @stop
 
 @section('javascripts_bottom')
@@ -61,6 +66,7 @@
   <script src="https://cdn.datatables.net/fixedheader/3.1.8/js/dataTables.fixedHeader.min.js"></script>
   <script>
     $(document).ready(function() {
+
       oTable = $('.tabela-inscricoes').DataTable({
         dom: 't',
         'paging': false,
@@ -79,19 +85,19 @@
       });
 
       // recuperando o storage local
-      var datatableFilter = localStorage.getItem('datatableFilter')
+      var datatableFilter = localStorage.getItem('datatableFilter');
       $('#dt-search').val(datatableFilter);
 
       // vamos aplicar o filtro
-      oTable.search($('#dt-search').val()).draw()
+      oTable.search($('#dt-search').val()).draw();
 
       // vamos renderizar o contador de linhas
-      $('.datatable-counter').html(oTable.page.info().recordsDisplay)
+      $('.datatable-counter').html(oTable.page.info().recordsDisplay);
 
       // vamos guardar no storage à medida que digita
       $('#dt-search').keyup(function() {
         localStorage.setItem('datatableFilter', $(this).val())
-      })
-    })
+      });
+    });
   </script>
 @endsection

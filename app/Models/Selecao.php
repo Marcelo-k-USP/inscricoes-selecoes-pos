@@ -27,6 +27,13 @@ class Selecao extends Model
     # valores default na criação de nova seleção
     protected $attributes = [
         'estado' => 'Em elaboração',
+        'template' => '{
+            "nome": {
+                "label": "Nome",
+                "type": "text",
+                "required": true
+            }
+        }',
     ];
 
     protected $fillable = [
@@ -37,6 +44,7 @@ class Selecao extends Model
         'categoria_id',
         'programa_id',
         'estado',
+        'template',
     ];
 
     // uso no crud generico
@@ -87,6 +95,15 @@ class Selecao extends Model
         return $fields;
     }
 
+    /**
+     * template
+     * retorna os campos do template do formulario
+     */
+    public static function getTemplateFields()
+    {
+        return ['label', 'type', 'can', 'help', 'value', 'validate'];
+    }
+    
     /**
      * retorna todas as seleções autorizadas para o usuário
      * utilizado nas views common, para o select
@@ -170,6 +187,14 @@ class Selecao extends Model
         $this->attributes['config'] = json_encode($config);
     }
 
+    /**
+     * Accessor para $template
+     */
+    public function getTemplateAttribute($value)
+    {
+        return (empty($value)) ? '{}' : $value;
+    }
+    
     /**
      * Menu Seleções, lista as seleções
      *

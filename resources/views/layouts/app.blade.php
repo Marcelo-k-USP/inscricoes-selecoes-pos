@@ -31,24 +31,23 @@
 
       // vamos confirmar ao apagar um registro
       $(".delete-item").on("click", function() {
-        return confirm("Tem certeza que deseja deletar?")
-      })
+        return confirm("Tem certeza que deseja deletar?");
+      });
 
       // ativando tooltip global
       $('[data-toggle="tooltip"]').tooltip({
         container: 'body',
         html: true
-      })
+      });
 
       // vamos aplicar o estilo de perfil no menubar
       @if (session('perfil') == 'atendente')
-        $('#menu').find('.navbar').addClass('atendente-menubar')
+        $('#menu').find('.navbar').addClass('atendente-menubar');
       @endif
       @if (session('perfil') == 'admin')
-        $('#menu').find('.navbar').addClass('admin-menubar')
+        $('#menu').find('.navbar').addClass('admin-menubar');
       @endif
-
-    })
+    });
   </script>
 
   <script>
@@ -67,6 +66,6 @@
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
   <script src="{{ asset('js/datepicker.js') }}" type="text/javascript"></script>
 @endsection

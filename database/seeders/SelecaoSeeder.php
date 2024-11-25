@@ -28,6 +28,13 @@ class SelecaoSeeder extends Seeder
                 'descricao' => 'Processo Seletivo 2025 Aluno Regular',
                 'data_inicio' => Carbon::createFromFormat('d/m/Y', '01/12/2024')->format('Y-m-d'),
                 'data_fim' => Carbon::createFromFormat('d/m/Y', '01/01/2025')->format('Y-m-d'),
+                'template' => '{
+                    "nome": {
+                        "label": "Nome",
+                        "type": "text",
+                        "required": true
+                    }
+                }',
                 'categoria_id' => $categoria_id_ALUNOREGULAR,
                 'programa_id' => $programa_id_PROGRAMA1,
                 'settings' => '{

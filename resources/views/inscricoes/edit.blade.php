@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('styles')
-  @parent
+@parent
   <style>
     #card-principal {
       border: 1px solid blue;
@@ -17,7 +17,7 @@
 @endsection
 
 @section('content')
-  @parent
+@parent
 
   @php
     $inscricao = $modelo;

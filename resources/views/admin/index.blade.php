@@ -44,13 +44,10 @@
       <pre id="oauth-viewer"></pre>
     </div>
   </div>
-
-
-
 @endsection
 
 @section('javascripts_bottom')
-  @parent
+@parent
   <script>
     $(document).ready(function() {
 
@@ -63,10 +60,8 @@
             console.log(data)
             $('#oauth-viewer').html(JSON.stringify(JSON.parse(data), null, 4))
           }
-        })
-      })
-
-    })
-
+        });
+      });
+    });
   </script>
 @endsection

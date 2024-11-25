@@ -1,5 +1,5 @@
 @section('styles')
-  @parent
+@parent
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
   <link rel="stylesheet" href="css/arquivos.css">
   <style>
@@ -42,7 +42,7 @@
             </label>
             <input type="hidden" id="tipo_arquivo_{{ $i }}" value="{{ $tipo_arquivo }}">
             <input type="file" name="arquivo[]" id="input_arquivo_{{ $i }}" accept="image/jpeg,image/png,application/pdf" class="d-none" multiple capture="environment">
-            
+
             @if ($modelo->arquivos->where('pivot.tipo', $tipo_arquivo)->count() > 0)
               <ul class="list-unstyled">
                 @foreach ($modelo->arquivos->where('pivot.tipo', $tipo_arquivo) as $arquivo)
@@ -76,7 +76,7 @@
                         </div>
                       </div>
                     </li>
-                  @endif            
+                  @endif
                 @endforeach
               </ul>
             </div>
@@ -93,7 +93,7 @@
 @include('common.modal-processando')
 
 @section('javascripts_bottom')
-  @parent
+@parent
   <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
   <script type="text/javascript">
     var max_upload_size = {{ $max_upload_size }};

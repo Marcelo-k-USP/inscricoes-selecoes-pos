@@ -1,5 +1,5 @@
 @section('styles')
-  @parent
+@parent
   <style>
     #card-linhaspesquisa {
       border: 1px solid brown;
