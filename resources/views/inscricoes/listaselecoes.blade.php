@@ -24,7 +24,10 @@
                     {{ $categoria->nome }}
                     @foreach ($categoria->selecoes as $selecao)
                     <div class="ml-3">
-                        <a href="inscricoes/create/{{ $selecao['id'] }}">{{ $selecao->nome }}</a> - {{ $selecao->descricao }}
+                        <a href="inscricoes/create/{{ $selecao['id'] }}">{{ $selecao->nome }}</a>
+                        @if (!is_null($selecao->descricao))
+                            - {{ $selecao->descricao }}
+                        @endif
                     </div>
                     @endforeach
                     <br>

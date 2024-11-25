@@ -84,6 +84,8 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.view', $selecao);
         
+        Selecao::atualizaStatusSelecoes();
+        
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }

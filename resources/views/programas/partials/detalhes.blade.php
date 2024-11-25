@@ -17,7 +17,7 @@
                             <b>Seleções</b><br>
                             <div class="ml-2">
                                 @foreach ($programa->selecoes as $selecao)
-                                    <a href="selecoes/{{ $selecao->id }}">{{ $selecao->nome }} <i class="fas fa-share"></i></a><br>
+                                    <a href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->nome }} <i class="fas fa-share"></i></a><br>
                                 @endforeach
                             </div>
                         @endif

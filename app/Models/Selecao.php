@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
@@ -176,6 +177,7 @@ class Selecao extends Model
      */
     public static function listarSelecoes()
     {
+        self::atualizaStatusSelecoes();
         return SELF::get();
     }
 
@@ -187,28 +189,34 @@ class Selecao extends Model
      */
     public static function listarSelecoesParaNovaInscricao()
     {
-        # primeiro vamos pegar todas as seleções
-        $categorias = Categoria::get();
-
-        # e depois filtrar as que não pode
-        foreach ($categorias as &$categoria) {
-            # primeiro vamos pegar todas as seleções
-            $selecoes = $categoria->selecoes;
-
-            # agora vamos remover as seleções onde não se pode inscrever
-            # a ordem de liberação é relevante !!!!
-            $selecoes = $selecoes->filter(function ($selecao, $key) {
-
-                # bloqueia as seleções que não estão em andamento
-                if ($selecao->estado != 'Em andamento') {
+        self::atualizaStatusSelecoes();
+        
+        $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
+        foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
+            $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
+            $selecoes = $selecoes->filter(function ($selecao, $key) {    // agora vamos remover as seleções onde não se pode inscrever... a ordem de liberação é relevante!
+                if ($selecao->estado != 'Em andamento')                  // bloqueia as seleções que não estão em andamento
                     return false;
-                }
-
                 return true;
             });
             $categoria->selecoes = $selecoes;
         }
         return $categorias;
+    }
+
+    public static function atualizaStatusSelecoes()
+    {
+        $hoje = Carbon::today();
+        SELF::where('data_inicio', '>', $hoje)
+            ->where('estado', '<>', 'Em elaboração')
+            ->update(['estado' => 'Em elaboração']);
+        SELF::where('data_inicio', '<=', $hoje)
+            ->where('data_fim', '>=', $hoje)
+            ->where('estado', '<>', 'Em andamento')
+            ->update(['estado' => 'Em andamento']);
+        SELF::where('data_fim', '<', $hoje)
+            ->where('estado', '<>', 'Encerrada')
+            ->update(['estado' => 'Encerrada']);
     }
 
     /**
