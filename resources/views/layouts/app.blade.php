@@ -50,4 +50,23 @@
 
     })
   </script>
+
+  <script>
+    $('input[id^="data_"]').datepicker({
+      dateFormat: 'dd/mm/yy',
+      closeText:"Fechar",
+      prevText:"Anterior",
+      nextText:"Próximo",
+      currentText:"Hoje",
+      monthNames: ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],
+      monthNamesShort:["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
+      dayNames:["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"],
+      dayNamesShort:["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"],
+      dayNamesMin:["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"],
+    });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script> 
+  <script src="{{ asset('js/datepicker.js') }}" type="text/javascript"></script>
 @endsection

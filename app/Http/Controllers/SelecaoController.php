@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SelecaoRequest;
 use App\Models\Categoria;
 use App\Models\LinhaPesquisa;
+use App\Models\Programa;
 use App\Models\Selecao;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -61,7 +63,10 @@ class SelecaoController extends Controller
         $categoria = Categoria::find($request->categoria_id);
         $this->authorize('selecoes.create', $categoria);
 
-        $selecao = Selecao::create($request->all());
+        $requestData = $request->all();
+        $requestData['data_inicio'] = (is_null($requestData['data_inicio']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_inicio']));
+        $requestData['data_fim'   ] = (is_null($requestData['data_fim'   ]) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_fim'   ]));
+        $selecao = Selecao::create($requestData);
 
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
 
@@ -94,25 +99,11 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.view', $selecao);
 
-        // categoria_id
-        if ($selecao->categoria_id != $request->categoria_id && !empty($request->categoria_id)) {
-            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Categoria antiga: ' . $selecao->categoria_id . ' - Nova categoria: ' . $request->categoria_id);
-            $selecao->categoria_id = $request->categoria_id;
-        }
-        
-        // nome
-        if ($selecao->nome != $request->nome && !empty($request->nome)) {
-            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Nome antigo: ' . $selecao->nome . ' - Novo nome: ' . $request->nome);
-            $selecao->nome = $request->nome;
-        }
-        
-        // descrição
-        if ($selecao->descricao != $request->descricao && !empty($request->descricao)) {
-            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Descrição antiga: ' . $selecao->descricao . ' - Nova descrição: ' . $request->descricao);
-            $selecao->descricao = $request->descricao;
-        }
-
-        // programa_id
+        $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
+        $this->updateField($request, $selecao, 'nome', 'nome', 'o');
+        $this->updateField($request, $selecao, 'descricao', 'descrição', 'a');
+        $this->updateField($request, $selecao, 'data_inicio', 'data início', 'a');
+        $this->updateField($request, $selecao, 'data_fim', 'data fim', 'a');
         if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
             if ($selecao->linhaspesquisa->count() > 0) {
                 $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa do programa antigo cadastradas para esta seleção!');
@@ -121,7 +112,6 @@ class SelecaoController extends Controller
             Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Programa antigo: ' . $selecao->programa_id . ' - Novo programa: ' . $request->programa_id);
             $selecao->programa_id = $request->programa_id;
         }
-        
         $selecao->save();
         
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
@@ -130,22 +120,15 @@ class SelecaoController extends Controller
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
 
-    public function updateStatus(Request $request, Selecao $selecao)
+    private function updateField(SelecaoRequest $request, Selecao $selecao, string $field, string $field_name, string $genero)
     {
-        $this->authorize('selecoes.view', $selecao);
+        if (strpos($field, 'data_') === 0)
+            $request->$field = (is_null($request->$field) ? null : Carbon::createFromFormat('d/m/Y', $request->$field)->format('Y-m-d'));
 
-        // estado
-        if ($selecao->estado != $request->estado && !empty($request->estado)) {
-            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Status antigo: ' . $selecao->estado . ' - Novo status: ' . $request->estado);
-            $selecao->estado = $request->estado;
+        if ($selecao->$field != $request->$field) {
+            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - ' . ucfirst($field_name) . ' antig' . $genero . ': ' . $selecao->$field . ' - Nov' . $genero . ' ' . $field_name . ': ' . $request->$field);
+            $selecao->$field = $request->$field;
         }
-
-        $selecao->save();
-        
-        $request->session()->flash('alert-info', 'Dados editados com sucesso');
-        
-        \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
 
     /**
@@ -196,7 +179,7 @@ class SelecaoController extends Controller
     private function monta_compact($modelo, $modo) {
         $data = (object) self::$data;
         $tipo_modelo = 'Selecao';
-        $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa($modelo->programa);
+        $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($modelo->programa) ? (new Programa) : $modelo->programa);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
     
         return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');

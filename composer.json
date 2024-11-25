@@ -22,6 +22,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^4.5",
+        "nesbot/carbon": "^3.8",
         "spatie/commonmark-highlighter": "^3.0",
         "spatie/laravel-html": "^3.11",
         "uspdev/laravel-replicado": "^1.0",

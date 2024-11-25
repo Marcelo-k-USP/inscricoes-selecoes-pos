@@ -73,7 +73,7 @@ class LinhaPesquisa extends Model
 
     public static function listarLinhasPesquisa(Programa $programa)
     {
-        if ($programa->id > 0)
+        if ((!is_null($programa)) && ($programa->id > 0))
             return SELF::where('programa_id', $programa->id)->get();
         else
             return SELF::get();

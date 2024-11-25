@@ -31,6 +31,8 @@ class Selecao extends Model
     protected $fillable = [
         'nome',
         'descricao',
+        'data_inicio',
+        'data_fim',
         'categoria_id',
         'programa_id',
         'estado',
@@ -52,6 +54,16 @@ class Selecao extends Model
         [
             'name' => 'descricao',
             'label' => 'Descrição',
+        ],
+        [
+            'name' => 'data_inicio',
+            'label' => 'Início',
+            'type' => 'date',
+        ],
+        [
+            'name' => 'data_fim',
+            'label' => 'Fim',
+            'type' => 'date',
         ],
         [
             'name' => 'programa_id',

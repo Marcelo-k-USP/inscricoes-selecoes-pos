@@ -7,6 +7,7 @@ use \App\Models\Categoria;
 use \App\Models\Programa;
 use \App\Models\Selecao;
 use \App\Models\User;
+use Carbon\Carbon;
 
 class SelecaoSeeder extends Seeder
 {
@@ -25,6 +26,8 @@ class SelecaoSeeder extends Seeder
                 'nome' => 'Seleção 2025',
                 'estado' => 'Em andamento',
                 'descricao' => 'Processo Seletivo 2025 Aluno Regular',
+                'data_inicio' => Carbon::createFromFormat('d/m/Y', '01/12/2024')->format('Y-m-d'),
+                'data_fim' => Carbon::createFromFormat('d/m/Y', '01/01/2025')->format('Y-m-d'),
                 'categoria_id' => $categoria_id_ALUNOREGULAR,
                 'programa_id' => $programa_id_PROGRAMA1,
                 'settings' => '{
