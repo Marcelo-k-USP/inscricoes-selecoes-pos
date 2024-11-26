@@ -12,7 +12,6 @@
         <div class="list_table_div_form">
           {{ html()->form('post', '')->open() }}
             @csrf
-            @method('POST')
             {{ html()->hidden('id') }}
             @php
               $modo = 'create';

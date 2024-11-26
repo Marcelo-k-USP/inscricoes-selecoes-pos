@@ -48,6 +48,13 @@ Route::put('selecoes/edit-status/{selecao}', [SelecaoController::class, 'updateS
 Route::post('selecoes/{selecao}/linhaspesquisa', [SelecaoController::class, 'storeLinhaPesquisa']);
 Route::delete('selecoes/{selecao}/linhaspesquisa/{linhapesquisa}', [SelecaoController::class, 'destroyLinhaPesquisa']);
 
+// SELEÇÕES - FORMULÁRIO
+Route::post('selecoes/{selecao}/template_json', [SelecaoController::class, 'storeTemplateJson']);
+Route::get('selecoes/{selecao}/template', [SelecaoController::class, 'createTemplate'])->name('selecoes.createtemplate');
+Route::post('selecoes/{selecao}/template', [SelecaoController::class, 'storeTemplate'])->name('selecoes.storetemplate');
+Route::get('selecoes/{selecao}/templatevalue', [SelecaoController::class, 'createTemplateValue'])->name('selecoes.createtemplatevalue');
+Route::post('selecoes/{selecao}/templatevalue', [SelecaoController::class, 'storeTemplateValue'])->name('selecoes.storetemplatevalue');
+
 // USERS
 Route::get('search/partenome', [UserController::class, 'partenome']);
 Route::get('search/codpes', [UserController::class, 'codpes']);

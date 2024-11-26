@@ -103,7 +103,7 @@ class Selecao extends Model
     {
         return ['label', 'type', 'can', 'help', 'value', 'validate'];
     }
-    
+
     /**
      * retorna todas as seleções autorizadas para o usuário
      * utilizado nas views common, para o select
@@ -125,7 +125,7 @@ class Selecao extends Model
     {
         return ['Edital', 'Normas para Isenção de Taxa'];
     }
-    
+
     /**
      * lista de estados padrão. Usado no factory.
      */
@@ -133,7 +133,7 @@ class Selecao extends Model
     {
         return ['Em elaboração', 'Em andamento', 'Encerrada'];
     }
-    
+
     /**
      * config-status
      * obtem a lista de estados formatado para select
@@ -153,7 +153,7 @@ class Selecao extends Model
             return $out;
         }
     }
-    
+
     /**
      * Accessor getter para $config
      */
@@ -165,7 +165,7 @@ class Selecao extends Model
         $out->status = $value->status ?? config('selecoes.config.status');
         return $out;
     }
-    
+
     /**
      * Accessor setter para $config
      */
@@ -194,7 +194,7 @@ class Selecao extends Model
     {
         return (empty($value)) ? '{}' : $value;
     }
-    
+
     /**
      * Menu Seleções, lista as seleções
      *
@@ -215,7 +215,7 @@ class Selecao extends Model
     public static function listarSelecoesParaNovaInscricao()
     {
         self::atualizaStatusSelecoes();
-        
+
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
@@ -251,7 +251,7 @@ class Selecao extends Model
     {
         return $this->belongsToMany('App\Models\Arquivo', 'arquivo_selecao')->withPivot('tipo')->withTimestamps();
     }
-    
+
     /**
      * relacionamento com linhas de pesquisa
      */

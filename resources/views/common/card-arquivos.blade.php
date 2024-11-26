@@ -15,7 +15,7 @@
   ->attribute('id', 'form_arquivos')
   ->open() }}
   @csrf
-  @method('PUT')
+  @method('put')
   {{ html()->hidden('id') }}
   <a name="card_arquivos"></a>
   <div class="card bg-light mb-3 w-100" id="card-arquivos">

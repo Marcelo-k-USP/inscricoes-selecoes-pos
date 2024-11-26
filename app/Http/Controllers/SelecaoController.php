@@ -7,6 +7,7 @@ use App\Models\Categoria;
 use App\Models\LinhaPesquisa;
 use App\Models\Programa;
 use App\Models\Selecao;
+use App\Utils\JSONForms;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -50,11 +51,11 @@ class SelecaoController extends Controller
     public function create()
     {
         $this->authorize('selecoes.create');
-        
+
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact(new Selecao, 'create'));
     }
-    
+
     /**
      * Criar nova seleção
      */
@@ -83,13 +84,13 @@ class SelecaoController extends Controller
     public function edit(Request $request, Selecao $selecao)
     {
         $this->authorize('selecoes.view', $selecao);
-        
+
         Selecao::atualizaStatusSelecoes();
-        
+
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -115,9 +116,9 @@ class SelecaoController extends Controller
             $selecao->programa_id = $request->programa_id;
         }
         $selecao->save();
-        
+
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
-        
+
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
@@ -131,6 +132,107 @@ class SelecaoController extends Controller
             Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - ' . ucfirst($field_name) . ' antig' . $genero . ': ' . $selecao->$field . ' - Nov' . $genero . ' ' . $field_name . ': ' . $request->$field);
             $selecao->$field = $request->$field;
         }
+    }
+
+    public function storeTemplateJson(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $newjson = $request->template;
+        $selecao->template = $newjson;
+        $selecao->save();
+        $request->session()->flash('alert-info', 'Template salvo com sucesso');
+        return back();
+    }
+
+    public function createTemplate(Selecao $selecao)
+    {
+        $this->authorize('selecoes.update', $selecao);
+        \UspTheme::activeUrl('selecoes');
+
+        $template = json_decode($selecao->template, true);
+        return view('selecoes.template', compact('selecao', 'template'));
+    }
+
+    public function storeTemplate(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $request->validate([
+            'template.*.label' => 'required',
+            'template.*.type' => 'required',
+        ]);
+        if (isset($request->campo)) {
+            $request->validate([
+                'new.label' => 'required',
+                'new.type' => 'required',
+            ]);
+        }
+        $template = [];
+        // remonta $template, considerando apenas o que veio do $request (com isso, atualiza e também apaga)
+        if (isset($request->template))
+            foreach ($request->template as $campo => $atributos)
+                $template[$campo] = array_filter($atributos, 'strlen');
+        // trata campo do tipo select
+        foreach ($template as $campo => $atributo)
+            if ($atributo['type'] == 'select')
+                $template[$campo]['value'] = json_decode($atributo['value'], true);
+        // adiciona campo novo
+        $new = (!is_null($request->new)) ? array_filter($request->new, 'strlen') : null;
+        if (isset($request->campo)) {                           // veio do adicionar campo novo
+            $template[$request->campo] = $new;
+            if (isset($new['value']))
+                $template[$request->campo]['value'] = json_decode($new['value']);    // necessário para remover " excedentes que quebravam o JSON
+            elseif ($template[$request->campo]['type'] == 'select')
+                $template[$request->campo]['value'] = '[]';
+        }
+        $selecao->template = JSONForms::fixJson($template);
+        $selecao->save();
+        $request->session()->flash('alert-info', 'Formulário salvo com sucesso');
+        return back();
+    }
+
+    public function createTemplateValue(Selecao $selecao)
+    {
+        $this->authorize('selecoes.update', $selecao);
+        \UspTheme::activeUrl('selecoes');
+
+        $template = json_decode($selecao->template, true);
+        return view('selecoes.templatevalue', compact('selecao', 'template'));
+    }
+
+    public function storeTemplateValue(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $request->validate([
+            'value.*.label' => 'required',
+        ]);
+        $new = (!is_null($request->new)) ? array_filter($request->new, 'strlen') : null;
+        if (is_array($new) && !empty($new)) {                           // veio do adicionar campo novo
+            $request->validate([
+                'new.label' => 'required',
+            ]);
+        }
+        $template = json_decode($selecao->template);
+        $value = [];
+        // remonta $value, considerando apenas o que veio do $request (com isso, atualiza e também apaga)
+        if (isset($request->value)) {
+            foreach ($request->value as $campo => $atributos) {
+                $atributos['value'] = removeAccents(Str::of($atributos['label'])->lower()->replace([' ', '-'], '_'));
+                $value[$campo] = array_filter($atributos, 'strlen');
+            }
+        }
+        // adiciona campo novo
+        if (is_array($new) && !empty($new)) {                           // veio do adicionar campo novo
+            $new['value'] = removeAccents(Str::of($new['label'])->lower()->replace([' ', '-'], '_'));
+            $value[] = $new;
+        }
+        $template->tipo->value = $value;
+        $selecao->template = JSONForms::fixJson($template);
+        $selecao->save();
+        $request->session()->flash('alert-info', 'Lista salva com sucesso');
+        return back();
     }
 
     /**
@@ -183,7 +285,7 @@ class SelecaoController extends Controller
         $tipo_modelo = 'Selecao';
         $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($modelo->programa) ? (new Programa) : $modelo->programa);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
-    
+
         return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');
     }
 }

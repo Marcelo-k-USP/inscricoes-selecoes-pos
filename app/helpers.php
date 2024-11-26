@@ -34,37 +34,57 @@ if (!function_exists('md2html')) {
         $html .= $markdownConverter->convertToHtml($markdown);
         return $html;
     }
+}
 
-    if (!function_exists('formatarData')) {
-        function formatarData($data)
-        {
-            // parece haver um bug nesta versão do Carbon que, se a data for nula, ele formata uma data anterior que ele formatou ao invés de retornar null
-            return ((is_null($data)) ? '' : Carbon::parse($data)->format('d/m/Y'));
-        }
+if (!function_exists('formatarData')) {
+    function formatarData($data)
+    {
+        // parece haver um bug nesta versão do Carbon que, se a data for nula, ele formata uma data anterior que ele formatou ao invés de retornar null
+        return ((is_null($data)) ? '' : Carbon::parse($data)->format('d/m/Y'));
     }
+}
 
-    if (!function_exists('formatarDataHora')) {
-        function formatarDataHora($data_hora)
-        {
-            // parece haver um bug nesta versão do Carbon que, se a data for nula, ele formata uma data anterior que ele formatou ao invés de retornar null
-            return ((is_null($data_hora)) ? '' : Carbon::parse($data_hora)->format('d/m/Y H:i:s'));
-        }
+if (!function_exists('formatarDataHora')) {
+    function formatarDataHora($data_hora)
+    {
+        // parece haver um bug nesta versão do Carbon que, se a data for nula, ele formata uma data anterior que ele formatou ao invés de retornar null
+        return ((is_null($data_hora)) ? '' : Carbon::parse($data_hora)->format('d/m/Y H:i:s'));
     }
+}
 
-    if (!function_exists('getModeloTiposArquivo')) {
-        function getModeloTiposArquivo($modelo)
-        {
-            $modeloClasse = "App\\Models\\" . Str::studly($modelo);
-            if (method_exists($modeloClasse, 'tiposArquivo')) {
-                return $modeloClasse::tiposArquivo();
-            }
-            return [];
+if (!function_exists('getModeloTiposArquivo')) {
+    function getModeloTiposArquivo($modelo)
+    {
+        $modeloClasse = "App\\Models\\" . Str::studly($modelo);
+        if (method_exists($modeloClasse, 'tiposArquivo')) {
+            return $modeloClasse::tiposArquivo();
         }
+        return [];
     }
+}
 
-    if (!function_exists('fixJson')) {
-        function fixJson($json) {
-            return trim(json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), '"');
-        }
+if (!function_exists('fixJson')) {
+    function fixJson($json) {
+        return trim(json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), '"');
+    }
+}
+
+if (!function_exists('removeAccents')) {
+    function removeAccents($str) {
+        return preg_replace(
+            array(
+                '/á|à|ã|â|ä/',
+                '/é|è|ê|ë/',
+                '/í|ì|î|ï/',
+                '/ó|ò|õ|ô|ö/',
+                '/ú|ù|û|ü/',
+                '/ç/',
+                '/ñ/'
+            ),
+            array(
+                'a', 'e', 'i', 'o', 'u', 'c', 'n'
+            ),
+            $str
+        );
     }
 }

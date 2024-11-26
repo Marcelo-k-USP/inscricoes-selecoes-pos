@@ -12,7 +12,7 @@
   ->attribute('id', 'form_principal')
   ->open() }}
   @csrf
-  @method($modo == 'edit' ? 'PUT' : 'POST')
+  @method($modo == 'edit' ? 'put' : 'post')
   {{ html()->hidden('id') }}
   <div class="card mb-3 w-100" id="card-fila-principal">
     <div class="card-header">
