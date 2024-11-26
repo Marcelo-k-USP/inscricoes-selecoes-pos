@@ -48,8 +48,8 @@
     $(document).ready(function() {
       oTable = $('.datatable-nopagination').DataTable({
         dom:
-          't',
-          'paging': false
+          'tp',
+          'paging': true
         });
       });
   </script>

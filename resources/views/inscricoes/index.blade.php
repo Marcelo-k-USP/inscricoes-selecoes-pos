@@ -75,8 +75,8 @@
 
       oTable = $('.tabela-inscricoes').DataTable({
         dom:
-          't',
-          'paging': false,
+          'tp',
+          'paging': true,
           'sort': true,
           'order': [
             [3, 'desc']    // ordenado por data de atualização descrescente
