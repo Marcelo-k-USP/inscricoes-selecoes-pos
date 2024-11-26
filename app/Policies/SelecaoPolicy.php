@@ -12,63 +12,51 @@ class SelecaoPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view all seleções.
      *
      * @param  \App\Models\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
     {
-        # para admins
-        if (Gate::allows('perfiladmin')) {
-            return true;
-        }
+        return Gate::allows('perfiladmin');
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the seleção.
      *
      * @param  \App\Models\User  $user
      * @return mixed
      */
     public function view(User $user)
     {
-        /* admin */
-        if (Gate::allows('perfiladmin')) {
-            return true;
-        }
+        return Gate::allows('perfiladmin');
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create seleções.
      *
      * @param  \App\Models\User     $user
      * @return mixed
      */
     public function create(User $user)
     {
-        /* admin */
-        if (Gate::allows('perfiladmin')) {
-            return true;
-        }
+        return Gate::allows('perfiladmin');
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the seleção.
      *
      * @param  \App\Models\User     $user
      * @return mixed
      */
     public function update(User $user)
     {
-        /* admin */
-        if (Gate::allows('perfiladmin')) {
-            return true;
-        }
+        return Gate::allows('perfiladmin');
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can delete the seleção.
      *
      * @param  \App\Models\User     $user
      * @return mixed
@@ -79,7 +67,7 @@ class SelecaoPolicy
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determine whether the user can restore the seleção.
      *
      * @param  \App\Models\User     $user
      * @return mixed
@@ -90,7 +78,7 @@ class SelecaoPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Determine whether the user can permanently delete the seleção.
      *
      * @param  \App\Models\User     $user
      * @return mixed

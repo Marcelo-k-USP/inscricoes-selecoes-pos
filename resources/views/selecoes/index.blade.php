@@ -6,7 +6,7 @@
     <div class="col-md-12 form-inline">
       <span class="h4 mt-2">Seleções</span>
       @include('partials.datatable-filter-box', ['otable'=>'oTable'])
-      @if(Gate::check('categorias.viewAny'))
+      @if (Gate::check('categorias.viewAny'))
         <a href="{{ route('selecoes.create') }}" class="btn btn-sm btn-success">
           <i class="fas fa-plus"></i> Nova
         </a>

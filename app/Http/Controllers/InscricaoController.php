@@ -7,6 +7,7 @@ use App\Models\Inscricao;
 use App\Models\Selecao;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 
@@ -35,7 +36,8 @@ class InscricaoController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('inscricoes.viewAny');
+        $perfil_admin = (session('perfil') == 'admin');
+        $this->authorize('inscricoes.view' . ($perfil_admin ? 'Any' : 'Their'));
 
         \UspTheme::activeUrl('inscricoes');
         $data = self::$data;

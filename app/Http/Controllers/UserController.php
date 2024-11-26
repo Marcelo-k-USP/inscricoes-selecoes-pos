@@ -221,6 +221,7 @@ class UserController extends Controller
         $this->authorize('trocarPerfil');
         $ret = Auth::user()->trocarPerfil($perfil);
         if ($ret['success']) {
+            session(['perfil' => $perfil]);
             $request->session()->flash('alert-info', $ret['msg']);
         }
         return redirect('/');

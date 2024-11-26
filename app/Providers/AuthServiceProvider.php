@@ -13,8 +13,6 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        #Categoria::Class => CategoriaPolicy::class,
-        #Selecao::Class => SelecaoPolicy::class,
     ];
 
     /**
@@ -42,30 +40,17 @@ class AuthServiceProvider extends ServiceProvider
         # o perfil é o modo como o usuário se apresenta
         # ideal para mostrar os menus e a lista de categorias
         Gate::define('perfiladmin', function ($user) {
-            if (session('perfil') != 'admin') {
-                return false;
-            } else {
-                return $user->is_admin;
-            }
+            return (session('perfil') == 'admin');
         });
 
         Gate::define('perfilatendente', function ($user) {
-            if (session('perfil') == 'atendente') {
-                return true;
-            } else {
-                return false;
-            }
+            return (session('perfil') == 'atendente');
         });
 
         Gate::define('perfilusuario', function ($user) {
-            if (session('perfil') == 'usuario' || empty(session('perfil'))) {
-                return true;
-            } else {
-                return false;
-            }
+            return ((session('perfil') == 'usuario') || empty(session('perfil')));
         });
 
-        
         Gate::define('trocarPerfil', function ($user) {
             return Gate::any(['admin', 'atendente']);
         });
@@ -78,6 +63,7 @@ class AuthServiceProvider extends ServiceProvider
         # policies
         Gate::resource('categorias', 'App\Policies\CategoriaPolicy');
         Gate::resource('inscricoes', 'App\Policies\InscricaoPolicy');
+        Gate::define('inscricoes.viewTheir', 'App\Policies\InscricaoPolicy@viewTheir');    // Gate::resource só define policies padrão (viewAny, view, create, etc.), então, para viewTheir, precisamos explicitamente criar o apontamento para a policy
         Gate::resource('linhaspesquisa', 'App\Policies\LinhaPesquisaPolicy');
         Gate::resource('programas', 'App\Policies\ProgramaPolicy');
         Gate::resource('selecoes', 'App\Policies\SelecaoPolicy');

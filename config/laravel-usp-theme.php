@@ -22,10 +22,15 @@ $menu = [
     [
         'text' => '<i class="far fa-plus-square"></i> Nova Inscrição',
         'url' => 'inscricoes/create',
-        'can' => 'inscricoes.viewAny',
+        'can' => 'inscricoes.viewTheir',
     ],
     [
         'text' => '<i class="far fa-list-alt"></i> Minhas Inscrições',
+        'url' => 'inscricoes',
+        'can' => 'inscricoes.viewTheir',
+    ],
+    [
+        'text' => '<i class="far fa-list-alt"></i> Inscrições',
         'url' => 'inscricoes',
         'can' => 'inscricoes.viewAny',
     ],
