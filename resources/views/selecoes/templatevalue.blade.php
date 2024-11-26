@@ -11,10 +11,10 @@
             <div class="card-title form-inline my-0">
               Seleções <i class="fas fa-angle-right mx-2"></i>
               <a href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->nome }}</a>
-              @if (!is_null($selecao->descricao))
-                &nbsp;- {{ $selecao->descricao }}
+              @if (!is_null($selecao->programa))
+                &nbsp;({{ $selecao->programa->nome }})
               @endif
-              &nbsp; | &nbsp;  Formulário <i class="fas fa-angle-right mx-2"></i> Tipo &nbsp; | &nbsp;
+              &nbsp; | &nbsp;  Formulário <i class="fas fa-angle-right mx-2"></i> Tipo &nbsp; | &nbsp; &nbsp;
               @include('selecoes.partials.btn-template-novocampolista-modal')
             </div>
           </div>

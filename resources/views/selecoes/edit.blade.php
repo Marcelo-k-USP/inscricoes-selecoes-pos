@@ -23,8 +23,12 @@
         <div class="card-header">
           <div class="card-title form-inline my-0">
             @if ($modo == 'edit')
-              <a href="selecoes">Seleções</a>
-              <i class="fas fa-angle-right mx-2"></i> {{ $selecao->nome }} | &nbsp;
+              <a href="selecoes">Seleções</a> <i class="fas fa-angle-right mx-2"></i>
+              {{ $selecao->nome }}
+              @if (!is_null($selecao->programa))
+                &nbsp;({{ $selecao->programa->nome }})
+              @endif
+              &nbsp; | &nbsp; &nbsp;
               @include('selecoes.partials.btn-enable-disable')
             @else
               Nova Seleção
