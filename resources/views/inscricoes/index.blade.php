@@ -66,17 +66,22 @@
   @endif
 @stop
 
+@php
+  $paginar = (isset($modelos) && ($modelos->count() > 10));
+@endphp
+
 @section('javascripts_bottom')
-  @parent
+@parent
   <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.8/css/fixedHeader.dataTables.min.css">
   <script src="https://cdn.datatables.net/fixedheader/3.1.8/js/dataTables.fixedHeader.min.js"></script>
+
   <script>
     $(document).ready(function() {
 
       oTable = $('.tabela-inscricoes').DataTable({
         dom:
-          'tp',
-          'paging': true,
+          't{{ $paginar ? 'p' : '' }}',
+          'paging': {{ $paginar }},
           'sort': true,
           'order': [
             [3, 'desc']    // ordenado por data de atualização descrescente

@@ -42,14 +42,18 @@
   </table>
 @endsection
 
+@php
+  $paginar = (isset($modelos) && ($modelos->count() > 10));
+@endphp
+
 @section('javascripts_bottom')
 @parent
   <script>
     $(document).ready(function() {
       oTable = $('.datatable-nopagination').DataTable({
         dom:
-          'tp',
-          'paging': true
+        't{{ $paginar ? 'p' : '' }}',
+          'paging': {{ $paginar }}
         });
       });
   </script>
