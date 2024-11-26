@@ -45,8 +45,7 @@
               </a>
             </td>
             <td>
-              ({{ $inscricao->selecao->categoria->nome }})
-              {{ $inscricao->selecao->nome }}
+              {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})
             </td>
             <td class="text-right">
               <span class="d-none">{{ $inscricao->created_at }}</span>
