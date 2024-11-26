@@ -11,8 +11,8 @@
             <div class="card-title form-inline my-0">
               Seleções <i class="fas fa-angle-right mx-2"></i>
               <a href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->nome }}</a>
-              @if (!is_null($selecao->programa))
-                &nbsp;({{ $selecao->programa->nome }})
+              @if (!is_null($selecao->categoria))
+                &nbsp;({{ $selecao->categoria->nome }})
               @endif
               &nbsp; | &nbsp;  Formulário &nbsp; | &nbsp; &nbsp;
               @include('selecoes.partials.btn-template-novocampo-modal')

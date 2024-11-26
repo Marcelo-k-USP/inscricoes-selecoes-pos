@@ -25,8 +25,8 @@
             @if ($modo == 'edit')
               <a href="selecoes">Seleções</a> <i class="fas fa-angle-right mx-2"></i>
               {{ $selecao->nome }}
-              @if (!is_null($selecao->programa))
-                &nbsp;({{ $selecao->programa->nome }})
+              @if (!is_null($selecao->categoria))
+                &nbsp;({{ $selecao->categoria->nome }})
               @endif
               &nbsp; | &nbsp; &nbsp;
               @include('selecoes.partials.btn-enable-disable')
