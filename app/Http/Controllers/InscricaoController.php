@@ -99,7 +99,8 @@ class InscricaoController extends Controller
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
 
         \UspTheme::activeUrl('inscricoes/create');
-        return view('inscricoes.edit', $this->monta_compact($inscricao, null, 'edit'));
+        $form = JSONForms::generateForm($inscricao->selecao, $inscricao);
+        return view('inscricoes.edit', $this->monta_compact($inscricao, $form, 'edit'));
     }
 
     /**
