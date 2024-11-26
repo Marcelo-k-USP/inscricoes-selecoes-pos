@@ -112,13 +112,23 @@ class Inscricao extends Model
     }
 
     /**
-     * Lista as inscrições
+     * Lista as inscrições autorizadas para o usuário
+     *
+     * Se perfiladmin mostra todas as inscrições
+     * Se perfilusuario mostra as inscrições que ele está cadastrado como criador
      *
      * @return Collection
      */
     public static function listarInscricoes()
     {
-        return SELF::get();
+        if (Gate::allows('perfiladmin'))
+            $inscricoes = SELF::get();
+        else
+            $inscricoes = Auth::user()->inscricoes()
+                ->wherePivotIn('papel', ['Autor'])
+                ->get();
+
+        return $inscricoes;
     }
 
     public static function listarInscricoesPorSelecao($selecao, $ano)

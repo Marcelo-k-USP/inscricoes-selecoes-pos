@@ -226,7 +226,7 @@ class Selecao extends Model
             });
             $categoria->selecoes = $selecoes;
         }
-        return $categorias;
+        return $categorias;                                              // retorna as seleções dentro de categorias
     }
 
     public static function atualizaStatusSelecoes()

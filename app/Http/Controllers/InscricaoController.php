@@ -62,7 +62,7 @@ class InscricaoController extends Controller
             'filtro' => 'nullable|string',
         ]);
 
-        $categorias = Selecao::listarSelecoesParaNovaInscricao();
+        $categorias = Selecao::listarSelecoesParaNovaInscricao();          // obtém as seleções dentro das categorias
         return view('inscricoes.listaselecoes', compact('categorias'));
     }
 
@@ -92,10 +92,23 @@ class InscricaoController extends Controller
         $selecao = Selecao::find($request->selecao_id);
         $this->authorize('inscricoes.create', $selecao);
 
-        $inscricao = new Inscricao;
-        $inscricao->selecao_id = $selecao->id;
-        $inscricao->extras = json_encode($request->extras);
-        $inscricao->save();
+        # transaction para não ter problema de inconsistência do DB
+        $inscricao = \DB::transaction(function () use ($request, $selecao) {
+            $inscricao = new Inscricao;
+            $inscricao->selecao_id = $selecao->id;
+
+            $inscricao->extras = json_encode($request->extras);
+
+            // vamos salvar sem evento pois o autor ainda não está cadastrado
+            $inscricao->saveQuietly();
+
+            $inscricao->users()->attach(\Auth::user(), ['papel' => 'Autor']);
+
+            // agora sim vamos disparar o evento
+            event('eloquent.created: App\Models\Inscricao', $inscricao);
+
+            return $inscricao;
+        });
 
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
 
