@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SelecaoRequest;
 use App\Models\Categoria;
+use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\Programa;
 use App\Models\Selecao;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class SelecaoController extends Controller
 {
@@ -287,5 +289,48 @@ class SelecaoController extends Controller
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');
+    }
+
+    /**
+     * Baixa as inscrições especificadas
+     *
+     * @param $request->ano
+     * @param $selecao
+     * @return Stream
+     */
+    public function download(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.view', $selecao);
+        $request->validate([
+            'ano' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+        ]);
+        $ano = $request->ano;
+
+        $inscricoes = Inscricao::listarInscricoesPorSelecao($selecao, $ano);
+
+        // vamos pegar o template da seleção para saber quais são os campos extras
+        $template = array_keys(json_decode($selecao->template, true));
+
+        $arr = [];
+        foreach ($inscricoes as $inscricao) {
+            $i = [];
+
+            $autor = $inscricao->users()->wherePivot('papel', 'Autor')->first();
+            $i['autor'] = $autor ? $autor->name : '';
+
+            $i['extras'] = $inscricao->extras;
+            $extras = json_decode($inscricao->extras, true) ?? [];
+            foreach ($template as $field) {
+                $i['extra_' . $field] = isset($extras[$field]) ? $extras[$field] : '';
+            }
+
+            $i['criado_em'] = $inscricao->created_at->format('d/m/Y');
+            $i['atualizado_em'] = $inscricao->updated_at->format('d/m/Y');
+
+            $arr[] = $i;
+        }
+
+        $writer = SimpleExcelWriter::streamDownload('inscricoes_' . $ano . '_selecao' . $selecao->id . '.xlsx')
+            ->addRows($arr);
     }
 }

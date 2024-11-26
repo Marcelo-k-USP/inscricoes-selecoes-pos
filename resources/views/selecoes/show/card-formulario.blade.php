@@ -1,14 +1,14 @@
 @section('styles')
 @parent
   <style>
-    #card-fila-formulario {
+    #card-selecao-formulario {
       border: 1px solid coral;
       border-top: 3px solid coral;
     }
   </style>
 @endsection
 
-<div class="card mb-3" id="card-fila-formulario">
+<div class="card mb-3" id="card-selecao-formulario">
   <div class="card-header">
     <i class="fab fa-wpforms"></i> Formulário
     <span class="small">@include('ajuda.selecoes.formulario')</span>

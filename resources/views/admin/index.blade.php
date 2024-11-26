@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('content')
-  @parent
+@parent
   <div class="row">
     <div class="col-md-12 form-inline">
       <span class="h4 mt-2">Painel de Admin</span>

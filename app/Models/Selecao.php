@@ -244,6 +244,16 @@ class Selecao extends Model
             ->update(['estado' => 'Encerrada']);
     }
 
+    public function contarInscricoesPorAno()
+    {
+        return Inscricao::contarInscricoesPorAno($this);
+    }
+
+    public function contarInscricoesPorMes($ano)
+    {
+        return Inscricao::contarInscricoesPorMes($ano, $this);
+    }
+
     /**
      * relacionamento com arquivos
      */

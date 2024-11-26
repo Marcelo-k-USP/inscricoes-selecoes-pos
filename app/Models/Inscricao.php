@@ -67,6 +67,51 @@ class Inscricao extends Model
     }
 
     /**
+     * Retorna a contagem de inscrições por ano
+     *
+     * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
+     *
+     * @param \App\Models\Selecao $selecao
+     * @return Int
+     */
+    public static function contarInscricoesPorAno($selecao = null)
+    {
+        $contagem = Inscricao::selectRaw('year(created_at) ano, count(*) count')
+            ->where('selecao_id', $selecao->id)
+            ->whereYear('created_at', '>=', date('Y') - 5) // ultimos 5 anos
+            ->groupBy('ano')->get();
+        return $contagem;
+    }
+
+    /**
+     * Retorna a contagem de inscrições por mês de determinado ano
+     *
+     * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
+     *
+     * Retorno em array sendo o 1o elemento correspondente à contagem de janeiro,
+     * o segundo elemento é a contagem de fevereiro, e assim por diante.
+     * o array de retorno, portanto, possui 12 elementos
+     *
+     * @param Int $ano
+     * @param \App\Models\Selecao $selecao
+     * @return Array
+     */
+    public static function contarInscricoesPorMes($ano, $selecao = null)
+    {
+        $contagem = Inscricao::selectRaw('month(created_at) mes, count(*) count')
+            ->where('selecao_id', $selecao->id)
+            ->whereYear('created_at', $ano)
+            ->groupBy('mes')->get();
+
+        // vamos organizar em array por mês para facilitar a apresentação
+        $ret = [];
+        for ($i = 0; $i < 12; $i++) {
+            $ret[] = $contagem->where('mes', $i + 1)->first()->count ?? '';
+        }
+        return $ret;
+    }
+
+    /**
      * Lista as inscrições
      *
      * @return Collection
@@ -74,6 +119,12 @@ class Inscricao extends Model
     public static function listarInscricoes()
     {
         return SELF::get();
+    }
+
+    public static function listarInscricoesPorSelecao($selecao, $ano)
+    {
+        $inscricoes = Inscricao::where('selecao_id', $selecao->id)->whereYear('created_at', $ano)->get();
+        return $inscricoes;
     }
 
     /**

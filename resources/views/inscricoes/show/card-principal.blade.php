@@ -1,7 +1,7 @@
 @section('styles')
 @parent
   <style>
-    #card-fila-principal {
+    #card-selecao-principal {
       border: 1px solid coral;
       border-top: 3px solid coral;
     }
@@ -15,7 +15,7 @@
   @method($modo == 'edit' ? 'PUT' : 'POST')
   {{ html()->hidden('id') }}
   <input type="hidden" id="selecao_id" name="selecao_id" value="{{ $inscricao->selecao->id }}">
-  <div class="card mb-3 w-100" id="card-fila-principal">
+  <div class="card mb-3 w-100" id="card-selecao-principal">
     <div class="card-header">
       Informações básicas
     </div>

@@ -47,6 +47,7 @@
               @if ($modo == 'edit')
                 @include('selecoes.show.card-linhaspesquisa')   {{-- Linhas de Pesquisa --}}
                 @include('common.card-arquivos')                {{-- Arquivos --}}
+                @include('selecoes.show.card-inscricoes')       {{-- Inscrições --}}
               @endif
             </div>
           </div>

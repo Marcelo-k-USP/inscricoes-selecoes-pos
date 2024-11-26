@@ -15,7 +15,6 @@
       border-bottom-width: medium !important;
       border-bottom-color: red !important;
     }
-
   </style>
 @endsection
 
@@ -25,7 +24,7 @@
 @endsection
 
 @section('javascripts_bottom')
-  @parent
+@parent
   <script>
     $(function() {
 

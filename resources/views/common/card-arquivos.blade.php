@@ -79,8 +79,8 @@
                   @endif
                 @endforeach
               </ul>
-            </div>
-          @endif
+            @endif
+          </div>
           @php
             $i++;
           @endphp

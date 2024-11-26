@@ -1,11 +1,9 @@
 @extends('master')
 
 @section('content')
-  @parent
-
+@parent
   <div class="row">
     <div class="col-md-12">
-
       <div class="card mb-3">
         <div class="card-header">
           @if (Gate::check('perfiladmin'))
@@ -44,7 +42,6 @@
       </div>
     </div>
   </div>
-
   <div class="row">
     <div class="col-md-12">
       @includewhen(Gate::check('perfiladmin'), 'users.partials.card-oauth')

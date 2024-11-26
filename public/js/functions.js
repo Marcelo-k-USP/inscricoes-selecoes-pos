@@ -1,5 +1,5 @@
 /* @autor uspdev/alecosta 10/02/2022
-* Função que ordena de form alfabética as opções de um campo caixa de seleção adicionado a fila
+* Função que ordena de form alfabética as opções de um campo caixa de seleção adicionado à seleção
 */
 function ordenarOpcoes(campo) {
     // Get all options from select field
@@ -43,7 +43,7 @@ function ordenarOpcoes(campo) {
 }
 
 /* @autor uspdev/alecosta 10/02/2022
-* Função que verifica se o tipo de campo adicionado na fila é caixa de seleção
+* Função que verifica se o tipo de campo adicionado na seleção é caixa de seleção
 * Se for, muda tipo tipo de campo valor de input para textarea
 */
 function mudarCampoInputTextarea(campo) {
