@@ -76,8 +76,7 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes/create');
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
-        $form = JSONForms::generateForm($selecao);
-        return view('inscricoes.edit', $this->monta_compact($inscricao, $form, 'create'));
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
     /**
@@ -99,8 +98,7 @@ class InscricaoController extends Controller
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
 
         \UspTheme::activeUrl('inscricoes/create');
-        $form = JSONForms::generateForm($inscricao->selecao, $inscricao);
-        return view('inscricoes.edit', $this->monta_compact($inscricao, $form, 'edit'));
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
     /**
@@ -114,8 +112,7 @@ class InscricaoController extends Controller
         $this->authorize('inscricoes.view', $inscricao);
 
         \UspTheme::activeUrl('inscricoes');
-        $form = JSONForms::generateForm($inscricao->selecao, $inscricao);
-        return view('inscricoes.edit', $this->monta_compact($inscricao, $form, 'edit'));
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
     /**
@@ -129,17 +126,20 @@ class InscricaoController extends Controller
     {
         $this->authorize('inscricoes.view', $inscricao);
 
+        $inscricao->extras = json_encode($request->extras);
         $inscricao->save();
 
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
 
         \UspTheme::activeUrl('inscricoes');
-        return view('inscricoes.edit', $this->monta_compact($inscricao, null, 'edit'));
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
-    private function monta_compact($modelo, $form, $modo) {
+    private function monta_compact($inscricao, $modo) {
         $data = (object) self::$data;
+        $modelo = $inscricao;
         $tipo_modelo = 'Inscricao';
+        $form = JSONForms::generateForm($modelo->selecao, $modelo);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'modelo', 'tipo_modelo', 'form', 'modo', 'max_upload_size');

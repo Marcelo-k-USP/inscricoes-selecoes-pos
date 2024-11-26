@@ -282,15 +282,6 @@ class SelecaoController extends Controller
         return Redirect::to(URL::previous() . '#card_linhaspesquisa');
     }
 
-    private function monta_compact($modelo, $modo) {
-        $data = (object) self::$data;
-        $tipo_modelo = 'Selecao';
-        $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($modelo->programa) ? (new Programa) : $modelo->programa);
-        $max_upload_size = config('selecoes-pos.upload_max_filesize');
-
-        return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');
-    }
-
     /**
      * Baixa as inscrições especificadas
      *
@@ -332,5 +323,15 @@ class SelecaoController extends Controller
 
         $writer = SimpleExcelWriter::streamDownload('inscricoes_' . $ano . '_selecao' . $selecao->id . '.xlsx')
             ->addRows($arr);
+    }
+
+    private function monta_compact($selecao, $modo) {
+        $data = (object) self::$data;
+        $modelo = $selecao;
+        $tipo_modelo = 'Selecao';
+        $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($modelo->programa) ? (new Programa) : $modelo->programa);
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
+
+        return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size');
     }
 }

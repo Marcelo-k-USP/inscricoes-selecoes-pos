@@ -41,26 +41,28 @@ class JSONForms
             $input = [];
             $type = $json->type;
             $label = $template->$key->label;
-            $html_string = '<label class="col-form-label col-sm-2" for="extras[' . $key . ']">' . $label . '</label>' . PHP_EOL;
+            $html_string = '<div class="col-sm-2">' . PHP_EOL .
+                             '<label class="col-form-label" for="extras[' . $key . ']">' . $label . '</label>' . PHP_EOL .
+                           '</div>' . PHP_EOL;
             $value = $data->$key ?? null;
-            $required_string = ((isset($json->required) && $json->required) ? ' required' : '');
+            $required_string = ((isset($json->validate) && $json->validate) ? ' required' : '');
 
             switch ($type) {
                 case 'select':
                     $json->value = JSONForms::simplifyTemplate($json->value);
-                    $html_string .= '<div class="col-sm-5">' . PHP_EOL .
-                                      '<select class="form-control" name="extras[' . $key . ']" id="extras[' . $key . ']"' . $required_string . '>' . PHP_EOL .
-                                        '<option value="selected">Selecione um ..</option>' . PHP_EOL;
-                    foreach ($json->value as $option) {
-                        // provavelmente a linha de baixo está errada
-                        $html_string .= '<option value="' . $option[0] . '">' . $option[1] . '</option>' . PHP_EOL;
-                    }
+                    $html_string .= '<div class="col-sm-7">' . PHP_EOL .
+                                      '<select class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']"' . $required_string . '>' . PHP_EOL .
+                                        '<option>Selecione um ..</option>' . PHP_EOL;
+                    foreach ($json->value as $key => $option)
+                        $html_string .= '<option value="' . $key . '"' . ($key == $value ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
                     $html_string .=   '</select>' . PHP_EOL .
                                     '</div>';
                     break;
 
                 default:
-                    $html_string .= '<input class="col-form-label col-sm-5" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_string . '>' . PHP_EOL;
+                    $html_string .= '<div class="col-sm-7">' . PHP_EOL .
+                                      '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_string . '>' . PHP_EOL .
+                                    '</div>' . PHP_EOL;
                     break;
             }
             $input[] = new HtmlString($html_string);
