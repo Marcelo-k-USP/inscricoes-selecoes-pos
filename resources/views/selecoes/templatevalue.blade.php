@@ -3,7 +3,7 @@
 @parent
   <div class="row">
     <div class="col-md-12">
-      {{ html()->form('post', route('selecoes.storetemplatevalue', $selecao->id))->id('valuetemplate-form')->open() }}
+      {{ html()->form('post', route('selecoes.storetemplatevalue', ['selecao' => $selecao->id, 'campo' => $field]))->id('valuetemplate-form')->open() }}
         @csrf
         {{ html()->hidden('id') }}
         <div class="card card-outline card-primary">
@@ -14,7 +14,7 @@
               @if (!is_null($selecao->categoria))
                 &nbsp;({{ $selecao->categoria->nome }})
               @endif
-              &nbsp; | &nbsp;  Formulário <i class="fas fa-angle-right mx-2"></i> Tipo &nbsp; | &nbsp; &nbsp;
+              &nbsp; | &nbsp;  Formulário <i class="fas fa-angle-right mx-2"></i> {{ str_replace('_', ' ', ucwords($field)) }} &nbsp; | &nbsp; &nbsp;
               @include('selecoes.partials.btn-template-novocampolista-modal')
             </div>
           </div>
@@ -23,13 +23,13 @@
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-12">
-                    @if (isset($template['tipo']) && isset($template['tipo']['value']))
+                    @if (isset($template[$field]) && isset($template[$field]['value']))
                       <div id="template-header" class="form-row">
-                        <div class="col-2"><strong>Tipo</strong></div>
+                        <div class="col-2"><strong>Valor</strong></div>
                         <div class="col-3"><strong>Label</strong></div>
                         <div class="col"></div>
                       </div>
-                      @foreach ($template['tipo']['value'] as $tkey => $tvalue)
+                      @foreach ($template[$field]['value'] as $tkey => $tvalue)
                         <div class="form-row mt-2">
                           <div class="col-2">
                             {{ $tvalue['value'] }}
@@ -45,7 +45,7 @@
                       <br />
                       <button class="btn btn-primary ml-1" type="submit">Salvar</button>
                     @else
-                      Não existe tipo para esse formulário.
+                      Não existe {{ str_replace('_', ' ', $field) }} para esse formulário.
                       <br />
                       <br />
                     @endif
@@ -70,15 +70,15 @@
       if (confirm('Tem certeza que deseja deletar?')) {
         var row = r.parentNode.parentNode;
         row.remove();
-        var form = document.getElementById("valuetemplate-form");
+        var form = document.getElementById('valuetemplate-form');
         form.requestSubmit();
       }
     }
 
     function move(r, up) {
-      var head = "template-header";
-      var tail = "template-new";
-      var form = document.getElementById("valuetemplate-form");
+      var head = 'template-header';
+      var tail = 'template-new';
+      var form = document.getElementById('valuetemplate-form');
       var row = r.parentNode.parentNode;
       if (up) {
         var sibling = row.previousElementSibling;

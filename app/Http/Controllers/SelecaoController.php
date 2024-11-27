@@ -177,7 +177,7 @@ class SelecaoController extends Controller
                 $template[$campo] = array_filter($atributos, 'strlen');
         // trata campo do tipo select
         foreach ($template as $campo => $atributo)
-            if ($atributo['type'] == 'select')
+            if (($atributo['type'] == 'select') || ($atributo['type'] == 'radio'))
                 $template[$campo]['value'] = json_decode($atributo['value'], true);
         // adiciona campo novo
         $new = (!is_null($request->new)) ? array_filter($request->new, 'strlen') : null;
@@ -194,16 +194,16 @@ class SelecaoController extends Controller
         return back();
     }
 
-    public function createTemplateValue(Selecao $selecao)
+    public function createTemplateValue(Selecao $selecao, $field)
     {
         $this->authorize('selecoes.update', $selecao);
         \UspTheme::activeUrl('selecoes');
 
         $template = json_decode($selecao->template, true);
-        return view('selecoes.templatevalue', compact('selecao', 'template'));
+        return view('selecoes.templatevalue', compact('selecao', 'template', 'field'));
     }
 
-    public function storeTemplateValue(Request $request, Selecao $selecao)
+    public function storeTemplateValue(Request $request, Selecao $selecao, $field)
     {
         $this->authorize('selecoes.update', $selecao);
 
@@ -230,7 +230,7 @@ class SelecaoController extends Controller
             $new['value'] = removeAccents(Str::of($new['label'])->lower()->replace([' ', '-'], '_'));
             $value[] = $new;
         }
-        $template->tipo->value = $value;
+        $template->$field->value = $value;
         $selecao->template = JSONForms::fixJson($template);
         $selecao->save();
         $request->session()->flash('alert-info', 'Lista salva com sucesso');

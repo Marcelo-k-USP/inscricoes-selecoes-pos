@@ -44,6 +44,8 @@
                                       <option value='select' {{ $tvalue[$field] == 'select' ? 'selected' : '' }}>Caixa de Seleção</option>
                                       <option value='date' {{ $tvalue[$field] == 'date' ? 'selected' : '' }}>Data</option>
                                       <option value='number' {{ $tvalue[$field] == 'number' ? 'selected' : '' }}>Número</option>
+                                      <option value='radio' {{ $tvalue[$field] == 'radio' ? 'selected' : '' }}>Botão de Opção</option>
+                                      <option value='checkbox' {{ $tvalue[$field] == 'checkbox' ? 'selected' : '' }}>Caixa de Verificação</option>
                                     </select>
                                     @break
                                   @case('validate')
@@ -60,8 +62,8 @@
                                     </select>
                                     @break
                                   @case('value')
-                                    <input class="form-control" name="template[{{ $tkey }}][{{ $field }}]" value="{{ is_array($tvalue[$field]) ? json_encode($tvalue[$field], JSON_UNESCAPED_UNICODE) : $tvalue[$field] ?? '' }}" @if (Gate::check('perfiladmin')) type="hidden" @endif>
-                                    <a href="{{ route('selecoes.createtemplatevalue', $selecao->id) }}" class="btn btn-primary btn-sm">
+                                    <input class="form-control" name="template[{{ $tkey }}][{{ $field }}]" value="{{ is_array($tvalue[$field]) ? json_encode($tvalue[$field], JSON_UNESCAPED_UNICODE) : $tvalue[$field] ?? '' }}" @if (!Gate::check('perfiladmin')) type="hidden" @endif>
+                                    <a href="{{ route('selecoes.createtemplatevalue', ['selecao' => $selecao->id, 'campo' => $tkey]) }}" class="btn btn-primary btn-sm">
                                       <i class="fas fa-edit"></i> Editar Lista
                                     </a>
                                     @break
@@ -124,15 +126,15 @@
       if (confirm('Tem certeza que deseja deletar?')) {
         var row = r.parentNode.parentNode;
         row.remove();
-        var form = document.getElementById("template-form");
+        var form = document.getElementById('template-form');
         form.requestSubmit();
       }
     }
 
     function move(r, up) {
-      var head = "template-header";
-      var tail = "template-new";
-      var form = document.getElementById("template-form");
+      var head = 'template-header';
+      var tail = 'template-new';
+      var form = document.getElementById('template-form');
       var row = r.parentNode.parentNode;
       if (up) {
         var sibling = row.previousElementSibling;
@@ -149,13 +151,10 @@
       }
     }
 
-    // Ao carregar a página
     $(document).ready(function() {
-      // Pega todos os campos extras que são caixa de seleção
+
       $('select[name$="][type]"]').each(function () {
-        var nameField = $(this).prop('name');
-        // muda o campo de input para caixa de texto
-        $(mudarCampoInputTextarea(nameField));
+        $(mudarCampoInputTextarea($(this).prop('name')));
       });
     });
   </script>

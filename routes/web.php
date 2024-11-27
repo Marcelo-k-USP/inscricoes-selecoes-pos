@@ -53,8 +53,8 @@ Route::delete('selecoes/{selecao}/linhaspesquisa/{linhapesquisa}', [SelecaoContr
 Route::post('selecoes/{selecao}/template_json', [SelecaoController::class, 'storeTemplateJson']);
 Route::get('selecoes/{selecao}/template', [SelecaoController::class, 'createTemplate'])->name('selecoes.createtemplate');
 Route::post('selecoes/{selecao}/template', [SelecaoController::class, 'storeTemplate'])->name('selecoes.storetemplate');
-Route::get('selecoes/{selecao}/templatevalue', [SelecaoController::class, 'createTemplateValue'])->name('selecoes.createtemplatevalue');
-Route::post('selecoes/{selecao}/templatevalue', [SelecaoController::class, 'storeTemplateValue'])->name('selecoes.storetemplatevalue');
+Route::get('selecoes/{selecao}/templatevalue/{campo}', [SelecaoController::class, 'createTemplateValue'])->name('selecoes.createtemplatevalue')->where('campo', '[a-zA-Z0-9_]+');
+Route::post('selecoes/{selecao}/templatevalue/{campo}', [SelecaoController::class, 'storeTemplateValue'])->name('selecoes.storetemplatevalue')->where('campo', '[a-zA-Z0-9_]+');
 
 // USERS
 Route::get('search/partenome', [UserController::class, 'partenome']);

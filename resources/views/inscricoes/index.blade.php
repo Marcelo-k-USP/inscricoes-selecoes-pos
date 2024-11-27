@@ -80,7 +80,7 @@
       oTable = $('.tabela-inscricoes').DataTable({
         dom:
           't{{ $paginar ? 'p' : '' }}',
-          'paging': {{ $paginar }},
+          'paging': {{ $paginar ? 'true' : 'false' }},
           'sort': true,
           'order': [
             [3, 'desc']    // ordenado por data de atualização descrescente

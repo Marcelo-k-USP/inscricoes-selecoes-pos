@@ -52,9 +52,9 @@
     $(document).ready(function() {
       oTable = $('.datatable-nopagination').DataTable({
         dom:
-        't{{ $paginar ? 'p' : '' }}',
-          'paging': {{ $paginar }}
-        });
+          't{{ $paginar ? 'p' : '' }}',
+          'paging': {{ $paginar ? 'true' : 'false' }}
       });
+    });
   </script>
 @endsection

@@ -49,7 +49,7 @@ function ordenarOpcoes(campo) {
 function mudarCampoInputTextarea(campo) {
 	var fieldTypeSelect = $('select[name="' + campo + '"]').find(":selected").val();
   // se é caixa de seleção, muda o campo valor para textarea
-  if (fieldTypeSelect == 'select') {
+  if ((fieldTypeSelect == 'select') || (fieldTypeSelect == 'radio')) {
     $('input[name="' + campo.replace('][type]', '][value]') + '"]').each(function () {
       var classe = $(this).attr('class');
       var style = $(this).attr('style');

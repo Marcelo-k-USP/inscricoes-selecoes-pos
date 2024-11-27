@@ -50,7 +50,7 @@
   </script>
 
   <script>
-    $('input[id^="data_"]').datepicker({
+    $('input.datepicker').datepicker({
       dateFormat: 'dd/mm/yy',
       closeText:"Fechar",
       prevText:"Anterior",
