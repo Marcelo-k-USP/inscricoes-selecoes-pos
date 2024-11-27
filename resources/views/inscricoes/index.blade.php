@@ -61,7 +61,11 @@
     </table>
   @else
     <br />
-    Você não realizou nenhuma inscrição para nossos processos seletivos.
+    @can('perfiladmin')
+      Não há nenhuma inscrição cadastrada no sistema.
+    @else
+      Você não realizou nenhuma inscrição para nossos processos seletivos.
+    @endcan
   @endif
 @stop
 
