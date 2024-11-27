@@ -28,3 +28,12 @@
     </div>
   </div>
 {{ html()->form()->close() }}
+
+@section('javascripts_bottom')
+@parent
+  <script>
+    $(document).ready(function() {
+      $('#form_principal').find(':input:visible:first').focus();
+    });
+  </script>
+@endsection

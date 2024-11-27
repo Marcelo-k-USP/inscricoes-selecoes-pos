@@ -19,7 +19,7 @@
             {{ html()->hidden('id') }}
             <div id="template-new" class="form-group row mt-2">
               <div class="col-2"><strong>Campo</strong></div>
-              <input class="form-control col-9" name="campo">
+              <input class="form-control col-9" name="campo" id="id_campo1">
             </div>
             @foreach ($selecao->getTemplateFields() as $field)
               <div class="form-group row mt-2">
@@ -68,9 +68,13 @@
 @parent
   <script>
     $(document).ready(function() {
-      var jsonForm = $('#json-modal-form');
+
+      $('#json-modal-form').on('shown.bs.modal', function() {
+        $('#id_campo1').focus();
+      });
+
       json_modal_form = function() {
-        jsonForm.modal();
+        $('#json-modal-form').modal();
       };
     });
   </script>

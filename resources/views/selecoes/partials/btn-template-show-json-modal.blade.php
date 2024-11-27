@@ -47,9 +47,13 @@
 @parent
   <script>
     $(document).ready(function() {
-        var jsonForm = $('#json-modal-form');
+
+        $('#json-modal-form').on('shown.bs.modal', function() {
+          $('#template').focus();
+        });
+
         json_modal_form = function() {
-            jsonForm.modal();
+          $('#json-modal-form').modal();
         };
     });
 

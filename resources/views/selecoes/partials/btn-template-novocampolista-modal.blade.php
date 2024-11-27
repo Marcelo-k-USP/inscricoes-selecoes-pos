@@ -22,7 +22,7 @@
             </div>
             <div class="form-group row mt-2">
               <div class="col-3"><strong>Label</strong></div>
-              <input class="form-control col-7" name="new[label]">
+              <input class="form-control col-7" name="new[label]" id="id_campo1">
             </div>
             <div class="text-right mt-2">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -39,9 +39,13 @@
 @parent
   <script>
     $(document).ready(function() {
-      var jsonForm = $('#json-modal-form');
+
+      $('#json-modal-form').on('shown.bs.modal', function() {
+        $('#id_campo1').focus();
+      });
+
       json_modal_form = function() {
-        jsonForm.modal();
+        $('#json-modal-form').modal();
       }
     });
   </script>

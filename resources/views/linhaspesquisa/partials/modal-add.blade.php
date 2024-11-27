@@ -20,7 +20,7 @@
             <div class="form-group row">
               <div class="col-form-label col-sm-3">Linha de Pesquisa</div>
               <div class="col-sm-8">
-                <select class="form-control" name="id">
+                <select class="form-control" name="id" id="id_campo1">
                   @foreach ($linhaspesquisa as $linhapesquisa)
                     <option value='{{ $linhapesquisa->id }}'>{{ $linhapesquisa->nome }}</option>
                   @endforeach
@@ -42,8 +42,13 @@
 @parent
   <script>
     $(document).ready(function() {
+
+      $('#LinhaPesquisaModal').on('shown.bs.modal', function() {
+        $('#id_campo1').focus();
+      });
+
       add_modal_form = function() {
-        $('#LinhaPesquisaModal').modal()
+        $('#LinhaPesquisaModal').modal();
       };
     });
   </script>
