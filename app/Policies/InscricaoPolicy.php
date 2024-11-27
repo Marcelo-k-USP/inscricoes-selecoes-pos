@@ -52,7 +52,7 @@ class InscricaoPolicy
      */
     public function create(User $user)
     {
-        return Gate::allows('perfilusuario');
+        return true;
     }
 
     /**
@@ -64,6 +64,6 @@ class InscricaoPolicy
      */
     public function update(User $user, Inscricao $inscricao)
     {
-        return Gate::allows('perfilusuario');
+        return true;
     }
 }
