@@ -1,6 +1,7 @@
 @extends('master')
 @section('content')
 @parent
+  @include('common.modal-processando')
   <div class="row">
     <div class="col-md-12">
       {{ html()->form('post', route('selecoes.storetemplatevalue', ['selecao' => $selecao->id, 'campo' => $field]))->id('valuetemplate-form')->open() }}
@@ -69,8 +70,6 @@
     </div>
   </div>
 @endsection
-
-@include('common.modal-processando')
 
 @section('javascripts_bottom')
 @parent
