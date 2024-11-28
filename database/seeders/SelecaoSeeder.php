@@ -33,13 +33,551 @@ class SelecaoSeeder extends Seeder
                         "label": "Nome",
                         "type": "text",
                         "required": true,
-                        "index": 0
+                        "order": 0
+                    },
+                    "nome_social": {
+                        "label": "Nome Social",
+                        "type": "text",
+                        "help": "Decreto Estadual n. 55.588, de 17/03/2010",
+                        "order": 1
+                    },
+                    "tipo_de_documento": {
+                        "label": "Tipo de Documento",
+                        "type": "select",
+                        "value": [
+                            {
+                                "label": "RG",
+                                "value": "rg",
+                                "order": 0
+                            },
+                            {
+                                "label": "RNE",
+                                "value": "rne",
+                                "order": 1
+                            },
+                            {
+                                "label": "Passaporte",
+                                "value": "passaporte",
+                                "order": 2
+                            }
+                        ],
+                        "help": "Utilize o passaporte apenas se não possuir documento de identidade brasileira (RG)",
+                        "required": true,
+                        "order": 2
+                    },
+                    "numero_do_documento": {
+                        "label": "Número do Documento",
+                        "type": "text",
+                        "order": 3
+                    },
+                    "data_vencto_passaporte": {
+                        "label": "Data de Vencimento do Passaporte",
+                        "type": "date",
+                        "order": 4
+                    },
+                    "cpf": {
+                        "label": "CPF",
+                        "type": "number",
+                        "required": true,
+                        "order": 5
+                    },
+                    "titulo_de_eleitor": {
+                        "label": "Título de Eleitor",
+                        "type": "text",
+                        "order": 6
+                    },
+                    "documento_militar": {
+                        "label": "Documento Militar",
+                        "type": "text",
+                        "help": "Quando pertinente",
+                        "order": 7
+                    },
+                    "nome_da_mae": {
+                        "label": "Nome da Mãe",
+                        "type": "text",
+                        "required": true,
+                        "order": 8
+                    },
+                    "nome_do_pai": {
+                        "label": "Nome do Pai",
+                        "type": "text",
+                        "order": 9
+                    },
+                    "data_de_nascimento": {
+                        "label": "Data de Nascimento",
+                        "type": "date",
+                        "required": true,
+                        "order": 10
+                    },
+                    "local_de_nascimento": {
+                        "label": "Local de Nascimento",
+                        "type": "text",
+                        "required": true,
+                        "order": 11
+                    },
+                    "uf_de_nascimento": {
+                        "label": "UF de Nascimento",
+                        "type": "select",
+                        "value": [
+                            {
+                                "label": "AC",
+                                "value": "ac",
+                                "order": 0
+                            },
+                            {
+                                "label": "AL",
+                                "value": "al",
+                                "order": 1
+                            },
+                            {
+                                "label": "AM",
+                                "value": "am",
+                                "order": 2
+                            },
+                            {
+                                "label": "AP",
+                                "value": "ap",
+                                "order": 3
+                            },
+                            {
+                                "label": "BA",
+                                "value": "ba",
+                                "order": 4
+                            },
+                            {
+                                "label": "CE",
+                                "value": "ce",
+                                "order": 5
+                            },
+                            {
+                                "label": "DF",
+                                "value": "df",
+                                "order": 6
+                            },
+                            {
+                                "label": "ES",
+                                "value": "es",
+                                "order": 7
+                            },
+                            {
+                                "label": "GO",
+                                "value": "go",
+                                "order": 8
+                            },
+                            {
+                                "label": "MA",
+                                "value": "ma",
+                                "order": 9
+                            },
+                            {
+                                "label": "MG",
+                                "value": "mg",
+                                "order": 10
+                            },
+                            {
+                                "label": "MS",
+                                "value": "ms",
+                                "order": 11
+                            },
+                            {
+                                "label": "MT",
+                                "value": "mt",
+                                "order": 12
+                            },
+                            {
+                                "label": "PA",
+                                "value": "pa",
+                                "order": 13
+                            },
+                            {
+                                "label": "PB",
+                                "value": "pb",
+                                "order": 14
+                            },
+                            {
+                                "label": "PE",
+                                "value": "pe",
+                                "order": 15
+                            },
+                            {
+                                "label": "PI",
+                                "value": "pi",
+                                "order": 16
+                            },
+                            {
+                                "label": "PR",
+                                "value": "pr",
+                                "order": 17
+                            },
+                            {
+                                "label": "RJ",
+                                "value": "rj",
+                                "order": 18
+                            },
+                            {
+                                "label": "RN",
+                                "value": "rn",
+                                "order": 19
+                            },
+                            {
+                                "label": "RO",
+                                "value": "ro",
+                                "order": 20
+                            },
+                            {
+                                "label": "RR",
+                                "value": "rr",
+                                "order": 21
+                            },
+                            {
+                                "label": "RS",
+                                "value": "rs",
+                                "order": 22
+                            },
+                            {
+                                "label": "SC",
+                                "value": "sc",
+                                "order": 23
+                            },
+                            {
+                                "label": "SE",
+                                "value": "se",
+                                "order": 24
+                            },
+                            {
+                                "label": "SP",
+                                "value": "sp",
+                                "order": 25
+                            },
+                            {
+                                "label": "TO",
+                                "value": "to",
+                                "order": 26
+                            }
+                        ],
+                        "required": true,
+                        "order": 12
+                    },
+                    "sexo": {
+                        "label": "Sexo",
+                        "type": "select",
+                        "value": [
+                            {
+                                "label": "Masculino",
+                                "value": "masculino",
+                                "order": 0
+                            },
+                            {
+                                "label": "Feminino",
+                                "value": "feminino",
+                                "order": 1
+                            },
+                            {
+                                "label": "Não Binário",
+                                "value": "nao_binario",
+                                "order": 2
+                            }
+                        ],
+                        "required": true,
+                        "order": 13
+                    },
+                    "raca_cor": {
+                        "label": "Raça/Cor",
+                        "type": "select",
+                        "value": [
+                            {
+                                "label": "Amarela",
+                                "value": "amarela",
+                                "order": 0
+                            },
+                            {
+                                "label": "Branca",
+                                "value": "branca",
+                                "order": 1
+                            },
+                            {
+                                "label": "Indígena",
+                                "value": "indigena",
+                                "order": 2
+                            },
+                            {
+                                "label": "Parda",
+                                "value": "parda",
+                                "order": 3
+                            },
+                            {
+                                "label": "Preta",
+                                "value": "preta",
+                                "order": 4
+                            },
+                            {
+                                "label": "Prefiro Não Responder",
+                                "value": "prefiro_nao_responder",
+                                "order": 5
+                            }
+                        ],
+                        "required": true,
+                        "order": 14
+                    },
+                    "declaro_ppi": {
+                        "label": "Declaro, para os devidos fins, que sou preto, pardo ou indígena",
+                        "type": "radio",
+                        "value": [
+                            {
+                                "label": "Não",
+                                "value": "nao",
+                                "order": 0
+                            },
+                            {
+                                "label": "Sim",
+                                "value": "sim",
+                                "order": 1
+                            }
+                        ],
+                        "required": true,
+                        "order": 15
+                    },
+                    "portador_de_deficiencia": {
+                        "label": "Portador de Deficiência",
+                        "type": "radio",
+                        "value": [
+                            {
+                                "label": "Não",
+                                "value": "nao",
+                                "order": 0
+                            },
+                            {
+                                "label": "Sim",
+                                "value": "sim",
+                                "order": 1
+                            }
+                        ],
+                        "required": true,
+                        "order": 16
+                    },
+                    "qual_a_sua_deficiencia": {
+                        "label": "Qual a sua deficiência",
+                        "type": "text",
+                        "order": 17
+                    },
+                    "condicoes_prova": {
+                        "label": "Condições Necessárias para a Realização da Prova",
+                        "type": "textarea",
+                        "order": 18
+                    },
+                    "endereco_residencial": {
+                        "label": "Endereço Residencial",
+                        "type": "text",
+                        "required": true,
+                        "order": 19
+                    },
+                    "numero": {
+                        "label": "Número",
+                        "type": "text",
+                        "required": true,
+                        "order": 20
+                    },
+                    "complemento": {
+                        "label": "Complemento",
+                        "type": "text",
+                        "order": 21
+                    },
+                    "bairro": {
+                        "label": "Bairro",
+                        "type": "text",
+                        "required": true,
+                        "order": 22
+                    },
+                    "cidade": {
+                        "label": "Cidade",
+                        "type": "text",
+                        "required": true,
+                        "order": 23
+                    },
+                    "uf": {
+                        "label": "UF",
+                        "type": "select",
+                        "value": [
+                            {
+                                "label": "AC",
+                                "value": "ac",
+                                "order": 0
+                            },
+                            {
+                                "label": "AL",
+                                "value": "al",
+                                "order": 1
+                            },
+                            {
+                                "label": "AM",
+                                "value": "am",
+                                "order": 2
+                            },
+                            {
+                                "label": "AP",
+                                "value": "ap",
+                                "order": 3
+                            },
+                            {
+                                "label": "BA",
+                                "value": "ba",
+                                "order": 4
+                            },
+                            {
+                                "label": "CE",
+                                "value": "ce",
+                                "order": 5
+                            },
+                            {
+                                "label": "DF",
+                                "value": "df",
+                                "order": 6
+                            },
+                            {
+                                "label": "ES",
+                                "value": "es",
+                                "order": 7
+                            },
+                            {
+                                "label": "GO",
+                                "value": "go",
+                                "order": 8
+                            },
+                            {
+                                "label": "MA",
+                                "value": "ma",
+                                "order": 9
+                            },
+                            {
+                                "label": "MG",
+                                "value": "mg",
+                                "order": 10
+                            },
+                            {
+                                "label": "MS",
+                                "value": "ms",
+                                "order": 11
+                            },
+                            {
+                                "label": "MT",
+                                "value": "mt",
+                                "order": 12
+                            },
+                            {
+                                "label": "PA",
+                                "value": "pa",
+                                "order": 13
+                            },
+                            {
+                                "label": "PB",
+                                "value": "pb",
+                                "order": 14
+                            },
+                            {
+                                "label": "PE",
+                                "value": "pe",
+                                "order": 15
+                            },
+                            {
+                                "label": "PI",
+                                "value": "pi",
+                                "order": 16
+                            },
+                            {
+                                "label": "PR",
+                                "value": "pr",
+                                "order": 17
+                            },
+                            {
+                                "label": "RJ",
+                                "value": "rj",
+                                "order": 18
+                            },
+                            {
+                                "label": "RN",
+                                "value": "rn",
+                                "order": 19
+                            },
+                            {
+                                "label": "RO",
+                                "value": "ro",
+                                "order": 20
+                            },
+                            {
+                                "label": "RR",
+                                "value": "rr",
+                                "order": 21
+                            },
+                            {
+                                "label": "RS",
+                                "value": "rs",
+                                "order": 22
+                            },
+                            {
+                                "label": "SC",
+                                "value": "sc",
+                                "order": 23
+                            },
+                            {
+                                "label": "SE",
+                                "value": "se",
+                                "order": 24
+                            },
+                            {
+                                "label": "SP",
+                                "value": "sp",
+                                "order": 25
+                            },
+                            {
+                                "label": "TO",
+                                "value": "to",
+                                "order": 26
+                            }
+                        ],
+                        "required": true,
+                        "order": 24
+                    },
+                    "cep": {
+                        "label": "CEP",
+                        "type": "text",
+                        "required": true,
+                        "order": 25
+                    },
+                    "celular": {
+                        "label": "Celular",
+                        "type": "text",
+                        "required": true,
+                        "order": 26
+                    },
+                    "e_mail": {
+                        "label": "E-mail",
+                        "type": "text",
+                        "required": true,
+                        "order": 27
+                    },
+                    "declaro_concordo_termos": {
+                        "label": "Declaro estar ciente e concordo com os <a href=\"http://143.107.146.13/pt-br/form/pos-psa-2024-2025-dout-direito#terms\">termos de inscrição no Programa de Pós-Graduação do Instituto de Psicologia da USP</a>",
+                        "type": "checkbox",
+                        "required": true,
+                        "order": 28
+                    },
+                    "declaro_revisei_inscricao": {
+                        "label": "Declaro que revisei todas as informações inseridas neste formulário e que elas estão corretas, e venho requerer minha inscrição como candidato(a) à vaga no Programa de Pós-Graduação em Psicologia Escolar e do Desenvolvimento Humano para o Curso de Doutorado Direto",
+                        "type": "checkbox",
+                        "required": true,
+                        "order": 29
+                    },
+                    "declaro_ciente_nao_presencial": {
+                        "label": "Declaro estar ciente de que o processo seletivo será realizado no formato não presencial, on-line, e que a <u>Comissão de Seleção não se responsabiliza por eventuais falhas técnicas por parte do(a) candidato(a) (tais como falta de internet, cortes de som, corte de luz, etc.) durante a realização das provas e das arguições relizadas online</u>. A sugestão é que o(a) candidato(a) se organize com antecedência para o bom andamento da prova",
+                        "type": "checkbox",
+                        "required": true,
+                        "order": 30
                     }
                 }',
                 'categoria_id' => $categoria_id_ALUNOREGULAR,
                 'programa_id' => $programa_id_PROGRAMA1,
                 'settings' => '{
-                    "instrucoes": "Preencher ..."
+                    "instrucoes": "Alguns campos são de preenchimento obrigatório."
                 }'
             ]
         ];

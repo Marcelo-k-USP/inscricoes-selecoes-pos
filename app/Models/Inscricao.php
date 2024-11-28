@@ -48,7 +48,12 @@ class Inscricao extends Model
      */
     public static function tiposArquivo()
     {
-        return ['tipo 1', 'tipo 2'];
+        return [
+            'Documento com Foto',
+            'Comprovação de Proficiência em Língua Estrangeira',
+            'Histórico Escolar e Diploma de Gradução',
+            'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica'
+        ];
     }
 
     /**
