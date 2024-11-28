@@ -152,7 +152,7 @@ class SelecaoController extends Controller
         $this->authorize('selecoes.update', $selecao);
         \UspTheme::activeUrl('selecoes');
 
-        $template = json_decode($selecao->template, true);
+        $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
         return view('selecoes.template', compact('selecao', 'template'));
     }
 
@@ -181,6 +181,7 @@ class SelecaoController extends Controller
                 $template[$campo]['value'] = json_decode($atributo['value'], true);
         // adiciona campo novo
         $new = (!is_null($request->new)) ? array_filter($request->new, 'strlen') : null;
+        $new['order'] = JSONForms::getLastIndex($template, 'order') + 1;
         if (isset($request->campo)) {                           // veio do adicionar campo novo
             $template[$request->campo] = $new;
             if (isset($new['value']))
@@ -199,7 +200,7 @@ class SelecaoController extends Controller
         $this->authorize('selecoes.update', $selecao);
         \UspTheme::activeUrl('selecoes');
 
-        $template = json_decode($selecao->template, true);
+        $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
         return view('selecoes.templatevalue', compact('selecao', 'template', 'field'));
     }
 
@@ -228,6 +229,7 @@ class SelecaoController extends Controller
         // adiciona campo novo
         if (is_array($new) && !empty($new)) {                           // veio do adicionar campo novo
             $new['value'] = removeAccents(Str::of($new['label'])->lower()->replace([' ', '-'], '_'));
+            $new['order'] = JSONForms::getLastIndex($template->$field->value, 'order') + 1;
             $value[] = $new;
         }
         $template->$field->value = $value;
@@ -327,6 +329,7 @@ class SelecaoController extends Controller
 
     private function monta_compact($selecao, $modo) {
         $data = (object) self::$data;
+        $selecao->template = JSONForms::orderTemplate($selecao->template);
         $modelo = $selecao;
         $tipo_modelo = 'Selecao';
         $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($modelo->programa) ? (new Programa) : $modelo->programa);

@@ -22,7 +22,7 @@
     <div class="ml-2">
       <strong>Label - Tipo</strong>
       <br>
-      @foreach(json_decode($selecao->template) as $field=>$value)
+      @foreach (json_decode($selecao->template) as $field => $value)
         {{ $value->label }} - {{ $value->type }}<br>
       @endforeach
     </div>

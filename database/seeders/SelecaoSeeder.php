@@ -32,7 +32,8 @@ class SelecaoSeeder extends Seeder
                     "nome": {
                         "label": "Nome",
                         "type": "text",
-                        "required": true
+                        "required": true,
+                        "index": 0
                     }
                 }',
                 'categoria_id' => $categoria_id_ALUNOREGULAR,
@@ -42,7 +43,7 @@ class SelecaoSeeder extends Seeder
                 }'
             ]
         ];
- 
+
         // adiciona registros na tabela selecoes
         foreach ($selecoes as $selecao)
             Selecao::create($selecao);

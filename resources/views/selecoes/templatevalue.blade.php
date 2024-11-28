@@ -23,14 +23,17 @@
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-12">
-                    @if (isset($template[$field]) && isset($template[$field]['value']))
+                    @if (isset($template[$field]) && isset($template[$field]['value']) && is_array($template[$field]['value']))
                       <div id="template-header" class="form-row">
                         <div class="col-2"><strong>Valor</strong></div>
                         <div class="col-3"><strong>Label</strong></div>
                         <div class="col"></div>
                       </div>
+                      @php
+                        $i = 0;
+                      @endphp
                       @foreach ($template[$field]['value'] as $tkey => $tvalue)
-                        <div class="form-row mt-2">
+                        <div class="form-row mt-2" id="linha_{{ $i }}">
                           <div class="col-2">
                             {{ $tvalue['value'] }}
                           </div>
@@ -39,8 +42,14 @@
                           </div>
                           <div class="col">
                             <button class="btn btn-danger" type="button" onclick="apaga_campo(this)">Apagar</button>
+                            <input type="hidden" name="value[{{ $tkey }}][order]" id="index[{{ $i }}]" value="{{ $i }}">
+                            <button class="btn btn-success" type="button" onclick="move(this, 1)">&#8679;</button>
+                            <button class="btn btn-success" type="button" onclick="move(this, 0)">&#8681;</button>
                           </div>
                         </div>
+                        @php
+                          $i++;
+                        @endphp
                       @endforeach
                       <br />
                       <button class="btn btn-primary ml-1" type="submit">Salvar</button>
@@ -53,13 +62,15 @@
                   </div>
                 </div>
               </div>
-            {{ html()->form()->close() }}
+            </div>
           </div>
         </div>
-      </div>
+      {{ html()->form()->close() }}
     </div>
   </div>
 @endsection
+
+@include('common.modal-processando')
 
 @section('javascripts_bottom')
 @parent
@@ -70,6 +81,7 @@
       if (confirm('Tem certeza que deseja deletar?')) {
         var row = r.parentNode.parentNode;
         row.remove();
+        $('#modal_processando').modal('show');
         var form = document.getElementById('valuetemplate-form');
         form.requestSubmit();
       }
@@ -80,16 +92,23 @@
       var tail = 'template-new';
       var form = document.getElementById('valuetemplate-form');
       var row = r.parentNode.parentNode;
+      var i = parseInt(row.id.split('_')[1]);
       if (up) {
         var sibling = row.previousElementSibling;
         if (sibling.id != head) {
           row.parentNode.insertBefore(row, sibling);
+          $('#modal_processando').modal('show');
+          $('input[id="index[' + i + ']"]').val(i - 1);
+          $('input[id="index[' + (i - 1) + ']"]').val(i);
           form.requestSubmit();
         }
       } else {
         var sibling = row.nextElementSibling;
-        if (sibling.id != tail) {
+        if (sibling.id) {
           row.parentNode.insertBefore(row, sibling.nextSibling);
+          $('#modal_processando').modal('show');
+          $('input[id="index[' + i + ']"]').val(i + 1);
+          $('input[id="index[' + (i + 1) + ']"]').val(i);
           form.requestSubmit();
         }
       }

@@ -31,8 +31,11 @@
                         @endforeach
                         <div class="col"></div>
                       </div>
+                      @php
+                        $i = 0;
+                      @endphp
                       @foreach ($template as $tkey => $tvalue)
-                        <div class="form-row mt-2">
+                        <div class="form-row mt-2" id="linha_{{ $i }}">
                           <div class="col">{{ $tkey }}</div>
                           @foreach ($selecao->getTemplateFields() as $field)
                             <div class="col">
@@ -94,8 +97,14 @@
                           @endforeach
                           <div class="col">
                             <button class="btn btn-danger" type="button" onclick="apaga_campo(this)">Apagar</button>
+                            <input type="hidden" name="template[{{ $tkey }}][order]" id="index[{{ $i }}]" value="{{ $i }}">
+                            <button class="btn btn-success" type="button" onclick="move(this, 1)">&#8679;</button>
+                            <button class="btn btn-success" type="button" onclick="move(this, 0)">&#8681;</button>
                           </div>
                         </div>
+                        @php
+                          $i++;
+                        @endphp
                       @endforeach
                     @else
                       Não existe formulário para essa seleção.
@@ -117,6 +126,8 @@
   </div>
 @endsection
 
+@include('common.modal-processando')
+
 @section('javascripts_bottom')
 @parent
   <script src="js/functions.js"></script>
@@ -126,6 +137,7 @@
       if (confirm('Tem certeza que deseja deletar?')) {
         var row = r.parentNode.parentNode;
         row.remove();
+        $('#modal_processando').modal('show');
         var form = document.getElementById('template-form');
         form.requestSubmit();
       }
@@ -136,23 +148,29 @@
       var tail = 'template-new';
       var form = document.getElementById('template-form');
       var row = r.parentNode.parentNode;
+      var i = parseInt(row.id.split('_')[1]);
       if (up) {
         var sibling = row.previousElementSibling;
         if (sibling.id != head) {
           row.parentNode.insertBefore(row, sibling);
+          $('#modal_processando').modal('show');
+          $('input[id="index[' + i + ']"]').val(i - 1);
+          $('input[id="index[' + (i - 1) + ']"]').val(i);
           form.requestSubmit();
         }
       } else {
         var sibling = row.nextElementSibling;
-        if (sibling.id != tail) {
+        if (sibling.id) {
           row.parentNode.insertBefore(row, sibling.nextSibling);
+          $('#modal_processando').modal('show');
+          $('input[id="index[' + i + ']"]').val(i + 1);
+          $('input[id="index[' + (i + 1) + ']"]').val(i);
           form.requestSubmit();
         }
       }
     }
 
     $(document).ready(function() {
-
       $('select[name$="][type]"]').each(function () {
         $(mudarCampoInputTextarea($(this).prop('name')));
       });

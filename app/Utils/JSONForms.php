@@ -142,4 +142,39 @@ class JSONForms
     {
         return str_replace('\"', '"', json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
+
+    /*
+     * Obtém o maior valor do dado campo no dado JSON
+     */
+    public static function getLastIndex($json, $field)
+    {
+        $lastIndex = -1;
+        if ((!empty($json)) && (is_array($json)))
+            foreach ($json as $item) {
+                $item = (is_array($item) ? json_decode(json_encode($item)) : $item);
+                $value = $item->$field;
+                if (isset($value) && (!empty($value)) && is_numeric($value))
+                    if ($value > $lastIndex)
+                        $lastIndex = $value;
+            }
+        return $lastIndex;
+    }
+
+    /*
+     * Ordena os campos do template, bem como os valores dos campos de tipo select e radio do template
+     */
+    public static function orderTemplate($template)
+    {
+        $template = json_decode($template, true);
+        if (!empty($template)) {
+            $ordered_template = array_column($template, 'order');
+            array_multisort($ordered_template, SORT_ASC, $template);
+            foreach ($template as &$field)
+                if (!empty($field) && (($field['type'] == 'select') || ($field['type'] == 'radio'))) {
+                    $ordered_templatevalue = array_column($field['value'], 'order');
+                    array_multisort($ordered_templatevalue, SORT_ASC, $field['value']);
+                }
+        }
+        return json_encode($template);
+    }
 }
