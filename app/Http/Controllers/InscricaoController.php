@@ -152,6 +152,7 @@ class InscricaoController extends Controller
 
     private function monta_compact($inscricao, $modo) {
         $data = (object) self::$data;
+        $inscricao->selecao->template = JSONForms::orderTemplate($inscricao->selecao->template);
         $modelo = $inscricao;
         $tipo_modelo = 'Inscricao';
         $form = JSONForms::generateForm($modelo->selecao, $modelo);
