@@ -45,6 +45,7 @@
                                   @case('type')
                                     <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]" onchange="javascript: mudarCampoInputTextarea(this.name);">
                                       <option value='text' {{ $tvalue[$field] == 'text' ? 'selected' : '' }}>Texto</option>
+                                      <option value='textarea' {{ $tvalue[$field] == 'textarea' ? 'selected' : '' }}>Texto (várias linhas)</option>
                                       <option value='select' {{ $tvalue[$field] == 'select' ? 'selected' : '' }}>Caixa de Seleção</option>
                                       <option value='date' {{ $tvalue[$field] == 'date' ? 'selected' : '' }}>Data</option>
                                       <option value='number' {{ $tvalue[$field] == 'number' ? 'selected' : '' }}>Número</option>

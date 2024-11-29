@@ -61,7 +61,7 @@ class JSONForms
                     break;
 
                 case 'date':
-                    $html_string .= '<div class="col-sm-9">' . PHP_EOL .
+                    $html_string .= '<div class="col-sm-2">' . PHP_EOL .
                                       '<input class="form-control datepicker hasDatePicker" name="extras[' . $key . ']" id="extras[' . $key . ']" type="text" value="' . $value . '"' . $required_string . '>' . PHP_EOL .
                                     '</div>' . PHP_EOL;
                     break;
@@ -89,7 +89,13 @@ class JSONForms
                                       '</div>' . PHP_EOL;
                     break;
 
-                default:    // contempla os tipos text e number
+                case 'textarea':
+                    $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
+                                        '<textarea class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" rows="3">' . $value . '</textarea>' . PHP_EOL .
+                                      '</div>' . PHP_EOL;
+                    break;
+
+                default:              // contempla os tipos text e number
                     $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
                                         '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_string . '>' . PHP_EOL .
                                       '</div>' . PHP_EOL;
