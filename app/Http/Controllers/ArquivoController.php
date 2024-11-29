@@ -181,6 +181,7 @@ class ArquivoController extends Controller
             case 'Seleção':
                 return null;
             case 'Inscrição':
+                $modelo->selecao->template = JSONForms::orderTemplate($modelo->selecao->template);
                 return JSONForms::generateForm($modelo->selecao, $modelo);
         }
     }
