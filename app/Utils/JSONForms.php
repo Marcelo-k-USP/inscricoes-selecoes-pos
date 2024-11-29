@@ -95,7 +95,7 @@ class JSONForms
                                       '</div>' . PHP_EOL;
                     break;
             }
-            $html_string = JSONForms::renderHtml($html_string);    // necessário por exemplo para quando um texto inclui uma tag <a href=...> pois elas devem ser cadastradas não com " mas com &quot;
+            //$html_string = JSONForms::renderHtml($html_string);    // necessário por exemplo para quando um texto inclui uma tag <a href=...> pois elas devem ser cadastradas não com " mas com &quot;
             $input[] = new HtmlString($html_string);
 
             if (isset($json->help))
@@ -141,7 +141,17 @@ class JSONForms
      */
     public static function fixJson($json)
     {
-        return str_replace('\"', '"', json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        // troca todo e qualquer \" por "
+        $json = str_replace('\"', '"', json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+
+        // " volta a ser \" se estivermos num contexto de <a href="...">...</a>
+        // ou seja, <a href="...">...</a> se torna <a href=\"...\">...</a>
+        $json = preg_replace('/<a\s+href\s*=\s*"/i', '<a href=\\"', $json);
+        $json = preg_replace_callback('/<a\s+href\s*=\s*\\\".*?<\/a>/i', function ($matches) {
+            return preg_replace('/">/', '\\">', $matches[0]);
+        }, $json);
+
+        return $json;
     }
 
     /*
