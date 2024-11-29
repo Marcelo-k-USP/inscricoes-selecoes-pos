@@ -81,11 +81,9 @@ class JSONForms
                     break;
 
                 case 'checkbox':
-                    $html_string  =   '<div class="col-sm-12 d-flex" style="justify-content: flex-start; align-items: center; gap: 10px;">' . PHP_EOL .
-                                        '<div style="display: flex; align-items: center; gap: 10px;">' . PHP_EOL .
-                                          '<input class="form-control" style="margin: 0; position: relative; top: -1px;" name="extras[' . $key . ']" id="extras[' . $key . ']" type="checkbox"' . ($value == 'on' ? ' checked' : '') . $required_string . '>' . PHP_EOL .
-                                          '<label style="margin: 0; padding-left: 5px; position: relative; top: -2px;" for="extras[' . $key . ']">' . $label . '</label>' . PHP_EOL .
-                                        '</div>' . PHP_EOL .
+                    $html_string  =   '<div class="col-sm-12 d-flex align-items-center" style="gap: 10px;">' . PHP_EOL .
+                                        '<input class="form-control" style="width: auto; margin: 0;" name="extras[' . $key . ']" id="extras[' . $key . ']" type="checkbox"' . ($value == 'on' ? ' checked' : '') . $required_string . '>' . PHP_EOL .
+                                        '<label style="margin: 0;" for="extras[' . $key . ']">' . $label . '</label>' . PHP_EOL .
                                       '</div>' . PHP_EOL;
                     break;
 
