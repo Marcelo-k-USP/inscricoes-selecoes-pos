@@ -46,6 +46,7 @@
               @include('inscricoes.show.card-principal')    {{-- Principal --}}
             </div>
             <div class="col-md-5">
+              @include('inscricoes.show.card-informativos') {{-- Informativos --}}
               @if ($modo == 'edit')
                 @include('common.card-arquivos')            {{-- Arquivos --}}
               @endif

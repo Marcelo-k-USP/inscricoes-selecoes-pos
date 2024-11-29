@@ -30,7 +30,7 @@ class SelecaoPolicy
      */
     public function view(User $user)
     {
-        return Gate::allows('perfiladmin');
+        return true;
     }
 
     /**
