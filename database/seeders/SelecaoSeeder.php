@@ -21,6 +21,8 @@ class SelecaoSeeder extends Seeder
         $categoria_id_ALUNOREGULAR = Categoria::where('nome', 'Aluno Regular')->first()->id;
         $programa_id_PROGRAMA1 = Programa::where('nome', 'Programa 1')->first()->id;
 
+        // se incluirmos tags nos textos do json abaixo, por exemplo uma tag <a href=...>, elas devem ser cadastradas não com " mas com &quot;
+
         $selecoes = [
             [
                 'nome' => 'Seleção 2025',
@@ -556,7 +558,7 @@ class SelecaoSeeder extends Seeder
                         "order": 27
                     },
                     "declaro_concordo_termos": {
-                        "label": "Declaro estar ciente e concordo com os <a href=\"http://143.107.146.13/pt-br/form/pos-psa-2024-2025-dout-direito#terms\">termos de inscrição no Programa de Pós-Graduação do Instituto de Psicologia da USP</a>",
+                        "label": "Declaro estar ciente e concordo com os &lt;a href=&quot;http://143.107.146.13/pt-br/form/pos-psa-2024-2025-dout-direito#terms&quot;&gt;termos de inscrição no Programa de Pós-Graduação do Instituto de Psicologia da USP&lt;/a&gt;",
                         "type": "checkbox",
                         "required": true,
                         "order": 28

@@ -95,6 +95,7 @@ class JSONForms
                                       '</div>' . PHP_EOL;
                     break;
             }
+            $html_string = JSONForms::renderHtml($html_string);    // necessário por exemplo para quando um texto inclui uma tag <a href=...> pois elas devem ser cadastradas não com " mas com &quot;
             $input[] = new HtmlString($html_string);
 
             if (isset($json->help))
@@ -176,5 +177,13 @@ class JSONForms
                 }
         }
         return json_encode($template);
+    }
+
+    /*
+     * Renderiza o HTML conforme necessário
+     */
+    public static function renderHtml($element)
+    {
+        return html_entity_decode($element, ENT_QUOTES, 'UTF-8');
     }
 }
