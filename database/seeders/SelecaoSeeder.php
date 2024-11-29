@@ -28,13 +28,13 @@ class SelecaoSeeder extends Seeder
                 'nome' => 'Seleção 2025',
                 'estado' => 'Em andamento',
                 'descricao' => 'Processo Seletivo 2025 Aluno Regular',
-                'data_inicio' => Carbon::createFromFormat('d/m/Y', '01/12/2024')->format('Y-m-d'),
+                'data_inicio' => Carbon::createFromFormat('d/m/Y', '01/11/2024')->format('Y-m-d'),
                 'data_fim' => Carbon::createFromFormat('d/m/Y', '01/01/2025')->format('Y-m-d'),
                 'template' => '{
                     "nome": {
                         "label": "Nome",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 0
                     },
                     "nome_social": {
@@ -64,7 +64,7 @@ class SelecaoSeeder extends Seeder
                             }
                         ],
                         "help": "Utilize o passaporte apenas se não possuir documento de identidade brasileira (RG)",
-                        "required": true,
+                        "validate": "required",
                         "order": 2
                     },
                     "numero_do_documento": {
@@ -80,7 +80,7 @@ class SelecaoSeeder extends Seeder
                     "cpf": {
                         "label": "CPF",
                         "type": "number",
-                        "required": true,
+                        "validate": "required|integer",
                         "order": 5
                     },
                     "titulo_de_eleitor": {
@@ -97,7 +97,7 @@ class SelecaoSeeder extends Seeder
                     "nome_da_mae": {
                         "label": "Nome da Mãe",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 8
                     },
                     "nome_do_pai": {
@@ -108,13 +108,13 @@ class SelecaoSeeder extends Seeder
                     "data_de_nascimento": {
                         "label": "Data de Nascimento",
                         "type": "date",
-                        "required": true,
+                        "validate": "required",
                         "order": 10
                     },
                     "local_de_nascimento": {
                         "label": "Local de Nascimento",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 11
                     },
                     "uf_de_nascimento": {
@@ -257,7 +257,7 @@ class SelecaoSeeder extends Seeder
                                 "order": 26
                             }
                         ],
-                        "required": true,
+                        "validate": "required",
                         "order": 12
                     },
                     "sexo": {
@@ -280,7 +280,7 @@ class SelecaoSeeder extends Seeder
                                 "order": 2
                             }
                         ],
-                        "required": true,
+                        "validate": "required",
                         "order": 13
                     },
                     "raca_cor": {
@@ -318,7 +318,7 @@ class SelecaoSeeder extends Seeder
                                 "order": 5
                             }
                         ],
-                        "required": true,
+                        "validate": "required",
                         "order": 14
                     },
                     "declaro_ppi": {
@@ -336,7 +336,7 @@ class SelecaoSeeder extends Seeder
                                 "order": 1
                             }
                         ],
-                        "required": true,
+                        "validate": "required",
                         "order": 15
                     },
                     "portador_de_deficiencia": {
@@ -354,7 +354,7 @@ class SelecaoSeeder extends Seeder
                                 "order": 1
                             }
                         ],
-                        "required": true,
+                        "validate": "required",
                         "order": 16
                     },
                     "qual_a_sua_deficiencia": {
@@ -370,13 +370,13 @@ class SelecaoSeeder extends Seeder
                     "endereco_residencial": {
                         "label": "Endereço Residencial",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 19
                     },
                     "numero": {
                         "label": "Número",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 20
                     },
                     "complemento": {
@@ -387,13 +387,13 @@ class SelecaoSeeder extends Seeder
                     "bairro": {
                         "label": "Bairro",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 22
                     },
                     "cidade": {
                         "label": "Cidade",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 23
                     },
                     "uf": {
@@ -536,50 +536,50 @@ class SelecaoSeeder extends Seeder
                                 "order": 26
                             }
                         ],
-                        "required": true,
+                        "validate": "required",
                         "order": 24
                     },
                     "cep": {
                         "label": "CEP",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 25
                     },
                     "celular": {
                         "label": "Celular",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 26
                     },
                     "e_mail": {
                         "label": "E-mail",
                         "type": "text",
-                        "required": true,
+                        "validate": "required",
                         "order": 27
                     },
                     "declaro_concordo_termos": {
                         "label": "Declaro estar ciente e concordo com os <a href=\"http://143.107.146.13/pt-br/form/pos-psa-2024-2025-dout-direito#terms\">termos de inscrição no Programa de Pós-Graduação do Instituto de Psicologia da USP</a>",
                         "type": "checkbox",
-                        "required": true,
+                        "validate": "required",
                         "order": 28
                     },
                     "declaro_revisei_inscricao": {
                         "label": "Declaro que revisei todas as informações inseridas neste formulário e que elas estão corretas, e venho requerer minha inscrição como candidato(a) à vaga no Programa de Pós-Graduação em Psicologia Escolar e do Desenvolvimento Humano para o Curso de Doutorado Direto",
                         "type": "checkbox",
-                        "required": true,
+                        "validate": "required",
                         "order": 29
                     },
                     "declaro_ciente_nao_presencial": {
                         "label": "Declaro estar ciente de que o processo seletivo será realizado no formato não presencial, on-line, e que a <u>Comissão de Seleção não se responsabiliza por eventuais falhas técnicas por parte do(a) candidato(a) (tais como falta de internet, cortes de som, corte de luz, etc.) durante a realização das provas e das arguições relizadas online</u>. A sugestão é que o(a) candidato(a) se organize com antecedência para o bom andamento da prova",
                         "type": "checkbox",
-                        "required": true,
+                        "validate": "required",
                         "order": 30
                     }
                 }',
                 'categoria_id' => $categoria_id_ALUNOREGULAR,
                 'programa_id' => $programa_id_PROGRAMA1,
                 'settings' => '{
-                    "instrucoes": "Alguns campos são de preenchimento obrigatório."
+                    "instrucoes": "Os campos marcados com (*) são de preenchimento obrigatório"
                 }'
             ]
         ];
