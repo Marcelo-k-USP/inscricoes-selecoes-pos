@@ -15,3 +15,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.form-group.row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}

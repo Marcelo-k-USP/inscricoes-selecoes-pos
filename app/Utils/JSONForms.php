@@ -42,7 +42,7 @@ class JSONForms
             $type = $json->type;
             $label = $template->$key->label;
             $html_string =
-                '<div class="col-sm-2">' . PHP_EOL .
+                '<div class="col-sm-3">' . PHP_EOL .
                   '<label class="col-form-label" for="extras[' . $key . ']">' . $label . '</label>' . PHP_EOL .
                 '</div>' . PHP_EOL;
             $value = $data->$key ?? null;
@@ -51,7 +51,7 @@ class JSONForms
             switch ($type) {
                 case 'select':
                     $json->value = JSONForms::simplifyTemplate($json->value);
-                    $html_string .= '<div class="col-sm-7">' . PHP_EOL .
+                    $html_string .= '<div class="col-sm-9">' . PHP_EOL .
                                       '<select class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']"' . $required_string . '>' . PHP_EOL .
                                         '<option>Selecione um ..</option>' . PHP_EOL;
                     foreach ($json->value as $key => $option)
@@ -61,7 +61,7 @@ class JSONForms
                     break;
 
                 case 'date':
-                    $html_string .= '<div class="col-sm-7">' . PHP_EOL .
+                    $html_string .= '<div class="col-sm-9">' . PHP_EOL .
                                       '<input class="form-control datepicker hasDatePicker" name="extras[' . $key . ']" id="extras[' . $key . ']" type="text" value="' . $value . '"' . $required_string . '>' . PHP_EOL .
                                     '</div>' . PHP_EOL;
                     break;
@@ -69,7 +69,7 @@ class JSONForms
                 case 'radio':
                     $key0 = $key;
                     $json->value = JSONForms::simplifyTemplate($json->value);
-                    $html_string  =   '<div class="col-sm-9 d-flex flex-column" style="gap: 10px;">' . PHP_EOL .
+                    $html_string  =   '<div class="col-sm-12 d-flex flex-column" style="gap: 10px;">' . PHP_EOL .
                                         $label . PHP_EOL;
                     foreach ($json->value as $key => $option)
                         $html_string .= '<div class="d-flex align-items-center gap-2">' . PHP_EOL .
@@ -81,7 +81,7 @@ class JSONForms
                     break;
 
                 case 'checkbox':
-                    $html_string  =   '<div class="col-sm-9 d-flex" style="justify-content: flex-start; align-items: center; gap: 10px;">' . PHP_EOL .
+                    $html_string  =   '<div class="col-sm-12 d-flex" style="justify-content: flex-start; align-items: center; gap: 10px;">' . PHP_EOL .
                                         '<div style="display: flex; align-items: center; gap: 10px;">' . PHP_EOL .
                                           '<input class="form-control" style="margin: 0; position: relative; top: -1px;" name="extras[' . $key . ']" id="extras[' . $key . ']" type="checkbox"' . ($value == 'on' ? ' checked' : '') . $required_string . '>' . PHP_EOL .
                                           '<label style="margin: 0; padding-left: 5px; position: relative; top: -2px;" for="extras[' . $key . ']">' . $label . '</label>' . PHP_EOL .
@@ -90,16 +90,20 @@ class JSONForms
                     break;
 
                 default:    // contempla os tipos text e number
-                    $html_string .=   '<div class="col-sm-7">' . PHP_EOL .
+                    $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
                                         '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_string . '>' . PHP_EOL .
                                       '</div>' . PHP_EOL;
                     break;
             }
-            //$html_string = JSONForms::renderHtml($html_string);    // necessário por exemplo para quando um texto inclui uma tag <a href=...> pois elas devem ser cadastradas não com " mas com &quot;
             $input[] = new HtmlString($html_string);
 
-            if (isset($json->help))
-                $input[] = new HtmlString('<small class="form-text text-muted">' . $json->help . '</small>');
+            if (isset($json->help)) {
+                $html_string =      '<div class="col-sm-3">&nbsp;</div>' . PHP_EOL .
+                                    '<div class="col-sm-9">' . PHP_EOL .
+                                      '<small class="form-text text-muted">' . $json->help . '</small>' . PHP_EOL .
+                                    '</div>' . PHP_EOL;
+                $input[] = new HtmlString($html_string);
+            }
 
             # vamos incluir o input se "can for igual ao perfil" ou "se não houver can"
             if (($perfil && isset($json->can) && $json->can == $perfil) || (!$perfil && !isset($json->can)))
@@ -187,13 +191,5 @@ class JSONForms
                 }
         }
         return json_encode($template);
-    }
-
-    /*
-     * Renderiza o HTML conforme necessário
-     */
-    public static function renderHtml($element)
-    {
-        return html_entity_decode($element, ENT_QUOTES, 'UTF-8');
     }
 }
