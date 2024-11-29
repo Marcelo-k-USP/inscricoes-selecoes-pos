@@ -41,19 +41,26 @@ class JSONForms
             $input = [];
             $type = $json->type;
             $label = $template->$key->label;
+            $value = $data->$key ?? null;
+
+            $required_attrib = '';
+            $required_string = '';
+            if (isset($json->validate) && $json->validate) {
+                $required_attrib = ' required';
+                $required_string = '<small class="text-required">(*)</small>';
+            }
+
             $html_string =
                 '<div class="col-sm-3">' . PHP_EOL .
-                  '<label class="col-form-label" for="extras[' . $key . ']">' . $label . '</label>' . PHP_EOL .
+                  '<label class="col-form-label va-middle" for="extras[' . $key . ']">' . $label . '</label> ' . $required_string . PHP_EOL .
                 '</div>' . PHP_EOL;
-            $value = $data->$key ?? null;
-            $required_string = ((isset($json->validate) && $json->validate) ? ' required' : '');
 
             switch ($type) {
                 case 'select':
                     $json->value = JSONForms::simplifyTemplate($json->value);
                     $html_string .= '<div class="col-sm-9">' . PHP_EOL .
-                                      '<select class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']"' . $required_string . '>' . PHP_EOL .
-                                        '<option>Selecione um ..</option>' . PHP_EOL;
+                                      '<select class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']"' . $required_attrib . '>' . PHP_EOL .
+                                        '<option value="" disabled selected>Selecione um ..</option>' . PHP_EOL;
                     foreach ($json->value as $key => $option)
                         $html_string .= '<option value="' . $key . '"' . ($key == $value ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
                     $html_string .=   '</select>' . PHP_EOL .
@@ -62,7 +69,7 @@ class JSONForms
 
                 case 'date':
                     $html_string .= '<div class="col-sm-2">' . PHP_EOL .
-                                      '<input class="form-control datepicker hasDatePicker" name="extras[' . $key . ']" id="extras[' . $key . ']" type="text" value="' . $value . '"' . $required_string . '>' . PHP_EOL .
+                                      '<input class="form-control datepicker hasDatePicker" name="extras[' . $key . ']" id="extras[' . $key . ']" type="text" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
                                     '</div>' . PHP_EOL;
                     break;
 
@@ -70,32 +77,37 @@ class JSONForms
                     $key0 = $key;
                     $json->value = JSONForms::simplifyTemplate($json->value);
                     $html_string  =   '<div class="col-sm-12 d-flex flex-column" style="gap: 10px;">' . PHP_EOL .
-                                        $label . PHP_EOL;
-                    foreach ($json->value as $key => $option)
+                                        '<div class="d-flex align-items-center">' . PHP_EOL .
+                                          $label . '&nbsp;' . $required_string . PHP_EOL .
+                                        '</div>' . PHP_EOL;
+                    $primeiro_item = true;
+                    foreach ($json->value as $key => $option) {
                         $html_string .= '<div class="d-flex align-items-center gap-2">' . PHP_EOL .
                                           '&nbsp; &nbsp;' . PHP_EOL .
-                                          '<input style="margin: 0; position: relative; top: -1px;" name="extras[' . $key0 . ']" id="extras[' . $key . ']" value="' . $key . '" type="radio"' . ($key == $value ? ' checked' : '') . '>' . PHP_EOL .
+                                          '<input style="margin: 0; position: relative; top: -1px;" name="extras[' . $key0 . ']" id="extras[' . $key . ']" value="' . $key . '" type="radio"' . ($key == $value ? ' checked' : '') . ($primeiro_item ? $required_attrib : '') . '>' . PHP_EOL .
                                           '<label style="margin: 0; padding-left: 5px; position: relative; top: -2px;" for="extras[' . $key . ']">' . $option . '</label>' . PHP_EOL .
                                         '</div>' . PHP_EOL;
+                        $primeiro_item = false;
+                    }
                     $html_string .=   '</div>' . PHP_EOL;
                     break;
 
                 case 'checkbox':
                     $html_string  =   '<div class="col-sm-12 d-flex align-items-center" style="gap: 10px;">' . PHP_EOL .
-                                        '<input class="form-control" style="width: auto; margin: 0;" name="extras[' . $key . ']" id="extras[' . $key . ']" type="checkbox"' . ($value == 'on' ? ' checked' : '') . $required_string . '>' . PHP_EOL .
-                                        '<label style="margin: 0;" for="extras[' . $key . ']">' . $label . '</label>' . PHP_EOL .
+                                        '<input class="form-control" style="width: auto; margin: 0;" name="extras[' . $key . ']" id="extras[' . $key . ']" type="checkbox"' . ($value == 'on' ? ' checked' : '') . $required_attrib . '>' . PHP_EOL .
+                                        '<label style="margin: 0;" for="extras[' . $key . ']">' . $label . ' ' . $required_string . '</label> ' . PHP_EOL .
                                       '</div>' . PHP_EOL;
                     break;
 
                 case 'textarea':
                     $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
-                                        '<textarea class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" rows="3">' . $value . '</textarea>' . PHP_EOL .
+                                        '<textarea class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" rows="3"' . $required_attrib . '>' . $value . '</textarea>' . PHP_EOL .
                                       '</div>' . PHP_EOL;
                     break;
 
                 default:              // contempla os tipos text e number
                     $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
-                                        '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_string . '>' . PHP_EOL .
+                                        '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
                                       '</div>' . PHP_EOL;
                     break;
             }

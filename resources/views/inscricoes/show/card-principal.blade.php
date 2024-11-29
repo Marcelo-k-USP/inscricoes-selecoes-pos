@@ -35,7 +35,7 @@
         @endif
       </div>
       <div class="text-right">
-        <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
+      <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
       </div>
     </div>
   </div>
@@ -46,6 +46,17 @@
   <script>
     $(document).ready(function() {
       $('#form_principal').find(':input:visible:first').focus();
+
+      $('#form_principal [required]').each(function () {
+        this.oninvalid = function(e) {
+          e.target.setCustomValidity('');
+          if (!e.target.validity.valid)
+            e.target.setCustomValidity('Favor preencher este campo');
+        };
+        this.oninput = function(e) {
+          e.target.setCustomValidity('');
+        }
+      });
     });
   </script>
 @endsection

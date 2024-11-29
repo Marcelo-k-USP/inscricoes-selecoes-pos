@@ -21,3 +21,13 @@
     align-items: center;
     flex-wrap: wrap;
 }
+
+.text-required {
+    color: red;
+    font-weight: normal;
+    vertical-align: middle;
+}
+
+.va-middle {
+    vertical-align: middle;
+}
