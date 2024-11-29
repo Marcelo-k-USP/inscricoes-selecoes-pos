@@ -37,7 +37,7 @@
                       @endphp
                       @foreach ($template as $tkey => $tvalue)
                         <div class="form-row mt-2" id="linha_{{ $i }}">
-                          <div class="col">{{ $tkey }}</div>
+                          <div class="col truncate-text">{{ $tkey }}</div>
                           @foreach ($selecao->getTemplateFields() as $field)
                             <div class="col">
                               @isset($tvalue[$field])

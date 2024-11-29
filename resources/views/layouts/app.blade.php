@@ -2,7 +2,7 @@
 
 @section('styles')
 @parent
-  <link rel="stylesheet" href="css/inscricoes.css">
+  <link rel="stylesheet" href="css/selecoes-pos.css">
   <style>
     .atendente-menubar {
       border-bottom-style: solid !important;

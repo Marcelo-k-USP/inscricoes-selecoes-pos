@@ -19,11 +19,10 @@
     @includewhen(Gate::check('perfiladmin'), 'selecoes.partials.btn-template-show-json-modal')
   </div>
   <div class="card-body">
-    <div class="ml-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-      <strong>(tipo) Label</strong>
-      <br>
+    <div class="ml-2 truncate-text">
+      <strong>(tipo) Label</strong><br />
       @foreach (json_decode($selecao->template) as $field => $value)
-      ({{ $value->type }}) {{ $value->label }}<br>
+        ({{ $value->type }}) {{ $value->label }}<br />
       @endforeach
     </div>
   </div>

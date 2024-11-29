@@ -35,7 +35,7 @@
                       @endphp
                       @foreach ($template[$field]['value'] as $tkey => $tvalue)
                         <div class="form-row mt-2" id="linha_{{ $i }}">
-                          <div class="col-2">
+                          <div class="col-2 truncate-text">
                             {{ $tvalue['value'] }}
                           </div>
                           <div class="col-3">
