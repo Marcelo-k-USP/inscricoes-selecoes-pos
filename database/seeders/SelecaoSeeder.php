@@ -79,8 +79,8 @@ class SelecaoSeeder extends Seeder
                     },
                     "cpf": {
                         "label": "CPF",
-                        "type": "number",
-                        "validate": "required|integer",
+                        "type": "text",
+                        "validate": "required",
                         "order": 5
                     },
                     "titulo_de_eleitor": {

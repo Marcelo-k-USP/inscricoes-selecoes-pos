@@ -57,6 +57,18 @@
           e.target.setCustomValidity('');
         }
       });
+
+      $('input[id^="extras\[cpf"]').each(function() {
+        $(this).mask('000.000.000-00');
+      })
+
+      $('input[id^="extras\[cep"]').each(function() {
+        $(this).mask('00000-000');
+      })
+
+      $('input[id^="extras\[celular"]').each(function() {
+        $(this).mask('(00) 00000-0000');
+      })
     });
   </script>
 @endsection
