@@ -105,7 +105,7 @@ class JSONForms
                                       '</div>' . PHP_EOL;
                     break;
 
-                default:              // contempla os tipos text e number
+                default:              // contempla os tipos text, number e email
                     $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
                                         '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
                                       '</div>' . PHP_EOL;

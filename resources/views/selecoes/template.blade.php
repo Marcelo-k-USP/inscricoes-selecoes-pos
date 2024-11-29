@@ -49,6 +49,7 @@
                                       <option value='select' {{ $tvalue[$field] == 'select' ? 'selected' : '' }}>Caixa de Seleção</option>
                                       <option value='date' {{ $tvalue[$field] == 'date' ? 'selected' : '' }}>Data</option>
                                       <option value='number' {{ $tvalue[$field] == 'number' ? 'selected' : '' }}>Número</option>
+                                      <option value='email' {{ $tvalue[$field] == 'email' ? 'selected' : '' }}>E-mail</option>
                                       <option value='radio' {{ $tvalue[$field] == 'radio' ? 'selected' : '' }}>Botão de Opção</option>
                                       <option value='checkbox' {{ $tvalue[$field] == 'checkbox' ? 'selected' : '' }}>Caixa de Verificação</option>
                                     </select>

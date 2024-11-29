@@ -553,7 +553,7 @@ class SelecaoSeeder extends Seeder
                     },
                     "e_mail": {
                         "label": "E-mail",
-                        "type": "text",
+                        "type": "email",
                         "validate": "required",
                         "order": 27
                     },
