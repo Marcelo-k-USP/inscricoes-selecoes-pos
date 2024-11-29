@@ -49,10 +49,22 @@ class Inscricao extends Model
     public static function tiposArquivo()
     {
         return [
-            'Documento com Foto',
-            'Comprovação de Proficiência em Língua Estrangeira',
-            'Histórico Escolar e Diploma de Gradução',
-            'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica'
+            [
+                'nome' => 'Documento com Foto',
+                'validate' => 'required'
+            ],
+            [
+                'nome' => 'Comprovação de Proficiência em Língua Estrangeira',
+                'validate' => 'required'
+            ],
+            [
+                'nome' => 'Histórico Escolar e Diploma de Gradução',
+                'validate' => 'required'
+            ],
+            [
+                'nome' => 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica',
+                'validate' => 'required'
+            ]
         ];
     }
 

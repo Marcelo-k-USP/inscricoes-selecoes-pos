@@ -35,18 +35,18 @@
       @endphp
       @foreach ($modelo->tiposArquivo() as $tipo_arquivo)
         <div class="arquivos-lista">
-          {{ $tipo_arquivo }}
+          {{ $tipo_arquivo['nome'] }} {!! ((isset($tipo_arquivo['validate']) && $tipo_arquivo['validate']) ? '<small class="text-required">(*)</small>' : '') !!}
           @if (Gate::check('update', $modelo) && $condicao_ativa)    {{-- desativando quando inativa --}}
             <label for="input_arquivo_{{ $i }}">
               <span class="btn btn-sm btn-light text-primary ml-2"> <i class="fas fa-plus"></i> Adicionar</span>
             </label>
           @endif
-          <input type="hidden" id="tipo_arquivo_{{ $i }}" value="{{ $tipo_arquivo }}">
+          <input type="hidden" id="tipo_arquivo_{{ $i }}" value="{{ $tipo_arquivo['nome'] }}">
           <input type="file" name="arquivo[]" id="input_arquivo_{{ $i }}" accept="image/jpeg,image/png,application/pdf" class="d-none" multiple capture="environment">
 
-          @if ($modelo->arquivos->where('pivot.tipo', $tipo_arquivo)->count() > 0)
+          @if ($modelo->arquivos->where('pivot.tipo', $tipo_arquivo['nome'])->count() > 0)
             <ul class="list-unstyled">
-              @foreach ($modelo->arquivos->where('pivot.tipo', $tipo_arquivo) as $arquivo)
+              @foreach ($modelo->arquivos->where('pivot.tipo', $tipo_arquivo['nome']) as $arquivo)
                 @if (preg_match('/pdf/i', $arquivo->mimeType))
                   <li class="modo-visualizacao">
                     @if (Gate::check('update', $modelo) && $condicao_ativa)    {{-- desativando quando inativa --}}

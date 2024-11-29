@@ -123,7 +123,16 @@ class Selecao extends Model
      */
     public static function tiposArquivo()
     {
-        return ['Edital', 'Normas para Isenção de Taxa'];
+        return [
+            [
+                'nome' => 'Edital',
+                'validate' => 'required'
+            ],
+            [
+                'nome' => 'Normas para Isenção de Taxa',
+                'validate' => 'required'
+            ]
+        ];
     }
 
     /**
