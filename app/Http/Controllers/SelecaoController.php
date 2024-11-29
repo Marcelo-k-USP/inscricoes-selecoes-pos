@@ -119,6 +119,9 @@ class SelecaoController extends Controller
         }
         $selecao->save();
 
+        Selecao::atualizaStatusSelecoes();
+        $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
+
         $request->session()->flash('alert-info', 'Dados editados com sucesso');
 
         \UspTheme::activeUrl('selecoes');
