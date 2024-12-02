@@ -70,6 +70,7 @@ class SelecaoSeeder extends Seeder
                     "numero_do_documento": {
                         "label": "Número do Documento",
                         "type": "text",
+                        "validate": "required",
                         "order": 3
                     },
                     "data_vencto_passaporte": {
