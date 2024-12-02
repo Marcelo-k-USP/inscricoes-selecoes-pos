@@ -16,6 +16,12 @@ class Selecao extends Model
     # selecoes não segue convenção do laravel para nomes de tabela
     protected $table = 'selecoes';
 
+    public const rules = [
+        'nome' => ['required', 'max:100'],
+        'categoria_id' => ['required'],
+        'programa_id' => ['required'],
+    ];
+
     public $defaultSettings = [
         'instrucoes' => '',
     ];

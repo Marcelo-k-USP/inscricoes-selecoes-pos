@@ -22,7 +22,7 @@ class CategoriaController extends Controller
     {
         $this->authorize('categorias.viewAny');
         \UspTheme::activeUrl('categorias');
-        
+
         $categorias = Categoria::all();
         $fields = Categoria::getFields();
 
@@ -32,7 +32,8 @@ class CategoriaController extends Controller
         } else {
             $modal['url'] = 'categorias';
             $modal['title'] = 'Editar Categoria';
-            return view('categorias.tree', compact('categorias', 'fields', 'modal'));
+            $rules = Categoria::rules;
+            return view('categorias.tree', compact('categorias', 'fields', 'modal', 'rules'));
         }
     }
 
@@ -72,7 +73,7 @@ class CategoriaController extends Controller
         $categoria = Categoria::create($request->all());
 
         $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
-        return Redirect::to(URL::previous() . "#" . strtolower($categoria->id));
+        return back();
     }
 
     /**

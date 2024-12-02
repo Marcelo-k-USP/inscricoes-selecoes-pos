@@ -23,7 +23,7 @@ class LinhaPesquisaController extends Controller
     {
         $this->authorize('linhaspesquisa.viewAny');
         \UspTheme::activeUrl('linhaspesquisa');
-        
+
         $linhaspesquisa = LinhaPesquisa::all();
         $fields = LinhaPesquisa::getFields();
 
@@ -37,7 +37,8 @@ class LinhaPesquisaController extends Controller
         } else {
             $modal['url'] = 'linhaspesquisa';
             $modal['title'] = 'Editar Linha de Pesquisa';
-            return view('linhaspesquisa.tree', compact('linhaspesquisa', 'fields', 'modal', 'modal_pessoa'));
+            $rules = LinhaPesquisa::rules;
+            return view('linhaspesquisa.tree', compact('linhaspesquisa', 'fields', 'modal', 'modal_pessoa', 'rules'));
         }
     }
 

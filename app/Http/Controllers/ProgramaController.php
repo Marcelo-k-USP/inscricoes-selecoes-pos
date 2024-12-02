@@ -22,7 +22,7 @@ class ProgramaController extends Controller
     {
         $this->authorize('programas.viewAny');
         \UspTheme::activeUrl('programas');
-        
+
         $programas = Programa::all();
         $fields = Programa::getFields();
 
@@ -32,7 +32,8 @@ class ProgramaController extends Controller
         } else {
             $modal['url'] = 'programas';
             $modal['title'] = 'Editar Programa';
-            return view('programas.tree', compact('programas', 'fields', 'modal'));
+            $rules = Programa::rules;
+            return view('programas.tree', compact('programas', 'fields', 'modal', 'rules'));
         }
     }
 
