@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CorreiosService;
+use App\Services\ViacepService;
 use Illuminate\Http\Request;
 
 class EnderecoController extends Controller
 {
-    protected $correiosService;
+    protected $viacepService;
 
-    public function __construct(CorreiosService $correiosService)
+    public function __construct(ViacepService $viacepService)
     {
-        $this->correiosService = $correiosService;
+        $this->viacepService = $viacepService;
     }
 
     public function consultarCep(Request $request)
     {
-        $result = $this->correiosService->consultarCep($request->input('cep'));
+        $result = $this->viacepService->consultarCep($request->input('cep'));
         if (isset($result['error']))
             return response()->json(['error' => $result['error']], 500);
         return response()->json($result);
