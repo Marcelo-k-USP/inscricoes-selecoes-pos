@@ -21,21 +21,10 @@ class InscricaoRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
-        $rules = [
-            'extras' => 'nullable',
-        ];
-        return $rules;
-    }
+    public const rules = [
+        'extras' => 'nullable',
+    ];
 
-    protected function prepareForValidation()
-    {
-    }
-
-    public function messages()
-    {
-        return [
-        ];
-    }
+    public const messages = [
+    ];
 }

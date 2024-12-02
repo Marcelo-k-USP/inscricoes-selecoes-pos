@@ -21,22 +21,14 @@ class CategoriaRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public const rules = [
+        'nome' => ['required', 'max:100'],
+        'descricao' => ['max:255'],
+    ];
 
-        $rules = [
-            'nome' => ['required', 'max:100'],
-            'descricao' => ['max:255'],
-        ];
-        return $rules;
-    }
-
-    public function messages()
-    {
-        return [
-            'nome.required' => 'O nome da categoria é obrigatório!',
-            'nome.max' => 'O nome da categoria não pode exceder 100 caracteres!',
-            'descricao.max' => 'A descrição da categoria não pode exceder 255 caracteres!',
-        ];
-    }
+    public const messages =  [
+        'nome.required' => 'O nome da categoria é obrigatório!',
+        'nome.max' => 'O nome da categoria não pode exceder 100 caracteres!',
+        'descricao.max' => 'A descrição da categoria não pode exceder 255 caracteres!',
+    ];
 }

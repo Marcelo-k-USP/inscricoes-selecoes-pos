@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProgramaRequest;
 use App\Models\Programa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 
 class ProgramaController extends Controller
 {
@@ -32,7 +34,7 @@ class ProgramaController extends Controller
         } else {
             $modal['url'] = 'programas';
             $modal['title'] = 'Editar Programa';
-            $rules = Programa::rules;
+            $rules = ProgramaRequest::rules;
             return view('programas.tree', compact('programas', 'fields', 'modal', 'rules'));
         }
     }
@@ -65,10 +67,13 @@ class ProgramaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProgramaRequest $request)
     {
         $this->authorize('admin');
-        $request->validate(Programa::rules);
+
+        $validator = Validator::make($request->all(), ProgramaRequest::rules, ProgramaRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
 
         $programa = Programa::create($request->all());
 
@@ -83,10 +88,13 @@ class ProgramaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProgramaRequest $request, $id)
     {
         $this->authorize('admin');
-        $request->validate(Programa::rules);
+
+        $validator = Validator::make($request->all(), ProgramaRequest::rules, ProgramaRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
 
         $programa = Programa::find($id);
         $programa->fill($request->all());
@@ -102,7 +110,7 @@ class ProgramaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(ProgramaRequest $request, $id)
     {
         $this->authorize('admin');
 

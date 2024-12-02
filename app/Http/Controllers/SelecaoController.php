@@ -335,7 +335,7 @@ class SelecaoController extends Controller
         $selecao->template = JSONForms::orderTemplate($selecao->template);
         $modelo = $selecao;
         $tipo_modelo = 'Selecao';
-        $rules = Selecao::rules;
+        $rules = SelecaoRequest::rules;
         $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($modelo->programa) ? (new Programa) : $modelo->programa);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 

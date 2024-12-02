@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LinhaPesquisaRequest;
 use App\Models\LinhaPesquisa;
 use App\Models\Selecao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 
 class LinhaPesquisaController extends Controller
 {
@@ -37,7 +39,7 @@ class LinhaPesquisaController extends Controller
         } else {
             $modal['url'] = 'linhaspesquisa';
             $modal['title'] = 'Editar Linha de Pesquisa';
-            $rules = LinhaPesquisa::rules;
+            $rules = LinhaPesquisaRequest::rules;
             return view('linhaspesquisa.tree', compact('linhaspesquisa', 'fields', 'modal', 'modal_pessoa', 'rules'));
         }
     }
@@ -72,10 +74,13 @@ class LinhaPesquisaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(LinhaPesquisaRequest $request)
     {
         $this->authorize('admin');
-        $request->validate(LinhaPesquisa::rules);
+
+        $validator = Validator::make($request->all(), LinhaPesquisaRequest::rules, LinhaPesquisaRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
 
         $linhapesquisa = LinhaPesquisa::create($request->all());
 
@@ -90,10 +95,13 @@ class LinhaPesquisaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(LinhaPesquisaRequest $request, $id)
     {
         $this->authorize('admin');
-        $request->validate(LinhaPesquisa::rules);
+
+        $validator = Validator::make($request->all(), LinhaPesquisaRequest::rules, LinhaPesquisaRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
 
         $linhapesquisa = LinhaPesquisa::find($id);
         $linhapesquisa->fill($request->all());
@@ -109,7 +117,7 @@ class LinhaPesquisaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(LinhaPesquisaRequest $request, $id)
     {
         $this->authorize('admin');
 

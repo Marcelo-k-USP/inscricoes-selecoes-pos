@@ -21,27 +21,20 @@ class SelecaoRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
-        $rules = [
-            'categoria_id' => 'required|numeric',
-            'nome' => ['required', 'max:100'],
-            'descricao' => ['max:255'],
-            'programa_id' => 'required|numeric',
-        ];
-        return $rules;
-    }
+    public const rules = [
+        'categoria_id' => 'required|numeric',
+        'nome' => ['required', 'max:100'],
+        'descricao' => ['max:255'],
+        'programa_id' => 'required|numeric',
+    ];
 
-    public function messages()
-    {
-        return [
-            'categoria_id.required' => 'A categoria é obrigatória!',
-            'categoria_id.numeric' => 'A categoria é inválida!',
-            'nome.required' => 'O nome da seleção é obrigatório!',
-            'nome.max' => 'O nome da seleção não pode exceder 100 caracteres!',
-            'descricao.max' => 'A descrição da seleção não pode exceder 255 caracteres!',
-            'programa_id.required' => 'O programa é obrigatório!',
-            'programa_id.numeric' => 'O programa é inválido!',
-        ];
-    }
+    public const messages = [
+        'categoria_id.required' => 'A categoria é obrigatória!',
+        'categoria_id.numeric' => 'A categoria é inválida!',
+        'nome.required' => 'O nome da seleção é obrigatório!',
+        'nome.max' => 'O nome da seleção não pode exceder 100 caracteres!',
+        'descricao.max' => 'A descrição da seleção não pode exceder 255 caracteres!',
+        'programa_id.required' => 'O programa é obrigatório!',
+        'programa_id.numeric' => 'O programa é inválido!',
+    ];
 }

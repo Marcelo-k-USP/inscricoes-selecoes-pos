@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoriaRequest;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 
 class CategoriaController extends Controller
 {
@@ -32,7 +34,7 @@ class CategoriaController extends Controller
         } else {
             $modal['url'] = 'categorias';
             $modal['title'] = 'Editar Categoria';
-            $rules = Categoria::rules;
+            $rules = CategoriaRequest::rules;
             return view('categorias.tree', compact('categorias', 'fields', 'modal', 'rules'));
         }
     }
@@ -65,10 +67,13 @@ class CategoriaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoriaRequest $request)
     {
         $this->authorize('admin');
-        $request->validate(Categoria::rules);
+
+        $validator = Validator::make($request->all(), CategoriaRequest::rules, CategoriaRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
 
         $categoria = Categoria::create($request->all());
 
@@ -83,10 +88,13 @@ class CategoriaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoriaRequest $request, $id)
     {
         $this->authorize('admin');
-        $request->validate(Categoria::rules);
+
+        $validator = Validator::make($request->all(), CategoriaRequest::rules, CategoriaRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
 
         $categoria = Categoria::find($id);
         $categoria->fill($request->all());
@@ -102,7 +110,7 @@ class CategoriaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(CategoriaRequest $request, $id)
     {
         $this->authorize('admin');
 

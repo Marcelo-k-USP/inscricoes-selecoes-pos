@@ -8,6 +8,7 @@ use App\Http\Controllers\EnderecoController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\LinhaPesquisaController;
+use App\Http\Controllers\LocalUserController;
 use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\SelecaoController;
 use App\Http\Controllers\UserController;
@@ -68,6 +69,9 @@ Route::get('users/perfil/{perfil}', [UserController::class, 'trocarPerfil']);
 // Route::get('users/{user}/assumir', [UserController::class, 'assumir']);
 Route::get('users/meuperfil', [UserController::class, 'meuperfil']);
 Route::resource('users', UserController::class);
+
+// LOCAL USERS
+Route::resource('/localusers', LocalUserController::class)->parameters(['local' => 'user']);
 
 // ARQUIVOS
 Route::resource('arquivos', ArquivoController::class);

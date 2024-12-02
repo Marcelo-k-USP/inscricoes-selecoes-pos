@@ -16,6 +16,15 @@ $admin = [
         'url' => 'linhaspesquisa',
         'can' => 'linhaspesquisa.viewAny',
     ],
+    [
+        'type' => 'divider',
+        'can'=> 'perfiladmin'
+    ],
+    [
+        'text' => '<i class="fa fa-list-ul"></i> Usuários Locais',
+        'url' => 'localusers',
+        'can' => 'perfiladmin',
+    ],
 ];
 
 $menu = [

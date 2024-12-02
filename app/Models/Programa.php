@@ -15,10 +15,6 @@ class Programa extends Model
         'descricao',
     ];
 
-    public const rules = [
-        'nome' => ['required', 'max:100'],
-    ];
-    
     // uso no crud generico
     protected const fields = [
         [

@@ -21,21 +21,14 @@ class ProgramaRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
-        $rules = [
-            'nome' => ['required', 'max:100'],
-            'descricao' => ['max:255'],
-        ];
-        return $rules;
-    }
+    public const rules = [
+        'nome' => ['required', 'max:100'],
+        'descricao' => ['max:255'],
+    ];
 
-    public function messages()
-    {
-        return [
-            'nome.required' => 'O nome do programa é obrigatório!',
-            'nome.max' => 'O nome do programa não pode exceder 100 caracteres!',
-            'descricao.max' => 'A descrição do programa não pode exceder 255 caracteres!',
-        ];
-    }
+    public const messages = [
+        'nome.required' => 'O nome do programa é obrigatório!',
+        'nome.max' => 'O nome do programa não pode exceder 100 caracteres!',
+        'descricao.max' => 'A descrição do programa não pode exceder 255 caracteres!',
+    ];
 }

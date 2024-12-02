@@ -21,25 +21,17 @@ class LinhaPesquisaRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public const rules = [
+        'nome' => ['required', 'max:100'],
+        'codpes_docente' => ['required', 'integer'],
+        'programa_id' => ['required', 'integer'],
+    ];
 
-        $rules = [
-            'nome' => ['required', 'max:100'],
-            'codpes_docente' => ['required', 'integer'],
-            'programa_id' => ['required', 'integer'],
-        ];
-        return $rules;
-    }
-
-    public function messages()
-    {
-        return [
-            'nome.required' => 'O nome da linha de pesquisa é obrigatório!',
-            'nome.max' => 'O nome da linha de pesquisa não pode exceder 100 caracteres!',
-            'codpes_docente.required' => 'O docente responsável é obrigatório!',
-            'programa_id.required' => 'O programa é obrigatório!',
-            'programa_id.numeric' => 'O programa é inválido!',
-        ];
-    }
+    public const messages = [
+        'nome.required' => 'O nome da linha de pesquisa é obrigatório!',
+        'nome.max' => 'O nome da linha de pesquisa não pode exceder 100 caracteres!',
+        'codpes_docente.required' => 'O docente responsável é obrigatório!',
+        'programa_id.required' => 'O programa é obrigatório!',
+        'programa_id.numeric' => 'O programa é inválido!',
+    ];
 }
