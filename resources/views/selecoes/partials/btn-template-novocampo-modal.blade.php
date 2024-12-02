@@ -15,6 +15,7 @@
       <div class="modal-body">
         <div class="list_table_div_form">
           {{ html()->form('post', route('selecoes.storetemplate', $selecao->id))->id('template-form')->open() }}
+            @method('post')
             @csrf
             {{ html()->hidden('id') }}
             <div id="template-new" class="form-group row mt-2">

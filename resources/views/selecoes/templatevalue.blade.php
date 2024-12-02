@@ -6,6 +6,7 @@
     <div class="col-md-12">
       {{ html()->form('post', route('selecoes.storetemplatevalue', ['selecao' => $selecao->id, 'campo' => $field]))->id('valuetemplate-form')->open() }}
         @csrf
+        @method('post')
         {{ html()->hidden('id') }}
         <div class="card card-outline card-primary">
           <div class="card-header">

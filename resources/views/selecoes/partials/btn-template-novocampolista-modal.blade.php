@@ -16,6 +16,7 @@
         <div class="list_table_div_form">
           {{ html()->form('post', route('selecoes.storetemplatevalue', ['selecao' => $selecao->id, 'campo' => $field]))->id('template-form-value')->open() }}
             @csrf
+            @method('post')
             {{ html()->hidden('id') }}
             <div id="template-new" class="form-group row mt-2">
               <input class="form-control col-9" name="campo" type="hidden">

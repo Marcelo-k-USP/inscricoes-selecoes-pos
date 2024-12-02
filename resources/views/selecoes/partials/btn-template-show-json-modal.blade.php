@@ -16,6 +16,7 @@
         <div class="list_table_div_form">
           {{ html()->form('post', 'selecoes/' . $selecao->id . '/template_json')->id('jsonForm')->open() }}
             @csrf
+            @method('post')
             {{ html()->hidden('id') }}
             <style>
               #template {
