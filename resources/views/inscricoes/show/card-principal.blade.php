@@ -51,7 +51,13 @@
         this.oninvalid = function(e) {
           e.target.setCustomValidity('');
           if (!e.target.validity.valid)
-            e.target.setCustomValidity('Favor preencher este campo');
+            if (e.target.type === 'email')
+              if (e.target.value != '')
+                e.target.setCustomValidity('E-mail inválido');
+              else
+                e.target.setCustomValidity('Favor preencher este campo');
+            else
+              e.target.setCustomValidity('Favor preencher este campo');
         };
         this.oninput = function(e) {
           e.target.setCustomValidity('');
