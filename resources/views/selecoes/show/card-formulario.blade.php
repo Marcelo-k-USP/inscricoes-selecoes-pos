@@ -20,8 +20,13 @@
   </div>
   <div class="card-body">
     <div class="ml-2 truncate-text">
-      <strong>(tipo) Label</strong><br />
+      &nbsp; &nbsp; (tipo) Label</strong><br />
       @foreach (json_decode($selecao->template) as $field => $value)
+        @if (isset($value->validate) && ($value->validate == 'required'))
+          <small class="text-required">(*)</small>
+        @else
+          &nbsp; &nbsp;
+        @endif
         ({{ $value->type }}) {{ $value->label }}<br />
       @endforeach
     </div>
