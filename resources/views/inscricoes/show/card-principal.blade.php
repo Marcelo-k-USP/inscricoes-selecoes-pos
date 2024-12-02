@@ -58,15 +58,15 @@
         }
       });
 
-      $('input[id^="extras\[cpf"]').each(function() {
+      $('input[id="extras\[cpf\]"], input[id^="extras\[cpf_"]').each(function() {
         $(this).mask('000.000.000-00');
       })
 
-      $('input[id^="extras\[cep"]').each(function() {
+      $('input[id="extras\[cep\]"], input[id^="extras\[cep_"]').each(function() {
         $(this).mask('00000-000');
       })
 
-      $('input[id^="extras\[celular"]').each(function() {
+      $('input[id="extras\[celular\]"], input[id^="extras\[celular_"]').each(function() {
         $(this).mask('(00) 00000-0000');
       })
     });
