@@ -368,34 +368,40 @@ class SelecaoSeeder extends Seeder
                         "type": "textarea",
                         "order": 18
                     },
+                    "cep": {
+                        "label": "CEP",
+                        "type": "text",
+                        "validate": "required",
+                        "order": 19
+                    },
                     "endereco_residencial": {
                         "label": "Endereço Residencial",
                         "type": "text",
                         "validate": "required",
-                        "order": 19
+                        "order": 20
                     },
                     "numero": {
                         "label": "Número",
                         "type": "text",
                         "validate": "required",
-                        "order": 20
+                        "order": 21
                     },
                     "complemento": {
                         "label": "Complemento",
                         "type": "text",
-                        "order": 21
+                        "order": 22
                     },
                     "bairro": {
                         "label": "Bairro",
                         "type": "text",
                         "validate": "required",
-                        "order": 22
+                        "order": 23
                     },
                     "cidade": {
                         "label": "Cidade",
                         "type": "text",
                         "validate": "required",
-                        "order": 23
+                        "order": 24
                     },
                     "uf": {
                         "label": "UF",
@@ -537,12 +543,6 @@ class SelecaoSeeder extends Seeder
                                 "order": 26
                             }
                         ],
-                        "validate": "required",
-                        "order": 24
-                    },
-                    "cep": {
-                        "label": "CEP",
-                        "type": "text",
                         "validate": "required",
                         "order": 25
                     },

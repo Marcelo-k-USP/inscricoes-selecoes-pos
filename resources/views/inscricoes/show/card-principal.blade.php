@@ -76,5 +76,35 @@
         $(this).mask('(00) 00000-0000');
       })
     });
+
+    function consultar_cep(field_name)
+    {
+      var cep = $('input[id="extras\[' + field_name + '\]"]').val().replace('-', '');
+      if (cep)
+        $.ajax({
+          url: '{{ route("consulta.cep") }}',
+          type: 'get',
+          data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            cep: cep
+          },
+          success: function(data) {
+            var field_suffix = '';
+            if (field_name.includes('_'))
+              field_suffix = '_' + field_name.split('_')[1];
+
+            $('input[id="extras\[endereco_residencial' + field_suffix + '\]"]').val(data.logradouro);
+            $('input[id="extras\[bairro' + field_suffix + '\]"]').val(data.bairro);
+            $('input[id="extras\[cidade' + field_suffix + '\]"]').val(data.localidade);
+            $('select[id="extras\[uf' + field_suffix + '\]"]').val(data.uf.toLowerCase());
+          },
+          error: function(xhr, status, error) {
+            if (xhr.responseJSON && xhr.responseJSON.error)
+              window.alert(xhr.responseJSON.error);
+            else if (xhr.responseText)
+              window.alert(xhr.responseText);
+          }
+      });
+    }
   </script>
 @endsection

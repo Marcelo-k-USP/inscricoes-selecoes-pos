@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\CorreiosService;
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
@@ -14,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(CorreiosService::class, function ($app) {
+            return new CorreiosService(new Client());
+        });
     }
 
     /**

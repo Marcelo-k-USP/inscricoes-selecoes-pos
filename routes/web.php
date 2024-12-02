@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\EnderecoController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\LinhaPesquisaController;
@@ -26,6 +27,9 @@ Route::get('inscricoes/create/{selecao}', [InscricaoController::class, 'create']
 Route::post('inscricoes/create', [InscricaoController::class, 'store'])->name('inscricoes.store');
 Route::get('inscricoes/edit/{inscricao}', [InscricaoController::class, 'edit'])->name('inscricoes.edit');
 Route::put('inscricoes/edit/{inscricao}', [InscricaoController::class, 'update'])->name('inscricoes.update');
+
+// CONSULTA DE CEP
+Route::get('consulta-cep', [EnderecoController::class, 'consultarCep'])->name('consulta.cep');
 
 // CATEGORIAS
 Route::resource('categorias', CategoriaController::class);

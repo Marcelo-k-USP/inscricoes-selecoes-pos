@@ -108,9 +108,16 @@ class JSONForms
                     break;
 
                 default:              // contempla os tipos text, number e email
-                    $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
+                    $largura = 9;
+                    $html_string_adicional = '';
+                    if (($key == 'cep') || (strpos($key, 'cep_') === 0)) {
+                        $largura = 2;
+                        $html_string_adicional = '<a href="javascript:void(0);" onclick="consultar_cep(\'' . $key . '\')" class="btn btn-primary">Consultar CEP</a>';
+                    }
+                    $html_string .=   '<div class="col-sm-' . $largura . '">' . PHP_EOL .
                                         '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
-                                      '</div>' . PHP_EOL;
+                                      '</div>' . PHP_EOL .
+                                      $html_string_adicional;
                     break;
             }
             $input[] = new HtmlString($html_string);
