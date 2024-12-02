@@ -40,37 +40,39 @@ class JSONForms
         foreach ($template as $key => $json) {
             $input = [];
             $type = $json->type;
-            $label = $template->$key->label;
             $value = $data->$key ?? null;
 
             $required_attrib = '';
             $required_string = '';
             if (isset($json->validate) && $json->validate) {
                 $required_attrib = ' required';
-                $required_string = '<small class="text-required">(*)</small>';
+                $required_string = ' <small class="text-required">(*)</small>';
             }
 
-            $html_string =
-                '<div class="col-sm-3">' . PHP_EOL .
-                  '<label class="col-form-label va-middle" for="extras[' . $key . ']">' . $label . '</label> ' . $required_string . PHP_EOL .
-                '</div>' . PHP_EOL;
+            $label = $template->$key->label;
+            $label_parts = explode (' ', $label);
+            $label_last_word = array_pop($label_parts);
+            $label_formatted = implode(' ', $label_parts) . ' <span style="white-space: nowrap;">' . $label_last_word . $required_string . '</span>';
+            $html_string          =   '<div class="col-sm-3">' . PHP_EOL .
+                                        '<label class="col-form-label va-middle" for="extras[' . $key . ']">' . $label_formatted . '</label> ' . PHP_EOL .
+                                      '</div>' . PHP_EOL;
 
             switch ($type) {
                 case 'select':
                     $json->value = JSONForms::simplifyTemplate($json->value);
-                    $html_string .= '<div class="col-sm-9">' . PHP_EOL .
-                                      '<select class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']"' . $required_attrib . '>' . PHP_EOL .
-                                        '<option value="" disabled selected>Selecione um ..</option>' . PHP_EOL;
+                    $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
+                                        '<select class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']"' . $required_attrib . '>' . PHP_EOL .
+                                          '<option value="" disabled selected>Selecione um ..</option>' . PHP_EOL;
                     foreach ($json->value as $key => $option)
-                        $html_string .= '<option value="' . $key . '"' . ($key == $value ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
-                    $html_string .=   '</select>' . PHP_EOL .
-                                    '</div>' . PHP_EOL;
+                        $html_string .=   '<option value="' . $key . '"' . ($key == $value ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
+                    $html_string .=     '</select>' . PHP_EOL .
+                                      '</div>' . PHP_EOL;
                     break;
 
                 case 'date':
-                    $html_string .= '<div class="col-sm-2">' . PHP_EOL .
-                                      '<input class="form-control datepicker hasDatePicker" name="extras[' . $key . ']" id="extras[' . $key . ']" type="text" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
-                                    '</div>' . PHP_EOL;
+                    $html_string .=   '<div class="col-sm-2">' . PHP_EOL .
+                                        '<input class="form-control datepicker hasDatePicker" name="extras[' . $key . ']" id="extras[' . $key . ']" type="text" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
+                                      '</div>' . PHP_EOL;
                     break;
 
                 case 'radio':
@@ -114,10 +116,10 @@ class JSONForms
             $input[] = new HtmlString($html_string);
 
             if (isset($json->help)) {
-                $html_string =      '<div class="col-sm-3">&nbsp;</div>' . PHP_EOL .
-                                    '<div class="col-sm-9">' . PHP_EOL .
-                                      '<small class="form-text text-muted">' . $json->help . '</small>' . PHP_EOL .
-                                    '</div>' . PHP_EOL;
+                $html_string      =   '<div class="col-sm-3">&nbsp;</div>' . PHP_EOL .
+                                      '<div class="col-sm-9">' . PHP_EOL .
+                                        '<small class="form-text text-muted">' . $json->help . '</small>' . PHP_EOL .
+                                      '</div>' . PHP_EOL;
                 $input[] = new HtmlString($html_string);
             }
 
