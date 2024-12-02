@@ -20,6 +20,8 @@
           @foreach ($fields as $col)
             @if (empty($col['type']) || $col['type'] == 'text')
               @include('common.list-table-form-text')
+            @elseif ($col['type'] == 'password')
+              @include('common.list-table-form-password')
             @elseif ($col['type'] == 'select')
               @include('common.list-table-form-select')
             @endif

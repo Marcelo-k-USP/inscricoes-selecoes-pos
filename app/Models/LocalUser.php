@@ -32,6 +32,7 @@ class LocalUser extends Model
         [
             'name' => 'password',
             'label' => 'Senha',
+            'type' => 'password',
         ],
     ];
 
