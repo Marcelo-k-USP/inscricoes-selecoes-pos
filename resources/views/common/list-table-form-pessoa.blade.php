@@ -3,7 +3,7 @@
   <div class="col-sm-9">
     {{ html()->select($col['name'], [])
       ->class('form-control')
-      ->placeholder('Selecione um ..')
+      ->placeholder('Selecione...')
     }}
   </div>
 </div>

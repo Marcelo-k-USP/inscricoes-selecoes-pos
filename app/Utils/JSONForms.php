@@ -62,7 +62,7 @@ class JSONForms
                     $json->value = JSONForms::simplifyTemplate($json->value);
                     $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
                                         '<select class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']"' . $required_attrib . '>' . PHP_EOL .
-                                          '<option value="" disabled selected>Selecione um ..</option>' . PHP_EOL;
+                                          '<option value="" disabled selected>Selecione...</option>' . PHP_EOL;
                     foreach ($json->value as $key => $option)
                         $html_string .=   '<option value="' . $key . '"' . ($key == $value ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
                     $html_string .=     '</select>' . PHP_EOL .

@@ -4,7 +4,7 @@
     {{ html()->select($col['name'], $col['data'])
       ->value(old($col['name'], $modo == 'edit' ? $modelo->{$col['name']} : ''))
       ->class('form-control')
-      ->placeholder('Selecione um ..')
+      ->placeholder('Selecione...')
     }}
   </div>
 </div>
