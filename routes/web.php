@@ -71,7 +71,7 @@ Route::get('users/meuperfil', [UserController::class, 'meuperfil']);
 Route::resource('users', UserController::class);
 
 // LOCAL USERS
-Route::resource('/localusers', LocalUserController::class)->parameters(['local' => 'user']);
+Route::resource('localusers', LocalUserController::class);
 
 // ARQUIVOS
 Route::resource('arquivos', ArquivoController::class);

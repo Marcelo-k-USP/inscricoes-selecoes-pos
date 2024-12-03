@@ -11,25 +11,25 @@
       <div class="modal-body">
         <div class="list_table_div_form">
           {{ html()->form('post', '')->open() }}
-          @csrf
-          @method('post')
-          {{ html()->hidden('id') }}
-          @php
-            $modo = 'create';
-          @endphp
-          @foreach ($fields as $col)
-            @if (empty($col['type']) || $col['type'] == 'text')
-              @include('common.list-table-form-text')
-            @elseif ($col['type'] == 'password')
-              @include('common.list-table-form-password')
-            @elseif ($col['type'] == 'select')
-              @include('common.list-table-form-select')
-            @endif
-          @endforeach
-          <div class="text-right">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-            <button type="submit" class="btn btn-primary">Salvar</button>
-          </div>
+            @csrf
+            @method('post')
+            {{ html()->hidden('id') }}
+            @php
+              $modo = 'create';
+            @endphp
+            @foreach ($fields as $col)
+              @if (empty($col['type']) || $col['type'] == 'text')
+                @include('common.list-table-form-text')
+              @elseif ($col['type'] == 'password')
+                @include('common.list-table-form-password')
+              @elseif ($col['type'] == 'select')
+                @include('common.list-table-form-select')
+              @endif
+            @endforeach
+            <div class="text-right">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+              <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
           {{ html()->form()->close() }}
         </div>
       </div>

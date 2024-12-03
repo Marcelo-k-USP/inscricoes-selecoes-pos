@@ -16,7 +16,7 @@
         <div>
           <a name="{{ \Str::lower($linhapesquisa->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $linhapesquisa->nome }}</a>
           @can('perfiladmin')
-            @include('linhaspesquisa.partials.modal-edit')
+            @include('linhaspesquisa.partials.btn-edit')
             @include('linhaspesquisa.partials.btn-delete')
           @endcan
           @include('linhaspesquisa.partials.detalhes')

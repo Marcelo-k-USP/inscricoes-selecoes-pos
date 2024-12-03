@@ -32,7 +32,7 @@
             <td>{{ $localuser->email }}</td>
             <td>
               <div id="actions">
-                @include('localusers.partials.modal-edit')
+                @include('localusers.partials.btn-edit')
                 @include('localusers.partials.btn-delete')
               </div>
             </td>
@@ -61,7 +61,10 @@
       oTable = $('.datatable-nopagination').DataTable({
         dom:
           't{{ $paginar ? 'p' : '' }}',
-          'paging': {{ $paginar ? 'true' : 'false' }}
+          'paging': {{ $paginar ? 'true' : 'false' }},
+          columnDefs: [
+            { targets: -1, orderable: false }    // desativa ordenação da última coluna
+          ]
       });
 
       // recuperando o storage local

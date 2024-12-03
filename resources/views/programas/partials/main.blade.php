@@ -16,7 +16,7 @@
         <div>
           <a name="{{ \Str::lower($programa->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $programa->nome }}</a>
           @can('perfiladmin')
-            @include('programas.partials.modal-edit')
+            @include('programas.partials.btn-edit')
             @include('programas.partials.btn-delete')
           @endcan
           @include('programas.partials.detalhes')

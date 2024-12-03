@@ -184,6 +184,16 @@ class User extends Authenticatable
         return $ret;
     }
 
+    public static function codpesExiste($codpes)
+    {
+        return self::where('codpes', $codpes)->exists();
+    }
+
+    public static function emailExiste($email)
+    {
+        return self::where('email', $email)->exists();
+    }
+
     /**
      * Relacionamento n:n com inscrição:
      */

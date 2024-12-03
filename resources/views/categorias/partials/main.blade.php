@@ -16,7 +16,7 @@
         <div>
           <a name="{{ \Str::lower($categoria->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $categoria->nome }}</a>
           @can('perfiladmin')
-            @include('categorias.partials.modal-edit')
+            @include('categorias.partials.btn-edit')
             @include('categorias.partials.btn-delete')
           @endcan
           @include('categorias.partials.detalhes')
