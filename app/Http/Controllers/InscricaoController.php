@@ -26,7 +26,7 @@ class InscricaoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['listaSelecoes', 'create']);
     }
 
     /**
@@ -56,12 +56,11 @@ class InscricaoController extends Controller
      */
     public function listaSelecoes(Request $request)
     {
+        $this->authorize('inscricoes.create');
+
+        $request->validate(['filtro' => 'nullable|string']);
+
         \UspTheme::activeUrl('inscricoes/create');
-
-        $request->validate([
-            'filtro' => 'nullable|string',
-        ]);
-
         $categorias = Selecao::listarSelecoesParaNovaInscricao();          // obtém as seleções dentro das categorias
         return view('inscricoes.listaselecoes', compact('categorias'));
     }

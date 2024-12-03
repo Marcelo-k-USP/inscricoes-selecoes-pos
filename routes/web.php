@@ -16,7 +16,7 @@ use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', [IndexController::class, 'index'])->name('home');
 
-/* Senha única */
+// SENHA ÚNICA
 Route::get('login', [LoginController::class, 'redirectToProvider'])->name('login');
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');

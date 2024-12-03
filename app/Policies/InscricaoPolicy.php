@@ -50,9 +50,12 @@ class InscricaoPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(?User $user = null)    // se não colocarmos a interrogação, esta policy não é invocada no caso de usuário não logado
     {
-        return Gate::allows('perfilusuario');
+        if (is_null($user))
+            return true;
+        else
+            return Gate::allows('perfilusuario');
     }
 
     /**

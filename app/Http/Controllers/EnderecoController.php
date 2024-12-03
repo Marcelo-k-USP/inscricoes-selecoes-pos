@@ -11,6 +11,7 @@ class EnderecoController extends Controller
 
     public function __construct(ViacepService $viacepService)
     {
+        $this->middleware('auth');
         $this->viacepService = $viacepService;
     }
 

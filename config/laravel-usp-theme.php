@@ -31,7 +31,7 @@ $menu = [
     [
         'text' => '<i class="far fa-plus-square"></i> Nova Inscrição',
         'url' => 'inscricoes/create',
-        'can' => 'inscricoes.viewTheir',
+        'can' => 'inscricoes.create',
     ],
     [
         'text' => '<i class="far fa-list-alt"></i> Minhas Inscrições',
@@ -111,6 +111,7 @@ $right_menu = [
         'title' => 'Configurações',
         'submenu' => $trocarPerfil,
         'align' => 'right',
+        'can' => 'usuario',
     ],
 ];
 

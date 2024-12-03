@@ -13,6 +13,11 @@ use Spatie\Permission\Models\Permission;
 
 class LocalUserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     function index(Request $request)
     {
         $this->authorize('admin');
@@ -95,7 +100,6 @@ class LocalUserController extends Controller
     {
         $this->authorize('admin');
 
-        \Illuminate\Support\Facades\Log::info('$localuser->codpes: ' . json_encode($localuser->codpes));
         if ($localuser->local == false) {
             request()->session()->flash('alert-danger', 'Usuário senha única não pode ser apagado.');
             return redirect('/localusers');
