@@ -17,7 +17,7 @@
   </div>
   <div class="card-body">
     @foreach ($inscricao->selecao->tiposArquivo() as $tipo_arquivo)
-      <div class="informativos-lista">
+      <div class="arquivos-lista">
         {{ $tipo_arquivo['nome'] }}
 
         @if ($inscricao->selecao->arquivos->where('pivot.tipo', $tipo_arquivo['nome'])->count() > 0)
