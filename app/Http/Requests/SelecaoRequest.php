@@ -22,10 +22,10 @@ class SelecaoRequest extends FormRequest
      * @return array
      */
     public const rules = [
-        'categoria_id' => 'required|numeric',
+        'categoria_id' => ['required', 'numeric'],
         'nome' => ['required', 'max:100'],
         'descricao' => ['max:255'],
-        'programa_id' => 'required|numeric',
+        'programa_id' => ['required', 'numeric'],
     ];
 
     public const messages = [

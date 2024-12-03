@@ -22,7 +22,7 @@ class InscricaoRequest extends FormRequest
      * @return array
      */
     public const rules = [
-        'extras' => 'nullable',
+        'extras' => ['nullable'],
     ];
 
     public const messages = [
