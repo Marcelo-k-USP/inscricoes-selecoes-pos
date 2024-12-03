@@ -16,7 +16,7 @@ class ArquivoController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('show');
     }
 
     /**
@@ -86,10 +86,7 @@ class ArquivoController extends Controller
             $tipo_modelo = 'Inscrição';
         $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
 
-        $this->authorize($tipo_modelo_plural . '.view');
-
-        //https://stackoverflow.com/questions/39329299/laravel-file-downloaded-from-storage-folder-gets-corrupted
-        ob_end_clean();
+        ob_end_clean();    // https://stackoverflow.com/questions/39329299/laravel-file-downloaded-from-storage-folder-gets-corrupted
 
         return Storage::download($arquivo->caminho, $arquivo->nome_original);
     }
