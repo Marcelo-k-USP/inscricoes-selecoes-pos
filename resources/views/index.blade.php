@@ -5,6 +5,6 @@
   @auth
     <script>window.location = "inscricoes";</script>
   @else
-    Realize sua inscrição ou, para acessar suas inscrições ou funcionalidades administrativas, <a href="login"> Faça seu Login! </a>
+    <a href="inscricoes/create">Realize sua inscrição</a> ou, para acessar suas inscrições ou funcionalidades administrativas, <a href="login">faça seu login</a>.
   @endauth
 @endsection
