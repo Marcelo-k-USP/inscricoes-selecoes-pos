@@ -5,6 +5,9 @@
   @auth
     <script>window.location = "inscricoes";</script>
   @else
-    <a href="inscricoes/create">Realize sua inscrição</a> ou, para acessar suas inscrições ou funcionalidades administrativas, <a href="login">faça seu login</a>.
+    Candidato, se você tiver número USP, <a href="login">faça seu login usando a senha única</a>.<br />
+    Se você não tiver número USP, <a href="inscricoes/create">realize sua inscrição</a> ou, para acessar suas inscrições, <a href="login">faça seu login usando a senha cadastrada no ato da inscrição</a>.<br />
+    <br />
+    Administrativo, <a href="login">faça seu login com a senha única USP</a>.
   @endauth
 @endsection
