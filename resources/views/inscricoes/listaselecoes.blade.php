@@ -19,10 +19,12 @@
   @endphp
 
   @if ($existem_selecoes)
-    <table class="table table-sm table-hover nova-inscricao display responsive" style="width:100%"">
+    <br />
+    Para qual processo seletivo você deseja se inscrever?<br />
+    <table class="table table-sm table-hover nova-inscricao display responsive" style="width: 100%;">
       <thead>
         <tr>
-          <th><span class="d-none">Seleções</span></td>
+          <th style="border: none;"><span class="d-none">Seleções</span></td>
         </tr>
       </thead>
       <tbody>
@@ -32,12 +34,13 @@
               <td>
                 {{ $categoria->nome }}
                 @foreach ($categoria->selecoes as $selecao)
-                <div class="ml-3">
-                  <a href="inscricoes/create/{{ $selecao['id'] }}">{{ $selecao->nome }}</a>
-                  @if (!is_null($selecao->descricao))
-                    - {{ $selecao->descricao }}
-                  @endif
-                </div>
+                  <div class="ml-3">
+                    <a href="inscricoes/create/{{ $selecao['id'] }}">{{ $selecao->nome }}
+                      @if (!is_null($selecao->descricao))
+                        - {{ $selecao->descricao }}
+                      @endif
+                    </a>
+                  </div>
                 @endforeach
                 <br>
               </td>
