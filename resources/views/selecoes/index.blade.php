@@ -17,11 +17,11 @@
   <table class="table table-striped table-hover datatable-nopagination display responsive" style="width:100%">
     <thead>
       <tr>
-        <td>Categoria</td>
-        <td>Nome</td>
-        <td>Descrição</td>
-        <td>Início</td>
-        <td>Fim</td>
+        <th>Categoria</td>
+        <th>Nome</td>
+        <th>Descrição</td>
+        <th>Início</td>
+        <th>Fim</td>
       </tr>
     </thead>
     <tbody>

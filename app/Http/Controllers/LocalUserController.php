@@ -53,8 +53,7 @@ class LocalUserController extends Controller
         $user->givePermissionTo($p);
 
         \UspTheme::activeUrl('localusers');
-        $users = User::where('local', '1')->get();
-        return view('localusers.index', ['users' => $users]);
+        return view('localusers.index', monta_compact());
     }
 
     function edit(User $user)
@@ -78,7 +77,7 @@ class LocalUserController extends Controller
 
         \UspTheme::activeUrl('localusers');
         $users = User::where('local', '1')->get();
-        return view('localusers.index', ['users' => $users]);
+        return view('localusers.index', monta_compact());
     }
 
     function destroy(User $user)
@@ -93,6 +92,13 @@ class LocalUserController extends Controller
 
         \UspTheme::activeUrl('localusers');
         $users = User::where('local', '1')->get();
-        return view('localusers.index', ['users' => $users]);
+        return view('localusers.index', monta_compact());
+    }
+
+    private function monta_compact() {
+        $localusers = User::where('local', '1')->get();
+        $fields = LocalUser::getFields();
+
+        return compact('localusers', 'fields');
     }
 }

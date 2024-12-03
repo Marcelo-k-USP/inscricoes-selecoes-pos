@@ -22,7 +22,7 @@
     <table class="table table-sm table-hover nova-inscricao display responsive" style="width:100%"">
       <thead>
         <tr>
-          <td><span class="d-none">Seleções</span></td>
+          <th><span class="d-none">Seleções</span></td>
         </tr>
       </thead>
       <tbody>

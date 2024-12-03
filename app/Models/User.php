@@ -6,15 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Gate;
+use \Spatie\Permission\Traits\HasRoles;
 use Uspdev\Replicado\Pessoa;
+use \Uspdev\SenhaunicaSocialite\Traits\HasSenhaunica;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
-    use \Uspdev\SenhaunicaSocialite\Traits\HasSenhaunica;
-
-    # desativado por enquanto por conta de conflito
-    #use \Spatie\Permission\Traits\HasRoles;
+    use HasFactory, HasRoles, HasSenhaUnica, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -22,12 +20,14 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
-        'codpes', 'telefone', 'last_login_at',
+        'name',
+        'email',
+        'password',
+        'codpes',
+        'telefone',
+        'local',
+        'is_admin',
         'config',
-        'config->notifications->email',
-        'config->notifications->email->filas',
-        'config->notifications->email->observador',
     ];
 
     # colocando data aqui ele já envia um objeto carbon
@@ -191,7 +191,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao')->withTimestamps();
     }
-    
+
     /**
      * Relacionamento n:n com setor, atributo funcao:
      *  - Gerente, Usuario
