@@ -112,7 +112,7 @@ class JSONForms
                     $html_string_adicional = '';
                     if (($key == 'cep') || (strpos($key, 'cep_') === 0)) {
                         $largura = 2;
-                        $html_string_adicional = '<a href="javascript:void(0);" onclick="consultar_cep(\'' . $key . '\')" class="btn btn-primary">Consultar CEP</a>';
+                        $html_string_adicional = '<a href="javascript:void(0);" onclick="consultar_cep(\'' . $key . '\')" id="consultar_' . $key . '" class="btn btn-primary">Consultar CEP</a>';
                     }
                     $html_string .=   '<div class="col-sm-' . $largura . '">' . PHP_EOL .
                                         '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .

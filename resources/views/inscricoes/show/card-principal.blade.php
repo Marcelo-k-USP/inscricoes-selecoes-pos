@@ -102,6 +102,7 @@
     {
       var cep = $('input[id="extras\[' + field_name + '\]"]').val().replace('-', '');
       if (cep)
+        $('#consultar_' + field_name).text('Consultando ...');
         $.ajax({
           url: '{{ route("consulta.cep") }}',
           type: 'get',
@@ -118,8 +119,12 @@
             $('input[id="extras\[bairro' + field_suffix + '\]"]').val(data.bairro);
             $('input[id="extras\[cidade' + field_suffix + '\]"]').val(data.localidade);
             $('select[id="extras\[uf' + field_suffix + '\]"]').val(data.uf.toLowerCase());
+
+            $('#consultar_' + field_name).text('Consultar CEP');
           },
           error: function(xhr, status, error) {
+            $('#consultar_' + field_name).text('Consultar CEP');
+
             if (xhr.responseJSON && xhr.responseJSON.error)
               window.alert(xhr.responseJSON.error);
             else if (xhr.responseText)
