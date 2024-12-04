@@ -77,6 +77,14 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes/create');
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
+        if (Auth::check()) {    // se o usuário estiver logado (tanto usuário local quanto não local)
+            $user = Auth::user();
+            $extras = array(
+                'nome' => $user->name,
+                'e_mail' => $user->email,
+            );
+            $inscricao->extras = json_encode($extras);
+        }
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
