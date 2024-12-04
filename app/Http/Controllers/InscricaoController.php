@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InscricaoRequest;
 use App\Models\Inscricao;
 use App\Models\Selecao;
+use App\Models\User;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class InscricaoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth')->except(['listaSelecoes', 'create']);
+        $this->middleware('auth')->except(['listaSelecoes', 'create', 'store']);    // exige que o usuário esteja logado, exceto para listaSelecoes, create e store
     }
 
     /**
@@ -77,7 +78,8 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes/create');
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
-        if (Auth::check()) {    // se o usuário estiver logado (tanto usuário local quanto não local)
+        // se for usuário logado (tanto usuário local quanto não local)...
+        if (Auth::check()) {
             $user = Auth::user();
             $extras = array(
                 'nome' => $user->name,
@@ -99,11 +101,32 @@ class InscricaoController extends Controller
         $selecao = Selecao::find($request->selecao_id);
         $this->authorize('inscricoes.create', $selecao);
 
-        # transaction para não ter problema de inconsistência do DB
-        $inscricao = \DB::transaction(function () use ($request, $selecao) {
+        $user_logado = Auth::check();
+        if ((!$user_logado) && User::emailExiste($request->extras['e_mail'])) {    // verifica se está duplicando o e-mail (pois mais pra baixo este usuário será gravado na tabela users, e não podemos permitir duplicatas)
+
+            $request->session()->flash('alert-danger', 'Este e-mail já está cadastrado!');
+
+            \UspTheme::activeUrl('inscricoes/create');
+            $inscricao = new Inscricao;
+            $inscricao->selecao = $selecao;
+            $inscricao->extras = json_encode($request->extras);    // recarrega a mesma página com os dados que o usuário preencheu antes do submit... pois o {{ old }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old }} dentro do {!! $element !!} do inscricoes.show.card-principal
+            return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
+        }
+
+        // transaction para não ter problema de inconsistência do DB
+        $inscricao = \DB::transaction(function () use ($request, $selecao, $user_logado) {
+
+            if (!$user_logado) {
+                // grava o usuário na tabela local
+                $user = 1;
+                $user->save();
+
+                // loga automaticamente o usuário
+
+            }
+
             $inscricao = new Inscricao;
             $inscricao->selecao_id = $selecao->id;
-
             $inscricao->extras = json_encode($request->extras);
 
             // vamos salvar sem evento pois o autor ainda não está cadastrado

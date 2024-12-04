@@ -95,13 +95,6 @@ class User extends Authenticatable
     {
         $fields = SELF::fields;
         return $fields;
-        // foreach ($fields as &$field) {
-        //     if (substr($field['name'], -3) == '_id') {
-        //         $class = '\\App\\Models\\' . $field['model'];
-        //         $field['data'] = $class::allToSelect();
-        //     }
-        // }
-        // return $fields;
     }
 
     public static function criarPorCodpes($codpes)
