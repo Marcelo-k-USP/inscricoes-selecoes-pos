@@ -225,12 +225,14 @@ class SelecaoController extends Controller
         // remonta $value, considerando apenas o que veio do $request (com isso, atualiza e também apaga)
         if (isset($request->value)) {
             foreach ($request->value as $campo => $atributos) {
+                $atributos['label'] = Str::of($atributos['label'])->replace(['\\', '\'', '"'], '');
                 $atributos['value'] = substr(removeAccents(Str::of($atributos['label'])->lower()->replace([' ', '-'], '_')), 0, 32);
                 $value[$campo] = array_filter($atributos, 'strlen');
             }
         }
         // adiciona campo novo
         if (is_array($new) && !empty($new)) {                           // veio do adicionar campo novo
+            $new['label'] = Str::of($new['label'])->replace(['\\', '\'', '"'], '');
             $new['value'] = substr(removeAccents(Str::of($new['label'])->lower()->replace([' ', '-'], '_')), 0, 32);
             $new['order'] = JSONForms::getLastIndex($template->$field->value, 'order') + 1;
             $value[] = $new;
