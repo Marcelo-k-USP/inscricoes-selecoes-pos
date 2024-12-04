@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Spatie\Html\Facades\Html;
@@ -56,6 +57,7 @@ class JSONForms
             $html_string          =   '<div class="col-sm-3">' . PHP_EOL .
                                         '<label class="col-form-label va-middle" for="extras[' . $key . ']">' . $label_formatted . '</label> ' . PHP_EOL .
                                       '</div>' . PHP_EOL;
+            $html_string_senha = '';
 
             switch ($type) {
                 case 'select':
@@ -112,13 +114,20 @@ class JSONForms
                     $html_string_adicional = '';
                     if (($key == 'cep') || (strpos($key, 'cep_') === 0)) {
                         $largura = 2;
-                        $html_string_adicional = '<a href="javascript:void(0);" onclick="consultar_cep(\'' . $key . '\')" id="consultar_' . $key . '" class="btn btn-primary">Consultar CEP</a>';
+                        $html_string_adicional .= '<a href="javascript:void(0);" onclick="consultar_cep(\'' . $key . '\')" id="consultar_' . $key . '" class="btn btn-primary">Consultar CEP</a>';
                     }
                     $html_string .=   '<div class="col-sm-' . $largura . '">' . PHP_EOL .
                                         '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
                                       '</div>' . PHP_EOL .
                                       $html_string_adicional;
-                    break;
+                    if (($key == 'e_mail') && !Auth::check())
+                        $html_string_senha .=
+                                      '<div class="col-sm-3">' . PHP_EOL .
+                                          '<label class="col-form-label va-middle" for="senha">Senha <small class="text-required">(*)</small></label> ' . PHP_EOL .
+                                      '</div>' . PHP_EOL .
+                                      '<div class="col-sm-9">' . PHP_EOL .
+                                          '<input class="form-control w-100" name="senha" id="senha" type="password" required>' . PHP_EOL .
+                                      '</div>' . PHP_EOL;
             }
             $input[] = new HtmlString($html_string);
 
@@ -133,6 +142,9 @@ class JSONForms
             # vamos incluir o input se "can for igual ao perfil" ou "se não houver can"
             if (($perfil && isset($json->can) && $json->can == $perfil) || (!$perfil && !isset($json->can)))
                 $form[] = $input;
+
+            if ($html_string_senha != '')
+                $form[] = [new HtmlString($html_string_senha)];
         }
         return $form;
     }

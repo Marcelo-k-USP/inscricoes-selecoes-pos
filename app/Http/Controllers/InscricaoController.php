@@ -122,7 +122,7 @@ class InscricaoController extends Controller
                 $user = LocalUser::create(
                     $request->extras['nome'],
                     $request->extras['e_mail'],
-                    '123456',
+                    $request->senha,
                     $request->extras['celular']
                 );
 
