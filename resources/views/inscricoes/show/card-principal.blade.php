@@ -73,14 +73,27 @@
       var form_valid = true;
       $('#form_principal [required]').each(function () {
         if (!this.validity.valid) {
+          window.alert(this.id);
+          window.alert(this.value);
           form_valid = false;
-          if (this.type === 'email')
-            if (this.value !== '')
-              return mostrar_validacao(this, 'E-mail inválido');
-            else
-              return mostrar_validacao(this, 'Favor preencher este campo');
-          else if (this.value === '')
-            return mostrar_validacao(this, 'Favor preencher este campo');
+          switch (this.type) {
+            case 'email':
+              if (this.value !== '')
+                return mostrar_validacao(this, 'E-mail inválido');
+              else
+                return mostrar_validacao(this, 'Favor preencher este campo');
+            case 'radio':
+              if ($('input[name="' + this.name + '"]:checked').length === 0)
+                return mostrar_validacao(this, 'Favor selecionar uma opção');
+              break;
+            case 'checkbox':
+              if (!this.checked)
+                return mostrar_validacao(this, 'Favor marcar esta opção');
+              break;
+            default:
+              if (this.value === '')
+                return mostrar_validacao(this, 'Favor preencher este campo');
+          }
         } else if ((this.id == 'extras[cpf]') || this.id.startsWith('extras[cpf_'))
           if (!validar_cpf(this.value)) {
             form_valid = false;
