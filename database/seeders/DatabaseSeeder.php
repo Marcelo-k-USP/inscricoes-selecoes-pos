@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Categoria;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,11 +17,12 @@ class DatabaseSeeder extends Seeder
         // ...
 
         $this->call([
+            PermissionSeeder::class,        // adiciona permissions
             SetorReplicadoSeeder::class,    // adiciona todos os setores da unidade do replicado
             ProgramaSeeder::class,          // adiciona programas
             CategoriaSeeder::class,         // adiciona categorias
             SelecaoSeeder::class,           // adiciona seleções
-            LinhaPesquisaSeeder::class,    // adiciona linhas de pesquisa
+            LinhaPesquisaSeeder::class,     // adiciona linhas de pesquisa
         ]);
     }
 }

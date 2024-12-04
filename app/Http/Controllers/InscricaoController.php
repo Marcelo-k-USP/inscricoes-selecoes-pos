@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InscricaoRequest;
 use App\Models\Inscricao;
+use App\Models\LocalUser;
 use App\Models\Selecao;
 use App\Models\User;
 use App\Utils\JSONForms;
@@ -115,14 +116,22 @@ class InscricaoController extends Controller
 
         // transaction para não ter problema de inconsistência do DB
         $inscricao = \DB::transaction(function () use ($request, $selecao, $user_logado) {
-
             if (!$user_logado) {
+
                 // grava o usuário na tabela local
-                $user = 1;
-                $user->save();
+                $user = LocalUser::create(
+                    $request->extras['nome'],
+                    $request->extras['e_mail'],
+                    '123456',
+                    $request->extras['celular']
+                );
 
                 // loga automaticamente o usuário
-
+                $user->givePermissionTo('user');
+                $user->last_login_at = now();
+                $user->save();
+                Auth::login($user, true);
+                session(['perfil' => 'usuario']);
             }
 
             $inscricao = new Inscricao;

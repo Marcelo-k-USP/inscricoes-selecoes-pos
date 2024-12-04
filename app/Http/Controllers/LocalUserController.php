@@ -65,9 +65,6 @@ class LocalUserController extends Controller
         if (User::emailExiste($request->email))
             return back()->withErrors(Validator::make([], [])->errors()->add('email', 'Este e-mail já está em uso!'))->withInput();
 
-        /* garante que existe a permission para locais */
-        $p = Permission::findOrCreate('Outros', 'senhaunica');
-
         $localuser = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -75,7 +72,7 @@ class LocalUserController extends Controller
             'password' => Hash::make($request->password),
             'local' => '1',
         ]);
-        $localuser->givePermissionTo($p);
+        $localuser->givePermissionTo('user');
 
         \UspTheme::activeUrl('localusers');
         return view('localusers.index', $this->monta_compact());

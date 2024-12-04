@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 
 class LocalUser extends Model
 {
@@ -40,5 +42,18 @@ class LocalUser extends Model
     {
         $fields = SELF::fields;
         return $fields;
+    }
+
+    public static function create($nome, $email, $senha, $celular)
+    {
+        $user = new User;
+        $user->name = $nome;
+        $user->email = $email;
+        $user->password = Hash::make($senha);
+        $user->telefone = $celular;
+        $user->local = '1';
+        $user->save();
+
+        return $user;
     }
 }
