@@ -18,16 +18,14 @@
     <table class="table table-striped table-hover datatable-nopagination display responsive" style="width:100%">
       <thead>
         <tr>
-          <th width="20%">Nome de Usuário</th>
           <th width="40%">Nome</th>
-          <th width="20%">E-mail</th>
-          <th width="20%">Ações</th>
+          <th width="30%">E-mail</th>
+          <th width="30%">Ações</th>
         </tr>
       </thead>
       <tbody>
         @foreach ($localusers as $localuser)
           <tr>
-            <td>{{ $localuser->codpes }}</td>
             <td>{{ $localuser->name }}</td>
             <td>{{ $localuser->email }}</td>
             <td>

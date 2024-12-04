@@ -24,10 +24,6 @@ class LocalUser extends Model
             'label' => 'Nome',
         ],
         [
-            'name' => 'codpes',
-            'label' => 'Nome de Usuário',
-        ],
-        [
             'name' => 'email',
             'label' => 'E-mail',
         ],

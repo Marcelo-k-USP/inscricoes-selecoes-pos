@@ -60,15 +60,12 @@ class LocalUserController extends Controller
         $validator = Validator::make($request->all(), LocalUserRequest::rules, LocalUserRequest::messages);
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
-        if (User::codpesExiste($request->codpes))
-            return back()->withErrors(Validator::make([], [])->errors()->add('codpes', 'Este nome de usuário já está em uso!'))->withInput();
         if (User::emailExiste($request->email))
             return back()->withErrors(Validator::make([], [])->errors()->add('email', 'Este e-mail já está em uso!'))->withInput();
 
         $localuser = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'codpes' => $request->codpes,
             'password' => Hash::make($request->password),
             'local' => '1',
         ]);
