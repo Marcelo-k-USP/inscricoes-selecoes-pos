@@ -39,6 +39,11 @@
                       @foreach ($template as $tkey => $tvalue)
                         <div class="form-row mt-2" id="linha_{{ $i }}">
                           <div class="col truncate-text">{{ $tkey }}</div>
+                          @php
+                            $disable_functions = '';
+                            if (($tkey == 'nome') || ($tkey == 'celular') || ($tkey == 'e_mail'))
+                              $disable_functions = ' disabled';
+                          @endphp
                           @foreach ($selecao->getTemplateFields() as $field)
                             <div class="col">
                               @isset($tvalue[$field])
@@ -56,14 +61,14 @@
                                     </select>
                                     @break
                                   @case('validate')
-                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]">
+                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]"{{ $disable_functions }}>
                                       <option value='' {{ $tvalue[$field] == '' ? 'selected' : '' }}>Sem validação</option>
                                       <option value='required' {{ $tvalue[$field] == 'required' ? 'selected' : '' }}>Obrigatório</option>
                                       {{-- <option value='required|integer' {{ $tvalue[$field] == 'required|integer' ? 'selected' : '' }}>Obrigatório - Somente números</option> --}}
                                     </select>
                                     @break
                                   @case('can')
-                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]">
+                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]"{{ $disable_functions }}>
                                       <option value='' {{ $tvalue[$field] == '' ? 'selected' : '' }}>Exibido para todos</option>
                                       <option value='atendente' {{ $tvalue[$field] == 'atendente' ? 'selected' : '' }}>Somente Atendentes</option>
                                     </select>
@@ -81,14 +86,14 @@
                               @if(empty($tvalue[$field]) && !isset($tvalue[$field]))
                                 @switch($field)
                                   @case('validate')
-                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]">
+                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]"{{ $disable_functions }}>
                                       <option value=''>Sem validação</option>
                                       <option value='required'>Obrigatório</option>
                                       <option value='required|integer'>Obrigatório - Somente números</option>
                                     </select>
                                     @break
                                   @case('can')
-                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]">
+                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]"{{ $disable_functions }}>
                                       <option value=''>Exibido para todos</option>
                                       <option value='atendente'>Somente Atendentes</option>
                                     </select>
@@ -100,7 +105,7 @@
                             </div>
                           @endforeach
                           <div class="col">
-                            <button class="btn btn-danger" type="button" onclick="apaga_campo(this)">Apagar</button>
+                            <button class="btn btn-danger" type="button" onclick="apaga_campo(this)"{{ $disable_functions }}>Apagar</button>
                             <input type="hidden" name="template[{{ $tkey }}][order]" id="index[{{ $i }}]" value="{{ $i }}">
                             <button class="btn btn-success" type="button" onclick="move(this, 1)">&#8679;</button>
                             <button class="btn btn-success" type="button" onclick="move(this, 0)">&#8681;</button>
