@@ -63,7 +63,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $this->authorize('users.view', $user);
+        //$this->authorize('users.view', $user);
         \UspTheme::activeUrl('senhaunica-users');
 
         $oauth_file = 'debug/oauth/' . $user->codpes . '.json';
