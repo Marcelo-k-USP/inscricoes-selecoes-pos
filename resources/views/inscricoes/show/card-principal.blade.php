@@ -73,8 +73,6 @@
       var form_valid = true;
       $('#form_principal [required]').each(function () {
         if (!this.validity.valid) {
-          window.alert(this.id);
-          window.alert(this.value);
           form_valid = false;
           switch (this.type) {
             case 'email':
