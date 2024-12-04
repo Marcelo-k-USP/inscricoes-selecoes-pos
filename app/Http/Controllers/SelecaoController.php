@@ -184,8 +184,11 @@ class SelecaoController extends Controller
                 $template[$campo]['value'] = json_decode($atributo['value'], true);
         // adiciona campo novo
         $new = (!is_null($request->new)) ? array_filter($request->new, 'strlen') : null;
+        if (isset($new['label']))
+            $new['label'] = removeSpecialChars($new['label']);
         $new['order'] = JSONForms::getLastIndex($template, 'order') + 1;
         if (isset($request->campo)) {                           // veio do adicionar campo novo
+            $request->campo = removeSpecialChars($request->campo);
             $template[$request->campo] = $new;
             if (isset($new['value']))
                 $template[$request->campo]['value'] = json_decode($new['value']);    // necessário para remover " excedentes que quebravam o JSON
@@ -225,14 +228,14 @@ class SelecaoController extends Controller
         // remonta $value, considerando apenas o que veio do $request (com isso, atualiza e também apaga)
         if (isset($request->value)) {
             foreach ($request->value as $campo => $atributos) {
-                $atributos['label'] = Str::of($atributos['label'])->replace(['\\', '\'', '"'], '');
+                $atributos['label'] = removeSpecialChars($atributos['label']);
                 $atributos['value'] = substr(removeAccents(Str::of($atributos['label'])->lower()->replace([' ', '-'], '_')), 0, 32);
                 $value[$campo] = array_filter($atributos, 'strlen');
             }
         }
         // adiciona campo novo
         if (is_array($new) && !empty($new)) {                           // veio do adicionar campo novo
-            $new['label'] = Str::of($new['label'])->replace(['\\', '\'', '"'], '');
+            $new['label'] = removeSpecialChars($new['label']);
             $new['value'] = substr(removeAccents(Str::of($new['label'])->lower()->replace([' ', '-'], '_')), 0, 32);
             $new['order'] = JSONForms::getLastIndex($template->$field->value, 'order') + 1;
             $value[] = $new;

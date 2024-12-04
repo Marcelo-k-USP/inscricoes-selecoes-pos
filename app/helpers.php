@@ -88,3 +88,13 @@ if (!function_exists('removeAccents')) {
         );
     }
 }
+
+if (!function_exists('removeSpecialChars')) {
+    function removeSpecialChars($str) {
+        return (string) Str::of($str)->replace([
+            '\\',
+            '\'',
+            '"',
+        ], '');
+    }
+}
