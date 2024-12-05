@@ -39,7 +39,7 @@
 
 @section('javascripts_bottom')
 @parent
-  <script>
+  <script type="text/javascript">
     $(document).ready(function() {
 
       var modalForm = $('#modalForm');

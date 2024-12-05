@@ -25,7 +25,7 @@
 
 @section('javascripts_bottom')
 @parent
-  <script>
+  <script type="text/javascript">
     $(function() {
 
       // vamos confirmar ao apagar um registro
@@ -47,9 +47,7 @@
         $('#menu').find('.navbar').addClass('admin-menubar');
       @endif
     });
-  </script>
 
-  <script>
     $('input.datepicker').datepicker({
       dateFormat: 'dd/mm/yy',
       closeText:"Fechar",

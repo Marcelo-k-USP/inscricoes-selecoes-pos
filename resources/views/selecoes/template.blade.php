@@ -139,7 +139,7 @@
 @parent
   <script src="js/functions.js"></script>
 
-  <script>
+  <script type="text/javascript">
     function apaga_campo(r) {
       if (confirm('Tem certeza que deseja deletar?')) {
         var row = r.parentNode.parentNode;

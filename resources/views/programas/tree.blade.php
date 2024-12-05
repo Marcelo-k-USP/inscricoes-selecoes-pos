@@ -12,7 +12,7 @@
 
 @section('javascripts_bottom')
 @parent
-  <script>
+  <script type="text/javascript">
     $(document).ready(function() {
       if (location.hash) {    // se houver anchor na url, vamos abrir os detalhes
         $('#detalhes_' + location.hash.substring(1)).collapse('show')

@@ -46,7 +46,7 @@
 
 @section('javascripts_bottom')
 @parent
-  <script>
+  <script type="text/javascript">
     $(document).ready(function() {
 
         $('#json-modal-form').on('shown.bs.modal', function() {

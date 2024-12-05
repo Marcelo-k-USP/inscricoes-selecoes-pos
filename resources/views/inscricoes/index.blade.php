@@ -78,7 +78,7 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.8/css/fixedHeader.dataTables.min.css">
   <script src="https://cdn.datatables.net/fixedheader/3.1.8/js/dataTables.fixedHeader.min.js"></script>
 
-  <script>
+  <script type="text/javascript">
     $(document).ready(function() {
 
       oTable = $('.tabela-inscricoes').DataTable({

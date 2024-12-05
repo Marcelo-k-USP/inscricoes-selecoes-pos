@@ -48,7 +48,7 @@
 
 @section('javascripts_bottom')
 @parent
-  <script>
+  <script type="text/javascript">
     $(document).ready(function() {
       oTable = $('.datatable-nopagination').DataTable({
         dom:

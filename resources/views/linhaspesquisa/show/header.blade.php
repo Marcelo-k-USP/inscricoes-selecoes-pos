@@ -12,7 +12,7 @@
 @once
 @section('javascripts_bottom')
 @parent
-  <script>
+  <script type="text/javascript">
     $(function() {
       $('.linhapesquisa-item').hover(
         function() {

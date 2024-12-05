@@ -41,7 +41,7 @@
 
 @section('javascripts_bottom')
 @parent
-  <script>
+  <script type="text/javascript">
     $(document).ready(function() {
 
       $('#LinhaPesquisaModal').on('shown.bs.modal', function() {

@@ -37,7 +37,7 @@
 
 @section('javascripts_bottom')
 @parent
-  <script>
+  <script type="text/javascript">
     $(document).ready(function() {
 
       $('#modalForm').on('shown.bs.modal', function() {
