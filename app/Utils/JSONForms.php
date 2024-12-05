@@ -134,6 +134,7 @@ class JSONForms
             }
             $input[] = new HtmlString($html_string);
 
+            // inclui help
             if (isset($json->help)) {
                 $html_string      =   '<div class="col-sm-3">&nbsp;</div>' . PHP_EOL .
                                       '<div class="col-sm-9">' . PHP_EOL .
@@ -142,13 +143,23 @@ class JSONForms
                 $input[] = new HtmlString($html_string);
             }
 
-            # vamos incluir o input se "can for igual ao perfil" ou "se não houver can"
+            // vamos incluir o input se "can for igual ao perfil" ou "se não houver can"
             if (($perfil && isset($json->can) && $json->can == $perfil) || (!$perfil && !isset($json->can)))
                 $form[] = $input;
 
+            // inclui campo de senha
             if ($html_string_senha != '')
                 $form[] = [new HtmlString($html_string_senha)];
         }
+
+        // inclui o reCAPTCHA no final do formulário
+        if (!Auth::check()) {
+            $html_string = '<div class="col-sm-12">' . PHP_EOL .
+                             '<div class="g-recaptcha" data-sitekey="' . config('selecoes-pos.recaptcha_site_key') . '"></div> &nbsp; &nbsp;' . PHP_EOL .
+                           '</div>' . PHP_EOL;
+            $form[] = [new HtmlString($html_string)];
+        }
+
         return $form;
     }
 

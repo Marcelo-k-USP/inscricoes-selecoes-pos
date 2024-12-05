@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ViacepService::class, function ($app) {
             return new ViacepService(new Client());
         });
+        $this->app->singleton(RecaptchaService::class, function ($app) {
+            return new RecaptchaService();
+        });
     }
 
     /**

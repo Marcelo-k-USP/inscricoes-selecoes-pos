@@ -10,6 +10,7 @@ return [
     // deprecado em 2/23. Remover no próximo release
     'forcar_https' => env('FORCAR_HTTPS', false),
 
-    // token para consulta de CEP nos Correios
-    'correios_api_token' => env('CORREIOS_API_TOKEN'),
+    // reCAPTCHA
+    'recaptcha_site_key' => env('RECAPTCHA_SITE_KEY'),
+    'recaptcha_secret_key' => env('RECAPTCHA_SECRET_KEY'),
 ];
