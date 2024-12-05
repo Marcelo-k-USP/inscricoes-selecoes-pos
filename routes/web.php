@@ -70,6 +70,10 @@ Route::get('users/perfil/{perfil}', [UserController::class, 'trocarPerfil']);
 Route::get('users/meuperfil', [UserController::class, 'meuperfil']);
 Route::resource('users', UserController::class);
 
+// LOCAL USERS - LOGIN
+Route::get('localusers/login', [LocalUserController::class, 'showLogin'])->name('localusers.showlogin');
+Route::post('localusers/login', [LocalUserController::class, 'login'])->name('localusers.login');
+
 // LOCAL USERS
 Route::resource('localusers', LocalUserController::class);
 

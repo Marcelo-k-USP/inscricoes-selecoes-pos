@@ -15,7 +15,31 @@ class LocalUserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['showLogin', 'login']);    // exige que o usuário esteja logado, exceto para showLogin e login
+    }
+
+    function showLogin()
+    {
+        return view('localusers.login');
+    }
+
+    function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ], [
+            'email.required' => 'O e-mail é obrigatório!',
+            'email.email' => 'O e-mail não é válido!',
+            'password.required' => 'A senha é obrigatória!'
+        ]);
+
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials))
+            return redirect('/inscricoes');
+
+        request()->session()->flash('alert-danger', 'Usuário e senha incorretos');
+        return view('localusers.login');
     }
 
     function index(Request $request)
