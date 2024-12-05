@@ -59,6 +59,7 @@
               $(this).val(row[this.name]);
               console.log(this.name);
             });
+            $('#modalForm #password').val('');
 
             // Ajustando action
             $('#modalForm').find('form').attr('action', 'localusers/' + id);
@@ -76,6 +77,7 @@
 
         // preenchendo o form com os valores a serem editados
         $("#modalForm select").val(id);
+        $('#modalForm #password').val('');
 
         // Ajustando action
         $('#modalForm').find('form').attr('action', 'localusers');

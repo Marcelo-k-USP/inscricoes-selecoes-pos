@@ -64,3 +64,12 @@ function validar_cpf(cpf)
 
   return true;
 }
+
+function toggle_senha() {
+  var toggle_icon = $('#toggle_icon');
+  var input_senha = $('#senha');
+  if (input_senha.length === 0)
+    input_senha = $('#password');
+  toggle_icon.attr('src', '/icons/' + (input_senha.attr('type') === 'password' ? 'hide' : 'view') + '.png');
+  input_senha.attr('type', (input_senha.attr('type') === 'password' ? 'text' : 'password'));
+}

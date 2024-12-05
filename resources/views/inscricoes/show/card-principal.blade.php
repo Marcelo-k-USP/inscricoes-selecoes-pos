@@ -45,7 +45,7 @@
 @section('javascripts_bottom')
 @parent
   <script src="js/functions.js"></script>
-  <script>
+  <script type="text/javascript">
     $(document).ready(function() {
 
       $('#form_principal').find(':input:visible:first').focus();
@@ -71,6 +71,7 @@
 
     $('#form_principal').on('submit', function(event) {
       var form_valid = true;
+
       $('#form_principal [required]').each(function () {
         if (!this.validity.valid) {
           form_valid = false;

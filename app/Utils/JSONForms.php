@@ -125,8 +125,11 @@ class JSONForms
                                       '<div class="col-sm-3">' . PHP_EOL .
                                           '<label class="col-form-label va-middle" for="senha">Senha <small class="text-required">(*)</small></label> ' . PHP_EOL .
                                       '</div>' . PHP_EOL .
-                                      '<div class="col-sm-9">' . PHP_EOL .
+                                      '<div class="col-sm-3" style="position: relative;">' . PHP_EOL .
                                           '<input class="form-control w-100" name="senha" id="senha" type="password" required>' . PHP_EOL .
+                                          '<a href="javascript:void(0);" onclick="toggle_senha()" style="position: absolute; right: -20px; top: 20%; text-decoration: none;">' . PHP_EOL .
+                                            '<img src="' . url('/icons/view.png') . '" id="toggle_icon" style="width: 20px; height: 20px;">' . PHP_EOL .
+                                          '</a>' . PHP_EOL .
                                       '</div>' . PHP_EOL;
             }
             $input[] = new HtmlString($html_string);
