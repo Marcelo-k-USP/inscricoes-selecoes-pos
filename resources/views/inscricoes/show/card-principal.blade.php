@@ -109,6 +109,10 @@
       }
     });
 
+    $('#senha').on('input', function () {
+      validar_forca_senha($(this).val());
+    });
+
     function mostrar_validacao(obj, msg)
     {
       obj.setCustomValidity(msg);

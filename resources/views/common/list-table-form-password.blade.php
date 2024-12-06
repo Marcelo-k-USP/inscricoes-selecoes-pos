@@ -2,8 +2,8 @@
   @php
     $col['label'] .= ((in_array('required', $rules[$col['name']] ?? [])) ? ' <small class="text-required">(*)</small>' : '');
   @endphp
-  {{ html()->label($col['label'] ?? $col['name'], $col['name'])->class('col-form-label col-sm-3') }}
-  <div class="col-sm-3" style="position: relative;">
+  {{ html()->label($col['label'] ?? $col['name'], $col['name'])->class('col-form-label col-sm-3')->style('margin-top: -20px;') }}
+  <div class="col-sm-3" style="margin-top: -20px;">
     {{ html()->input('password', $col['name'])
       ->value(old($col['name'], $modo == 'edit' ? $modelo->{$col['name']} : ''))
       ->class('form-control')
@@ -13,9 +13,18 @@
       <img src="/icons/view.png" id="toggle_icon_{{ $col['name'] }}" style="width: 20px; height: 20px;">
     </a>
   </div>
+  <div id="strength-wrapper">
+    <div id="barra_forca_senha" style="height: 10px; width: 0px;">&nbsp;</div>
+    <p id="texto_forca_senha" style="margin-top: 5px;">&nbsp;</p>
+  </div>
 </div>
 
 @section('javascripts_bottom')
 @parent
   <script src="js/functions.js"></script>
+  <script type="text/javascript">
+    $('#{{ $col['name'] }}').on('input', function () {
+      validar_forca_senha($(this).val());
+    });
+  </script>
 @endsection

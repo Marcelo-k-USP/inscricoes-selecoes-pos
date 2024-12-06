@@ -65,7 +65,32 @@ function validar_cpf(cpf)
   return true;
 }
 
-function toggle_senha(field_id) {
+function validar_forca_senha(senha)
+{
+  const barra_forca_senha = $('#barra_forca_senha');
+  const texto_forca_senha = $('#texto_forca_senha');
+  var forca = 0;
+
+  if (senha.length >= 8) forca++;
+  if (senha.match(/[a-z]+/  )) forca++;
+  if (senha.match(/[A-Z]+/  )) forca++;
+  if (senha.match(/[0-9]+/  )) forca++;
+  if (senha.match(/[$@#&!]+/)) forca++;
+
+  switch (forca) {
+    case 0: texto_forca_senha.innerText(' '     )                           ;                                                                 break;
+    case 1: texto_forca_senha.text('Muito fraca').css('color', 'red'       ); barra_forca_senha.css('background-color', 'red'              ); break;
+    case 2: texto_forca_senha.text('Fraca'      ).css('color', 'orange'    ); barra_forca_senha.css('background-color', 'orange'           ); break;
+    case 3: texto_forca_senha.text('Boa'        ).css('color', 'yellow'    ); barra_forca_senha.css('background-color', 'yellow !important'); break;    // sem o !important, o amarelo na barra fica marrom
+    case 4: texto_forca_senha.text('Forte'      ).css('color', 'lightgreen'); barra_forca_senha.css('background-color', 'lightgreen'       ); break;
+    case 5: texto_forca_senha.text('Muito forte').css('color', 'green'     ); barra_forca_senha.css('background-color', 'green'            );
+  }
+
+  barra_forca_senha.css('width', (forca * 20) + 'px');
+}
+
+function toggle_senha(field_id)
+{
   var toggle_icon = $('#toggle_icon_' + field_id);
   var input_senha = $('#' + field_id);
   if (input_senha.length === 0)
