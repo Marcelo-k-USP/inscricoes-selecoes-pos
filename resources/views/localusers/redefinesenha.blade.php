@@ -31,7 +31,7 @@
         <div style="position: relative; margin-top: -10px;">
           <input class="form-control mb-4" style="width: 240px; padding-right: 30px;" type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirmar Nova Senha">
           <a href="javascript:void(0);" onclick="toggle_senha('password_confirmation')">
-            <img src="/icons/view.png" id="toggle_icon_password_confirmation" style="position: absolute; right: 119px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 20px; height: 20px;">
+            <img src="/icons/view.png" id="toggle_icon_password_confirmation" style="position: absolute; right: 120px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 20px; height: 20px;">
           </a>
         </div>
 
