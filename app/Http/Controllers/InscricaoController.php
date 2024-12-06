@@ -11,6 +11,7 @@ use App\Services\RecaptchaService;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 
@@ -130,7 +131,7 @@ class InscricaoController extends Controller
         }
 
         // transaction para não ter problema de inconsistência do DB
-        $inscricao = \DB::transaction(function () use ($request, $selecao, $user_logado) {
+        $inscricao = DB::transaction(function () use ($request, $selecao, $user_logado) {
             if (!$user_logado) {
 
                 // grava o usuário na tabela local

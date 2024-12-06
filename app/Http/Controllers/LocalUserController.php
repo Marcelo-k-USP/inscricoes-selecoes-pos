@@ -142,12 +142,16 @@ class LocalUserController extends Controller
             return view('localusers.login');
         }
 
-        // atualiza a senha do usuário
-        $user->password = Hash::make($request->password);
-        $user->save();
+        // transaction para não ter problema de inconsistência do DB
+        DB::transaction(function () use ($request, $user) {
 
-        // remove o token de redefinição de senha da tabela
-        DB::table('password_resets')->where('email', $request->email)->delete();
+            // atualiza a senha do usuário
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            // remove o token de redefinição de senha da tabela
+            DB::table('password_resets')->where('email', $request->email)->delete();
+        });
 
         request()->session()->flash('alert-info', 'Senha redefinida com sucesso');
         return view('localusers.login');
