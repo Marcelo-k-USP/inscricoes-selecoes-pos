@@ -78,12 +78,12 @@ function validar_forca_senha(senha)
   if (senha.match(/[$@#&!]+/)) forca++;
 
   switch (forca) {
-    case 0: texto_forca_senha.innerText(' '     )                           ;                                                                 break;
-    case 1: texto_forca_senha.text('Muito fraca').css('color', 'red'       ); barra_forca_senha.css('background-color', 'red'              ); break;
-    case 2: texto_forca_senha.text('Fraca'      ).css('color', 'orange'    ); barra_forca_senha.css('background-color', 'orange'           ); break;
-    case 3: texto_forca_senha.text('Boa'        ).css('color', 'yellow'    ); barra_forca_senha.css('background-color', 'yellow !important'); break;    // sem o !important, o amarelo na barra fica marrom
-    case 4: texto_forca_senha.text('Forte'      ).css('color', 'lightgreen'); barra_forca_senha.css('background-color', 'lightgreen'       ); break;
-    case 5: texto_forca_senha.text('Muito forte').css('color', 'green'     ); barra_forca_senha.css('background-color', 'green'            );
+    case 0: texto_forca_senha.css('visibility', 'hidden' );                                                                                                                                   break;
+    case 1: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Muito fraca').css('color', 'red'       ); barra_forca_senha.css('background-color', 'red'              ); break;
+    case 2: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Fraca'      ).css('color', 'orange'    ); barra_forca_senha.css('background-color', 'orange'           ); break;
+    case 3: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Boa'        ).css('color', 'yellow'    ); barra_forca_senha.css('background-color', 'yellow !important'); break;    // sem o !important, o amarelo na barra fica marrom
+    case 4: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Forte'      ).css('color', 'lightgreen'); barra_forca_senha.css('background-color', 'lightgreen'       ); break;
+    case 5: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Muito forte').css('color', 'green'     ); barra_forca_senha.css('background-color', 'green'            );
   }
 
   barra_forca_senha.css('width', (forca * 20) + 'px');
