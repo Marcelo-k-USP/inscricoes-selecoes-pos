@@ -113,10 +113,10 @@ class LocalUserController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:8|confirmed',
         ], [
             'password.required' => 'O campo de senha é obrigatório!',
-            'password.min' => 'A senha deve ter pelo menos 6 caracteres!',
+            'password.min' => 'A senha deve ter pelo menos 8 caracteres!',
             'password.confirmed' => 'A confirmação da senha não coincide.',
         ]);
 

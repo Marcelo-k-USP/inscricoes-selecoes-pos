@@ -24,7 +24,7 @@ class LocalUserRequest extends FormRequest
     public const rules = [
         'name' => ['required', 'max:100'],
         'email' => ['required', 'email'],
-        'password' => ['required', 'min:6'],
+        'password' => ['required', 'min:8'],
     ];
 
     public const messages = [
@@ -33,6 +33,6 @@ class LocalUserRequest extends FormRequest
         'email.required' => 'O e-mail do usuário é obrigatório!',
         'email.email' => 'O e-mail do usuário é inválido!',
         'password.required' => 'A senha é obrigatória!',
-        'password.min' => 'A senha deve ter pelo menos 6 caracteres!',
+        'password.min' => 'A senha deve ter pelo menos 8 caracteres!',
     ];
 }
