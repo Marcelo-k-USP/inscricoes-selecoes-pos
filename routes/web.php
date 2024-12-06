@@ -73,6 +73,9 @@ Route::resource('users', UserController::class);
 // LOCAL USERS - LOGIN
 Route::get('localusers/login', [LocalUserController::class, 'showLogin'])->name('localusers.showlogin');
 Route::post('localusers/login', [LocalUserController::class, 'login'])->name('localusers.login');
+Route::post('localusers/esqueceusenha', [LocalUserController::class, 'esqueceuSenha'])->name('localusers.esqueceusenha');
+Route::get('localusers/redefinesenha/{token}', [LocalUserController::class, 'iniciaRedefinicaoSenha'])->name('localusers.iniciaredefinicaosenha');
+Route::post('localusers/redefinesenha', [LocalUserController::class, 'redefineSenha'])->name('localusers.redefinesenha');
 
 // LOCAL USERS
 Route::resource('localusers', LocalUserController::class);

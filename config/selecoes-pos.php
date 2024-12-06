@@ -13,4 +13,7 @@ return [
     // reCAPTCHA
     'recaptcha_site_key' => env('RECAPTCHA_SITE_KEY'),
     'recaptcha_secret_key' => env('RECAPTCHA_SECRET_KEY'),
+
+    // tempo de expiração do link de redefinição de senha de usuários locais (em minutos)
+    'password_reset_link_expiry_time' => (int) env('PASSWORD_RESET_LINK_EXPIRY_TIME', 60),
 ];

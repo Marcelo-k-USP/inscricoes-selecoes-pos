@@ -3,27 +3,31 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Carbon\Carbon;
 use Hash;
 use App\Http\Requests\LocalUserRequest;
+use App\Mail\LocalUserMail;
 use App\Models\LocalUser;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 
 class LocalUserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['showLogin', 'login']);    // exige que o usuário esteja logado, exceto para showLogin e login
+        $this->middleware('auth')->except(['showLogin', 'login', 'esqueceuSenha', 'iniciaRedefinicaoSenha', 'redefineSenha']);    // exige que o usuário esteja logado, exceto para showLogin, login, etc.
     }
 
-    function showLogin()
+    public function showLogin()
     {
         return view('localusers.login');
     }
 
-    function login(Request $request)
+    public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
@@ -35,14 +39,121 @@ class LocalUserController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials))
-            return redirect('/inscricoes');
+        if (!Auth::attempt($credentials)) {
+            request()->session()->flash('alert-danger', 'Usuário e senha incorretos');
+            return view('localusers.login');
+        }
 
-        request()->session()->flash('alert-danger', 'Usuário e senha incorretos');
+        return redirect('/inscricoes');
+    }
+
+    public function esqueceuSenha(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ], [
+            'email.required' => 'O e-mail é obrigatório!',
+            'email.email' => 'O e-mail não é válido!'
+        ]);
+
+        // procura por usuário local com esse e-mail (somente local... pois não queremos fornecer possibilidade de resetar senha única USP de um usuário não local)
+        $localuser = User::where('email', $request->email)->where('local', '1')->first();
+        if (is_null($localuser)) {
+            request()->session()->flash('alert-danger', 'E-mail não encontrado');
+            return view('localusers.login');
+        }
+
+        // gera um token
+        $token = Str::random(60);
+
+        // armazena o token no banco de dados
+        DB::table('password_resets')->updateOrInsert(
+            ['email' => $localuser->email],    // procura por registro com este e-mail
+            [                                  // atualiza ou insere com os dados abaixo
+                'email' => $localuser->email,
+                'token' => Hash::make($token),
+                'created_at' => now()
+            ]
+        );
+
+        // monta a URL de redefinição de senha
+        $password_reset_url = url('localusers/redefinesenha', $token);
+
+        // envia e-mail para o usuário local... não utilizo observer como no Chamados pois aqui não faz sentido, o observer faz mais sentido disparando seus eventos próprios (created, updated, etc.)
+        \Mail::to($localuser->email)
+            ->queue(new LocalUserMail(compact('localuser', 'password_reset_url')));
+
+        request()->session()->flash('alert-info', 'E-mail enviado com sucesso');
         return view('localusers.login');
     }
 
-    function index(Request $request)
+    public function iniciaRedefinicaoSenha($token)
+    {
+        // verifica se o token recebido existe
+        $password_reset = DB::table('password_resets')->get()->first(function ($reset) use ($token) {
+            return Hash::check($token, $reset->token);
+        });
+        if (!$password_reset) {
+            request()->session()->flash('alert-danger', 'Este link é inválido');
+            return view('localusers.login');
+        }
+
+        // verifica se o token recebido expirou
+        if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast()) {
+            request()->session()->flash('alert-danger', 'Este link expirou');
+            return view('localusers.login');
+        }
+
+        $email = $password_reset->email;
+        return view('localusers.redefinesenha', compact('token', 'email'));
+    }
+
+    public function redefineSenha(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ], [
+            'password.required' => 'O campo de senha é obrigatório!',
+            'password.min' => 'A senha deve ter pelo menos 6 caracteres!',
+            'password.confirmed' => 'A confirmação da senha não coincide.',
+        ]);
+
+        // verifica se os dados vieram válidos
+        $password_reset = DB::table('password_resets')->where('email', $request->email)->first();
+        if ((!$password_reset) || (!Hash::check($request->token, $password_reset->token))) {
+            request()->session()->flash('alert-danger', 'Este link é inválido');
+            return view('localusers.login');
+        }
+
+        // verifica se o token recebido expirou
+        if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast()) {
+            request()->session()->flash('alert-danger', 'Este link expirou');
+            return view('localusers.login');
+        }
+
+        // verifica se o usuário existe
+        $user = User::where('email', $password_reset->email)
+            ->where('local', '1')
+            ->first();
+        if (!$user) {
+            request()->session()->flash('alert-danger', 'Usuário não cadastrado');
+            return view('localusers.login');
+        }
+
+        // atualiza a senha do usuário
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // remove o token de redefinição de senha da tabela
+        DB::table('password_resets')->where('email', $request->email)->delete();
+
+        request()->session()->flash('alert-info', 'Senha redefinida com sucesso');
+        return view('localusers.login');
+    }
+
+    public function index(Request $request)
     {
         $this->authorize('admin');
         \UspTheme::activeUrl('localusers');
@@ -77,7 +188,7 @@ class LocalUserController extends Controller
         }
     }
 
-    function store(LocalUserRequest $request)
+    public function store(LocalUserRequest $request)
     {
         $this->authorize('admin');
 
@@ -99,7 +210,7 @@ class LocalUserController extends Controller
         return view('localusers.index', $this->monta_compact());
     }
 
-    function update(Request $request, User $localuser)
+    public function update(Request $request, User $localuser)
     {
         $this->authorize('admin');
 
@@ -114,7 +225,7 @@ class LocalUserController extends Controller
         return view('localusers.index', $this->monta_compact());
     }
 
-    function destroy(User $localuser)
+    public function destroy(User $localuser)
     {
         $this->authorize('admin');
 

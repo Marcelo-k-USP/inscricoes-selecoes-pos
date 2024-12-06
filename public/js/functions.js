@@ -65,9 +65,9 @@ function validar_cpf(cpf)
   return true;
 }
 
-function toggle_senha() {
-  var toggle_icon = $('#toggle_icon');
-  var input_senha = $('#senha');
+function toggle_senha(field_id) {
+  var toggle_icon = $('#toggle_icon_' + field_id);
+  var input_senha = $('#' + field_id);
   if (input_senha.length === 0)
     input_senha = $('#password');
   toggle_icon.attr('src', '/icons/' + (input_senha.attr('type') === 'password' ? 'hide' : 'view') + '.png');

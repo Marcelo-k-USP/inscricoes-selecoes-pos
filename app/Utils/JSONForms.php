@@ -127,8 +127,8 @@ class JSONForms
                                       '</div>' . PHP_EOL .
                                       '<div class="col-sm-3" style="position: relative;">' . PHP_EOL .
                                           '<input class="form-control" style="width: 100%; padding-right: 30px" name="senha" id="senha" type="password" required>' . PHP_EOL .
-                                          '<a href="javascript:void(0);" onclick="toggle_senha()" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">' . PHP_EOL .
-                                            '<img src="' . url('/icons/view.png') . '" id="toggle_icon" style="width: 20px; height: 20px;">' . PHP_EOL .
+                                          '<a href="javascript:void(0);" onclick="toggle_senha(\'senha\')" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">' . PHP_EOL .
+                                            '<img src="' . url('/icons/view.png') . '" id="toggle_icon_senha" style="width: 20px; height: 20px;">' . PHP_EOL .
                                           '</a>' . PHP_EOL .
                                       '</div>' . PHP_EOL;
             }
