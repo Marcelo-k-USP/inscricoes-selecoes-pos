@@ -77,7 +77,7 @@ class CategoriaController extends Controller
 
         $categoria = Categoria::create($request->all());
 
-        $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
+        $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
         return back();
     }
 
@@ -100,7 +100,7 @@ class CategoriaController extends Controller
         $categoria->fill($request->all());
         $categoria->save();
 
-        $request->session()->flash('alert-info', 'Dados editados com sucesso');
+        $request->session()->flash('alert-success', 'Dados editados com sucesso');
         return back();
     }
 

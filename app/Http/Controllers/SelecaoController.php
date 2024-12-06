@@ -71,7 +71,7 @@ class SelecaoController extends Controller
         $requestData['data_fim'   ] = (is_null($requestData['data_fim'   ]) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_fim'   ]));
         $selecao = Selecao::create($requestData);
 
-        $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
+        $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
@@ -122,7 +122,7 @@ class SelecaoController extends Controller
         Selecao::atualizaStatusSelecoes();
         $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
-        $request->session()->flash('alert-info', 'Dados editados com sucesso');
+        $request->session()->flash('alert-success', 'Dados editados com sucesso');
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
@@ -146,7 +146,7 @@ class SelecaoController extends Controller
         $newjson = $request->template;
         $selecao->template = $newjson;
         $selecao->save();
-        $request->session()->flash('alert-info', 'Template salvo com sucesso');
+        $request->session()->flash('alert-success', 'Template salvo com sucesso');
         return back();
     }
 
@@ -197,7 +197,7 @@ class SelecaoController extends Controller
         }
         $selecao->template = JSONForms::fixJson($template);
         $selecao->save();
-        $request->session()->flash('alert-info', 'Formulário salvo com sucesso');
+        $request->session()->flash('alert-success', 'Formulário salvo com sucesso');
         return back();
     }
 
@@ -243,7 +243,7 @@ class SelecaoController extends Controller
         $template->$field->value = $value;
         $selecao->template = JSONForms::fixJson($template);
         $selecao->save();
-        $request->session()->flash('alert-info', 'Lista salva com sucesso');
+        $request->session()->flash('alert-success', 'Lista salva com sucesso');
         return back();
     }
 
@@ -270,7 +270,7 @@ class SelecaoController extends Controller
         $selecao->linhaspesquisa()->attach($linhapesquisa);
 
         if (!$existia)
-            $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi adicionada à essa seleção.');
+            $request->session()->flash('alert-success', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi adicionada à essa seleção.');
         else
             $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' já estava vinculada à essa seleção.');
 
@@ -287,7 +287,7 @@ class SelecaoController extends Controller
 
         $selecao->linhaspesquisa()->detach($linhapesquisa);
 
-        $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi removida dessa seleção.');
+        $request->session()->flash('alert-success', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi removida dessa seleção.');
 
         return Redirect::to(URL::previous() . '#card_linhaspesquisa');
     }

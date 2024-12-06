@@ -77,7 +77,7 @@ class ProgramaController extends Controller
 
         $programa = Programa::create($request->all());
 
-        $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
+        $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
         return Redirect::to(URL::previous() . "#" . strtolower($programa->id));
     }
 
@@ -100,7 +100,7 @@ class ProgramaController extends Controller
         $programa->fill($request->all());
         $programa->save();
 
-        $request->session()->flash('alert-info', 'Dados editados com sucesso');
+        $request->session()->flash('alert-success', 'Dados editados com sucesso');
         return back();
     }
 

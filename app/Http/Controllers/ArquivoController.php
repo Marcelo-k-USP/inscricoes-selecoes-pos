@@ -66,7 +66,7 @@ class ArquivoController extends Controller
             $arquivo->{$tipo_modelo_plural}()->attach($modelo->id, ['tipo' => $request->tipo_arquivo]);
         }
 
-        $request->session()->flash('alert-info', 'Arquivo(s) adicionado(s) com sucesso');
+        $request->session()->flash('alert-success', 'Arquivo(s) adicionado(s) com sucesso');
 
         \UspTheme::activeUrl($tipo_modelo_plural);
         return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $form, 'edit'));
@@ -126,7 +126,7 @@ class ArquivoController extends Controller
         $arquivo->nome_original = $request->nome_arquivo . '.' . $extensao;
         $arquivo->update();
 
-        $request->session()->flash('alert-info', 'Arquivo renomeado com sucesso');
+        $request->session()->flash('alert-success', 'Arquivo renomeado com sucesso');
 
         \UspTheme::activeUrl($tipo_modelo_plural);
         return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $form, 'edit'));
@@ -154,7 +154,7 @@ class ArquivoController extends Controller
         $arquivo->{$tipo_modelo_plural}()->detach($modelo->id, ['tipo' => $request->tipo_arquivo]);
         $arquivo->delete();
 
-        $request->session()->flash('alert-info', 'Arquivo removido com sucesso');
+        $request->session()->flash('alert-success', 'Arquivo removido com sucesso');
 
         \UspTheme::activeUrl($tipo_modelo_plural);
         return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $form, 'edit'));

@@ -51,7 +51,7 @@ class UserController extends Controller
     {
         $this->authorize('admin');
         User::obterOuCriarPorCodpes($request->codpes);
-        $request->session()->flash('alert-info', 'Atendente adicionado com sucesso');
+        $request->session()->flash('alert-success', 'Atendente adicionado com sucesso');
         return redirect('/users');
     }
 
@@ -106,7 +106,7 @@ class UserController extends Controller
             $user->fill(['config->notifications->email' => $requests['emailNotification']]);
             if ($user->isDirty()) {
                 $user->save();
-                $request->session()->flash('alert-info', 'Notificações atualizadas com sucesso.');
+                $request->session()->flash('alert-success', 'Notificações atualizadas com sucesso.');
             } else {
                 $request->session()->flash('alert-info', 'Nada modificado.');
             }

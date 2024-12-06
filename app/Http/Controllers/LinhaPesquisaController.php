@@ -84,7 +84,7 @@ class LinhaPesquisaController extends Controller
 
         $linhapesquisa = LinhaPesquisa::create($request->all());
 
-        $request->session()->flash('alert-info', 'Dados adicionados com sucesso');
+        $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
         return Redirect::to(URL::previous() . "#" . strtolower($linhapesquisa->id));
     }
 
@@ -107,7 +107,7 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa->fill($request->all());
         $linhapesquisa->save();
 
-        $request->session()->flash('alert-info', 'Dados editados com sucesso');
+        $request->session()->flash('alert-success', 'Dados editados com sucesso');
         return back();
     }
 

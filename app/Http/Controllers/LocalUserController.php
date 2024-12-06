@@ -83,7 +83,7 @@ class LocalUserController extends Controller
         \Mail::to($localuser->email)
             ->queue(new LocalUserMail(compact('localuser', 'password_reset_url')));
 
-        request()->session()->flash('alert-info', 'E-mail enviado com sucesso');
+        request()->session()->flash('alert-success', 'E-mail enviado com sucesso');
         return view('localusers.login');
     }
 
@@ -153,7 +153,7 @@ class LocalUserController extends Controller
             DB::table('password_resets')->where('email', $request->email)->delete();
         });
 
-        request()->session()->flash('alert-info', 'Senha redefinida com sucesso');
+        request()->session()->flash('alert-success', 'Senha redefinida com sucesso');
         return view('localusers.login');
     }
 
