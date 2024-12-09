@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LinhaPesquisaRequest;
 use App\Models\LinhaPesquisa;
-use App\Models\Selecao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
@@ -52,19 +51,13 @@ class LinhaPesquisaController extends Controller
      */
     public function show(Request $request, $id)
     {
-        #usando no ajax, somente para admin
-        $this->authorize('admin');
+        $this->authorize('linhaspesquisa.view');
         \UspTheme::activeUrl('linhaspesquisa');
 
         if ($request->ajax()) {
-            # preenche os dados do form de edição de uma linha de pesquisa
-            $linhapesquisa = LinhaPesquisa::find($id);
+            $linhapesquisa = LinhaPesquisa::find($id);    // preenche os dados do form de edição de uma linha de pesquisa
             $linhapesquisa->codpes_docente = $linhapesquisa->codpes_docente . ' ' . (new UserController)->codpes(new Request(['term' => $linhapesquisa->codpes_docente]));
             return $linhapesquisa;
-        } else {
-            # desativado por enquanto
-            return false;
-            return view('linhaspesquisa.show', compact('linhapesquisa'));
         }
     }
 
@@ -76,7 +69,7 @@ class LinhaPesquisaController extends Controller
      */
     public function store(LinhaPesquisaRequest $request)
     {
-        $this->authorize('admin');
+        $this->authorize('linhaspesquisa.create');
 
         $validator = Validator::make($request->all(), LinhaPesquisaRequest::rules, LinhaPesquisaRequest::messages);
         if ($validator->fails())
@@ -97,7 +90,7 @@ class LinhaPesquisaController extends Controller
      */
     public function update(LinhaPesquisaRequest $request, $id)
     {
-        $this->authorize('admin');
+        $this->authorize('linhaspesquisa.update');
 
         $validator = Validator::make($request->all(), LinhaPesquisaRequest::rules, LinhaPesquisaRequest::messages);
         if ($validator->fails())
@@ -119,7 +112,7 @@ class LinhaPesquisaController extends Controller
      */
     public function destroy(LinhaPesquisaRequest $request, $id)
     {
-        $this->authorize('admin');
+        $this->authorize('linhaspesquisa.delete');
 
         $linhapesquisa = LinhaPesquisa::find($id);
         if ($linhapesquisa->selecoes()->exists()) {
