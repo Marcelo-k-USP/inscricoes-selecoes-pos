@@ -272,7 +272,6 @@ class SelecaoController extends Controller
             $request->session()->flash('alert-success', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi adicionada à essa seleção.');
         else
             $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' já estava vinculada à essa seleção.');
-
         return redirect()->back();
     }
 
@@ -287,7 +286,6 @@ class SelecaoController extends Controller
         $selecao->linhaspesquisa()->detach($linhapesquisa);
 
         $request->session()->flash('alert-success', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi removida dessa seleção.');
-
         return redirect()->back();
     }
 
@@ -300,7 +298,7 @@ class SelecaoController extends Controller
      */
     public function download(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.viewAny');
+        $this->authorize('selecoes.view');
         $request->validate([
             'ano' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
