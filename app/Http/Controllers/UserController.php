@@ -25,7 +25,7 @@ class UserController extends Controller
     {
         $this->authorize('users.viewAny');
 
-        \UspTheme::activeUrl('users');
+        \UspTheme::activeUrl('senhaunica-users');
         $users = User::all();
         return view('users.index')->with('users', $users);
     }
