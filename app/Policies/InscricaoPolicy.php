@@ -30,7 +30,7 @@ class InscricaoPolicy
      */
     public function viewAny(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
+        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**
@@ -44,7 +44,7 @@ class InscricaoPolicy
         if (Gate::allows('perfilusuario'))
             return ($model->pessoas('Autor')->id == $user->id);    // permite que o usuário autor da inscrição a visualize
 
-        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
+        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**

@@ -18,7 +18,7 @@ class LinhaPesquisaPolicy
      */
     public function viewAny(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
+        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**
@@ -29,7 +29,7 @@ class LinhaPesquisaPolicy
      */
     public function view(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
+        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**
@@ -40,7 +40,7 @@ class LinhaPesquisaPolicy
      */
     public function create(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
+        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**
@@ -51,7 +51,7 @@ class LinhaPesquisaPolicy
      */
     public function update(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
+        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**
@@ -62,7 +62,7 @@ class LinhaPesquisaPolicy
      */
     public function delete(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
+        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**
