@@ -13,7 +13,7 @@
   <div class="card-header">
     Linhas de Pesquisa
     <span class="badge badge-pill badge-primary">{{ is_null($selecao->linhaspesquisa) ? 0 : $selecao->linhaspesquisa->count() }}</span>
-    @includewhen(Gate::check('update', $selecao), 'linhaspesquisa.partials.modal-add')
+    @includewhen(Gate::allows('update', $selecao), 'linhaspesquisa.partials.modal-add')
   </div>
   <div class="card-body">
     <div class="accordion" id="accordionLinhasPesquisa">

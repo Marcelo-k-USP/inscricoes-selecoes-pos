@@ -2,7 +2,7 @@
 * Função que verifica se o tipo de campo adicionado na seleção é caixa de seleção
 * Se for, muda tipo tipo de campo valor de input para textarea
 */
-function mudarCampoInputTextarea(campo, is_admin) {
+function mudarCampoInputTextarea(campo, perfil_admin) {
 	var fieldTypeSelect = $('select[name="' + campo + '"]').find(":selected").val();
   // se é caixa de seleção, muda o campo valor para textarea
   if ((fieldTypeSelect == 'select') || (fieldTypeSelect == 'radio')) {
@@ -16,7 +16,7 @@ function mudarCampoInputTextarea(campo, is_admin) {
       textbox.attr('name', name);
       textbox.attr('style', style);
       textbox.val(value);
-      if (!is_admin)
+      if (!perfil_admin)
         textbox.attr('hidden', true);
       $(this).replaceWith(textbox);
     });

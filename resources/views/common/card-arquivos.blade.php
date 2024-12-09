@@ -36,7 +36,7 @@
       @foreach ($modelo->tiposArquivo() as $tipo_arquivo)
         <div class="arquivos-lista">
           {{ $tipo_arquivo['nome'] }} {!! ((isset($tipo_arquivo['validate']) && $tipo_arquivo['validate']) ? '<small class="text-required">(*)</small>' : '') !!}
-          @if (Gate::check('update', $modelo) && $condicao_ativa)    {{-- desativando quando inativa --}}
+          @if (Gate::allows('update', $modelo) && $condicao_ativa)    {{-- desativando quando inativa --}}
             <label for="input_arquivo_{{ $i }}">
               <span class="btn btn-sm btn-light text-primary ml-2"> <i class="fas fa-plus"></i> Adicionar</span>
             </label>
@@ -49,7 +49,7 @@
               @foreach ($modelo->arquivos->where('pivot.tipo', $tipo_arquivo['nome']) as $arquivo)
                 @if (preg_match('/pdf/i', $arquivo->mimeType))
                   <li class="modo-visualizacao">
-                    @if (Gate::check('update', $modelo) && $condicao_ativa)    {{-- desativando quando inativa --}}
+                    @if (Gate::allows('update', $modelo) && $condicao_ativa)    {{-- desativando quando inativa --}}
                       <div class="arquivo-acoes d-inline-block">
                         <a onclick="excluir_arquivo({{ $arquivo->id }}, '{{ $arquivo->nome_original }}'); return false;" class="btn btn-outline-danger btn-sm btn-deletar btn-arquivo-acao">
                           <i class="far fa-trash-alt"></i>

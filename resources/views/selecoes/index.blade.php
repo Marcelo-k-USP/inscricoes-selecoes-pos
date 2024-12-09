@@ -6,11 +6,11 @@
     <div class="col-md-12 form-inline">
       <span class="h4 mt-2">Seleções</span>
       @include('partials.datatable-filter-box', ['otable'=>'oTable'])
-      @if (Gate::check('categorias.viewAny'))
+      @can('viewAny', App\Models\Categoria::class)
         <a href="{{ route('selecoes.create') }}" class="btn btn-sm btn-success">
           <i class="fas fa-plus"></i> Nova
         </a>
-      @endif
+      @endcan
     </div>
   </div>
 

@@ -6,15 +6,15 @@
     <div class="col-md-12">
       <div class="card mb-3">
         <div class="card-header">
-          @if (Gate::check('perfiladmin'))
+          @can('perfiladmin')
             <a href="users">Usuários</a>
           @else
             Usuários
-          @endif
+          @endcan
           <i class="fas fa-angle-right"></i> {{ $user->name }}
-          @if (Gate::check('perfiladmin'))
+          @can('perfiladmin')
             | @include('users.partials.btn-change-user')
-          @endif
+          @endcan
         </div>
         <div class="card-body">
           <div class="row">
@@ -35,9 +35,9 @@
                 <div><span class="text-muted">Celular:</span> {{ $user->telefone }}</div>
               @endif
               <div><span class="text-muted">Último login:</span> {{ $user->last_login_at }}</div>
-              @if (Gate::check('perfiladmin'))
+              @can('perfiladmin')
                 <div><span class="text-muted">Admin:</span> {{ $user->is_admin ? 'sim' : 'não' }}</div>
-              @endif
+              @endcan
             </div>
           </div>
         </div>
@@ -46,7 +46,9 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      @includewhen(Gate::check('perfiladmin'), 'users.partials.card-oauth')
+      @can('perfiladmin')
+        @include('users.partials.card-oauth')
+      @endcan
     </div>
   </div>
 @endsection

@@ -49,7 +49,7 @@
                               @isset($tvalue[$field])
                                 @switch($field)
                                   @case('type')
-                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]" onchange="javascript: mudarCampoInputTextarea(this.name, {{ Gate::check('perfiladmin') }});">
+                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]" onchange="javascript: mudarCampoInputTextarea(this.name, {{ Gate::allows('perfiladmin') }});">
                                       <option value='text' {{ $tvalue[$field] == 'text' ? 'selected' : '' }}>Texto</option>
                                       <option value='textarea' {{ $tvalue[$field] == 'textarea' ? 'selected' : '' }}>Texto (várias linhas)</option>
                                       <option value='select' {{ $tvalue[$field] == 'select' ? 'selected' : '' }}>Caixa de Seleção</option>
@@ -74,7 +74,11 @@
                                     </select>
                                     @break
                                   @case('value')
-                                    <input class="form-control" name="template[{{ $tkey }}][{{ $field }}]" value="{{ is_array($tvalue[$field]) ? json_encode($tvalue[$field], JSON_UNESCAPED_UNICODE) : $tvalue[$field] ?? '' }}" @if (!Gate::check('perfiladmin')) type="hidden" @endif>
+                                    @can('perfiladmin')
+                                      <input class="form-control" name="template[{{ $tkey }}][{{ $field }}]" value="{{ is_array($tvalue[$field]) ? json_encode($tvalue[$field], JSON_UNESCAPED_UNICODE) : $tvalue[$field] ?? '' }}">
+                                    @else
+                                      <input class="form-control" name="template[{{ $tkey }}][{{ $field }}]" value="{{ is_array($tvalue[$field]) ? json_encode($tvalue[$field], JSON_UNESCAPED_UNICODE) : $tvalue[$field] ?? '' }}" type="hidden">
+                                    @endcan
                                     <a href="{{ route('selecoes.createtemplatevalue', ['selecao' => $selecao->id, 'campo' => $tkey]) }}" class="btn btn-primary btn-sm">
                                       <i class="fas fa-edit"></i> Editar Lista
                                     </a>
@@ -179,7 +183,7 @@
 
     $(document).ready(function() {
       $('select[name$="][type]"]').each(function () {
-        $(mudarCampoInputTextarea($(this).prop('name'), {{ Gate::check('perfiladmin') }}));
+        $(mudarCampoInputTextarea($(this).prop('name'), {{ Gate::allows('perfiladmin') }}));
       });
     });
   </script>
