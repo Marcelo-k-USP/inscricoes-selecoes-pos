@@ -14,7 +14,7 @@
         <label for="password" class="sr-only">Senha</label>
         <div style="position: relative;">
           <input class="form-control mb-4" style="width: 100%; padding-right: 30px;" type="password" name="password" id="password" placeholder="Senha">
-          <a href="javascript:void(0);" onclick="toggle_senha('password')">
+          <a href="javascript:void(0);" onclick="toggle_password('password')">
             <img src="/icons/view.png" id="toggle_icon_password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 20px; height: 20px;">
           </a>
         </div>

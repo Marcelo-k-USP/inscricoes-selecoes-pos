@@ -16,21 +16,21 @@
         <div style="display: flex; align-items: center;">
           <div style="position: relative; margin-top: -20px;">
             <input class="form-control" style="width: 240px; padding-right: 30px;" type="password" name="password" id="password" placeholder="Nova Senha" autofocus>
-            <a href="javascript:void(0);" onclick="toggle_senha('password')">
+            <a href="javascript:void(0);" onclick="toggle_password('password')">
               <img src="/icons/view.png" id="toggle_icon_password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 20px; height: 20px;">
             </a>
           </div>
           <div id="strength-wrapper" style="margin-left: 10px;">
             <div style="height: 0px; width: 100px;">&nbsp;</div>
-            <div id="barra_forca_senha" style="height: 10px; width: 0px;">&nbsp;</div>
-            <p id="texto_forca_senha" style="margin-top: 5px;">&nbsp;</p>
+            <div id="barra_forca_password" style="height: 10px; width: 0px;">&nbsp;</div>
+            <p id="texto_forca_password" style="margin-top: 5px;">&nbsp;</p>
           </div>
         </div>
 
         <label for="password_confirmation" class="sr-only">Confirmar Nova Senha</label>
         <div style="position: relative; margin-top: -10px;">
           <input class="form-control mb-4" style="width: 240px; padding-right: 30px;" type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirmar Nova Senha">
-          <a href="javascript:void(0);" onclick="toggle_senha('password_confirmation')">
+          <a href="javascript:void(0);" onclick="toggle_password('password_confirmation')">
             <img src="/icons/view.png" id="toggle_icon_password_confirmation" style="position: absolute; right: 120px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 20px; height: 20px;">
           </a>
         </div>

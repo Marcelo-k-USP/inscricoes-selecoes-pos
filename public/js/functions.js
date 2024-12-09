@@ -67,8 +67,8 @@ function validar_cpf(cpf)
 
 function validar_forca_senha(senha)
 {
-  const barra_forca_senha = $('#barra_forca_senha');
-  const texto_forca_senha = $('#texto_forca_senha');
+  const barra_forca_password = $('#barra_forca_password');
+  const texto_forca_password = $('#texto_forca_password');
   var forca = 0;
 
   if (senha.length >= 8) forca++;
@@ -78,23 +78,23 @@ function validar_forca_senha(senha)
   if (senha.match(/[$@#&!]+/)) forca++;
 
   switch (forca) {
-    case 0: texto_forca_senha.css('visibility', 'hidden' );                                                                                                                                   break;
-    case 1: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Muito fraca').css('color', 'red'       ); barra_forca_senha.css('background-color', 'red'              ); break;
-    case 2: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Fraca'      ).css('color', 'orange'    ); barra_forca_senha.css('background-color', 'orange'           ); break;
-    case 3: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Boa'        ).css('color', 'yellow'    ); barra_forca_senha.css('background-color', 'yellow !important'); break;    // sem o !important, o amarelo na barra fica marrom
-    case 4: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Forte'      ).css('color', 'lightgreen'); barra_forca_senha.css('background-color', 'lightgreen'       ); break;
-    case 5: texto_forca_senha.css('visibility', 'visible'); texto_forca_senha.text('Muito forte').css('color', 'green'     ); barra_forca_senha.css('background-color', 'green'            );
+    case 0: texto_forca_password.css('visibility', 'hidden' );                                                                                                                                         break;
+    case 1: texto_forca_password.css('visibility', 'visible'); texto_forca_password.text('Muito fraca').css('color', 'red'       ); barra_forca_password.css('background-color', 'red'              ); break;
+    case 2: texto_forca_password.css('visibility', 'visible'); texto_forca_password.text('Fraca'      ).css('color', 'orange'    ); barra_forca_password.css('background-color', 'orange'           ); break;
+    case 3: texto_forca_password.css('visibility', 'visible'); texto_forca_password.text('Boa'        ).css('color', 'yellow'    ); barra_forca_password.css('background-color', 'yellow !important'); break;    // sem o !important, o amarelo na barra fica marrom
+    case 4: texto_forca_password.css('visibility', 'visible'); texto_forca_password.text('Forte'      ).css('color', 'lightgreen'); barra_forca_password.css('background-color', 'lightgreen'       ); break;
+    case 5: texto_forca_password.css('visibility', 'visible'); texto_forca_password.text('Muito forte').css('color', 'green'     ); barra_forca_password.css('background-color', 'green'            );
   }
 
-  barra_forca_senha.css('width', (forca * 20) + 'px');
+  barra_forca_password.css('width', (forca * 20) + 'px');
 }
 
-function toggle_senha(field_id)
+function toggle_password(field_id)
 {
   var toggle_icon = $('#toggle_icon_' + field_id);
-  var input_senha = $('#' + field_id);
-  if (input_senha.length === 0)
-    input_senha = $('#password');
-  toggle_icon.attr('src', '/icons/' + (input_senha.attr('type') === 'password' ? 'hide' : 'view') + '.png');
-  input_senha.attr('type', (input_senha.attr('type') === 'password' ? 'text' : 'password'));
+  var input_password = $('#' + field_id);
+  if (input_password.length === 0)
+    input_password = $('#password');
+  toggle_icon.attr('src', '/icons/' + (input_password.attr('type') === 'password' ? 'hide' : 'view') + '.png');
+  input_password.attr('type', (input_password.attr('type') === 'password' ? 'text' : 'password'));
 }

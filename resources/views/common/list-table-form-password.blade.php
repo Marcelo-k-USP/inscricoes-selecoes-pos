@@ -9,13 +9,13 @@
       ->class('form-control')
       ->style('width: 100%; padding-right: 30px;')
     }}
-    <a href="javascript:void(0);" onclick="toggle_senha('{{ $col['name'] }}')" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">
+    <a href="javascript:void(0);" onclick="toggle_password('{{ $col['name'] }}')" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">
       <img src="/icons/view.png" id="toggle_icon_{{ $col['name'] }}" style="width: 20px; height: 20px;">
     </a>
   </div>
   <div id="strength-wrapper">
-    <div id="barra_forca_senha" style="height: 10px; width: 0px;">&nbsp;</div>
-    <p id="texto_forca_senha" style="margin-top: 5px;">&nbsp;</p>
+    <div id="barra_forca_password" style="height: 10px; width: 0px;">&nbsp;</div>
+    <p id="texto_forca_password" style="margin-top: 5px;">&nbsp;</p>
   </div>
 </div>
 
