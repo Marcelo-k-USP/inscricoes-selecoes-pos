@@ -4,7 +4,7 @@
 @parent
   <link rel="stylesheet" href="css/selecoes-pos.css">
   <style>
-    .atendente-menubar {
+    .gerente-menubar {
       border-bottom-style: solid !important;
       border-bottom-width: medium !important;
       border-bottom-color: orange !important;
@@ -40,8 +40,8 @@
       });
 
       // vamos aplicar o estilo de perfil no menubar
-      @if (session('perfil') == 'atendente')
-        $('#menu').find('.navbar').addClass('atendente-menubar');
+      @if (session('perfil') == 'gerente')
+        $('#menu').find('.navbar').addClass('gerente-menubar');
       @endif
       @if (session('perfil') == 'admin')
         $('#menu').find('.navbar').addClass('admin-menubar');

@@ -51,7 +51,7 @@ class UserController extends Controller
     {
         $this->authorize('admin');
         User::obterOuCriarPorCodpes($request->codpes);
-        $request->session()->flash('alert-success', 'Atendente adicionado com sucesso');
+        $request->session()->flash('alert-success', 'Gerente adicionado com sucesso');
         return redirect('/users');
     }
 
@@ -214,7 +214,7 @@ class UserController extends Controller
     }
 
     /**
-     * Permite trocar o perfil do usuário: admin, atendente ou usuário comuum
+     * Permite trocar o perfil do usuário: admin, gerente ou usuário comuum
      */
     public function trocarPerfil(Request $request, $perfil)
     {

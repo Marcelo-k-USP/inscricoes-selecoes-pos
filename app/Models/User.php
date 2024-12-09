@@ -142,7 +142,7 @@ class User extends Authenticatable
     /**
      * Troca o perfil do usuário
      *
-     * @param String $perfil [usuario, atendente ou admin]
+     * @param String $perfil [usuario, gerente ou admin]
      * @return Array [success=>[true||false], msg=>mensagem de sucesso]
      */
     public function trocarPerfil($perfil)
@@ -158,11 +158,11 @@ class User extends Authenticatable
                 $ret['msg'] = 'Perfil mudado para Usuário com sucesso.';
                 break;
 
-            case 'atendente':
-                if (Gate::allows('atendente')) {
-                    session(['perfil' => 'atendente']);
+            case 'gerente':
+                if (Gate::allows('gerente')) {
+                    session(['perfil' => 'gerente']);
                     $ret['success'] = true;
-                    $ret['msg'] = 'Perfil mudado para Atendente com sucesso.';
+                    $ret['msg'] = 'Perfil mudado para Gerente com sucesso.';
                 }
                 break;
 

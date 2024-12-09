@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->is_admin;
         });
 
-        Gate::define('atendente', function ($user) {
+        Gate::define('gerente', function ($user) {
             return $user->is_admin;
         });
 
@@ -43,8 +43,8 @@ class AuthServiceProvider extends ServiceProvider
             return (session('perfil') == 'admin');
         });
 
-        Gate::define('perfilatendente', function ($user) {
-            return (session('perfil') == 'atendente');
+        Gate::define('perfilgerente', function ($user) {
+            return (session('perfil') == 'gerente');
         });
 
         Gate::define('perfilusuario', function ($user) {
@@ -52,7 +52,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('trocarPerfil', function ($user) {
-            return Gate::any(['admin', 'atendente']);
+            return Gate::any(['admin', 'gerente']);
         });
 
         # se o admin assumir identidade de outro usuário, permite retornar

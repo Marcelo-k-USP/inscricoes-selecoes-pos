@@ -76,9 +76,9 @@ $trocarPerfil = [
         'can' => 'admin',
     ],
     [
-        'text' => '&nbsp; Atendente',
-        'url' => 'users/perfil/atendente',
-        'can' => 'atendente',
+        'text' => '&nbsp; Gerente',
+        'url' => 'users/perfil/gerente',
+        'can' => 'gerente',
     ],
     [
         'text' => '&nbsp; Usuário',
@@ -102,9 +102,9 @@ $right_menu = [
         'can' => 'perfiladmin',
     ],
     [
-        'text' => '<span class="badge badge-warning">Atendente</span>',
+        'text' => '<span class="badge badge-warning">Gerente</span>',
         'url' => '#',
-        'can' => 'perfilatendente',
+        'can' => 'perfilgerente',
     ],
     [
         'text' => '<i class="fas fa-cog"></i>',

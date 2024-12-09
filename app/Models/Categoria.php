@@ -56,7 +56,7 @@ class Categoria extends Model
     }
 
     /**
-     * Relacionamento n:n com user, atributo funcao: Gerente, Atendente
+     * Relacionamento n:n com user, atributo funcao: Gerente
      */
     public function users()
     {
