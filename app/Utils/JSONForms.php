@@ -123,17 +123,17 @@ class JSONForms
                     if (($key == 'e_mail') && !Auth::check())
                         $html_string_senha .=
                                       '<div class="col-sm-3" style="margin-top: -20px;">' . PHP_EOL .
-                                        '<label class="col-form-label va-middle" for="senha">Senha <small class="text-required">(*)</small></label> ' . PHP_EOL .
+                                        '<label class="col-form-label va-middle" for="password">Senha <small class="text-required">(*)</small></label> ' . PHP_EOL .
                                       '</div>' . PHP_EOL .
                                       '<div class="col-sm-3" style="margin-top: -20px;">' . PHP_EOL .
-                                        '<input class="form-control" style="width: 100%; padding-right: 30px" name="senha" id="senha" type="password" required>' . PHP_EOL .
-                                        '<a href="javascript:void(0);" onclick="toggle_senha(\'senha\')" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">' . PHP_EOL .
-                                          '<img src="' . url('/icons/view.png') . '" id="toggle_icon_senha" style="width: 20px; height: 20px;">' . PHP_EOL .
+                                        '<input class="form-control" style="width: 100%; padding-right: 30px" name="password" id="password" type="password" required>' . PHP_EOL .
+                                        '<a href="javascript:void(0);" onclick="toggle_password(\'password\')" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">' . PHP_EOL .
+                                          '<img src="' . url('/icons/view.png') . '" id="toggle_icon_password" style="width: 20px; height: 20px;">' . PHP_EOL .
                                         '</a>' . PHP_EOL .
                                       '</div>' . PHP_EOL .
                                       '<div id="strength-wrapper">' . PHP_EOL .
-                                        '<div id="barra_forca_senha" style="height: 10px; width: 0px;">&nbsp;</div>' . PHP_EOL .
-                                        '<p id="texto_forca_senha" style="margin-top: 5px;">&nbsp;</p>' . PHP_EOL .
+                                        '<div id="barra_forca_password" style="height: 10px; width: 0px;">&nbsp;</div>' . PHP_EOL .
+                                        '<p id="texto_forca_password" style="margin-top: 5px;">&nbsp;</p>' . PHP_EOL .
                                       '</div>' . PHP_EOL;
             }
             $input[] = new HtmlString($html_string);

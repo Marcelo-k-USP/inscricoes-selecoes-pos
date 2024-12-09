@@ -39,10 +39,8 @@ class LocalUserController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
-        if (!Auth::attempt($credentials)) {
-            request()->session()->flash('alert-danger', 'Usuário e senha incorretos');
-            return view('localusers.login');
-        }
+        if (!Auth::attempt($credentials))
+            return processa_erro_login('Usuário e senha incorretos');
 
         return redirect('/inscricoes');
     }
@@ -58,10 +56,8 @@ class LocalUserController extends Controller
 
         // procura por usuário local com esse e-mail (somente local... pois não queremos fornecer possibilidade de resetar senha única USP de um usuário não local)
         $localuser = User::where('email', $request->email)->where('local', '1')->first();
-        if (is_null($localuser)) {
-            request()->session()->flash('alert-danger', 'E-mail não encontrado');
-            return view('localusers.login');
-        }
+        if (is_null($localuser))
+            processa_erro_login('E-mail não encontrado');
 
         // gera um token
         $token = Str::random(60);
@@ -93,16 +89,12 @@ class LocalUserController extends Controller
         $password_reset = DB::table('password_resets')->get()->first(function ($reset) use ($token) {
             return Hash::check($token, $reset->token);
         });
-        if (!$password_reset) {
-            request()->session()->flash('alert-danger', 'Este link é inválido');
-            return view('localusers.login');
-        }
+        if (!$password_reset)
+            processa_erro_login('Este link é inválido');
 
         // verifica se o token recebido expirou
-        if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast()) {
-            request()->session()->flash('alert-danger', 'Este link expirou');
-            return view('localusers.login');
-        }
+        if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast())
+            processa_erro_login('Este link expirou');
 
         $email = $password_reset->email;
         return view('localusers.redefinesenha', compact('token', 'email'));
@@ -113,34 +105,29 @@ class LocalUserController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
+            'password' => ['required', 'min:8', 'confirmed', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
         ], [
             'password.required' => 'O campo de senha é obrigatório!',
             'password.min' => 'A senha deve ter pelo menos 8 caracteres!',
             'password.confirmed' => 'A confirmação da senha não coincide.',
+            'password.regex' => 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial!',
         ]);
 
         // verifica se os dados vieram válidos
         $password_reset = DB::table('password_resets')->where('email', $request->email)->first();
-        if ((!$password_reset) || (!Hash::check($request->token, $password_reset->token))) {
-            request()->session()->flash('alert-danger', 'Este link é inválido');
-            return view('localusers.login');
-        }
+        if ((!$password_reset) || (!Hash::check($request->token, $password_reset->token)))
+            processa_erro_login('Este link é inválido');
 
         // verifica se o token recebido expirou
-        if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast()) {
-            request()->session()->flash('alert-danger', 'Este link expirou');
-            return view('localusers.login');
-        }
+        if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast())
+            processa_erro_login('Este link expirou');
 
         // verifica se o usuário existe
         $user = User::where('email', $password_reset->email)
             ->where('local', '1')
             ->first();
-        if (!$user) {
-            request()->session()->flash('alert-danger', 'Usuário não cadastrado');
-            return view('localusers.login');
-        }
+        if (!$user)
+            processa_erro_login('Usuário não cadastrado');
 
         // transaction para não ter problema de inconsistência do DB
         DB::transaction(function () use ($request, $user) {
@@ -154,6 +141,12 @@ class LocalUserController extends Controller
         });
 
         request()->session()->flash('alert-success', 'Senha redefinida com sucesso');
+        return view('localusers.login');
+    }
+
+    private function processa_erro_login($msg)
+    {
+        request()->session()->flash('alert-danger', $msg);
         return view('localusers.login');
     }
 

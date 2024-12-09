@@ -109,7 +109,7 @@
       }
     });
 
-    $('#senha').on('input', function () {
+    $('#password').on('input', function () {
       validar_forca_senha($(this).val());
     });
 

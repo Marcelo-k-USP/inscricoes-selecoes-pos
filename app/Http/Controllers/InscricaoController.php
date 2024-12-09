@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 
 class InscricaoController extends Controller
 {
@@ -106,28 +107,26 @@ class InscricaoController extends Controller
 
         $user_logado = Auth::check();
         if (!$user_logado) {
+            // para as validações, começa sempre com o reCAPTCHA... depois valida cada campo na ordem em que aparecem na tela
 
             // revalida o reCAPTCHA
-            if (!$recaptcha_service->revalidate($request->input('g-recaptcha-response'))) {
-                $request->session()->flash('alert-danger', 'Falha na validação do reCAPTCHA. Por favor, tente novamente.');
-
-                \UspTheme::activeUrl('inscricoes/create');
-                $inscricao = new Inscricao;
-                $inscricao->selecao = $selecao;
-                $inscricao->extras = json_encode($request->extras);    // recarrega a mesma página com os dados que o usuário preencheu antes do submit... pois o {{ old }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old }} dentro do {!! $element !!} do inscricoes.show.card-principal
-                return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
-            }
+            if (!$recaptcha_service->revalidate($request->input('g-recaptcha-response')))
+                return $this->processa_erro_store('Falha na validação do reCAPTCHA. Por favor, tente novamente.', $selecao, $request);
 
             // verifica se está duplicando o e-mail (pois mais pra baixo este usuário será gravado na tabela users, e não podemos permitir duplicatas)
-            if (User::emailExiste($request->extras['e_mail'])) {
-                $request->session()->flash('alert-danger', 'Este e-mail já está cadastrado!');
+            if (User::emailExiste($request->extras['e_mail']))
+                return $this->processa_erro_store('Este e-mail já está cadastrado!', $selecao, $request);
 
-                \UspTheme::activeUrl('inscricoes/create');
-                $inscricao = new Inscricao;
-                $inscricao->selecao = $selecao;
-                $inscricao->extras = json_encode($request->extras);    // recarrega a mesma página com os dados que o usuário preencheu antes do submit... pois o {{ old }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old }} dentro do {!! $element !!} do inscricoes.show.card-principal
-                return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
-            }
+            // verifica se a senha é forte... não usa $request->validate porque ele voltaria para a página apagando todos os campos... pois o {{ old(...) }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old(...) }} dentro do {!! $element !!} do inscricoes.show.card-principal
+            $validator = Validator::make($request->all(), [
+                'password' => ['required', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
+            ],[
+                'password.required' => 'A senha é obrigatória!',
+                'password.min' => 'A senha deve ter pelo menos 8 caracteres!',
+                'password.regex' => 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial!',
+            ]);
+            if ($validator->fails())
+                return $this->processa_erro_store(json_decode($validator->errors())->password, $selecao, $request);
         }
 
         // transaction para não ter problema de inconsistência do DB
@@ -138,7 +137,7 @@ class InscricaoController extends Controller
                 $user = LocalUser::create(
                     $request->extras['nome'],
                     $request->extras['e_mail'],
-                    $request->senha,
+                    $request->password,
                     $request->extras['celular']
                 );
 
@@ -204,6 +203,18 @@ class InscricaoController extends Controller
 
         \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+    }
+
+    private function processa_erro_store($msgs, $selecao, $request) {
+        if (is_array($msgs))
+            $msgs = implode('<br />', $msgs);
+        $request->session()->flash('alert-danger', $msgs);
+
+        \UspTheme::activeUrl('inscricoes/create');
+        $inscricao = new Inscricao;
+        $inscricao->selecao = $selecao;
+        $inscricao->extras = json_encode($request->extras);    // recarrega a mesma página com os dados que o usuário preencheu antes do submit... pois o {{ old }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old }} dentro do {!! $element !!} do inscricoes.show.card-principal
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
     private function monta_compact($inscricao, $modo) {
