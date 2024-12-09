@@ -47,18 +47,11 @@ class CategoriaController extends Controller
      */
     public function show(Request $request, $id)
     {
-        #usando no ajax, somente para admin
-        $this->authorize('admin');
+        $this->authorize('categorias.viewAny');
         \UspTheme::activeUrl('categorias');
 
-        if ($request->ajax()) {
-            # preenche os dados do form de edição de uma categoria
-            return Categoria::find($id);
-        } else {
-            # desativado por enquanto
-            return false;
-            return view('categorias.show', compact('categoria'));
-        }
+        if ($request->ajax())
+            return Categoria::find($id);    // preenche os dados do form de edição de uma categoria
     }
 
     /**
@@ -69,7 +62,7 @@ class CategoriaController extends Controller
      */
     public function store(CategoriaRequest $request)
     {
-        $this->authorize('admin');
+        $this->authorize('categorias.create');
 
         $validator = Validator::make($request->all(), CategoriaRequest::rules, CategoriaRequest::messages);
         if ($validator->fails())
@@ -90,7 +83,7 @@ class CategoriaController extends Controller
      */
     public function update(CategoriaRequest $request, $id)
     {
-        $this->authorize('admin');
+        $this->authorize('categorias.update');
 
         $validator = Validator::make($request->all(), CategoriaRequest::rules, CategoriaRequest::messages);
         if ($validator->fails())
@@ -112,7 +105,7 @@ class CategoriaController extends Controller
      */
     public function destroy(CategoriaRequest $request, $id)
     {
-        $this->authorize('admin');
+        $this->authorize('categorias.delete');
 
         $categoria = Categoria::find($id);
         if ($categoria->selecoes()->exists()) {
