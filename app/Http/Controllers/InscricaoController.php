@@ -103,7 +103,7 @@ class InscricaoController extends Controller
     public function store(Request $request, RecaptchaService $recaptcha_service)
     {
         $selecao = Selecao::find($request->selecao_id);
-        $this->authorize('inscricoes.create', $selecao);
+        $this->authorize('inscricoes.create');
 
         $user_logado = Auth::check();
         if (!$user_logado) {
@@ -179,7 +179,7 @@ class InscricaoController extends Controller
      */
     public function edit(Request $request, Inscricao $inscricao)
     {
-        $this->authorize('inscricoes.view', $inscricao);
+        $this->authorize('inscricoes.view', $inscricao);    // este 1o passo da edição é somente um show, não chega a haver um update
 
         \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
@@ -194,7 +194,7 @@ class InscricaoController extends Controller
      */
     public function update(Request $request, Inscricao $inscricao)
     {
-        $this->authorize('inscricoes.view', $inscricao);
+        $this->authorize('inscricoes.update', $inscricao);
 
         $inscricao->extras = json_encode($request->extras);
         $inscricao->save();

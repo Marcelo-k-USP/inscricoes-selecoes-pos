@@ -35,9 +35,11 @@
           @endforeach
         @endif
       </div>
-      <div class="text-right">
-        <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
-      </div>
+      @if (session('perfil') == 'usuario')
+        <div class="text-right">
+          <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
+        </div>
+      @endif
     </div>
   </div>
 {{ html()->form()->close() }}

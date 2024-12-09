@@ -39,9 +39,12 @@ class InscricaoPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function view(User $user)
+    public function view(User $user, Inscricao $model)
     {
-        return true;
+        if (Gate::allows('perfilusuario'))
+            return ($model->pessoas('Autor')->id == $user->id);    // permite que o usuário autor da inscrição a visualize
+
+        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
     }
 
     /**
@@ -62,11 +65,44 @@ class InscricaoPolicy
      * Determine whether the user can update the inscrição.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Inscricao  $inscricao
      * @return mixed
      */
-    public function update(User $user, Inscricao $inscricao)
+    public function update(User $user, Inscricao $model)
     {
-        return Gate::allows('perfilusuario');
+        return (Gate::allows('perfilusuario') &&
+                ($model->pessoas('Autor')->id == $user->id));    // permite que apenas o usuário autor da inscrição a edite
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function delete(User $user)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function restore(User $user)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function forceDelete(User $user)
+    {
+        //
     }
 }
