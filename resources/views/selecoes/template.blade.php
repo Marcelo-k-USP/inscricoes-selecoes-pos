@@ -49,7 +49,7 @@
                               @isset($tvalue[$field])
                                 @switch($field)
                                   @case('type')
-                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]" onchange="javascript: mudarCampoInputTextarea(this.name);">
+                                    <select class="form-control" name="template[{{ $tkey }}][{{ $field }}]" onchange="javascript: mudarCampoInputTextarea(this.name, {{ Gate::check('perfiladmin') }});">
                                       <option value='text' {{ $tvalue[$field] == 'text' ? 'selected' : '' }}>Texto</option>
                                       <option value='textarea' {{ $tvalue[$field] == 'textarea' ? 'selected' : '' }}>Texto (várias linhas)</option>
                                       <option value='select' {{ $tvalue[$field] == 'select' ? 'selected' : '' }}>Caixa de Seleção</option>
@@ -179,7 +179,7 @@
 
     $(document).ready(function() {
       $('select[name$="][type]"]').each(function () {
-        $(mudarCampoInputTextarea($(this).prop('name')));
+        $(mudarCampoInputTextarea($(this).prop('name'), {{ Gate::check('perfiladmin') }}));
       });
     });
   </script>

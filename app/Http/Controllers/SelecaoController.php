@@ -63,8 +63,7 @@ class SelecaoController extends Controller
      */
     public function store(SelecaoRequest $request)
     {
-        $categoria = Categoria::find($request->categoria_id);
-        $this->authorize('selecoes.create', $categoria);
+        $this->authorize('selecoes.create');
 
         $requestData = $request->all();
         $requestData['data_inicio'] = (is_null($requestData['data_inicio']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_inicio']));
@@ -85,7 +84,7 @@ class SelecaoController extends Controller
      */
     public function edit(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.view', $selecao);
+        $this->authorize('selecoes.update');
 
         Selecao::atualizaStatusSelecoes();
 
@@ -102,7 +101,7 @@ class SelecaoController extends Controller
      */
     public function update(SelecaoRequest $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.view', $selecao);
+        $this->authorize('selecoes.update');
 
         $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
         $this->updateField($request, $selecao, 'nome', 'nome', 'o');
@@ -141,7 +140,7 @@ class SelecaoController extends Controller
 
     public function storeTemplateJson(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.update', $selecao);
+        $this->authorize('selecoes.update');
 
         $newjson = $request->template;
         $selecao->template = $newjson;
@@ -152,7 +151,7 @@ class SelecaoController extends Controller
 
     public function createTemplate(Selecao $selecao)
     {
-        $this->authorize('selecoes.update', $selecao);
+        $this->authorize('selecoes.update');
         \UspTheme::activeUrl('selecoes');
 
         $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
@@ -161,7 +160,7 @@ class SelecaoController extends Controller
 
     public function storeTemplate(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.update', $selecao);
+        $this->authorize('selecoes.update');
 
         $request->validate([
             'template.*.label' => 'required',
@@ -203,7 +202,7 @@ class SelecaoController extends Controller
 
     public function createTemplateValue(Selecao $selecao, $field)
     {
-        $this->authorize('selecoes.update', $selecao);
+        $this->authorize('selecoes.update');
         \UspTheme::activeUrl('selecoes');
 
         $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
@@ -212,7 +211,7 @@ class SelecaoController extends Controller
 
     public function storeTemplateValue(Request $request, Selecao $selecao, $field)
     {
-        $this->authorize('selecoes.update', $selecao);
+        $this->authorize('selecoes.update');
 
         $request->validate([
             'value.*.label' => 'required',
@@ -254,7 +253,7 @@ class SelecaoController extends Controller
      */
     public function storeLinhaPesquisa(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.update', $selecao);
+        $this->authorize('selecoes.update');
 
         $request->validate([
             'id' => 'required',
@@ -283,7 +282,7 @@ class SelecaoController extends Controller
      */
     public function destroyLinhaPesquisa(Request $request, Selecao $selecao, LinhaPesquisa $linhapesquisa)
     {
-        $this->authorize('selecoes.update', $selecao);
+        $this->authorize('selecoes.update');
 
         $selecao->linhaspesquisa()->detach($linhapesquisa);
 
@@ -301,7 +300,7 @@ class SelecaoController extends Controller
      */
     public function download(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.view', $selecao);
+        $this->authorize('selecoes.viewAny');
         $request->validate([
             'ano' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);

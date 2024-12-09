@@ -113,15 +113,5 @@
         }
       }
     }
-
-    // Ao carregar a página
-    $(document).ready(function() {
-      // Pega todos os campos extras que são caixa de seleção
-      $('select[name$="][type]"]').each(function () {
-        var nameField = $(this).prop('name');
-        // muda o campo de input para caixa de texto
-        $(mudarCampoInputTextarea(nameField));
-      });
-    });
   </script>
 @endsection

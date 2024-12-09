@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\Selecao;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
@@ -19,7 +18,7 @@ class SelecaoPolicy
      */
     public function viewAny(User $user)
     {
-        return Gate::allows('perfiladmin');
+        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
     }
 
     /**
@@ -30,7 +29,7 @@ class SelecaoPolicy
      */
     public function view(User $user)
     {
-        return true;
+        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
     }
 
     /**
@@ -41,7 +40,7 @@ class SelecaoPolicy
      */
     public function create(User $user)
     {
-        return Gate::allows('perfiladmin');
+        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
     }
 
     /**
@@ -52,7 +51,7 @@ class SelecaoPolicy
      */
     public function update(User $user)
     {
-        return Gate::allows('perfiladmin');
+        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
     }
 
     /**
