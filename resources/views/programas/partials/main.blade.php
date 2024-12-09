@@ -1,14 +1,14 @@
-@can('create', App\Models\Programa::class)
-  <div class="row">
-    <div class="col-md-12 form-inline">
-      <span class="h4 mt-2">Programas</span>
+<div class="row">
+  <div class="col-md-12 form-inline">
+    <span class="h4 mt-2">Programas</span>
+    @can('create', App\Models\Programa::class)
       &nbsp; &nbsp;
       <button type="button" class="btn btn-sm btn-success" onclick="add_form()">
         <i class="fas fa-plus"></i> Novo
       </button>
-    </div>
+    @endcan
   </div>
-@endcan
+</div>
 
 <table class="table table-sm my-0 ml-3">
   @foreach ($programas as $programa)
