@@ -7,15 +7,11 @@
       <div class="card mb-3">
         <div class="card-header">
           @if (Gate::check('perfiladmin'))
-            <a href="users">Usuários</a> <i class="fas fa-angle-right"></i>
+            <a href="users">Usuários</a>
           @else
-            @if (Auth()->user()->is_admin)
-              <a href="{{ route('senhaunica-users.index') }}">Users</a> <i class="fas fa-angle-right"></i>
-            @else
-              Meu Perfil <i class="fas fa-angle-right"></i>
-            @endif
+            Usuários
           @endif
-          {{ $user->name }}
+          <i class="fas fa-angle-right"></i> {{ $user->name }}
           @if (Gate::check('perfiladmin'))
             | @include('users.partials.btn-change-user')
           @endif
