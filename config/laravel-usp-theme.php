@@ -51,7 +51,7 @@ $menu = [
     [
         'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Administração',
         'submenu' => $admin,
-        'can' => 'perfiladmin',
+        'can' => 'admin.viewAny',
     ],
 ];
 

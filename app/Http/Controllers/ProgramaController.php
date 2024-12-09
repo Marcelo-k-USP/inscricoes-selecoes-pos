@@ -47,18 +47,11 @@ class ProgramaController extends Controller
      */
     public function show(Request $request, $id)
     {
-        #usando no ajax, somente para admin
-        $this->authorize('admin');
+        $this->authorize('programas.view');
         \UspTheme::activeUrl('programas');
 
-        if ($request->ajax()) {
-            # preenche os dados do form de edição de um programa
-            return Programa::find($id);
-        } else {
-            # desativado por enquanto
-            return false;
-            return view('programas.show', compact('programa'));
-        }
+        if ($request->ajax())
+            return Programa::find($id);    // preenche os dados do form de edição de um programa
     }
 
     /**
@@ -69,7 +62,7 @@ class ProgramaController extends Controller
      */
     public function store(ProgramaRequest $request)
     {
-        $this->authorize('admin');
+        $this->authorize('programas.create');
 
         $validator = Validator::make($request->all(), ProgramaRequest::rules, ProgramaRequest::messages);
         if ($validator->fails())
@@ -90,7 +83,7 @@ class ProgramaController extends Controller
      */
     public function update(ProgramaRequest $request, $id)
     {
-        $this->authorize('admin');
+        $this->authorize('programas.update');
 
         $validator = Validator::make($request->all(), ProgramaRequest::rules, ProgramaRequest::messages);
         if ($validator->fails())
@@ -112,7 +105,7 @@ class ProgramaController extends Controller
      */
     public function destroy(ProgramaRequest $request, $id)
     {
-        $this->authorize('admin');
+        $this->authorize('programas.delete');
 
         $programa = Programa::find($id);
         if ($programa->selecoes()->exists()) {
