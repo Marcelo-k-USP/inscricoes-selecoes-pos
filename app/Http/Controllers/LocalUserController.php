@@ -152,7 +152,7 @@ class LocalUserController extends Controller
 
     public function index(Request $request)
     {
-        $this->authorize('admin');
+        $this->authorize('localusers.viewAny');
         \UspTheme::activeUrl('localusers');
 
         $localusers = User::where('local', '1')->get();
@@ -171,23 +171,16 @@ class LocalUserController extends Controller
 
     public function show(Request $request, $id)
     {
-        #usando no ajax, somente para admin
-        $this->authorize('admin');
+        $this->authorize('localusers.view');
         \UspTheme::activeUrl('localusers');
 
-        if ($request->ajax()) {
-            # preenche os dados do form de edição de um usuário local
-            return User::where('id', $id)->where('local', 1)->first();
-        } else {
-            # desativado por enquanto
-            return false;
-            return view('localusers.show', compact('localuser'));
-        }
+        if ($request->ajax())
+            return User::where('id', $id)->where('local', 1)->first();    // preenche os dados do form de edição de um usuário local
     }
 
     public function store(LocalUserRequest $request)
     {
-        $this->authorize('admin');
+        $this->authorize('localusers.create');
 
         $validator = Validator::make($request->all(), LocalUserRequest::rules, LocalUserRequest::messages);
         if ($validator->fails())
@@ -209,7 +202,7 @@ class LocalUserController extends Controller
 
     public function update(Request $request, User $localuser)
     {
-        $this->authorize('admin');
+        $this->authorize('localusers.update');
 
         $validator = Validator::make($request->all(), LocalUserRequest::rules, LocalUserRequest::messages);
         if ($validator->fails())
@@ -224,7 +217,7 @@ class LocalUserController extends Controller
 
     public function destroy(User $localuser)
     {
-        $this->authorize('admin');
+        $this->authorize('localusers.delete');
 
         if ($localuser->local == false) {
             request()->session()->flash('alert-danger', 'Usuário senha única não pode ser apagado.');

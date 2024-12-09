@@ -18,12 +18,12 @@ $admin = [
     ],
     [
         'type' => 'divider',
-        'can'=> 'perfiladmin'
+        'can'=> 'localusers.viewAny'
     ],
     [
         'text' => '<i class="fa fa-list-ul"></i> Usuários Locais',
         'url' => 'localusers',
-        'can' => 'perfiladmin',
+        'can' => 'localusers.viewAny',
     ],
 ];
 
