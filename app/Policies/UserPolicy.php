@@ -18,10 +18,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        /* admin */
-        if (Gate::allows('perfiladmin')) {
-            return true;
-        }
+        return (Gate::allows('perfiladmin'));
     }
 
     /**
@@ -33,15 +30,10 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        /* liberando somente para o proprio usuario */
-        if ($user == $model) {
+        if ($user->id == $model->id)    // liberado para o próprio usuário
             return true;
-        }
 
-        /* admin */
-        if (Gate::allows('perfiladmin') || $user->is_admin) {
-            return true;
-        }
+        return (Gate::allows('perfiladmin'));
     }
 
     /**
@@ -52,41 +44,38 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        //
+        return (Gate::allows('perfiladmin'));
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function update(User $user, User $model)
+    public function update(User $user)
     {
-        //
+        return (Gate::allows('perfiladmin'));
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function delete(User $user, User $model)
+    public function delete(User $user)
     {
-        //
+        return (Gate::allows('perfiladmin'));
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function restore(User $user, User $model)
+    public function restore(User $user)
     {
         //
     }
@@ -95,10 +84,9 @@ class UserPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $user)
     {
         //
     }

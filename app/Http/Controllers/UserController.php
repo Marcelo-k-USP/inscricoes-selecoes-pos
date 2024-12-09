@@ -24,35 +24,10 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('users.viewAny');
-        \UspTheme::activeUrl('users');
 
+        \UspTheme::activeUrl('users');
         $users = User::all();
         return view('users.index')->with('users', $users);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $this->authorize('admin');
-        return view('users.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $this->authorize('admin');
-        User::obterOuCriarPorCodpes($request->codpes);
-        $request->session()->flash('alert-success', 'Gerente adicionado com sucesso');
-        return redirect('/users');
     }
 
     /**
@@ -63,7 +38,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //$this->authorize('users.view', $user);
+        $this->authorize('users.view', $user);
         \UspTheme::activeUrl('senhaunica-users');
 
         $oauth_file = 'debug/oauth/' . $user->codpes . '.json';
@@ -75,6 +50,32 @@ class UserController extends Controller
             $oauth['time'] = Storage::lastModified($oauth_file);
         }
         return view('users.show', compact('user', 'oauth'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $this->authorize('users.create');
+        return view('users.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->authorize('users.create');
+
+        User::obterOuCriarPorCodpes($request->codpes);
+        $request->session()->flash('alert-success', 'Gerente adicionado com sucesso');
+        return redirect('/users');
     }
 
     /**
@@ -97,6 +98,8 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('users.update');
+
         $user = \Auth::user();
         $requests = $request->all();
 
@@ -124,7 +127,8 @@ class UserController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $this->authorize('admin');
+        $this->authorize('users.delete');
+
         $user = User::find($id);
         $user->delete();
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
