@@ -61,7 +61,7 @@
     </table>
   @else
     <br />
-    @can('perfiladmin')
+    @canany(['perfiladmin', 'perfilgerente'])
       Não há nenhuma inscrição cadastrada no sistema.
     @else
       Você não realizou nenhuma inscrição para nossos processos seletivos.

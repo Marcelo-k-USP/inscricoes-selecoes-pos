@@ -30,7 +30,7 @@ class InscricaoPolicy
      */
     public function viewAny(User $user)
     {
-        return Gate::allows('perfiladmin');
+        return Gate::any(['perfiladmin', 'perfilgerente'], $user);
     }
 
     /**

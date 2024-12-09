@@ -138,7 +138,7 @@ class Inscricao extends Model
      */
     public static function listarInscricoes()
     {
-        if (Gate::allows('perfiladmin'))
+        if (Gate::any(['perfiladmin', 'perfilgerente']))
             $inscricoes = SELF::get();
         else
             $inscricoes = Auth::user()->inscricoes()
