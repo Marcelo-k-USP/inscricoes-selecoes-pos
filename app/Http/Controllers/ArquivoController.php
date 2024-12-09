@@ -94,7 +94,7 @@ class ArquivoController extends Controller
         $request->session()->flash('alert-success', 'Arquivo(s) adicionado(s) com sucesso');
 
         \UspTheme::activeUrl($tipo_modelo_plural);
-        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $form, 'edit'));
+        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $tipo_modelo_plural, $form, 'edit'));
     }
 
     /**
@@ -137,7 +137,7 @@ class ArquivoController extends Controller
         $request->session()->flash('alert-success', 'Arquivo renomeado com sucesso');
 
         \UspTheme::activeUrl($tipo_modelo_plural);
-        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $form, 'edit'));
+        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $tipo_modelo_plural, $form, 'edit'));
     }
 
     /**
@@ -165,7 +165,7 @@ class ArquivoController extends Controller
         $request->session()->flash('alert-success', 'Arquivo removido com sucesso');
 
         \UspTheme::activeUrl($tipo_modelo_plural);
-        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $form, 'edit'));
+        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $tipo_modelo_plural, $form, 'edit'));
     }
 
     private function obtemModeloPlural($tipo_modelo) {
@@ -196,11 +196,11 @@ class ArquivoController extends Controller
         }
     }
 
-    private function monta_compact($classe_modelo, $modelo, $tipo_modelo, $form, $modo) {
+    private function monta_compact($classe_modelo, $modelo, $tipo_modelo, $tipo_modelo_plural, $form, $modo) {
         $data = (object) ('App\\Http\\Controllers\\' . class_basename($classe_modelo) . 'Controller')::$data;
         $linhaspesquisa = LinhaPesquisa::all();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'modelo', 'tipo_modelo', 'form', 'modo', 'linhaspesquisa', 'max_upload_size');
+        return compact('data', 'modelo', 'tipo_modelo', 'tipo_modelo_plural', 'form', 'modo', 'linhaspesquisa', 'max_upload_size');
     }
 }

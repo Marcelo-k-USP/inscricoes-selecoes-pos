@@ -273,7 +273,7 @@ class SelecaoController extends Controller
         else
             $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' já estava vinculada à essa seleção.');
 
-        return Redirect::to(URL::previous() . '#card_linhaspesquisa');
+        return redirect()->back();
     }
 
     /**
@@ -288,7 +288,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi removida dessa seleção.');
 
-        return Redirect::to(URL::previous() . '#card_linhaspesquisa');
+        return redirect()->back();
     }
 
     /**
@@ -339,10 +339,11 @@ class SelecaoController extends Controller
         $selecao->template = JSONForms::orderTemplate($selecao->template);
         $modelo = $selecao;
         $tipo_modelo = 'Selecao';
+        $tipo_modelo_plural = 'selecoes';
         $rules = SelecaoRequest::rules;
         $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($modelo->programa) ? (new Programa) : $modelo->programa);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'modelo', 'tipo_modelo', 'modo', 'linhaspesquisa', 'max_upload_size', 'rules');
+        return compact('data', 'modelo', 'tipo_modelo', 'tipo_modelo_plural', 'modo', 'linhaspesquisa', 'max_upload_size', 'rules');
     }
 }
