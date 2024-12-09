@@ -18,7 +18,7 @@ class ProgramaController extends Controller
     }
 
     /**
-     * Mostra lista de categorias
+     * Mostra lista de programas
      */
     public function index(Request $request)
     {
