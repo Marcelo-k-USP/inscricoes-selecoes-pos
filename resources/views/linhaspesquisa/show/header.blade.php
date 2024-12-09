@@ -3,9 +3,9 @@
     {{ $linhapesquisa->nome }}
   </b>
   <div class="hidden-btn d-none ml-auto">
-    @includewhen(Gate::allows('update', $selecao), 'common.btn-delete-sm', [
-      'action' => "selecoes/{$selecao->id}/linhaspesquisa/{$linhapesquisa->id}",
-    ])
+    @can('selecoes.update')
+      @include('common.btn-delete-sm', ['action' => "selecoes/{$selecao->id}/linhaspesquisa/{$linhapesquisa->id}"])
+    @endcan
   </div>
 </div>
 

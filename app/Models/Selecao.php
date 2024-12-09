@@ -653,7 +653,7 @@ class Selecao extends Model
         $selecoes = SELF::get();
         $ret = [];
         foreach ($selecoes as $selecao)
-            if (Gate::allows('selecoes.view', $selecao))
+            if (Gate::allows('selecoes.view'))
                 $ret[$selecao->id] = $selecao->nome . ' (' . $selecao->categoria->nome . ')';
         return $ret;
     }
