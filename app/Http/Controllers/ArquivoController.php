@@ -25,7 +25,30 @@ class ArquivoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {}
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Arquivo  $arquivo
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Arquivo $arquivo)
+    {
+        $this->authorize('arquivos.view', $arquivo);
+
+        if (Arquivo::find($arquivo->id)->selecoes()->exists())
+            $tipo_modelo = 'Seleção';
+        elseif (Arquivo::find($arquivo->id)->inscricoes()->exists())
+            $tipo_modelo = 'Inscrição';
+        $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
+
+        ob_end_clean();    // https://stackoverflow.com/questions/39329299/laravel-file-downloaded-from-storage-folder-gets-corrupted
+
+        return Storage::download($arquivo->caminho, $arquivo->nome_original);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -33,7 +56,9 @@ class ArquivoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {}
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -73,32 +98,15 @@ class ArquivoController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Arquivo  $arquivo
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Arquivo $arquivo)
-    {
-        if (Arquivo::find($arquivo->id)->selecoes()->exists())
-            $tipo_modelo = 'Seleção';
-        elseif (Arquivo::find($arquivo->id)->inscricoes()->exists())
-            $tipo_modelo = 'Inscrição';
-        $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
-
-        ob_end_clean();    // https://stackoverflow.com/questions/39329299/laravel-file-downloaded-from-storage-folder-gets-corrupted
-
-        return Storage::download($arquivo->caminho, $arquivo->nome_original);
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Arquivo  $arquivo
      * @return \Illuminate\Http\Response
      */
     public function edit(Arquivo $arquivo)
-    {}
+    {
+        //
+    }
 
     /**
      * Update the specified resource in storage.
