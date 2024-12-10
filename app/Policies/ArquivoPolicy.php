@@ -24,7 +24,7 @@ class ArquivoPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User     $user
+     * @param  \App\Models\?User    $user
      * @param  \App\Models\Arquivo  $arquivo
      * @param  string               $tipo_modelo
      * @return mixed

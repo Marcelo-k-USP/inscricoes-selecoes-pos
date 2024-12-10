@@ -36,7 +36,9 @@ class SelecaoController extends Controller
     }
 
     /**
-     * Lista as seleções
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -50,6 +52,11 @@ class SelecaoController extends Controller
         return view('selecoes.index', compact('data', 'modelos', 'tipo_modelo', 'max_upload_size'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
         $this->authorize('selecoes.create');
@@ -59,7 +66,10 @@ class SelecaoController extends Controller
     }
 
     /**
-     * Criar nova seleção
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\SelecaoRequest  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(SelecaoRequest $request)
     {
@@ -79,7 +89,8 @@ class SelecaoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \App\Models\Selecao        $selecao
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, Selecao $selecao)
@@ -95,8 +106,8 @@ class SelecaoController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Http\Requests\SelecaoRequest  $request
+     * @param  \App\Models\Selecao                $selecao
      * @return \Illuminate\Http\Response
      */
     public function update(SelecaoRequest $request, Selecao $selecao)

@@ -18,7 +18,10 @@ class CategoriaController extends Controller
     }
 
     /**
-     * Mostra lista de categorias
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
@@ -42,7 +45,8 @@ class CategoriaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request   $request
+     * @param  string                     $id
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, string $id)
@@ -57,7 +61,7 @@ class CategoriaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\CategoriaRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(CategoriaRequest $request)
@@ -77,8 +81,8 @@ class CategoriaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Http\Requests\CategoriaRequest  $request
+     * @param  string                               $id
      * @return \Illuminate\Http\Response
      */
     public function update(CategoriaRequest $request, string $id)
@@ -100,7 +104,8 @@ class CategoriaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Http\Requests\CategoriaRequest  $request
+     * @param  string                               $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(CategoriaRequest $request, string $id)

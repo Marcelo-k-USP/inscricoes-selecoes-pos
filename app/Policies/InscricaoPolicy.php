@@ -36,7 +36,8 @@ class InscricaoPolicy
     /**
      * Determine whether the user can view the inscrição.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Inscricao  $inscricao
      * @return mixed
      */
     public function view(User $user, Inscricao $inscricao)
@@ -64,7 +65,8 @@ class InscricaoPolicy
     /**
      * Determine whether the user can update the inscrição.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Inscricao  $inscricao
      * @return mixed
      */
     public function update(User $user, Inscricao $inscricao)

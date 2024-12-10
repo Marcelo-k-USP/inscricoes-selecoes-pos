@@ -18,7 +18,10 @@ class LinhaPesquisaController extends Controller
     }
 
     /**
-     * Mostra lista de linhas de pesquisa
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
@@ -46,7 +49,8 @@ class LinhaPesquisaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request   $request
+     * @param  string                     $id
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, string $id)
@@ -64,7 +68,7 @@ class LinhaPesquisaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\LinhaPesquisaRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(LinhaPesquisaRequest $request)
@@ -84,8 +88,8 @@ class LinhaPesquisaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Http\Requests\LinhaPesquisaRequest  $request
+     * @param  string                                   $id
      * @return \Illuminate\Http\Response
      */
     public function update(LinhaPesquisaRequest $request, string $id)
@@ -107,7 +111,8 @@ class LinhaPesquisaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Http\Requests\LinhaPesquisaRequest  $request
+     * @param  string                                   $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(LinhaPesquisaRequest $request, string $id)

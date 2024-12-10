@@ -37,6 +37,7 @@ class InscricaoController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -56,7 +57,7 @@ class InscricaoController extends Controller
      * Mostra lista de seleções e respectivas categorias
      * para selecionar e criar nova inscrição
      *
-     * @param Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request   $request
      * @return \Illuminate\Http\Response
      */
     public function listaSelecoes(Request $request)
@@ -73,6 +74,7 @@ class InscricaoController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param  \App\Models\Selecao        $selecao
      * @return \Illuminate\Http\Response
      */
     public function create(Selecao $selecao)
@@ -97,7 +99,8 @@ class InscricaoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request        $request
+     * @param  \App\Services\RecaptchaService  $recaptcha_service
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, RecaptchaService $recaptcha_service)
@@ -174,7 +177,8 @@ class InscricaoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \App\Models\Inscricao      $inscricao
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, Inscricao $inscricao)
@@ -188,8 +192,8 @@ class InscricaoController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \App\Models\Inscricao      $inscricao
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Inscricao $inscricao)

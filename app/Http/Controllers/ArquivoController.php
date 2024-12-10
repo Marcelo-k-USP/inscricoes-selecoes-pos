@@ -32,7 +32,7 @@ class ArquivoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Arquivo  $arquivo
+     * @param  \App\Models\Arquivo        $arquivo
      * @return \Illuminate\Http\Response
      */
     public function show(Arquivo $arquivo)
@@ -61,7 +61,7 @@ class ArquivoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request   $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -97,11 +97,8 @@ class ArquivoController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Arquivo  $arquivo
-     * @return \Illuminate\Http\Response
      */
-    public function edit(Arquivo $arquivo)
+    public function edit()
     {
         //
     }
@@ -109,8 +106,8 @@ class ArquivoController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Arquivo  $arquivo
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \App\Models\Arquivo        $arquivo
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Arquivo $arquivo)
@@ -141,7 +138,8 @@ class ArquivoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Arquivo  $arquivo
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \App\Models\Arquivo        $arquivo
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Arquivo $arquivo)

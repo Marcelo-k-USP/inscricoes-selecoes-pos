@@ -25,7 +25,7 @@ class UserPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\User  $user_a_visualizar
      * @return mixed
      */
     public function view(User $user, User $user_a_visualizar)

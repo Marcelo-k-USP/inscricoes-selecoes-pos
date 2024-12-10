@@ -18,7 +18,10 @@ class ProgramaController extends Controller
     }
 
     /**
-     * Mostra lista de programas
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
@@ -42,7 +45,8 @@ class ProgramaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request   $request
+     * @param  string                     $id
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, string $id)
@@ -57,7 +61,7 @@ class ProgramaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\ProgramaRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(ProgramaRequest $request)
@@ -77,8 +81,8 @@ class ProgramaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Http\Requests\ProgramaRequest  $request
+     * @param  string                              $id
      * @return \Illuminate\Http\Response
      */
     public function update(ProgramaRequest $request, string $id)
@@ -100,7 +104,8 @@ class ProgramaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Http\Requests\ProgramaRequest  $request
+     * @param  string                              $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(ProgramaRequest $request, string $id)
