@@ -70,6 +70,18 @@
       $('input[id="extras\[celular\]"], input[id^="extras\[celular_"]').each(function() {
         $(this).mask('(00) 00000-0000');
       });
+
+      $('select[id="extras\[tipo_de_documento\]"]').change(function () {
+        if ($(this).val() == 'passaporte') {
+          $('#cpf_required').hide();
+          $('input[id="extras\[cpf\]"]').removeAttr('required');
+        } else {
+          $('#cpf_required').show();
+          $('input[id="extras\[cpf\]"]').attr('required', true);
+        }
+      });
+
+      $('select[id="extras\[tipo_de_documento\]"]').trigger('change');
     });
 
     $('#form_principal').on('submit', function(event) {

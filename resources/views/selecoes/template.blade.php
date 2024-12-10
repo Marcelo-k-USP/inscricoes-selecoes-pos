@@ -41,7 +41,7 @@
                           <div class="col truncate-text">{{ $tkey }}</div>
                           @php
                             $disable_functions = '';
-                            if (($tkey == 'nome') || ($tkey == 'celular') || ($tkey == 'e_mail'))
+                            if (in_array($tkey, ['nome', 'tipo_de_documento', 'cpf', 'celular', 'e_mail']))
                               $disable_functions = ' disabled';
                           @endphp
                           @foreach ($selecao->getTemplateFields() as $field)
