@@ -140,7 +140,7 @@ class UserController extends Controller
      */
     public function partenome(Request $request)
     {
-        $this->authorize('usuario');
+        $this->authorize('users.viewAny');
         if ($request->term) {
             $results = [];
             if (config('selecoes-pos.usar_replicado')) {
@@ -149,21 +149,21 @@ class UserController extends Controller
                 $pessoas = array_slice($pessoas, 0, 50);
 
                 // formatando para select2
-                foreach ($pessoas as $pessoa) {
+                foreach ($pessoas as $pessoa)
                     $results[] = [
                         'text' => $pessoa['codpes'] . ' ' . $pessoa['nompesttd'],
                         'id' => $pessoa['codpes'],
                     ];
-                }
             }
 
-            # mesmo pegando do replicado vamos pegar da base local também
-            $pessoas = User::where('name', 'like', '%' . $request->term . '%')->get()->take(1);
-            foreach ($pessoas as $pessoa) {
-                $results[] = [
-                    'text' => $pessoa->codpes . ' ' . $pessoa->name,
-                    'id' => "$pessoa->codpes",
-                ];
+            if (empty($request->tipvinext)) {
+                # mesmo pegando do replicado vamos pegar da base local também
+                $pessoas = User::where('name', 'like', '%' . $request->term . '%')->get()->take(1);
+                foreach ($pessoas as $pessoa)
+                    $results[] = [
+                        'text' => $pessoa->codpes . ' ' . $pessoa->name,
+                        'id' => "$pessoa->codpes",
+                    ];
             }
 
             # removendo duplicados
