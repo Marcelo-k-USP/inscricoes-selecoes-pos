@@ -28,4 +28,11 @@ class Parametro extends Model
     {
         return SELF::fields;
     }
+
+    // retorna o valor do boleto
+    public static function obterBoletoValor()
+    {
+        $parametro = self::first();
+        return ($parametro ? $parametro->boleto_valor : null);
+    }
 }

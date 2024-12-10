@@ -10,6 +10,10 @@ return [
     // deprecado em 2/23. Remover no próximo release
     'forcar_https' => env('FORCAR_HTTPS', false),
 
+    // WSBoleto
+    'ws_boleto_usuario' => env('WS_BOLETO_USUARIO'),
+    'ws_boleto_senha' => env('WS_BOLETO_SENHA'),
+
     // reCAPTCHA
     'recaptcha_site_key' => env('RECAPTCHA_SITE_KEY'),
     'recaptcha_secret_key' => env('RECAPTCHA_SECRET_KEY'),

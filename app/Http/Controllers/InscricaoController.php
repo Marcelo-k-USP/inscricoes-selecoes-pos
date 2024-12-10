@@ -7,6 +7,7 @@ use App\Models\Inscricao;
 use App\Models\LocalUser;
 use App\Models\Selecao;
 use App\Models\User;
+use App\Services\BoletoService;
 use App\Services\RecaptchaService;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
