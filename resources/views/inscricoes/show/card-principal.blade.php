@@ -35,7 +35,7 @@
           @endforeach
         @endif
       </div>
-      @if (session('perfil') == 'usuario')
+      @if ((!Auth::check()) || (session('perfil') == 'usuario'))
         <div class="text-right">
           <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
         </div>
