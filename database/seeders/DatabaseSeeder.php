@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             CategoriaSeeder::class,         // adiciona categorias
             SelecaoSeeder::class,           // adiciona seleções
             LinhaPesquisaSeeder::class,     // adiciona linhas de pesquisa
+            ParametroSeeder::class,         // adiciona parâmetros
         ]);
     }
 }

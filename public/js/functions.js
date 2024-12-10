@@ -22,7 +22,7 @@ function mudarCampoInputTextarea(campo, perfil_admin) {
     });
 	// do contrário, volta o campo valor para input
   } else {
-      $('textarea[name="' + campo.replace('][type]', '][value]') + '"]').each(function () {
+    $('textarea[name="' + campo.replace('][type]', '][value]') + '"]').each(function () {
       var classe = $(this).attr('class');
       var style = $(this).attr('style');
       var name = $(this).attr('name');
@@ -35,6 +35,15 @@ function mudarCampoInputTextarea(campo, perfil_admin) {
       $(this).replaceWith(inputbox);
     });
   }
+}
+
+function formatarDecimal(decimal)
+{
+  decimal = parseFloat(decimal);
+  if (Math.floor(decimal) === decimal)
+    return decimal.toFixed(0);
+  else
+    return decimal.toFixed(2).replace('.', ',');
 }
 
 function validar_cpf(cpf)

@@ -9,6 +9,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\LinhaPesquisaController;
 use App\Http\Controllers\LocalUserController;
+use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\SelecaoController;
 use App\Http\Controllers\UserController;
@@ -79,6 +80,10 @@ Route::post('localusers/redefinesenha', [LocalUserController::class, 'redefineSe
 
 // LOCAL USERS
 Route::resource('localusers', LocalUserController::class);
+
+// PARÂMETROS
+Route::get('parametros', [ParametroController::class, 'edit'])->name('parametros.edit');
+Route::put('parametros', [ParametroController::class, 'update'])->name('parametros.update');
 
 // ARQUIVOS
 Route::resource('arquivos', ArquivoController::class);

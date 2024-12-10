@@ -36,6 +36,16 @@ if (!function_exists('md2html')) {
     }
 }
 
+if (!function_exists('formatarDecimal')) {
+    function formatarDecimal($decimal)
+    {
+        if (floor($decimal) == $decimal)
+            return number_format($decimal, 0);
+        else
+            return str_replace('.', ',', number_format($decimal, 2));
+    }
+}
+
 if (!function_exists('formatarData')) {
     function formatarData($data)
     {

@@ -18,7 +18,12 @@ $admin = [
     ],
     [
         'type' => 'divider',
-        'can'=> 'localusers.viewAny'
+        'can'=> 'parametros.viewAny'
+    ],
+    [
+        'text' => '<i class="fas fa-cogs"></i> Parâmetros',
+        'url' => 'parametros',
+        'can' => 'parametros.viewAny',
     ],
     [
         'text' => '<i class="fa fa-list-ul"></i> Usuários Locais',
