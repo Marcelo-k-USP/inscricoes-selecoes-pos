@@ -206,7 +206,7 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    // este método é chamado pelo senhaunica-socialite, por isso é preciso que ele exista aqui
+    // este método é invocado pelo senhaunica-socialite, por isso é preciso que ele exista aqui
     // ele só é invocado quando alguém assume a identidade de um usuário que nunca antes logou no sistema (e que, portanto, nem está gravado na tabela)
     static function findOrCreateFromReplicado($codpes) {
         return User::obterOuCriarPorCodpes($codpes);

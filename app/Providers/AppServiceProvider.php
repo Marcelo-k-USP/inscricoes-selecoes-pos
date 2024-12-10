@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Inscricao;
+use App\Observers\InscricaoObserver;
+use App\Services\BoletoService;
+use App\Services\RecaptchaService;
 use App\Services\ViacepService;
 use GuzzleHttp\Client;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,11 +20,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(ViacepService::class, function ($app) {
-            return new ViacepService(new Client());
+        // registra os services
+        $this->app->singleton(BoletoService::class, function ($app) {
+            return new BoletoService();
         });
         $this->app->singleton(RecaptchaService::class, function ($app) {
             return new RecaptchaService();
+        });
+        $this->app->singleton(ViacepService::class, function ($app) {
+            return new ViacepService(new Client());
         });
     }
 
@@ -32,8 +40,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrap();
-        if(config('selecoes-pos.forcar_https')) {
+
+        if(config('selecoes-pos.forcar_https'))
             \URL::forceScheme('https');
-        }
+
+        // registra os observers
+        Inscricao::observe(InscricaoObserver::class);
     }
 }
