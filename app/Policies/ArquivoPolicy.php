@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Arquivo;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
@@ -54,7 +55,7 @@ class ArquivoPolicy
      */
     public function create(User $user, $modelo, string $tipo_modelo)
     {
-        if ($tipo_modelo == 'Selecao')
+        if ($tipo_modelo == 'Seleção')
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes subam arquivos de seleção
 
         if (Gate::allows('perfilusuario')) {
@@ -75,7 +76,7 @@ class ArquivoPolicy
      */
     public function update(User $user, Arquivo $arquivo, $modelo, string $tipo_modelo)
     {
-        return authorize_update_delete($user, $arquivo, $modelo, $tipo_modelo);
+        return $this->authorize_update_delete($user, $arquivo, $modelo, $tipo_modelo);
     }
 
     /**
@@ -87,9 +88,9 @@ class ArquivoPolicy
      * @param  string                            $tipo_modelo
      * @return mixed
      */
-    public function delete(User $user)
+    public function delete(User $user, Arquivo $arquivo, $modelo, string $tipo_modelo)
     {
-        return authorize_update_delete($user, $arquivo, $modelo, $tipo_modelo);
+        return $this->authorize_update_delete($user, $arquivo, $modelo, $tipo_modelo);
     }
 
     /**
@@ -116,7 +117,7 @@ class ArquivoPolicy
 
     private function authorize_update_delete(User $user, Arquivo $arquivo, $modelo, string $tipo_modelo)
     {
-        if ($tipo_modelo == 'Selecao')
+        if ($tipo_modelo == 'Seleção')
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes renomeiem/apaguem arquivos de seleção
 
         if (Gate::allows('perfilusuario')) {
