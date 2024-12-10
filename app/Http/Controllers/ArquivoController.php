@@ -37,13 +37,11 @@ class ArquivoController extends Controller
      */
     public function show(Arquivo $arquivo)
     {
-        $this->authorize('arquivos.view', $arquivo);
-
         if (Arquivo::find($arquivo->id)->selecoes()->exists())
             $tipo_modelo = 'Seleção';
         elseif (Arquivo::find($arquivo->id)->inscricoes()->exists())
             $tipo_modelo = 'Inscrição';
-        $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
+        $this->authorize('arquivos.view', [$arquivo, $tipo_modelo]);
 
         ob_end_clean();    // https://stackoverflow.com/questions/39329299/laravel-file-downloaded-from-storage-folder-gets-corrupted
 
@@ -78,7 +76,7 @@ class ArquivoController extends Controller
             'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('selecoes-pos.upload_max_filesize'),
             'modelo_id' => 'required|integer|exists:' . $tipo_modelo_plural . ',id',
         ]);
-        $this->authorize($tipo_modelo_plural . '.update', $modelo);
+        $this->authorize('arquivos.create', [$modelo, $tipo_modelo]);
 
         foreach ($request->arquivo as $arq) {
             $arquivo = new Arquivo;
@@ -127,7 +125,7 @@ class ArquivoController extends Controller
             ['nome_arquivo' => 'required'],
             ['nome_arquivo.required' => 'O nome do arquivo é obrigatório!']
         );
-        $this->authorize($tipo_modelo_plural . '.update', $modelo);
+        $this->authorize('arquivos.update', [$arquivo, $modelo, $tipo_modelo]);
 
         $nome_antigo = $arquivo->nome_original;
         $extensao = pathinfo($nome_antigo, PATHINFO_EXTENSION);
@@ -154,7 +152,7 @@ class ArquivoController extends Controller
         $modelo = $classe_modelo::find($request->modelo_id);
         $form = $this->obtemForm($tipo_modelo, $modelo);
 
-        $this->authorize($tipo_modelo_plural . '.update', $modelo);
+        $this->authorize('arquivos.delete', [$arquivo, $modelo, $tipo_modelo]);
 
         if (Storage::exists($arquivo->caminho))
             Storage::delete($arquivo->caminho);
