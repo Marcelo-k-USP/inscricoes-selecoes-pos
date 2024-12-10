@@ -36,7 +36,7 @@
 
 @section('javascripts_bottom')
 @parent
-  <script>
+  <script type="text/javascript">
     $(document).ready(function() {
       var pessoasForm = $('#common-modal-form');
       add_modal_form = function() {
