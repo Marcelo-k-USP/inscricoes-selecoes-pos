@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
@@ -75,6 +76,10 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.create');
 
+        $validator = Validator::make($request->all(), SelecaoRequest::rules, SelecaoRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
+
         $requestData = $request->all();
         $requestData['data_inicio'] = (is_null($requestData['data_inicio']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_inicio']));
         $requestData['data_fim'   ] = (is_null($requestData['data_fim'   ]) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_fim'   ]));
@@ -113,6 +118,10 @@ class SelecaoController extends Controller
     public function update(SelecaoRequest $request, Selecao $selecao)
     {
         $this->authorize('selecoes.update');
+
+        $validator = Validator::make($request->all(), SelecaoRequest::rules, SelecaoRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
 
         $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
         $this->updateField($request, $selecao, 'nome', 'nome', 'o');

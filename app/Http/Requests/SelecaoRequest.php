@@ -25,6 +25,8 @@ class SelecaoRequest extends FormRequest
         'categoria_id' => ['required', 'numeric'],
         'nome' => ['required', 'max:100'],
         'descricao' => ['max:255'],
+        'data_inicio' => ['required'],
+        'data_fim' => ['required'],
         'programa_id' => ['required', 'numeric'],
     ];
 
@@ -34,6 +36,8 @@ class SelecaoRequest extends FormRequest
         'nome.required' => 'O nome da seleção é obrigatório!',
         'nome.max' => 'O nome da seleção não pode exceder 100 caracteres!',
         'descricao.max' => 'A descrição da seleção não pode exceder 255 caracteres!',
+        'data_inicio.required' => 'A data de início é obrigatória!',
+        'data_fim.required' => 'A data de fim é obrigatória!',
         'programa_id.required' => 'O programa é obrigatório!',
         'programa_id.numeric' => 'O programa é inválido!',
     ];

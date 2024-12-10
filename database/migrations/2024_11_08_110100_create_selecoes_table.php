@@ -18,8 +18,8 @@ class CreateSelecoesTable extends Migration
             $table->string('nome', 100);
             $table->string('estado', 90);
             $table->string('descricao', 255)->nullable();
-            $table->date('data_inicio')->nullable();
-            $table->date('data_fim')->nullable();
+            $table->date('data_inicio');
+            $table->date('data_fim');
             $table->json('template')->nullable();
             $table->json('settings')->nullable();
             $table->foreignId('categoria_id')->constrained('categorias');

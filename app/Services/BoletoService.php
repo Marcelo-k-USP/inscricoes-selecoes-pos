@@ -54,6 +54,7 @@ class BoletoService
 
     private function calcularDataVencimento(Selecao $selecao)
     {
-        // deve ser o 1o dia útil após o término do período de inscrições dessa seleção
+        // a data de vencimento do boleto deve ser o primeiro dia útil passado o período de inscrições da seleção em questão
+        return addWorkingDays($selecao->data_fim, 1);
     }
 }
