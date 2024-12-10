@@ -28,9 +28,9 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function view(User $user, User $model)
+    public function view(User $user, User $user_a_visualizar)
     {
-        if ($user->id == $model->id)    // liberado para o próprio usuário
+        if ($user->id == $user_a_visualizar->id)    // liberado para o próprio usuário
             return true;
 
         return (Gate::allows('perfiladmin'));

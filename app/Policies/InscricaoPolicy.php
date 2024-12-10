@@ -39,10 +39,10 @@ class InscricaoPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function view(User $user, Inscricao $model)
+    public function view(User $user, Inscricao $inscricao)
     {
         if (Gate::allows('perfilusuario'))
-            return ($model->pessoas('Autor')->id == $user->id);    // permite que o usuário autor da inscrição a visualize
+            return ($inscricao->pessoas('Autor')->id == $user->id);    // permite que o usuário autor da inscrição a visualize
 
         return Gate::any(['perfiladmin', 'perfilgerente']);
     }
@@ -67,10 +67,9 @@ class InscricaoPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function update(User $user, Inscricao $model)
+    public function update(User $user, Inscricao $inscricao)
     {
-        return (Gate::allows('perfilusuario') &&
-                ($model->pessoas('Autor')->id == $user->id));    // permite que apenas o usuário autor da inscrição a edite
+        return (Gate::allows('perfilusuario') && ($inscricao->pessoas('Autor')->id == $user->id));    // permite que apenas o usuário autor da inscrição a edite
     }
 
     /**
