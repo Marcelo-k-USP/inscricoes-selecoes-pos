@@ -83,7 +83,7 @@ class LocalUserController extends Controller
         return view('localusers.login');
     }
 
-    public function iniciaRedefinicaoSenha($token)
+    public function iniciaRedefinicaoSenha(string $token)
     {
         // verifica se o token recebido existe
         $password_reset = DB::table('password_resets')->get()->first(function ($reset) use ($token) {
@@ -144,7 +144,7 @@ class LocalUserController extends Controller
         return view('localusers.login');
     }
 
-    private function processa_erro_login($msg)
+    private function processa_erro_login(string $msg)
     {
         request()->session()->flash('alert-danger', $msg);
         return view('localusers.login');
@@ -169,13 +169,13 @@ class LocalUserController extends Controller
         }
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, string $id)
     {
         $this->authorize('localusers.view');
         \UspTheme::activeUrl('localusers');
 
         if ($request->ajax())
-            return User::where('id', $id)->where('local', 1)->first();    // preenche os dados do form de edição de um usuário local
+            return User::where('id', (int) $id)->where('local', 1)->first();    // preenche os dados do form de edição de um usuário local
     }
 
     public function store(LocalUserRequest $request)

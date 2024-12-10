@@ -81,10 +81,9 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit()
     {
         //
     }
@@ -96,7 +95,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         $this->authorize('users.update');
 
@@ -116,7 +115,7 @@ class UserController extends Controller
         } else {
             $request->session()->flash('alert-info', 'Nada modificado.');
         }
-        return Redirect::to(URL::previous() . "#card_notificacoes");
+        return redirect()->back();
     }
 
     /**
@@ -125,11 +124,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, string $id)
     {
         $this->authorize('users.delete');
 
-        $user = User::find($id);
+        $user = User::find((int) $id);
         $user->delete();
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         return back();
@@ -220,7 +219,7 @@ class UserController extends Controller
     /**
      * Permite trocar o perfil do usuário: admin, gerente ou usuário comuum
      */
-    public function trocarPerfil(Request $request, $perfil)
+    public function trocarPerfil(Request $request, string $perfil)
     {
         $this->authorize('trocarPerfil');
         $ret = Auth::user()->trocarPerfil($perfil);

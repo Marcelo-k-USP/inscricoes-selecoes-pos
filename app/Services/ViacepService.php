@@ -13,7 +13,7 @@ class ViacepService
         $this->client = $client;
     }
 
-    public function consultarCep($cep)
+    public function consultarCep(string $cep)
     {
         try {
             $response = $this->client->request('get', 'https://viacep.com.br/ws/' . $cep . '/json/', [

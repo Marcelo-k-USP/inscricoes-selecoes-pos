@@ -45,13 +45,13 @@ class ProgramaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, string $id)
     {
         $this->authorize('programas.view');
         \UspTheme::activeUrl('programas');
 
         if ($request->ajax())
-            return Programa::find($id);    // preenche os dados do form de edição de um programa
+            return Programa::find((int) $id);    // preenche os dados do form de edição de um programa
     }
 
     /**
@@ -71,7 +71,7 @@ class ProgramaController extends Controller
         $programa = Programa::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return Redirect::to(URL::previous() . "#" . strtolower($programa->id));
+        return redirect()->back();
     }
 
     /**
@@ -81,7 +81,7 @@ class ProgramaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProgramaRequest $request, $id)
+    public function update(ProgramaRequest $request, string $id)
     {
         $this->authorize('programas.update');
 
@@ -89,7 +89,7 @@ class ProgramaController extends Controller
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
 
-        $programa = Programa::find($id);
+        $programa = Programa::find((int) $id);
         $programa->fill($request->all());
         $programa->save();
 
@@ -103,11 +103,11 @@ class ProgramaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProgramaRequest $request, $id)
+    public function destroy(ProgramaRequest $request, string $id)
     {
         $this->authorize('programas.delete');
 
-        $programa = Programa::find($id);
+        $programa = Programa::find((int) $id);
         if ($programa->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para este programa!');
             return back();

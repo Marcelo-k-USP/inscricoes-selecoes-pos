@@ -166,7 +166,7 @@ class ArquivoController extends Controller
         return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $tipo_modelo_plural, $form, 'edit'));
     }
 
-    private function obtemModeloPlural($tipo_modelo) {
+    private function obtemModeloPlural(string $tipo_modelo) {
         switch ($tipo_modelo) {
             case 'Seleção':
                 return 'selecoes';
@@ -175,7 +175,7 @@ class ArquivoController extends Controller
         }
     }
 
-    private function obtemClasseModelo($tipo_modelo) {
+    private function obtemClasseModelo(string $tipo_modelo) {
         switch ($tipo_modelo) {
             case 'Seleção':
                 return Selecao::class;
@@ -184,7 +184,7 @@ class ArquivoController extends Controller
         }
     }
 
-    private function obtemForm($tipo_modelo, $modelo) {
+    private function obtemForm(string $tipo_modelo, $modelo) {
         switch ($tipo_modelo) {
             case 'Seleção':
                 return null;
@@ -194,7 +194,7 @@ class ArquivoController extends Controller
         }
     }
 
-    private function monta_compact($classe_modelo, $modelo, $tipo_modelo, $tipo_modelo_plural, $form, $modo) {
+    private function monta_compact($classe_modelo, $modelo, string $tipo_modelo, string $tipo_modelo_plural, $form, string $modo) {
         $data = (object) ('App\\Http\\Controllers\\' . class_basename($classe_modelo) . 'Controller')::$data;
         $linhaspesquisa = LinhaPesquisa::all();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');

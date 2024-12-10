@@ -49,13 +49,13 @@ class LinhaPesquisaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, string $id)
     {
         $this->authorize('linhaspesquisa.view');
         \UspTheme::activeUrl('linhaspesquisa');
 
         if ($request->ajax()) {
-            $linhapesquisa = LinhaPesquisa::find($id);    // preenche os dados do form de edição de uma linha de pesquisa
+            $linhapesquisa = LinhaPesquisa::find((int) $id);    // preenche os dados do form de edição de uma linha de pesquisa
             $linhapesquisa->codpes_docente = $linhapesquisa->codpes_docente . ' ' . (new UserController)->codpes(new Request(['term' => $linhapesquisa->codpes_docente]));
             return $linhapesquisa;
         }
@@ -78,7 +78,7 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa = LinhaPesquisa::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return Redirect::to(URL::previous() . "#" . strtolower($linhapesquisa->id));
+        return redirect()->back();
     }
 
     /**
@@ -88,7 +88,7 @@ class LinhaPesquisaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(LinhaPesquisaRequest $request, $id)
+    public function update(LinhaPesquisaRequest $request, string $id)
     {
         $this->authorize('linhaspesquisa.update');
 
@@ -96,7 +96,7 @@ class LinhaPesquisaController extends Controller
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
 
-        $linhapesquisa = LinhaPesquisa::find($id);
+        $linhapesquisa = LinhaPesquisa::find((int) $id);
         $linhapesquisa->fill($request->all());
         $linhapesquisa->save();
 
@@ -110,11 +110,11 @@ class LinhaPesquisaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(LinhaPesquisaRequest $request, $id)
+    public function destroy(LinhaPesquisaRequest $request, string $id)
     {
         $this->authorize('linhaspesquisa.delete');
 
-        $linhapesquisa = LinhaPesquisa::find($id);
+        $linhapesquisa = LinhaPesquisa::find((int) $id);
         if ($linhapesquisa->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para esta linha de pesquisa!');
             return back();

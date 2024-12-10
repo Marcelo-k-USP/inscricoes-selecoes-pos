@@ -45,13 +45,13 @@ class CategoriaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, string $id)
     {
         $this->authorize('categorias.viewAny');
         \UspTheme::activeUrl('categorias');
 
         if ($request->ajax())
-            return Categoria::find($id);    // preenche os dados do form de edição de uma categoria
+            return Categoria::find((int) $id);    // preenche os dados do form de edição de uma categoria
     }
 
     /**
@@ -81,7 +81,7 @@ class CategoriaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CategoriaRequest $request, $id)
+    public function update(CategoriaRequest $request, string $id)
     {
         $this->authorize('categorias.update');
 
@@ -89,7 +89,7 @@ class CategoriaController extends Controller
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
 
-        $categoria = Categoria::find($id);
+        $categoria = Categoria::find((int) $id);
         $categoria->fill($request->all());
         $categoria->save();
 
@@ -103,11 +103,11 @@ class CategoriaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CategoriaRequest $request, $id)
+    public function destroy(CategoriaRequest $request, string $id)
     {
         $this->authorize('categorias.delete');
 
-        $categoria = Categoria::find($id);
+        $categoria = Categoria::find((int) $id);
         if ($categoria->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para esta categoria!');
             return back();
