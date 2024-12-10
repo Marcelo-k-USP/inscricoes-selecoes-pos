@@ -18,7 +18,7 @@ class Parametro extends Model
     protected const fields = [
         [
             'name' => 'boleto_valor',
-            'label' => 'Valor do Boleto de Inscrição',
+            'label' => 'Valor do Boleto de Inscrição (R$)',
             'type' => 'number',
         ],
     ];

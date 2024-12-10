@@ -43,9 +43,11 @@ class ParametroController extends Controller
     {
         $this->authorize('parametros.update');
 
-        $request->merge([
-            'boleto_valor' => floatval(str_replace(',', '.', $request->boleto_valor)),
-        ]);
+        $boleto_valor = floatval(str_replace(',', '.', $request->boleto_valor));
+        if ($boleto_valor == 0)
+            $boleto_valor = null;
+        $request->merge(['boleto_valor' => $boleto_valor]);
+
         $validator = Validator::make($request->all(), ParametroRequest::rules, ParametroRequest::messages);
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
