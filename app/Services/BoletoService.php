@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Feriado;
 use App\Models\Parametro;
 use GuzzleHttp\Client;
 use UspDev\Boleto;
@@ -55,6 +56,6 @@ class BoletoService
     private function calcularDataVencimento(Selecao $selecao)
     {
         // a data de vencimento do boleto deve ser o primeiro dia útil passado o período de inscrições da seleção em questão
-        return addWorkingDays($selecao->data_fim, 1);
+        return Feriado::adicionarDiasUteis($selecao->data_fim, 1);
     }
 }
