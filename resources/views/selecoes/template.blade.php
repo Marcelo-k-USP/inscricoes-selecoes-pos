@@ -142,8 +142,17 @@
 @section('javascripts_bottom')
 @parent
   <script src="js/functions.js"></script>
-
   <script type="text/javascript">
+    $(document).ready(function() {
+      $('select[name$="][type]"]').each(function () {
+        $(mudarCampoInputTextarea($(this).prop('name'), {{ Gate::allows('perfiladmin') }}));
+      });
+
+      $('#template-form').on('submit', function() {
+        $(this).find(':disabled').prop('disabled', false);    // desliga o disabled de todos os campos do form, pois campos disabled não sobem no submit e precisamos que eles subam junto com os demais
+      });
+    });
+
     function apaga_campo(r) {
       if (confirm('Tem certeza que deseja deletar?')) {
         var row = r.parentNode.parentNode;
@@ -180,11 +189,5 @@
         }
       }
     }
-
-    $(document).ready(function() {
-      $('select[name$="][type]"]').each(function () {
-        $(mudarCampoInputTextarea($(this).prop('name'), {{ Gate::allows('perfiladmin') }}));
-      });
-    });
   </script>
 @endsection
