@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Programa;
 use Illuminate\Database\Seeder;
-use \App\Models\Programa;
 
 class ProgramaSeeder extends Seeder
 {

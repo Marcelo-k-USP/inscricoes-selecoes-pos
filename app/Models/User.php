@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Gate;
-use \Spatie\Permission\Traits\HasRoles;
-use \Uspdev\Replicado\Pessoa;
-use \Uspdev\SenhaunicaSocialite\Traits\HasSenhaunica;
+use Spatie\Permission\Traits\HasRoles;
+use Uspdev\Replicado\Pessoa;
+use Uspdev\SenhaunicaSocialite\Traits\HasSenhaunica;
 
 class User extends Authenticatable
 {

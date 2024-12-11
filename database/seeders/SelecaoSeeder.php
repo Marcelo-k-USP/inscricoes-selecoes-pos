@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use \App\Models\Categoria;
-use \App\Models\Programa;
-use \App\Models\Selecao;
-use \App\Models\User;
+use App\Models\Categoria;
+use App\Models\Programa;
+use App\Models\Selecao;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class SelecaoSeeder extends Seeder
 {

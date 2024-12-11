@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Parametro;
 use Illuminate\Database\Seeder;
-use \App\Models\Parametro;
 
 class ParametroSeeder extends Seeder
 {

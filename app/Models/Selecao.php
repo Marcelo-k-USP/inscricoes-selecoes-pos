@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Glorand\Model\Settings\Traits\HasSettingsField;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
@@ -11,7 +12,6 @@ class Selecao extends Model
 {
     use HasFactory;
 
-    use \Glorand\Model\Settings\Traits\HasSettingsField;
 
     # selecoes não segue convenção do laravel para nomes de tabela
     protected $table = 'selecoes';
