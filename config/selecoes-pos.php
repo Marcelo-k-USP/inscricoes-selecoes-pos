@@ -13,6 +13,7 @@ return [
     // WSBoleto
     'ws_boleto_usuario' => env('WS_BOLETO_USUARIO'),
     'ws_boleto_senha' => env('WS_BOLETO_SENHA'),
+    'ws_boleto_cancelar' => env('WS_BOLETO_CANCELAR', true),
 
     // reCAPTCHA
     'recaptcha_site_key' => env('RECAPTCHA_SITE_KEY'),

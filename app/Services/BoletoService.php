@@ -3,59 +3,70 @@
 namespace App\Services;
 
 use App\Models\Feriado;
+use App\Models\Inscricao;
 use App\Models\Parametro;
-use GuzzleHttp\Client;
-use UspDev\Boleto;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
+use Uspdev\Boleto;
 
 class BoletoService
 {
-    protected $client;
-
-    public function __construct(Client $client)
+    public function gerarBoleto(Inscricao $inscricao)
     {
-        $this->client = $client;
-    }
+        $extras = json_decode($inscricao->extras, true);
+        $cpf = (($extras['tipo_de_documento'] == 'Passaporte') ? '99999999999' : str_replace(['-', '.'], '', $extras['cpf']));
 
-    public function gerarBoleto(Selecao $selecao, string $sacado)
-    {
         $boleto = new Boleto(config('selecoes-pos.ws_boleto_usuario'), config('selecoes-pos.ws_boleto_senha'));
         $data = array(
             'codigoUnidadeDespesa' => 47,
             'codigoFonteRecurso' => 514,
             'estruturaHierarquica' => '\DIR\ATAC-47\SVPOSGR-47\SVPOSGR-47',
-            'dataVencimentoBoleto' => $calcularDataVencimento($selecao),
+            'dataVencimentoBoleto' => formatarData(Feriado::adicionarDiasUteis($inscricao->selecao->data_fim, 1)),    // a data de vencimento do boleto deve ser o primeiro dia útil passado o período de inscrições da seleção em questão
             'valorDocumento' => Parametro::obterBoletoValor(),
             'tipoSacado' => 'PF',
-            'cpfCnpj' => $sacado->cpf,
-            'nomeSacado' => $sacado->nome,
-            'codigoEmail' => $sacado->email,
-            'informacoesBoletoSacado' => 'Boleto de Inscrição do Processo Seletivo da Pós-Graduação - ' . $selecao->nome,
-            'instrucoesObjetoCobranca' => 'Não receber após vencimento',
+            'cpfCnpj' => $cpf,
+            'nomeSacado' => $extras['nome'],
+            'codigoEmail' => $extras['e_mail'],
+            'informacoesBoletoSacado' => 'Boleto de Inscricao do Processo Seletivo da Pos-Graduacao - '/* . $inscricao->selecao->nome*/,
+            'instrucoesObjetoCobranca' => 'Nao receber apos vencimento',
         );
 
-        $gerar = $boleto->gerar($data);
-        if ($gerar['status']) {
-            $id = $gerar['value'];
+        try {
+            Log::info('$data: ' . json_encode($data));
+            Log::info('Gerando boleto para o ' . (($extras['tipo_de_documento'] == 'Passaporte') ? 'passaporte ' . $extras['numero_do_documento'] : 'CPF ' . $cpf) . '...');
 
-            // resgata informações do boleto
-            \Illuminate\Support\Facades\Log::info('$boleto->situacao(' . $id . '): ' . $boleto->situacao($id));
+            $gerar = $boleto->gerar($data);
+            if ($gerar['status']) {
+                $id = $gerar['value'];
 
-            // recupera o arquivo PDF do boleto (PDF no formato binário codificado para Base64)
-            $obter = $boleto->obter($id);
+                // loga situação da geração do boleto
+                Log::info('$boleto->situacao(' . $id . '): ' . $boleto->situacao($id));
 
-            // redireciona os dados binários do PDF para o browser
-            header('Content-type: application/pdf');
-            header('Content-Disposition: attachment; filename="boleto.pdf"');
-            echo base64_decode($obter['value']);
+                /*
+                // recupera o arquivo PDF do boleto (PDF no formato binário codificado para Base64)
+                $obter = $boleto->obter($id);
 
-            // cancela o boleto
-            $boleto->cancelar($id);
+                // redireciona os dados binários do PDF para o browser
+                header('Content-type: application/pdf');
+                header('Content-Disposition: attachment; filename="boleto.pdf"');
+                echo base64_decode($obter['value']);
+                */
+
+                // cancela o boleto em ambiente de desenvolvimento, ou também em produção se ligamos a chave WS_BOLETO_CANCELAR
+                if (App::environment('local') || config('selecoes-pos.ws_boleto_cancelar')) {
+                    Log::info('Cancelando o boleto...');
+
+                    $boleto->cancelar($id);
+
+                    // loga situação da geração do boleto
+                    Log::info('$boleto->situacao(' . $id . '): ' . $boleto->situacao($id));
+                }
+            } else
+                Log::info('$gerar[\'value\']: ' . $gerar['value']);
+
+        } catch (Exception $e) {
+            Log::info($e->getMessage());
+            throw $e;
         }
-    }
-
-    private function calcularDataVencimento(Selecao $selecao)
-    {
-        // a data de vencimento do boleto deve ser o primeiro dia útil passado o período de inscrições da seleção em questão
-        return Feriado::adicionarDiasUteis($selecao->data_fim, 1);
     }
 }

@@ -8,6 +8,13 @@ use App\Services\BoletoService;
 
 class InscricaoObserver
 {
+    protected $boletoService;
+
+    public function __construct(BoletoService $boletoService)
+    {
+        $this->boletoService = $boletoService;
+    }
+
     /**
      * Handle the Inscrição "created" event.
      *
@@ -19,7 +26,7 @@ class InscricaoObserver
     public function created(Inscricao $inscricao)
     {
         // gera boleto
-
+        $this->boletoService->gerarBoleto($inscricao);
 
         // envia e-mail para o autor
         $papel = 'Candidato';
