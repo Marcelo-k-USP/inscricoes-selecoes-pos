@@ -77,8 +77,10 @@ class SelecaoController extends Controller
         $this->authorize('selecoes.create');
 
         $validator = Validator::make($request->all(), SelecaoRequest::rules, SelecaoRequest::messages);
-        if ($validator->fails())
+        if ($validator->fails()) {
+            \UspTheme::activeUrl('selecoes');
             return back()->withErrors($validator)->withInput();
+        }
 
         $requestData = $request->all();
         $requestData['data_inicio'] = (is_null($requestData['data_inicio']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_inicio']));
@@ -120,8 +122,10 @@ class SelecaoController extends Controller
         $this->authorize('selecoes.update');
 
         $validator = Validator::make($request->all(), SelecaoRequest::rules, SelecaoRequest::messages);
-        if ($validator->fails())
-            return back()->withErrors($validator)->withInput();
+        if ($validator->fails()) {
+            \UspTheme::activeUrl('selecoes');
+            return view('selecoes.edit', $this->monta_compact($selecao, 'edit'))->withErrors($validator);    // preciso especificar 'edit'... se eu fizesse um return back(), e o usuário estivesse vindo de um update após um create, a variável $modo voltaria a ser 'create', e a página ficaria errada
+        }
 
         $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
         $this->updateField($request, $selecao, 'nome', 'nome', 'o');
