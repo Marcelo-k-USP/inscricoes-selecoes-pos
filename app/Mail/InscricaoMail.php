@@ -40,7 +40,7 @@ class InscricaoMail extends Mailable
             ->from(config('mail.from.address'), config('mail.from.name'))
             ->subject(
                 '[' . config('app.name') . ']'
-                . ' Inscrição Realiza com Sucesso'
+                . ' Inscrição Realizada com Sucesso'
             )
             ->view('emails.inscricao_nova');
     }
