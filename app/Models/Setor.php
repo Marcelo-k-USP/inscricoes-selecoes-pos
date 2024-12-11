@@ -57,13 +57,11 @@ class Setor extends Model
     public static function getFields()
     {
         $fields = SELF::fields;
-        //return $fields;
-        foreach ($fields as &$field) {
+        foreach ($fields as &$field)
             if (substr($field['name'], -3) == '_id') {
                 $class = '\\App\\Models\\' . $field['model'];
                 $field['data'] = $class::allToSelect();
             }
-        }
         return $fields;
     }
 
@@ -75,11 +73,9 @@ class Setor extends Model
     {
         $setores = SELF::get();
         $ret = [];
-        foreach ($setores as $setor) {
-            if (Gate::allows('setores.view', $setor)) {
-            $ret[$setor->id] = $setor->sigla . ' - ' . $setor->nome;
-            }
-        }
+        foreach ($setores as $setor)
+            if (Gate::allows('setores.view', $setor))
+                $ret[$setor->id] = $setor->sigla . ' - ' . $setor->nome;
         return $ret;
     }
 
@@ -88,7 +84,7 @@ class Setor extends Model
         return 'sigla';
     }
 
-    public static function vincularPessoa($setor, $user, $funcao)
+    public static function vincularPessoa(Setor $setor, User $user, string $funcao)
     {
         $u = $setor->users()->where('user_id', $user->id)->wherePivot('funcao', $funcao)->withPivot('funcao')->first();
 

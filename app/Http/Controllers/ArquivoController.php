@@ -67,10 +67,10 @@ class ArquivoController extends Controller
     public function store(Request $request)
     {
         $classe_nome = fixJson($request->classe_nome);
-        $classe_nome_plural = $this->obtemClasseNomePlural($classe_nome);
-        $classe = $this->obtemClasse($classe_nome);
+        $classe_nome_plural = $this->obterClasseNomePlural($classe_nome);
+        $classe = $this->obterClasse($classe_nome);
         $objeto = $classe::find($request->objeto_id);
-        $form = $this->obtemForm($classe_nome, $objeto);
+        $form = $this->obterForm($classe_nome, $objeto);
 
         $request->validate([
             'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('selecoes-pos.upload_max_filesize'),
@@ -113,10 +113,10 @@ class ArquivoController extends Controller
     public function update(Request $request, Arquivo $arquivo)
     {
         $classe_nome = fixJson($request->classe_nome);
-        $classe_nome_plural = $this->obtemClasseNomePlural($classe_nome);
-        $classe = $this->obtemClasse($classe_nome);
+        $classe_nome_plural = $this->obterClasseNomePlural($classe_nome);
+        $classe = $this->obterClasse($classe_nome);
         $objeto = $classe::find($request->objeto_id);
-        $form = $this->obtemForm($classe_nome, $objeto);
+        $form = $this->obterForm($classe_nome, $objeto);
 
         $request->validate(
             ['nome_arquivo' => 'required'],
@@ -145,10 +145,10 @@ class ArquivoController extends Controller
     public function destroy(Request $request, Arquivo $arquivo)
     {
         $classe_nome = fixJson($request->classe_nome);
-        $classe_nome_plural = $this->obtemClasseNomePlural($classe_nome);
-        $classe = $this->obtemClasse($classe_nome);
+        $classe_nome_plural = $this->obterClasseNomePlural($classe_nome);
+        $classe = $this->obterClasse($classe_nome);
         $objeto = $classe::find($request->objeto_id);
-        $form = $this->obtemForm($classe_nome, $objeto);
+        $form = $this->obterForm($classe_nome, $objeto);
 
         $this->authorize('arquivos.delete', [$arquivo, $objeto, $classe_nome]);
 
@@ -164,7 +164,7 @@ class ArquivoController extends Controller
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
     }
 
-    private function obtemClasseNomePlural(string $classe_nome) {
+    private function obterClasseNomePlural(string $classe_nome) {
         switch ($classe_nome) {
             case 'Selecao':
                 return 'selecoes';
@@ -173,7 +173,7 @@ class ArquivoController extends Controller
         }
     }
 
-    private function obtemClasse(string $classe_nome) {
+    private function obterClasse(string $classe_nome) {
         switch ($classe_nome) {
             case 'Selecao':
                 return Selecao::class;
@@ -182,7 +182,7 @@ class ArquivoController extends Controller
         }
     }
 
-    private function obtemForm(string $classe_nome, object $objeto) {
+    private function obterForm(string $classe_nome, object $objeto) {
         switch ($classe_nome) {
             case 'Selecao':
                 return null;

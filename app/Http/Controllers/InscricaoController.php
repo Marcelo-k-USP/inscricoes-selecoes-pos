@@ -7,7 +7,6 @@ use App\Models\Inscricao;
 use App\Models\LocalUser;
 use App\Models\Selecao;
 use App\Models\User;
-use App\Services\BoletoService;
 use App\Services\RecaptchaService;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
@@ -210,7 +209,7 @@ class InscricaoController extends Controller
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
-    private function processa_erro_store($msgs, Selecao $selecao, Request $request) {
+    private function processa_erro_store(string|array $msgs, Selecao $selecao, Request $request) {
         if (is_array($msgs))
             $msgs = implode('<br />', $msgs);
         $request->session()->flash('alert-danger', $msgs);

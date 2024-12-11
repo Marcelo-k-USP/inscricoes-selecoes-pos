@@ -685,7 +685,7 @@ class Selecao extends Model
 
     /**
      * config-status
-     * obtem a lista de estados formatado para select
+     * obtém a lista de estados formatado para select
      */
     public function getStatusToSelect()
     {
@@ -706,7 +706,7 @@ class Selecao extends Model
     /**
      * Accessor getter para $config
      */
-    public function getConfigAttribute($value)
+    public function getConfigAttribute(string $value)
     {
         $value = json_decode($value);
 
@@ -718,7 +718,7 @@ class Selecao extends Model
     /**
      * Accessor setter para $config
      */
-    public function setConfigAttribute($value)
+    public function setConfigAttribute(string|array $value)
     {
         // quando este método é invocado pelo seeder, $value vem como string JSON
         // quando este método é invocado pelo MVC, $value vem como array
@@ -739,7 +739,7 @@ class Selecao extends Model
     /**
      * Accessor para $template
      */
-    public function getTemplateAttribute($value)
+    public function getTemplateAttribute(string $value)
     {
         return (empty($value)) ? '{}' : $value;
     }
@@ -798,7 +798,7 @@ class Selecao extends Model
         return Inscricao::contarInscricoesPorAno($this);
     }
 
-    public function contarInscricoesPorMes($ano)
+    public function contarInscricoesPorMes(int $ano)
     {
         return Inscricao::contarInscricoesPorMes($ano, $this);
     }

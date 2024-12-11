@@ -88,10 +88,10 @@ class Inscricao extends Model
      *
      * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
      *
-     * @param \App\Models\Selecao $selecao
-     * @return Int
+     * @param  \App\Models\Selecao $selecao
+     * @return int
      */
-    public static function contarInscricoesPorAno($selecao = null)
+    public static function contarInscricoesPorAno(?Selecao $selecao = null)
     {
         $contagem = Inscricao::selectRaw('year(created_at) ano, count(*) count')
             ->where('selecao_id', $selecao->id)
@@ -109,11 +109,11 @@ class Inscricao extends Model
      * o segundo elemento é a contagem de fevereiro, e assim por diante.
      * o array de retorno, portanto, possui 12 elementos
      *
-     * @param Int $ano
-     * @param \App\Models\Selecao $selecao
-     * @return Array
+     * @param  int $ano
+     * @param  \App\Models\Selecao $selecao
+     * @return array
      */
-    public static function contarInscricoesPorMes($ano, $selecao = null)
+    public static function contarInscricoesPorMes(int $ano, ?Selecao $selecao = null)
     {
         $contagem = Inscricao::selectRaw('month(created_at) mes, count(*) count')
             ->where('selecao_id', $selecao->id)
@@ -148,7 +148,7 @@ class Inscricao extends Model
         return $inscricoes;
     }
 
-    public static function listarInscricoesPorSelecao($selecao, $ano)
+    public static function listarInscricoesPorSelecao(Selecao $selecao, int $ano)
     {
         $inscricoes = Inscricao::where('selecao_id', $selecao->id)->whereYear('created_at', $ano)->get();
         return $inscricoes;
@@ -159,7 +159,7 @@ class Inscricao extends Model
      *
      * Se informado $pivot, retorna somente o 1o. User, se não, retorna a lista completa
      *
-     * @param $pivot Papel da pessoa na inscrição (autor, null = todos)
+     * @param  $pivot Papel da pessoa na inscrição (autor, null = todos)
      * @return App\Models\User|Collection
      */
     public function pessoas($pivot = null)

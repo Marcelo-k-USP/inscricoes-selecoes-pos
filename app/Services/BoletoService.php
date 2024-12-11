@@ -15,7 +15,7 @@ class BoletoService
         $this->client = $client;
     }
 
-    public function gerarBoleto(Selecao $selecao, $sacado)
+    public function gerarBoleto(Selecao $selecao, string $sacado)
     {
         $boleto = new Boleto(config('selecoes-pos.ws_boleto_usuario'), config('selecoes-pos.ws_boleto_senha'));
         $data = array(

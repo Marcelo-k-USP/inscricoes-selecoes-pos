@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Mail\InscricaoMail;
 use App\Models\Inscricao;
+use App\Services\BoletoService;
 
 class InscricaoObserver
 {
@@ -17,7 +18,10 @@ class InscricaoObserver
      */
     public function created(Inscricao $inscricao)
     {
-        // vamos enviar e-mail para o autor
+        // gera boleto
+
+
+        // envia e-mail para o autor
         $papel = 'Candidato';
         $user = \Auth::user();
         \Mail::to($user->email)

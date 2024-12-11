@@ -224,7 +224,7 @@ class SelecaoController extends Controller
         return back();
     }
 
-    public function createTemplateValue(Selecao $selecao, $field)
+    public function createTemplateValue(Selecao $selecao, string $field)
     {
         $this->authorize('selecoes.update');
         \UspTheme::activeUrl('selecoes');
@@ -233,7 +233,7 @@ class SelecaoController extends Controller
         return view('selecoes.templatevalue', compact('selecao', 'template', 'field'));
     }
 
-    public function storeTemplateValue(Request $request, Selecao $selecao, $field)
+    public function storeTemplateValue(Request $request, Selecao $selecao, string $field)
     {
         $this->authorize('selecoes.update');
 
