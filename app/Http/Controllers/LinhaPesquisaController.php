@@ -82,7 +82,7 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa = LinhaPesquisa::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return redirect()->back();
+        return back();
     }
 
     /**

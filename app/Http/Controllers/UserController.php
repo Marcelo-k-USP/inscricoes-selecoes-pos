@@ -115,7 +115,7 @@ class UserController extends Controller
         } else {
             $request->session()->flash('alert-info', 'Nada modificado.');
         }
-        return redirect()->back();
+        return back();
     }
 
     /**

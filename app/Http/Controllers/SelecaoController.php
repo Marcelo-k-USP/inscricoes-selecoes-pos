@@ -296,7 +296,7 @@ class SelecaoController extends Controller
             $request->session()->flash('alert-success', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi adicionada à essa seleção.');
         else
             $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' já estava vinculada à essa seleção.');
-        return redirect()->back();
+        return back();
     }
 
     /**
@@ -310,7 +310,7 @@ class SelecaoController extends Controller
         $selecao->linhaspesquisa()->detach($linhapesquisa);
 
         $request->session()->flash('alert-success', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi removida dessa seleção.');
-        return redirect()->back();
+        return back();
     }
 
     /**
