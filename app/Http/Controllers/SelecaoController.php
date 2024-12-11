@@ -47,10 +47,10 @@ class SelecaoController extends Controller
 
         \UspTheme::activeUrl('selecoes');
         $data = self::$data;
-        $modelos = Selecao::listarSelecoes();
-        $tipo_modelo = 'Selecao';
+        $objetos = Selecao::listarSelecoes();
+        $classe_nome = 'Selecao';
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
-        return view('selecoes.index', compact('data', 'modelos', 'tipo_modelo', 'max_upload_size'));
+        return view('selecoes.index', compact('data', 'objetos', 'classe_nome', 'max_upload_size'));
     }
 
     /**
@@ -359,13 +359,13 @@ class SelecaoController extends Controller
     private function monta_compact(Selecao $selecao, string $modo) {
         $data = (object) self::$data;
         $selecao->template = JSONForms::orderTemplate($selecao->template);
-        $modelo = $selecao;
-        $tipo_modelo = 'Selecao';
-        $tipo_modelo_plural = 'selecoes';
+        $objeto = $selecao;
+        $classe_nome = 'Selecao';
+        $classe_nome_plural = 'selecoes';
         $rules = SelecaoRequest::rules;
-        $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($modelo->programa) ? (new Programa) : $modelo->programa);
+        $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($objeto->programa) ? (new Programa) : $objeto->programa);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'modelo', 'tipo_modelo', 'tipo_modelo_plural', 'modo', 'linhaspesquisa', 'max_upload_size', 'rules');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'max_upload_size', 'rules');
     }
 }

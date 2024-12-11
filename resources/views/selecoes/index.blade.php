@@ -25,7 +25,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($modelos as $selecao)
+      @foreach ($objetos as $selecao)
         <tr>
           <td>{{ $selecao->categoria->nome }}</td>
           <td>
@@ -43,7 +43,7 @@
 @endsection
 
 @php
-  $paginar = (isset($modelos) && ($modelos->count() > 10));
+  $paginar = (isset($objetos) && ($objetos->count() > 10));
 @endphp
 
 @section('javascripts_bottom')

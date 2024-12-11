@@ -38,10 +38,10 @@ class ArquivoController extends Controller
     public function show(Arquivo $arquivo)
     {
         if (Arquivo::find($arquivo->id)->selecoes()->exists())
-            $tipo_modelo = 'Seleção';
+            $classe_nome = 'Selecao';
         elseif (Arquivo::find($arquivo->id)->inscricoes()->exists())
-            $tipo_modelo = 'Inscrição';
-        $this->authorize('arquivos.view', [$arquivo, $tipo_modelo]);
+            $classe_nome = 'Inscricao';
+        $this->authorize('arquivos.view', [$arquivo, $classe_nome]);
 
         ob_end_clean();    // https://stackoverflow.com/questions/39329299/laravel-file-downloaded-from-storage-folder-gets-corrupted
 
@@ -66,33 +66,33 @@ class ArquivoController extends Controller
      */
     public function store(Request $request)
     {
-        $tipo_modelo = fixJson($request->tipo_modelo);
-        $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
-        $classe_modelo = $this->obtemClasseModelo($tipo_modelo);
-        $modelo = $classe_modelo::find($request->modelo_id);
-        $form = $this->obtemForm($tipo_modelo, $modelo);
+        $classe_nome = fixJson($request->classe_nome);
+        $classe_nome_plural = $this->obtemClasseNomePlural($classe_nome);
+        $classe = $this->obtemClasse($classe_nome);
+        $objeto = $classe::find($request->objeto_id);
+        $form = $this->obtemForm($classe_nome, $objeto);
 
         $request->validate([
             'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('selecoes-pos.upload_max_filesize'),
-            'modelo_id' => 'required|integer|exists:' . $tipo_modelo_plural . ',id',
+            'objeto_id' => 'required|integer|exists:' . $classe_nome_plural . ',id',
         ]);
-        $this->authorize('arquivos.create', [$modelo, $tipo_modelo]);
+        $this->authorize('arquivos.create', [$objeto, $classe_nome]);
 
         foreach ($request->arquivo as $arq) {
             $arquivo = new Arquivo;
             $arquivo->user_id = \Auth::user()->id;
             $arquivo->nome_original = $arq->getClientOriginalName();
-            $arquivo->caminho = $arq->store('./arquivos/' . $modelo->created_at->year);
+            $arquivo->caminho = $arq->store('./arquivos/' . $objeto->created_at->year);
             $arquivo->mimeType = $arq->getClientMimeType();
             $arquivo->save();
 
-            $arquivo->{$tipo_modelo_plural}()->attach($modelo->id, ['tipo' => $request->tipo_arquivo]);
+            $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipo_arquivo]);
         }
 
         $request->session()->flash('alert-success', 'Arquivo(s) adicionado(s) com sucesso');
 
-        \UspTheme::activeUrl($tipo_modelo_plural);
-        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $tipo_modelo_plural, $form, 'edit'));
+        \UspTheme::activeUrl($classe_nome_plural);
+        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
     }
 
     /**
@@ -112,17 +112,17 @@ class ArquivoController extends Controller
      */
     public function update(Request $request, Arquivo $arquivo)
     {
-        $tipo_modelo = fixJson($request->tipo_modelo);
-        $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
-        $classe_modelo = $this->obtemClasseModelo($tipo_modelo);
-        $modelo = $classe_modelo::find($request->modelo_id);
-        $form = $this->obtemForm($tipo_modelo, $modelo);
+        $classe_nome = fixJson($request->classe_nome);
+        $classe_nome_plural = $this->obtemClasseNomePlural($classe_nome);
+        $classe = $this->obtemClasse($classe_nome);
+        $objeto = $classe::find($request->objeto_id);
+        $form = $this->obtemForm($classe_nome, $objeto);
 
         $request->validate(
             ['nome_arquivo' => 'required'],
             ['nome_arquivo.required' => 'O nome do arquivo é obrigatório!']
         );
-        $this->authorize('arquivos.update', [$arquivo, $modelo, $tipo_modelo]);
+        $this->authorize('arquivos.update', [$arquivo, $objeto, $classe_nome]);
 
         $nome_antigo = $arquivo->nome_original;
         $extensao = pathinfo($nome_antigo, PATHINFO_EXTENSION);
@@ -131,8 +131,8 @@ class ArquivoController extends Controller
 
         $request->session()->flash('alert-success', 'Arquivo renomeado com sucesso');
 
-        \UspTheme::activeUrl($tipo_modelo_plural);
-        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $tipo_modelo_plural, $form, 'edit'));
+        \UspTheme::activeUrl($classe_nome_plural);
+        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
     }
 
     /**
@@ -144,59 +144,59 @@ class ArquivoController extends Controller
      */
     public function destroy(Request $request, Arquivo $arquivo)
     {
-        $tipo_modelo = fixJson($request->tipo_modelo);
-        $tipo_modelo_plural = $this->obtemModeloPlural($tipo_modelo);
-        $classe_modelo = $this->obtemClasseModelo($tipo_modelo);
-        $modelo = $classe_modelo::find($request->modelo_id);
-        $form = $this->obtemForm($tipo_modelo, $modelo);
+        $classe_nome = fixJson($request->classe_nome);
+        $classe_nome_plural = $this->obtemClasseNomePlural($classe_nome);
+        $classe = $this->obtemClasse($classe_nome);
+        $objeto = $classe::find($request->objeto_id);
+        $form = $this->obtemForm($classe_nome, $objeto);
 
-        $this->authorize('arquivos.delete', [$arquivo, $modelo, $tipo_modelo]);
+        $this->authorize('arquivos.delete', [$arquivo, $objeto, $classe_nome]);
 
         if (Storage::exists($arquivo->caminho))
             Storage::delete($arquivo->caminho);
 
-        $arquivo->{$tipo_modelo_plural}()->detach($modelo->id, ['tipo' => $request->tipo_arquivo]);
+        $arquivo->{$classe_nome_plural}()->detach($objeto->id, ['tipo' => $request->tipo_arquivo]);
         $arquivo->delete();
 
         $request->session()->flash('alert-success', 'Arquivo removido com sucesso');
 
-        \UspTheme::activeUrl($tipo_modelo_plural);
-        return view($tipo_modelo_plural . '.edit', $this->monta_compact($classe_modelo, $modelo, $tipo_modelo, $tipo_modelo_plural, $form, 'edit'));
+        \UspTheme::activeUrl($classe_nome_plural);
+        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
     }
 
-    private function obtemModeloPlural(string $tipo_modelo) {
-        switch ($tipo_modelo) {
-            case 'Seleção':
+    private function obtemClasseNomePlural(string $classe_nome) {
+        switch ($classe_nome) {
+            case 'Selecao':
                 return 'selecoes';
-            case 'Inscrição':
+            case 'Inscricao':
                 return 'inscricoes';
         }
     }
 
-    private function obtemClasseModelo(string $tipo_modelo) {
-        switch ($tipo_modelo) {
-            case 'Seleção':
+    private function obtemClasse(string $classe_nome) {
+        switch ($classe_nome) {
+            case 'Selecao':
                 return Selecao::class;
-            case 'Inscrição':
+            case 'Inscricao':
                 return Inscricao::class;
         }
     }
 
-    private function obtemForm(string $tipo_modelo, $modelo) {
-        switch ($tipo_modelo) {
-            case 'Seleção':
+    private function obtemForm(string $classe_nome, $objeto) {
+        switch ($classe_nome) {
+            case 'Selecao':
                 return null;
-            case 'Inscrição':
-                $modelo->selecao->template = JSONForms::orderTemplate($modelo->selecao->template);
-                return JSONForms::generateForm($modelo->selecao, $modelo);
+            case 'Inscricao':
+                $objeto->selecao->template = JSONForms::orderTemplate($objeto->selecao->template);
+                return JSONForms::generateForm($objeto->selecao, $objeto);
         }
     }
 
-    private function monta_compact($classe_modelo, $modelo, string $tipo_modelo, string $tipo_modelo_plural, $form, string $modo) {
-        $data = (object) ('App\\Http\\Controllers\\' . class_basename($classe_modelo) . 'Controller')::$data;
+    private function monta_compact($objeto, string $classe_nome, string $classe_nome_plural, $form, string $modo) {
+        $data = (object) ('App\\Http\\Controllers\\' . $classe_nome . 'Controller')::$data;
         $linhaspesquisa = LinhaPesquisa::all();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'modelo', 'tipo_modelo', 'tipo_modelo_plural', 'form', 'modo', 'linhaspesquisa', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'max_upload_size');
     }
 }

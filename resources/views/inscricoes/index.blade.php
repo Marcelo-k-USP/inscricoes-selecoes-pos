@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  @if (isset($modelos) && ($modelos->count() > 0))
+  @if (isset($objetos) && ($objetos->count() > 0))
     <table class="table table-striped tabela-inscricoes display responsive" style="width:100%">
       <thead>
         <tr>
@@ -29,7 +29,7 @@
         </tr>
       </thead>
       <tbody>
-        @foreach ($modelos as $inscricao)
+        @foreach ($objetos as $inscricao)
           <tr>
             <td>
               <a href="inscricoes/edit/{{ $inscricao->id }}">
@@ -70,7 +70,7 @@
 @stop
 
 @php
-  $paginar = (isset($modelos) && ($modelos->count() > 10));
+  $paginar = (isset($objetos) && ($objetos->count() > 10));
 @endphp
 
 @section('javascripts_bottom')

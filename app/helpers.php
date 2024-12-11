@@ -79,17 +79,6 @@ if (!function_exists('addWorkingDays')) {
     }
 }
 
-if (!function_exists('getModeloTiposArquivo')) {
-    function getModeloTiposArquivo($modelo)
-    {
-        $modeloClasse = "App\\Models\\" . Str::studly($modelo);
-        if (method_exists($modeloClasse, 'tiposArquivo')) {
-            return $modeloClasse::tiposArquivo();
-        }
-        return [];
-    }
-}
-
 if (!function_exists('fixJson')) {
     function fixJson($json) {
         return trim(json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), '"');

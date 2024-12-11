@@ -20,8 +20,8 @@
 @parent
 
   @php
-    $inscricao = $modelo;
-    $tipo_modelo = 'Inscrição';
+    $inscricao = $objeto;
+    $classe_nome = 'Inscricao';
     $condicao_ativa = true;
   @endphp
   <div class="row">

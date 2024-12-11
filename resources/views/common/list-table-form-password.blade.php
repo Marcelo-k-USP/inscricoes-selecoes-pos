@@ -5,7 +5,7 @@
   {{ html()->label($col['label'] ?? $col['name'], $col['name'])->class('col-form-label col-sm-3')->style('margin-top: -20px;') }}
   <div class="col-sm-3" style="margin-top: -20px;">
     {{ html()->input('password', $col['name'])
-      ->value(old($col['name'], $modo == 'edit' ? $modelo->{$col['name']} : ''))
+      ->value(old($col['name'], $modo == 'edit' ? $objeto->{$col['name']} : ''))
       ->class('form-control')
       ->style('width: 100%; padding-right: 30px;')
     }}

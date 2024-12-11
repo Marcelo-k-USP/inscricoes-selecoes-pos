@@ -10,7 +10,7 @@
   </style>
 @endsection
 
-{{ html()->form('post', $data->url . '/edit/' . $modelo->id)
+{{ html()->form('post', $data->url . '/edit/' . $objeto->id)
   ->attribute('enctype', 'multipart/form-data')
   ->attribute('id', 'form_arquivos')
   ->open() }}
@@ -26,17 +26,17 @@
       </span>
     </div>
     <div class="card-body">
-      <input type="hidden" name="tipo_modelo" value="{{ $tipo_modelo }}">
-      <input type="hidden" name="modelo_id" value="{{ $modelo->id }}">
+      <input type="hidden" name="classe_nome" value="{{ $classe_nome }}">
+      <input type="hidden" name="objeto_id" value="{{ $objeto->id }}">
       <input type="hidden" name="tipo_arquivo" id="tipo_arquivo">
       <input type="hidden" name="nome_arquivo" id="nome_arquivo">
       @php
         $i = 0;
       @endphp
-      @foreach ($modelo->tiposArquivo() as $tipo_arquivo)
+      @foreach ($objeto->tiposArquivo() as $tipo_arquivo)
         <div class="arquivos-lista">
           {{ $tipo_arquivo['nome'] }} {!! ((isset($tipo_arquivo['validate']) && $tipo_arquivo['validate']) ? '<small class="text-required">(*)</small>' : '') !!}
-          @if (Gate::allows($tipo_modelo_plural . '.update', $modelo) && $condicao_ativa)
+          @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $condicao_ativa)
             <label for="input_arquivo_{{ $i }}">
               <span class="btn btn-sm btn-light text-primary ml-2"> <i class="fas fa-plus"></i> Adicionar</span>
             </label>
@@ -44,12 +44,12 @@
           <input type="hidden" id="tipo_arquivo_{{ $i }}" value="{{ $tipo_arquivo['nome'] }}">
           <input type="file" name="arquivo[]" id="input_arquivo_{{ $i }}" accept="image/jpeg,image/png,application/pdf" class="d-none" multiple capture="environment">
 
-          @if ($modelo->arquivos->where('pivot.tipo', $tipo_arquivo['nome'])->count() > 0)
+          @if ($objeto->arquivos->where('pivot.tipo', $tipo_arquivo['nome'])->count() > 0)
             <ul class="list-unstyled">
-              @foreach ($modelo->arquivos->where('pivot.tipo', $tipo_arquivo['nome']) as $arquivo)
+              @foreach ($objeto->arquivos->where('pivot.tipo', $tipo_arquivo['nome']) as $arquivo)
                 @if (preg_match('/pdf/i', $arquivo->mimeType))
                   <li class="modo-visualizacao">
-                    @if (Gate::allows($tipo_modelo_plural . '.update', $modelo) && $condicao_ativa)
+                    @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $condicao_ativa)
                       <div class="arquivo-acoes d-inline-block">
                         <a onclick="excluir_arquivo({{ $arquivo->id }}, '{{ $arquivo->nome_original }}'); return false;" class="btn btn-outline-danger btn-sm btn-deletar btn-arquivo-acao">
                           <i class="far fa-trash-alt"></i>
@@ -97,7 +97,7 @@
   <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
   <script type="text/javascript">
     var max_upload_size = {{ $max_upload_size }};
-    var count_tipos_arquivo = {{ count($modelo->tiposArquivo()) }};
+    var count_tipos_arquivo = {{ count($objeto->tiposArquivo()) }};
   </script>
   <script src="js/arquivos.js"></script>
 @endsection

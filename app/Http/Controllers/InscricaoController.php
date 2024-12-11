@@ -48,10 +48,10 @@ class InscricaoController extends Controller
 
         \UspTheme::activeUrl('inscricoes');
         $data = self::$data;
-        $modelos = Inscricao::listarInscricoes();
-        $tipo_modelo = 'Inscricao';
+        $objetos = Inscricao::listarInscricoes();
+        $classe_nome = 'Inscricao';
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
-        return view('inscricoes.index', compact('data', 'modelos', 'tipo_modelo', 'max_upload_size'));
+        return view('inscricoes.index', compact('data', 'objetos', 'classe_nome', 'max_upload_size'));
     }
 
     /**
@@ -225,12 +225,12 @@ class InscricaoController extends Controller
     private function monta_compact(Inscricao $inscricao, string $modo) {
         $data = (object) self::$data;
         $inscricao->selecao->template = JSONForms::orderTemplate($inscricao->selecao->template);
-        $modelo = $inscricao;
-        $tipo_modelo = 'Inscricao';
-        $tipo_modelo_plural = 'inscricoes';
-        $form = JSONForms::generateForm($modelo->selecao, $modelo);
+        $objeto = $inscricao;
+        $classe_nome = 'Inscricao';
+        $classe_nome_plural = 'inscricoes';
+        $form = JSONForms::generateForm($objeto->selecao, $objeto);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'modelo', 'tipo_modelo', 'tipo_modelo_plural', 'form', 'modo', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'max_upload_size');
     }
 }

@@ -13,8 +13,8 @@
 @parent
 
   @php
-    $selecao = $modelo;
-    $tipo_modelo = 'Seleção';
+    $selecao = $objeto;
+    $classe_nome = 'Selecao';
     $condicao_ativa = true;
   @endphp
   <div class="row">
