@@ -182,7 +182,7 @@ class ArquivoController extends Controller
         }
     }
 
-    private function obtemForm(string $classe_nome, $objeto) {
+    private function obtemForm(string $classe_nome, object $objeto) {
         switch ($classe_nome) {
             case 'Selecao':
                 return null;
@@ -192,7 +192,7 @@ class ArquivoController extends Controller
         }
     }
 
-    private function monta_compact($objeto, string $classe_nome, string $classe_nome_plural, $form, string $modo) {
+    private function monta_compact(object $objeto, string $classe_nome, string $classe_nome_plural, $form, string $modo) {
         $data = (object) ('App\\Http\\Controllers\\' . $classe_nome . 'Controller')::$data;
         $linhaspesquisa = LinhaPesquisa::all();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');

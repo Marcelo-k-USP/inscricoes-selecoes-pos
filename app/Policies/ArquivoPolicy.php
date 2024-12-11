@@ -53,7 +53,7 @@ class ArquivoPolicy
      * @param  string                            $classe_nome
      * @return mixed
      */
-    public function create(User $user, $objeto, string $classe_nome)
+    public function create(User $user, object $objeto, string $classe_nome)
     {
         if ($classe_nome == 'Selecao')
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes subam arquivos de seleção
@@ -74,7 +74,7 @@ class ArquivoPolicy
      * @param  string                            $classe_nome
      * @return mixed
      */
-    public function update(User $user, Arquivo $arquivo, $objeto, string $classe_nome)
+    public function update(User $user, Arquivo $arquivo, object $objeto, string $classe_nome)
     {
         return $this->authorize_update_delete($user, $arquivo, $objeto, $classe_nome);
     }
@@ -88,7 +88,7 @@ class ArquivoPolicy
      * @param  string                            $classe_nome
      * @return mixed
      */
-    public function delete(User $user, Arquivo $arquivo, $objeto, string $classe_nome)
+    public function delete(User $user, Arquivo $arquivo, object $objeto, string $classe_nome)
     {
         return $this->authorize_update_delete($user, $arquivo, $objeto, $classe_nome);
     }
@@ -115,7 +115,7 @@ class ArquivoPolicy
         //
     }
 
-    private function authorize_update_delete(User $user, Arquivo $arquivo, $objeto, string $classe_nome)
+    private function authorize_update_delete(User $user, Arquivo $arquivo, object  $objeto, string $classe_nome)
     {
         if ($classe_nome == 'Selecao')
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes renomeiem/apaguem arquivos de seleção
