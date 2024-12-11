@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 
 class ViacepService
 {
-    protected $client;
+    protected $client;    // necessário devido à requisição HTTP do Guzzle
 
     public function __construct(Client $client)
     {
