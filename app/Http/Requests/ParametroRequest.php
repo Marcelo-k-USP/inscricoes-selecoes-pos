@@ -22,12 +22,13 @@ class ParametroRequest extends FormRequest
      * @return array
      */
     public const rules = [
-        'boleto_valor' => ['required', 'numeric', 'not_in:0'],
+        'boleto_codigo_fonte_recurso' => ['required', 'integer'],
+        'boleto_estrutura_hierarquica' => 'required',
     ];
 
     public const messages = [
-        'boleto_valor.required' => 'O valor do boleto é obrigatório!',
-        'boleto_valor.numeric' => 'O valor do boleto é inválido!',
-        'boleto_valor.not_in' => 'O valor do boleto não pode ser zero!',
+        'boleto_codigo_fonte_recurso.required' => 'O código da fonte do recurso do boleto é obrigatório!',
+        'boleto_codigo_fonte_recurso.integer' => 'O código da fonte do recurso do boleto é inválido!',
+        'boleto_estrutura_hierarquica.required' => 'A estrutura hierárquica do boleto é obrigatório!',
     ];
 }

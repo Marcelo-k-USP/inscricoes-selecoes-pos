@@ -11,18 +11,12 @@ class Parametro extends Model
     use HasFactory;
 
     protected $fillable = [
-        'boleto_valor',
         'boleto_codigo_fonte_recurso',
         'boleto_estrutura_hierarquica',
     ];
 
     // uso no crud generico
     protected const fields = [
-        [
-            'name' => 'boleto_valor',
-            'label' => 'Valor do Boleto de Inscrição (R$)',
-            'type' => 'number',
-        ],
         [
             'name' => 'boleto_codigo_fonte_recurso',
             'label' => 'Código Fonte do Recurso para Boleto',

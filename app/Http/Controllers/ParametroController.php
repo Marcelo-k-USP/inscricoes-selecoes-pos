@@ -43,13 +43,11 @@ class ParametroController extends Controller
     {
         $this->authorize('parametros.update');
 
-        $request->merge(['boleto_valor' => floatval(str_replace(',', '.', $request->boleto_valor))]);
         $validator = Validator::make($request->all(), ParametroRequest::rules, ParametroRequest::messages);
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
 
         $parametro = Parametro::first();
-        $parametro->boleto_valor = $request->boleto_valor;
         $parametro->boleto_codigo_fonte_recurso = $request->boleto_codigo_fonte_recurso;
         $parametro->boleto_estrutura_hierarquica = $request->boleto_estrutura_hierarquica;
         $parametro->save();

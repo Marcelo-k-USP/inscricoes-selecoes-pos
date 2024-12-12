@@ -16,7 +16,6 @@ class ParametroSeeder extends Seeder
     {
         $parametros = [
             [
-                'boleto_valor' => 50.0,
                 'boleto_codigo_fonte_recurso' => 514,
                 'boleto_estrutura_hierarquica' => '\DIR\ATAC-47\SVPOSGR-47',
             ],

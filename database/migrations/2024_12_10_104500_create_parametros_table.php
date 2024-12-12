@@ -15,7 +15,6 @@ class CreateParametrosTable extends Migration
     {
         Schema::create('parametros', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->decimal('boleto_valor', 8, 2)->nullable();
             $table->integer('boleto_codigo_fonte_recurso')->nullable();
             $table->string('boleto_estrutura_hierarquica')->nullable();
             $table->timestamps();
