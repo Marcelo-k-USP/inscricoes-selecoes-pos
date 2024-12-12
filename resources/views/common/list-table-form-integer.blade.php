@@ -7,7 +7,7 @@
     {{ html()->input('text', $col['name'])
       ->value(old($col['name'], $modo == 'edit' ? $objeto->{$col['name']} : ''))
       ->class('form-control')
-      ->attribute('oninput', 'validateNumber(this)')
+      ->attribute('oninput', 'validateInteger(this)')
     }}
   </div>
 </div>

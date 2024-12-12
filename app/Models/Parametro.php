@@ -12,6 +12,8 @@ class Parametro extends Model
 
     protected $fillable = [
         'boleto_valor',
+        'boleto_codigo_fonte_recurso',
+        'boleto_estrutura_hierarquica',
     ];
 
     // uso no crud generico
@@ -21,18 +23,20 @@ class Parametro extends Model
             'label' => 'Valor do Boleto de Inscrição (R$)',
             'type' => 'number',
         ],
+        [
+            'name' => 'boleto_codigo_fonte_recurso',
+            'label' => 'Código Fonte do Recurso para Boleto',
+            'type' => 'integer',
+        ],
+        [
+            'name' => 'boleto_estrutura_hierarquica',
+            'label' => 'Estrutura Hierárquica para Boleto',
+        ],
     ];
 
     // uso no crud generico
     public static function getFields()
     {
         return SELF::fields;
-    }
-
-    // retorna o valor do boleto
-    public static function obterBoletoValor()
-    {
-        $parametro = self::first();
-        return ($parametro ? $parametro->boleto_valor : null);
     }
 }

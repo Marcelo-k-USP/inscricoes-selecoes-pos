@@ -32,6 +32,8 @@
                   @include('common.list-table-form-text')
                 @elseif ($col['type'] == 'number')
                   @include('common.list-table-form-number')
+                @elseif ($col['type'] == 'integer')
+                  @include('common.list-table-form-integer')
                 @endif
               @endforeach
               <div class="text-right">
@@ -57,12 +59,12 @@
       var inputs = $("#form_parametros :input").not(":input[type=button], :input[type=submit], :input[type=reset], input[name^='_']");
       inputs.each(function() {
         $(this).val(parametros[this.name]);
-        if ($(this).attr('oninput') == 'validateInput(this)')
+        if ($(this).attr('oninput') == 'validateNumber(this)')
           $(this).val(formatarDecimal($(this).val()));
       });
     });
 
-    function validateInput(input) {
+    function validateNumber(input) {
       // remove qualquer caractere que não seja dígito ou vírgula
       input.value = input.value.replace(/[^0-9,]/g, '');
 
@@ -73,6 +75,11 @@
         var string_depois_primeira_virgula = input.value.substring(pos_primeira_virgula + 1).replace(/,/g, '');
         input.value = string_antes_primeira_virgula + string_depois_primeira_virgula;
       }
+    }
+
+    function validateInteger(input) {
+      // remove qualquer caractere que não seja dígito
+      input.value = input.value.replace(/[^0-9]/g, '');
     }
   </script>
 @endsection

@@ -15,14 +15,15 @@ class BoletoService
     {
         $extras = json_decode($inscricao->extras, true);
         $cpf = (($extras['tipo_de_documento'] == 'Passaporte') ? '99999999999' : str_replace(['-', '.'], '', $extras['cpf']));
+        $parametros = Parametro::first();
 
         $boleto = new Boleto(config('selecoes-pos.ws_boleto_usuario'), config('selecoes-pos.ws_boleto_senha'));
         $data = array(
             'codigoUnidadeDespesa' => 47,
-            'codigoFonteRecurso' => 514,
-            'estruturaHierarquica' => '\DIR\ATAC-47\SVPOSGR-47',
+            'codigoFonteRecurso' => $parametros->boleto_codigo_fonte_recurso,
+            'estruturaHierarquica' => $parametros->boleto_estrutura_hierarquica,
             'dataVencimentoBoleto' => formatarData(Feriado::adicionarDiasUteis($inscricao->selecao->data_fim, 1)),    // a data de vencimento do boleto deve ser o primeiro dia útil passado o período de inscrições da seleção em questão
-            'valorDocumento' => Parametro::obterBoletoValor(),
+            'valorDocumento' => $parametros->boleto_valor,
             'tipoSacado' => 'PF',
             'cpfCnpj' => $cpf,
             'nomeSacado' => $extras['nome'],
