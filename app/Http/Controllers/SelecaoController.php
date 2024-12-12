@@ -84,7 +84,9 @@ class SelecaoController extends Controller
 
         $requestData = $request->all();
         $requestData['data_inicio'] = (is_null($requestData['data_inicio']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_inicio']));
-        $requestData['data_fim'   ] = (is_null($requestData['data_fim'   ]) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_fim'   ]));
+        $requestData['data_fim'] = (is_null($requestData['data_fim']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_fim']));
+        $requestData['boleto_valor'] = str_replace(',', '.', $requestData['boleto_valor']);
+        $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento']));
         $selecao = Selecao::create($requestData);
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
@@ -132,6 +134,9 @@ class SelecaoController extends Controller
         $this->updateField($request, $selecao, 'descricao', 'descrição', 'a');
         $this->updateField($request, $selecao, 'data_inicio', 'data início', 'a');
         $this->updateField($request, $selecao, 'data_fim', 'data fim', 'a');
+        $this->updateField($request, $selecao, 'boleto_valor', 'valor do boleto', 'o');
+        $this->updateField($request, $selecao, 'boleto_texto', 'texto do boleto', 'o');
+        $this->updateField($request, $selecao, 'boleto_data_vencimento', 'data de vencimento do boleto', 'a');
         if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
             if ($selecao->linhaspesquisa->count() > 0) {
                 $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa do programa antigo cadastradas para esta seleção!');
@@ -153,7 +158,7 @@ class SelecaoController extends Controller
 
     private function updateField(SelecaoRequest $request, Selecao $selecao, string $field, string $field_name, string $genero)
     {
-        if (strpos($field, 'data_') === 0)
+        if ((strpos($field, 'data_') === 0) || (strpos($field, '_data_') !== false))
             $request->$field = (is_null($request->$field) ? null : Carbon::createFromFormat('d/m/Y', $request->$field)->format('Y-m-d'));
 
         if ($selecao->$field != $request->$field) {

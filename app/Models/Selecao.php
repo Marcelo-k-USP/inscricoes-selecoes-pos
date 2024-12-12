@@ -580,6 +580,9 @@ class Selecao extends Model
         'descricao',
         'data_inicio',
         'data_fim',
+        'boleto_valor',
+        'boleto_texto',
+        'boleto_data_vencimento',
         'categoria_id',
         'programa_id',
         'estado',
@@ -593,6 +596,13 @@ class Selecao extends Model
             'label' => 'Categoria',
             'type' => 'select',
             'model' => 'Categoria',
+            'data' => [],
+        ],
+        [
+            'name' => 'programa_id',
+            'label' => 'Programa',
+            'type' => 'select',
+            'model' => 'Programa',
             'data' => [],
         ],
         [
@@ -614,11 +624,18 @@ class Selecao extends Model
             'type' => 'date',
         ],
         [
-            'name' => 'programa_id',
-            'label' => 'Programa',
-            'type' => 'select',
-            'model' => 'Programa',
-            'data' => [],
+            'name' => 'boleto_data_vencimento',
+            'label' => 'Data de Vencimento do Boleto',
+            'type' => 'date',
+        ],
+        [
+            'name' => 'boleto_valor',
+            'label' => 'Valor do Boleto (R$)',
+            'type' => 'number',
+        ],
+        [
+            'name' => 'boleto_texto',
+            'label' => 'Texto do Boleto',
         ],
     ];
 

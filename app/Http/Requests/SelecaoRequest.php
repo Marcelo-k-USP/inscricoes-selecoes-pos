@@ -23,22 +23,35 @@ class SelecaoRequest extends FormRequest
      */
     public const rules = [
         'categoria_id' => ['required', 'numeric'],
+        'programa_id' => ['required', 'numeric'],
         'nome' => ['required', 'max:100'],
         'descricao' => ['max:255'],
         'data_inicio' => ['required'],
         'data_fim' => ['required'],
-        'programa_id' => ['required', 'numeric'],
+        'boleto_data_vencimento' => ['required'],
+        'boleto_valor' => ['required', 'numeric'],
+        'boleto_texto' => ['max:255'],
     ];
 
     public const messages = [
         'categoria_id.required' => 'A categoria é obrigatória!',
         'categoria_id.numeric' => 'A categoria é inválida!',
+        'programa_id.required' => 'O programa é obrigatório!',
+        'programa_id.numeric' => 'O programa é inválido!',
         'nome.required' => 'O nome da seleção é obrigatório!',
         'nome.max' => 'O nome da seleção não pode exceder 100 caracteres!',
         'descricao.max' => 'A descrição da seleção não pode exceder 255 caracteres!',
         'data_inicio.required' => 'A data de início é obrigatória!',
         'data_fim.required' => 'A data de fim é obrigatória!',
-        'programa_id.required' => 'O programa é obrigatório!',
-        'programa_id.numeric' => 'O programa é inválido!',
+        'boleto_data_vencimento.required' => 'A data de vencimento do boleto é obrigatória!',
+        'boleto_valor.required' => 'O valor do boleto é obrigatório!',
+        'boleto_valor.numeric' => 'O valor do boleto é inválido!',
+        'boleto_texto.max' => 'O texto do boleto não pode exceder 255 caracteres!',
     ];
+
+    protected function prepareForValidation() {
+        $this->merge([
+            'boleto_valor' => str_replace(',', '.', $this->boleto_valor),
+        ]);
+    }
 }

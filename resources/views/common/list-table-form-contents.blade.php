@@ -5,6 +5,8 @@
     @include('common.list-table-form-password')
   @elseif ($col['type'] == 'date')
     @include('common.list-table-form-date')
+  @elseif ($col['type'] == 'number')
+    @include('common.list-table-form-number')
   @elseif ($col['type'] == 'select')
     @include('common.list-table-form-select')
   @endif

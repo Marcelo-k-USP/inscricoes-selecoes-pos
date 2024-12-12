@@ -20,6 +20,9 @@ class CreateSelecoesTable extends Migration
             $table->string('descricao', 255)->nullable();
             $table->date('data_inicio');
             $table->date('data_fim');
+            $table->decimal('boleto_valor', 8, 2);
+            $table->string('boleto_texto')->nullable();
+            $table->date('boleto_data_vencimento');
             $table->json('template')->nullable();
             $table->json('settings')->nullable();
             $table->foreignId('categoria_id')->constrained('categorias');
