@@ -11,10 +11,12 @@ class InscricaoMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $inscricao;
-    public $autor;
-    public $papel;
-    public $user;
+    protected $inscricao;
+    protected $user;
+    protected $autor;
+    protected $papel;
+    protected $arquivo_nome;
+    protected $arquivo_conteudo;
 
     /**
      * Create a new message instance.
@@ -24,9 +26,11 @@ class InscricaoMail extends Mailable
     public function __construct($data)
     {
         $this->inscricao = $data['inscricao'];
-        $this->autor = $this->inscricao->users()->wherePivot('papel', 'Autor')->first();
-        $this->papel = $data['papel'];
         $this->user = $data['user'];
+        $this->autor = $data['autor'];
+        $this->papel = $data['papel'];
+        $this->arquivo_nome = $data['arquivo_nome'];
+        $this->arquivo_conteudo = $data['arquivo_conteudo'];
     }
 
     /**
@@ -37,11 +41,15 @@ class InscricaoMail extends Mailable
     public function build()
     {
         return $this
+            ->subject('[' . config('app.name') . '] Inscrição Realizada com Sucesso')
             ->from(config('mail.from.address'), config('mail.from.name'))
-            ->subject(
-                '[' . config('app.name') . ']'
-                . ' Inscrição Realizada com Sucesso'
-            )
-            ->view('emails.inscricao_nova');
+            ->view('emails.inscricao_nova')
+            ->with([
+                'inscricao' => $this->inscricao,
+                'user' => $this->user,
+                'autor' => $this->autor,
+                'papel' => $this->papel,
+            ])
+            ->attachData($this->arquivo_conteudo, $this->arquivo_nome, ['mime' => 'application/pdf']);
     }
 }

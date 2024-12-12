@@ -40,7 +40,7 @@ class LocalUserController extends Controller
 
         $credentials = $request->only('email', 'password');
         if (!Auth::attempt($credentials))
-            return processa_erro_login('Usuário e senha incorretos');
+            return $this->processa_erro_login('Usuário e senha incorretos');
 
         return redirect('/inscricoes');
     }
@@ -57,7 +57,7 @@ class LocalUserController extends Controller
         // procura por usuário local com esse e-mail (somente local... pois não queremos fornecer possibilidade de resetar senha única USP de um usuário não local)
         $localuser = User::where('email', $request->email)->where('local', '1')->first();
         if (is_null($localuser))
-            processa_erro_login('E-mail não encontrado');
+            return $this->processa_erro_login('E-mail não encontrado');
 
         // gera um token
         $token = Str::random(60);
@@ -90,11 +90,11 @@ class LocalUserController extends Controller
             return Hash::check($token, $reset->token);
         });
         if (!$password_reset)
-            processa_erro_login('Este link é inválido');
+            return $this->processa_erro_login('Este link é inválido');
 
         // verifica se o token recebido expirou
         if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast())
-            processa_erro_login('Este link expirou');
+            return $this->processa_erro_login('Este link expirou');
 
         $email = $password_reset->email;
         return view('localusers.redefinesenha', compact('token', 'email'));
@@ -116,18 +116,18 @@ class LocalUserController extends Controller
         // verifica se os dados vieram válidos
         $password_reset = DB::table('password_resets')->where('email', $request->email)->first();
         if ((!$password_reset) || (!Hash::check($request->token, $password_reset->token)))
-            processa_erro_login('Este link é inválido');
+            return $this->processa_erro_login('Este link é inválido');
 
         // verifica se o token recebido expirou
         if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast())
-            processa_erro_login('Este link expirou');
+            return $this->processa_erro_login('Este link expirou');
 
         // verifica se o usuário existe
         $user = User::where('email', $password_reset->email)
             ->where('local', '1')
             ->first();
         if (!$user)
-            processa_erro_login('Usuário não cadastrado');
+            return $this->processa_erro_login('Usuário não cadastrado');
 
         // transaction para não ter problema de inconsistência do DB
         DB::transaction(function () use ($request, $user) {

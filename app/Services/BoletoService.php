@@ -27,13 +27,13 @@ class BoletoService
             'cpfCnpj' => $cpf,
             'nomeSacado' => $extras['nome'],
             'codigoEmail' => $extras['e_mail'],
-            'informacoesBoletoSacado' => 'Boleto de Inscricao do Processo Seletivo da Pos-Graduacao - '/* . $inscricao->selecao->nome*/,
-            'instrucoesObjetoCobranca' => 'Nao receber apos vencimento',
+            'informacoesBoletoSacado' => 'Boleto de Inscrição do Processo Seletivo da Pós-Graduação - ' . $inscricao->selecao->nome,
+            'instrucoesObjetoCobranca' => 'Não receber apos vencimento!',
         );
 
         try {
-            Log::info('$data: ' . json_encode($data));
-            Log::info('Gerando boleto para o ' . (($extras['tipo_de_documento'] == 'Passaporte') ? 'passaporte ' . $extras['numero_do_documento'] : 'CPF ' . $cpf) . '...');
+            Log::info('$data: ' . json_encode($data));/////////////////////////////////////////////////////////////////////////////////////
+            Log::info('Gerando boleto para o ' . (($extras['tipo_de_documento'] == 'Passaporte') ? 'passaporte ' . $extras['numero_do_documento'] : 'CPF ' . $extras['cpf']) . '...');
 
             $gerar = $boleto->gerar($data);
             if ($gerar['status']) {
@@ -42,15 +42,8 @@ class BoletoService
                 // loga situação da geração do boleto
                 Log::info('$boleto->situacao(' . $id . '): ' . $boleto->situacao($id));
 
-                /*
                 // recupera o arquivo PDF do boleto (PDF no formato binário codificado para Base64)
                 $obter = $boleto->obter($id);
-
-                // redireciona os dados binários do PDF para o browser
-                header('Content-type: application/pdf');
-                header('Content-Disposition: attachment; filename="boleto.pdf"');
-                echo base64_decode($obter['value']);
-                */
 
                 // cancela o boleto em ambiente de desenvolvimento, ou também em produção se ligamos a chave WS_BOLETO_CANCELAR
                 if (App::environment('local') || config('selecoes-pos.ws_boleto_cancelar')) {
@@ -61,8 +54,13 @@ class BoletoService
                     // loga situação da geração do boleto
                     Log::info('$boleto->situacao(' . $id . '): ' . $boleto->situacao($id));
                 }
-            } else
+
+                // retorna o conteúdo do PDF
+                return base64_decode($obter['value']);
+            } else {
                 Log::info('$gerar[\'value\']: ' . $gerar['value']);
+                return '123';
+            }
 
         } catch (Exception $e) {
             Log::info($e->getMessage());

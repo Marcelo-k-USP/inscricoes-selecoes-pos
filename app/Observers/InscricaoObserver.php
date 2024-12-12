@@ -25,14 +25,15 @@ class InscricaoObserver
      */
     public function created(Inscricao $inscricao)
     {
-        // gera boleto
-        $this->boletoService->gerarBoleto($inscricao);
+        $user = \Auth::user();
+        $autor = $inscricao->users()->wherePivot('papel', 'Autor')->first();
+        $papel = 'Candidato';
+        $arquivo_nome = 'boleto.pdf';
+        $arquivo_conteudo = $this->boletoService->gerarBoleto($inscricao);
 
         // envia e-mail para o autor
-        $papel = 'Candidato';
-        $user = \Auth::user();
         \Mail::to($user->email)
-            ->queue(new InscricaoMail(compact('papel', 'user', 'inscricao')));
+            ->queue(new InscricaoMail(compact('inscricao', 'user', 'autor', 'papel', 'arquivo_nome', 'arquivo_conteudo')));
     }
 
     /**

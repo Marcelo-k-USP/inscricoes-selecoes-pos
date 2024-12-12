@@ -7,6 +7,12 @@ Permite ...
 * Inicio
 
 ```bash
+    sudo apt-get install php-soap
+```
+
+Descomentar a linha extension=soap do php.ini    
+
+```bash
     git clone git@github.com:uspdev/selecoes-pos selecoes-pos
     cd selecoes-pos
     composer update

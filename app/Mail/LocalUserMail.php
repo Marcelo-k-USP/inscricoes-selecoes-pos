@@ -11,8 +11,8 @@ class LocalUserMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $localuser;
-    public $password_reset_url;
+    protected $localuser;
+    protected $password_reset_url;
 
     /**
      * Create a new message instance.
@@ -33,11 +33,12 @@ class LocalUserMail extends Mailable
     public function build()
     {
         return $this
+            ->subject('[' . config('app.name') . '] Redefinição de Senha da Sua Conta')
             ->from(config('mail.from.address'), config('mail.from.name'))
-            ->subject(
-                '[' . config('app.name') . ']'
-                . ' Redefinição de Senha da Sua Conta'
-            )
-            ->view('emails.localuser_redefinicaosenha');
+            ->view('emails.localuser_redefinicaosenha')
+            ->with([
+                'localuser' => $this->localuser,
+                'password_reset_url' => $this->password_reset_url,
+            ]);
     }
 }
