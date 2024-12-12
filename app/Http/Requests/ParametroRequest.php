@@ -23,12 +23,13 @@ class ParametroRequest extends FormRequest
      */
     public const rules = [
         'boleto_codigo_fonte_recurso' => ['required', 'integer'],
-        'boleto_estrutura_hierarquica' => 'required',
+        'boleto_estrutura_hierarquica' => ['required', 'max:100'],
     ];
 
     public const messages = [
         'boleto_codigo_fonte_recurso.required' => 'O código da fonte do recurso do boleto é obrigatório!',
         'boleto_codigo_fonte_recurso.integer' => 'O código da fonte do recurso do boleto é inválido!',
-        'boleto_estrutura_hierarquica.required' => 'A estrutura hierárquica do boleto é obrigatório!',
+        'boleto_estrutura_hierarquica.required' => 'A estrutura hierárquica do boleto é obrigatória!',
+        'boleto_estrutura_hierarquica.max' => 'A estrutura hierárquica do boleto não pode exceder 100 caracteres!',
     ];
 }
