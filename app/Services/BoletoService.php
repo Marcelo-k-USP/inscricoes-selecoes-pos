@@ -33,7 +33,6 @@ class BoletoService
         );
 
         try {
-            Log::info('$data: ' . json_encode($data));/////////////////////////////////////////////////////////////////////////////////////
             Log::info('Gerando boleto para o ' . (($extras['tipo_de_documento'] == 'Passaporte') ? 'passaporte ' . $extras['numero_do_documento'] : 'CPF ' . $extras['cpf']) . '...');
 
             $gerar = $boleto->gerar($data);
@@ -60,12 +59,10 @@ class BoletoService
                 return base64_decode($obter['value']);
             } else {
                 Log::info('$gerar[\'value\']: ' . $gerar['value']);
-                return '123';
             }
 
         } catch (Exception $e) {
             Log::info($e->getMessage());
-            throw $e;
         }
     }
 }

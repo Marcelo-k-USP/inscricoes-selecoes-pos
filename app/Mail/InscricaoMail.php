@@ -17,6 +17,7 @@ class InscricaoMail extends Mailable
     protected $papel;
     protected $arquivo_nome;
     protected $arquivo_conteudo;
+    protected $arquivo_erro;
 
     /**
      * Create a new message instance.
@@ -31,6 +32,8 @@ class InscricaoMail extends Mailable
         $this->papel = $data['papel'];
         $this->arquivo_nome = $data['arquivo_nome'];
         $this->arquivo_conteudo = $data['arquivo_conteudo'];
+        $this->arquivo_erro = (!empty($this->arquivo_conteudo) ? '' : 'Ocorreu um erro na geração do boleto.<br />' . PHP_EOL .
+            'Por favor, entre em contato conosco em infor@ip.usp.br, informando-nos sobre esse problema.<br />' . PHP_EOL);
     }
 
     /**
@@ -49,7 +52,10 @@ class InscricaoMail extends Mailable
                 'user' => $this->user,
                 'autor' => $this->autor,
                 'papel' => $this->papel,
+                'arquivo_erro' => $this->arquivo_erro,
             ])
-            ->attachData($this->arquivo_conteudo, $this->arquivo_nome, ['mime' => 'application/pdf']);
+            ->when(!empty($this->arquivo_conteudo), function ($message) {
+                $message->attachData($this->arquivo_conteudo, $this->arquivo_nome, ['mime' => 'application/pdf']);
+            });
     }
 }
