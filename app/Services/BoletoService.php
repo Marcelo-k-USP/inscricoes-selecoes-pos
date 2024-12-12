@@ -20,7 +20,7 @@ class BoletoService
         $data = array(
             'codigoUnidadeDespesa' => 47,
             'codigoFonteRecurso' => 514,
-            'estruturaHierarquica' => '\DIR\ATAC-47\SVPOSGR-47\SVPOSGR-47',
+            'estruturaHierarquica' => '\DIR\ATAC-47\SVPOSGR-47',
             'dataVencimentoBoleto' => formatarData(Feriado::adicionarDiasUteis($inscricao->selecao->data_fim, 1)),    // a data de vencimento do boleto deve ser o primeiro dia útil passado o período de inscrições da seleção em questão
             'valorDocumento' => Parametro::obterBoletoValor(),
             'tipoSacado' => 'PF',
