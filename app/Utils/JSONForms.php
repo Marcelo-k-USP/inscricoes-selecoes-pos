@@ -89,7 +89,7 @@ class JSONForms
                         $html_string .= '<div class="d-flex align-items-center gap-2">' . PHP_EOL .
                                           '&nbsp; &nbsp;' . PHP_EOL .
                                           '<input style="margin: 0; position: relative; top: -1px;" name="extras[' . $key0 . ']" id="extras[' . $key0 . '_' . $key . ']" value="' . $key . '" type="radio"' . ($key == $value ? ' checked' : '') . ($primeiro_item ? $required_attrib : '') . '>' . PHP_EOL .
-                                          '<label style="margin: 0; padding-left: 5px; position: relative; top: -2px;" for="extras[' . $key . ']">' . $option . '</label>' . PHP_EOL .
+                                          '<label style="margin: 0; padding-left: 5px; position: relative; top: -2px;" for="extras[' . $key0 . '_' . $key . ']">' . $option . '</label>' . PHP_EOL .
                                         '</div>' . PHP_EOL;
                         $primeiro_item = false;
                     }
