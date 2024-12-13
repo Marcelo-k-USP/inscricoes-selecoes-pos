@@ -92,7 +92,8 @@ class SelecaoController extends Controller
         Selecao::atualizaStatusSelecoes();
         $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
-        $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
+        $request->session()->flash('alert-success', 'Seleção cadastrada com sucesso<br />' .
+            'Agora adicione o edital e demais arquivos relacionados ao processo');
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
@@ -153,7 +154,7 @@ class SelecaoController extends Controller
         Selecao::atualizaStatusSelecoes();
         $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
-        $request->session()->flash('alert-success', 'Dados editados com sucesso');
+        $request->session()->flash('alert-success', 'Seleção alterada com sucesso');
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));

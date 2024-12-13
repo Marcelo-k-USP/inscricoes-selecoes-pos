@@ -167,8 +167,8 @@ class InscricaoController extends Controller
             return $inscricao;
         });
 
-        $request->session()->flash('alert-danger', null);    // estranhamente, a invocação de $errors->any() no messages.errors não estava sendo suficiente para limpar os errors para o submit seguinte
-        $request->session()->flash('alert-success', 'Inscrição realizada com sucesso; verifique seu e-mail');
+        $request->session()->flash('alert-success', 'Inscrição realizada com sucesso<br />' .
+            'Verifique seu e-mail');
 
         \UspTheme::activeUrl('inscricoes/create');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
@@ -203,7 +203,7 @@ class InscricaoController extends Controller
         $inscricao->extras = json_encode($request->extras);
         $inscricao->save();
 
-        $request->session()->flash('alert-success', 'Inscrição atualizada com sucesso');
+        $request->session()->flash('alert-success', 'Inscrição alterada com sucesso');
 
         \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
