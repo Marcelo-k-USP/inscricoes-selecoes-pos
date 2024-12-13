@@ -15,7 +15,7 @@
   <div class="card-body">
     <div class="list_table_div_form">
       As inscrições para este processo seletivo ainda não abriram.<br />
-      Ao lado, você pode acessar os informativos do processo.
+      Ao lado/abaixo, você pode acessar os informativos do processo.
     </div>
   </div>
 </div>
