@@ -687,7 +687,13 @@ class Selecao extends Model
             [
                 'nome' => 'Normas para Isenção de Taxa',
                 'validate' => 'required'
-            ]
+            ],
+            [
+                'nome' => 'Errata'
+            ],
+            [
+                'nome' => 'Lista de Aprovados'
+            ],
         ];
     }
 
