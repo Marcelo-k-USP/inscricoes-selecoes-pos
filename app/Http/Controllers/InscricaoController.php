@@ -168,7 +168,8 @@ class InscricaoController extends Controller
         });
 
         $request->session()->flash('alert-success', 'Inscrição realizada com sucesso<br />' .
-            'Verifique seu e-mail');
+            'Não deixe de subir os arquivos necessários para a avaliação da sua inscrição<br />' .
+            'Verifique seu e-mail e pague o boleto');
 
         \UspTheme::activeUrl('inscricoes/create');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
