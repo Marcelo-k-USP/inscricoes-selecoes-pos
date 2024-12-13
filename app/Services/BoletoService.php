@@ -40,7 +40,7 @@ class BoletoService
                 $id = $gerar['value'];
 
                 // loga situação da geração do boleto
-                Log::info('$boleto->situacao(' . $id . '): ' . $boleto->situacao($id));
+                Log::info('$boleto->situacao(' . $id . '): ' . json_encode($boleto->situacao($id)));
 
                 // recupera o arquivo PDF do boleto (PDF no formato binário codificado para Base64)
                 $obter = $boleto->obter($id);
@@ -52,11 +52,11 @@ class BoletoService
                     $boleto->cancelar($id);
 
                     // loga situação da geração do boleto
-                    Log::info('$boleto->situacao(' . $id . '): ' . $boleto->situacao($id));
+                    Log::info('$boleto->situacao(' . $id . '): ' . json_encode($boleto->situacao($id)));
                 }
 
                 // retorna o conteúdo do PDF
-                return base64_decode($obter['value']);
+                return $obter['value'];
             } else {
                 Log::info('$gerar[\'value\']: ' . $gerar['value']);
             }
