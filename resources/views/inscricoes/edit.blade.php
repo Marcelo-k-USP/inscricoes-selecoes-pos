@@ -18,10 +18,10 @@
 
 @section('content')
 @parent
-
   @php
     $inscricao = $objeto;
     $classe_nome = 'Inscricao';
+    $condicao_disponivel = ($inscricao->selecao->estado == 'Em andamento');
     $condicao_ativa = true;
   @endphp
   <div class="row">
@@ -35,7 +35,7 @@
               Nova Inscrição
             @endif
             para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})<br />
-            <span class="text-muted">{{ $inscricao->selecao->descricao }}</span><br />
+            <span class="text-muted">{{ $inscricao->selecao->descricao }}</span>
           </div>
         </div>
         @include('inscricoes.partials.badge-instrucoes-da-selecao')
@@ -43,12 +43,16 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @include('inscricoes.show.card-principal')    {{-- Principal --}}
+              @if ($condicao_disponivel)
+                @include('inscricoes.show.card-principal')      {{-- Principal --}}
+              @else
+                @include('inscricoes.show.card-naodisponivel')  {{-- Não Disponível --}}
+              @endif
             </div>
             <div class="col-md-5">
-              @include('inscricoes.show.card-informativos') {{-- Informativos --}}
-              @if ($modo == 'edit')
-                @include('common.card-arquivos')            {{-- Arquivos --}}
+              @include('inscricoes.show.card-informativos')     {{-- Informativos --}}
+              @if ($condicao_disponivel && ($modo == 'edit'))
+                @include('common.card-arquivos')                {{-- Arquivos --}}
               @endif
             </div>
           </div>

@@ -791,9 +791,7 @@ class Selecao extends Model
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
             $selecoes = $selecoes->filter(function ($selecao, $key) {    // agora vamos remover as seleções onde não se pode inscrever... a ordem de liberação é relevante!
-                if ($selecao->estado != 'Em andamento')                  // bloqueia as seleções que não estão em andamento
-                    return false;
-                return true;
+                return ($selecao->estado != 'Encerrada');                // descarta as seleções encerradas
             });
             $categoria->selecoes = $selecoes;
         }
