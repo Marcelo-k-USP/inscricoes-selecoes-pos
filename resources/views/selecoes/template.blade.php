@@ -1,6 +1,9 @@
 @extends('master')
 @section('content')
 @parent
+  @php
+    $condicao_elaboracao = ($selecao->estado == 'Em elaboração');
+  @endphp
   @include('common.modal-processando')
   <div class="row">
     <div class="col-md-12">
@@ -109,7 +112,9 @@
                             </div>
                           @endforeach
                           <div class="col">
-                            <button class="btn btn-danger" type="button" onclick="apaga_campo(this)"{{ $disable_functions }}>Apagar</button>
+                            @if ($condicao_elaboracao)
+                              <button class="btn btn-danger" type="button" onclick="apaga_campo(this)"{{ $disable_functions }}>Apagar</button>
+                            @endif
                             <input type="hidden" name="template[{{ $tkey }}][order]" id="index[{{ $i }}]" value="{{ $i }}">
                             <button class="btn btn-success" type="button" onclick="move(this, 1)">&#8679;</button>
                             <button class="btn btn-success" type="button" onclick="move(this, 0)">&#8681;</button>
@@ -124,7 +129,7 @@
                       <br />
                     @endif
                     <br />
-                    @if ($template)
+                    @if ($template && $condicao_elaboracao)
                       <button class="btn btn-primary ml-1" type="submit">Salvar</button>
                     @endif
                     <a class="btn btn-secondary" href="{{ route('selecoes.edit', ['selecao' => $selecao->id]) }}">Voltar</a>

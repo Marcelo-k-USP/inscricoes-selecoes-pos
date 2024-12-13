@@ -16,10 +16,12 @@
       <a href="{{ route('selecoes.createtemplate', $selecao->id) }}" class="btn btn-light btn-sm text-primary">
         <i class="fas fa-edit"></i> Editar
       </a>
-      @can('perfiladmin')
-        @include('selecoes.partials.btn-template-show-json-modal')
-      @endcan
     @endif
+    @can('perfiladmin')
+      @if ($condicao_elaboracao)
+        @include('selecoes.partials.btn-template-show-json-modal')
+      @endif
+    @endcan
   </div>
   <div class="card-body">
     <div class="ml-2 truncate-text">

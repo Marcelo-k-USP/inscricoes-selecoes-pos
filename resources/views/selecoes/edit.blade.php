@@ -11,10 +11,10 @@
 
 @section('content')
 @parent
-
   @php
     $selecao = $objeto;
     $classe_nome = 'Selecao';
+    $condicao_elaboracao = ($selecao->estado == 'Em elaboração');
     $condicao_ativa = ($selecao->estado != 'Encerrada');
   @endphp
   <div class="row">

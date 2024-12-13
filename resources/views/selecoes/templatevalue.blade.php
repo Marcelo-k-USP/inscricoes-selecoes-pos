@@ -1,6 +1,9 @@
 @extends('master')
 @section('content')
 @parent
+  @php
+    $condicao_elaboracao = ($selecao->estado == 'Em elaboração');
+  @endphp
   @include('common.modal-processando')
   <div class="row">
     <div class="col-md-12">
@@ -43,7 +46,9 @@
                             <input class="form-control" name="value[{{ $tkey }}][label]" value="{{ $tvalue['label'] }}">
                           </div>
                           <div class="col">
-                            <button class="btn btn-danger" type="button" onclick="apaga_campo(this)">Apagar</button>
+                            @if ($condicao_elaboracao)
+                              <button class="btn btn-danger" type="button" onclick="apaga_campo(this)">Apagar</button>
+                            @endif
                             <input type="hidden" name="value[{{ $tkey }}][order]" id="index[{{ $i }}]" value="{{ $i }}">
                             <button class="btn btn-success" type="button" onclick="move(this, 1)">&#8679;</button>
                             <button class="btn btn-success" type="button" onclick="move(this, 0)">&#8681;</button>
@@ -54,7 +59,9 @@
                         @endphp
                       @endforeach
                       <br />
-                      <button class="btn btn-primary ml-1" type="submit">Salvar</button>
+                      @if ($condicao_elaboracao)
+                        <button class="btn btn-primary ml-1" type="submit">Salvar</button>
+                      @endif
                     @else
                       Não existe {{ str_replace('_', ' ', $field) }} para esse formulário.
                       <br />
