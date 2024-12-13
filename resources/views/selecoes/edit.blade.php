@@ -15,7 +15,7 @@
   @php
     $selecao = $objeto;
     $classe_nome = 'Selecao';
-    $condicao_ativa = true;
+    $condicao_ativa = ($selecao->estado != 'Encerrada');
   @endphp
   <div class="row">
     <div class="col-md-12">
@@ -35,7 +35,7 @@
             @endif
           </div>
         </div>
-        <div class="card-body {{ ($modo == 'edit') && ($selecao->estado == 'Encerrada') ? 'disable-links': '' }}">
+        <div class="card-body">
           <div class="row">
             <div class="col-md-7">
               @include('selecoes.show.card-principal')          {{-- Principal --}}

@@ -22,9 +22,11 @@
       <div class="list_table_div_form">
         @include('common.list-table-form-contents')
       </div>
-      <div class="text-right">
-        <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
-      </div>
+      @if ($condicao_ativa)
+        <div class="text-right">
+          <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
+        </div>
+      @endif
     </div>
   </div>
 {{ html()->form()->close() }}

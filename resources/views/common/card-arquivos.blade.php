@@ -36,7 +36,7 @@
       @foreach ($objeto->tiposArquivo() as $tipo_arquivo)
         <div class="arquivos-lista">
           {{ $tipo_arquivo['nome'] }} {!! ((isset($tipo_arquivo['validate']) && $tipo_arquivo['validate']) ? '<small class="text-required">(*)</small>' : '') !!}
-          @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $condicao_ativa)
+          @if (Gate::allows($classe_nome_plural . '.update', $objeto))
             <label for="input_arquivo_{{ $i }}">
               <span class="btn btn-sm btn-light text-primary ml-2"> <i class="fas fa-plus"></i> Adicionar</span>
             </label>
@@ -49,7 +49,7 @@
               @foreach ($objeto->arquivos->where('pivot.tipo', $tipo_arquivo['nome']) as $arquivo)
                 @if (preg_match('/pdf/i', $arquivo->mimeType))
                   <li class="modo-visualizacao">
-                    @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $condicao_ativa)
+                    @if (Gate::allows($classe_nome_plural . '.update', $objeto))
                       <div class="arquivo-acoes d-inline-block">
                         <a onclick="excluir_arquivo({{ $arquivo->id }}, '{{ $arquivo->nome_original }}'); return false;" class="btn btn-outline-danger btn-sm btn-deletar btn-arquivo-acao">
                           <i class="far fa-trash-alt"></i>

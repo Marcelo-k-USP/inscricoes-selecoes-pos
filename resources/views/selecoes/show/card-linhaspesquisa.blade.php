@@ -14,7 +14,9 @@
     Linhas de Pesquisa
     <span class="badge badge-pill badge-primary">{{ is_null($selecao->linhaspesquisa) ? 0 : $selecao->linhaspesquisa->count() }}</span>
     @can('selecoes.update')
-      @include('linhaspesquisa.partials.modal-add')
+      @if ($condicao_ativa)
+        @include('linhaspesquisa.partials.modal-add')
+      @endif
     @endcan
   </div>
   <div class="card-body">

@@ -12,13 +12,14 @@
   <div class="card-header">
     <i class="fab fa-wpforms"></i> Formulário
     <span class="small">@include('ajuda.selecoes.formulario')</span>
-
-    <a href="{{ route('selecoes.createtemplate', $selecao->id) }}" class="btn btn-light btn-sm text-primary">
-      <i class="fas fa-edit"></i> Editar
-    </a>
-    @can('perfiladmin')
-      @include('selecoes.partials.btn-template-show-json-modal')
-    @endcan
+    @if ($condicao_ativa)
+      <a href="{{ route('selecoes.createtemplate', $selecao->id) }}" class="btn btn-light btn-sm text-primary">
+        <i class="fas fa-edit"></i> Editar
+      </a>
+      @can('perfiladmin')
+        @include('selecoes.partials.btn-template-show-json-modal')
+      @endcan
+    @endif
   </div>
   <div class="card-body">
     <div class="ml-2 truncate-text">
