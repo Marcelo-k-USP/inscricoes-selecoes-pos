@@ -3485,16 +3485,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "3.0.42",
+            "version": "3.0.43",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "db92f1b1987b12b13f248fe76c3a52cadb67bb98"
+                "reference": "709ec107af3cb2f385b9617be72af8cf62441d02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/db92f1b1987b12b13f248fe76c3a52cadb67bb98",
-                "reference": "db92f1b1987b12b13f248fe76c3a52cadb67bb98",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/709ec107af3cb2f385b9617be72af8cf62441d02",
+                "reference": "709ec107af3cb2f385b9617be72af8cf62441d02",
                 "shasum": ""
             },
             "require": {
@@ -3575,7 +3575,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.42"
+                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.43"
             },
             "funding": [
                 {
@@ -3591,7 +3591,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-16T03:06:04+00:00"
+            "time": "2024-12-14T21:12:59+00:00"
         },
         {
             "name": "psr/cache",
@@ -4987,16 +4987,16 @@
         },
         {
             "name": "spatie/simple-excel",
-            "version": "3.7.0",
+            "version": "3.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/simple-excel.git",
-                "reference": "668542b3b56dd11058180f26a63d0f192450829a"
+                "reference": "1dfc9c0cd60d8891905dc78946ae763a9f7dec2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/simple-excel/zipball/668542b3b56dd11058180f26a63d0f192450829a",
-                "reference": "668542b3b56dd11058180f26a63d0f192450829a",
+                "url": "https://api.github.com/repos/spatie/simple-excel/zipball/1dfc9c0cd60d8891905dc78946ae763a9f7dec2c",
+                "reference": "1dfc9c0cd60d8891905dc78946ae763a9f7dec2c",
                 "shasum": ""
             },
             "require": {
@@ -5036,7 +5036,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/simple-excel/tree/3.7.0"
+                "source": "https://github.com/spatie/simple-excel/tree/3.7.1"
             },
             "funding": [
                 {
@@ -5044,7 +5044,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-09-23T08:50:37+00:00"
+            "time": "2024-12-16T11:17:08+00:00"
         },
         {
             "name": "spatie/temporary-directory",
@@ -7390,16 +7390,16 @@
         },
         {
             "name": "uspdev/boleto",
-            "version": "1.0.8",
+            "version": "1.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/uspdev/boleto.git",
-                "reference": "fdfc47ece7552ae4cc346d7d99aed8d5a9f6b191"
+                "reference": "43013b915d951d236c168d3e75a6d6a6091d2a53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/uspdev/boleto/zipball/fdfc47ece7552ae4cc346d7d99aed8d5a9f6b191",
-                "reference": "fdfc47ece7552ae4cc346d7d99aed8d5a9f6b191",
+                "url": "https://api.github.com/repos/uspdev/boleto/zipball/43013b915d951d236c168d3e75a6d6a6091d2a53",
+                "reference": "43013b915d951d236c168d3e75a6d6a6091d2a53",
                 "shasum": ""
             },
             "require": {
@@ -7426,9 +7426,9 @@
             "homepage": "https://github.com/uspdev/boleto",
             "support": {
                 "issues": "https://github.com/uspdev/boleto/issues",
-                "source": "https://github.com/uspdev/boleto/tree/1.0.8"
+                "source": "https://github.com/uspdev/boleto/tree/1.0.9"
             },
-            "time": "2024-12-13T14:24:25+00:00"
+            "time": "2024-12-15T16:54:07+00:00"
         },
         {
             "name": "uspdev/cache",
