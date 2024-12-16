@@ -55,7 +55,7 @@ class InscricaoMail extends Mailable
                 'arquivo_erro' => $this->arquivo_erro,
             ])
             ->when(!empty($this->arquivo_conteudo), function ($message) {
-                $message->attachData(base64_decode($this->arquivo_conteudo), $this->arquivo_nome, ['mime' => 'application/pdf']);
+                $message->attachData($this->arquivo_conteudo, $this->arquivo_nome, ['mime' => 'application/pdf']);
             });
     }
 }
