@@ -64,6 +64,10 @@ class Inscricao extends Model
             [
                 'nome' => 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica',
                 'validate' => 'required'
+            ],
+            [
+                'nome' => 'Boleto de Pagamento da Inscrição',
+                'editable' => 'none'
             ]
         ];
     }

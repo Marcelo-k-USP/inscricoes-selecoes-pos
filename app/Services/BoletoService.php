@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\Arquivo;
 use App\Models\Feriado;
 use App\Models\Inscricao;
 use App\Models\Parametro;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Uspdev\Boleto;
 
 class BoletoService
@@ -45,10 +48,25 @@ class BoletoService
                 // recupera o arquivo PDF do boleto (PDF no formato binário codificado para Base64)
                 $obter = $boleto->obter($id);
 
-                // cancela o boleto em ambiente de desenvolvimento, ou também em produção se ligamos a chave WS_BOLETO_CANCELAR
-                if (App::environment('local') || config('selecoes-pos.ws_boleto_cancelar')) {
-                    Log::info('Cancelando o boleto...');
+                // grava o boleto como um dos arquivos da inscrição, para o candidato poder acessar no site
+                $arquivo_nome = 'boleto_' . Carbon::now()->format('Ymd_His') . '.pdf';
+                $arquivo_caminho = './arquivos/' . $inscricao->created_at->year . '/' . $arquivo_nome;
+                $arquivo_conteudo = base64_decode($obter['value']);
+                Storage::put($arquivo_caminho, $arquivo_conteudo);
 
+                // grava informações do arquivo no banco de dados
+                $arquivo = new Arquivo;
+                $arquivo->user_id = \Auth::user()->id;
+                $arquivo->nome_original = $arquivo_nome;
+                $arquivo->caminho = $arquivo_caminho;
+                $arquivo->mimeType = 'application/pdf';
+                $arquivo->save();
+                $arquivo->inscricoes()->attach($inscricao->id, ['tipo' => 'Boleto']);
+
+                if (App::environment('local') || config('selecoes-pos.ws_boleto_cancelar')) {
+
+                    // cancela o boleto em ambiente de desenvolvimento, ou também em produção se ligamos a chave WS_BOLETO_CANCELAR
+                    Log::info('Cancelando o boleto...');
                     $boleto->cancelar($id);
 
                     // loga situação da geração do boleto
@@ -59,10 +77,12 @@ class BoletoService
                 return $obter['value'];
             } else {
                 Log::info('$gerar[\'value\']: ' . $gerar['value']);
+                return '';
             }
 
         } catch (Exception $e) {
             Log::info($e->getMessage());
+            return '';
         }
     }
 }
