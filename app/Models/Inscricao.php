@@ -48,7 +48,7 @@ class Inscricao extends Model
      */
     public static function estados()
     {
-        return ['Realizada', 'Em avaliação', 'Aceita', 'Rejeitada', 'Aguardando Documentação', 'Pendente', 'Cancelada', 'Concluída'];
+        return ['Aguardando Documentação', 'Realizada', 'Em avaliação', 'Aceita', 'Rejeitada', 'Pendente', 'Cancelada', 'Concluída'];
     }
 
     /**
