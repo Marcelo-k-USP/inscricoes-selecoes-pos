@@ -340,7 +340,8 @@ class SelecaoController extends Controller
         $inscricoes = Inscricao::listarInscricoesPorSelecao($selecao, $ano);
 
         // vamos pegar o template da seleção para saber quais são os campos extras
-        $template = array_keys(json_decode($selecao->template, true));
+        $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
+        $keys = array_keys($template);
 
         $arr = [];
         foreach ($inscricoes as $inscricao) {
@@ -349,11 +350,9 @@ class SelecaoController extends Controller
             $autor = $inscricao->users()->wherePivot('papel', 'Autor')->first();
             $i['autor'] = $autor ? $autor->name : '';
 
-            $i['extras'] = $inscricao->extras;
             $extras = json_decode($inscricao->extras, true) ?? [];
-            foreach ($template as $field) {
-                $i['extra_' . $field] = isset($extras[$field]) ? $extras[$field] : '';
-            }
+            foreach ($keys as $field)
+                $i[$field] = isset($extras[$field]) ? $extras[$field] : '';
 
             $i['criado_em'] = $inscricao->created_at->format('d/m/Y');
             $i['atualizado_em'] = $inscricao->updated_at->format('d/m/Y');
