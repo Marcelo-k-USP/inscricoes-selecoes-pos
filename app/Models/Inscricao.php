@@ -159,9 +159,9 @@ class Inscricao extends Model
     }
 
     /**
-     * Mostra as pessoas que tem vínculo com a inscrição.
+     * Mostra as pessoas que têm vínculo com a inscrição
      *
-     * Se informado $pivot, retorna somente o 1o. User, se não, retorna a lista completa
+     * Se informado $pivot, retorna somente o primeiro usuário, senão retorna a lista completa
      *
      * @param  $pivot Papel da pessoa na inscrição (autor, null = todos)
      * @return App\Models\User|Collection
@@ -173,14 +173,6 @@ class Inscricao extends Model
         } else {
             return $this->users()->withPivot('papel');
         }
-    }
-
-    /**
-     * Accessor: retorna a data da última atualização da inscrição
-     */
-    public function getAtualizadaEmAttribute()
-    {
-        return $this->updated_at;
     }
 
     /**

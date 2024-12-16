@@ -365,7 +365,8 @@ class SelecaoController extends Controller
             ->addRows($arr);
     }
 
-    private function monta_compact(Selecao $selecao, string $modo) {
+    private function monta_compact(Selecao $selecao, string $modo)
+    {
         $data = (object) self::$data;
         $selecao->template = JSONForms::orderTemplate($selecao->template);
         $objeto = $selecao;

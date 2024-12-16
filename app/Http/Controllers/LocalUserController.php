@@ -229,7 +229,8 @@ class LocalUserController extends Controller
         return view('localusers.index', $this->monta_compact());
     }
 
-    private function monta_compact() {
+    private function monta_compact()
+    {
         $localusers = User::where('local', '1')->get();
         $fields = LocalUser::getFields();
         $rules = LocalUserRequest::rules;

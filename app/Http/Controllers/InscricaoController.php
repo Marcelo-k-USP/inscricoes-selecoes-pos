@@ -210,7 +210,8 @@ class InscricaoController extends Controller
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
-    private function processa_erro_store(string|array $msgs, Selecao $selecao, Request $request) {
+    private function processa_erro_store(string|array $msgs, Selecao $selecao, Request $request)
+    {
         if (is_array($msgs))
             $msgs = implode('<br />', $msgs);
         $request->session()->flash('alert-danger', $msgs);
@@ -222,7 +223,8 @@ class InscricaoController extends Controller
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
-    private function monta_compact(Inscricao $inscricao, string $modo) {
+    private function monta_compact(Inscricao $inscricao, string $modo)
+    {
         $data = (object) self::$data;
         $inscricao->selecao->template = JSONForms::orderTemplate($inscricao->selecao->template);
         $objeto = $inscricao;

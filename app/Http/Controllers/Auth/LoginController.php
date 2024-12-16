@@ -9,7 +9,6 @@ use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Socialite;
-#use Spatie\Permission\Models\Permission;
 
 class LoginController extends Controller
 {
@@ -50,33 +49,28 @@ class LoginController extends Controller
 
     public function handleProviderCallback()
     {
+        // atualiza o banco local com os dados do replicado... assim, se houver atualizações na USP, serão refletidas aqui
         $userSenhaUnica = Socialite::driver('senhaunica')->user();
         $user = User::obterOuCriarPorCodpes($userSenhaUnica->codpes);
-
-        // atualizar dados com a senha unica
-        // assim se houver atualizações na uSP é refletido aqui
         $user->telefone = $userSenhaUnica->telefone;
         $user->email = $userSenhaUnica->email;
         $user->name = $userSenhaUnica->nompes;
 
-        // permissions do senhaunica-socialite v3
-        // por enquanto está false pois está dando conflito
+        // permissions do senhaunica-socialite v3... por enquanto está false, pois está dando conflito
         if (config('senhaunica.permission')) {
+
             // garantindo que as permissions existam
             $permissions = ['admin', 'gerente', 'user'];
-            foreach ($permissions as $permission) {
+            foreach ($permissions as $permission)
                 Permission::findOrCreate($permission);
-            }
 
             // vamos verificar no config se o usuário é admin
-            if (in_array($userSenhaUnica->codpes, config('senhaunica.admins'))) {
+            if (in_array($userSenhaUnica->codpes, config('senhaunica.admins')))
                 $user->givePermissionTo('admin');
-            }
 
             // vamos verificar no config se o usuário é gerente
-            if (in_array($userSenhaUnica->codpes, config('senhaunica.gerentes'))) {
+            if (in_array($userSenhaUnica->codpes, config('senhaunica.gerentes')))
                 $user->givePermissionTo('gerente');
-            }
 
             // default
             $user->givePermissionTo('user');
@@ -85,24 +79,20 @@ class LoginController extends Controller
         // vamos manter a configuracao antiga para compatibilidade retroativa
         // mas deverá ser ajustado e removido as referências a "is_admin"
         // vamos verificar no config se o usuário é admin
-        //$admins_codpes = explode(',', config('senhaunica.admins'));
-        if (in_array($userSenhaUnica->codpes, config('senhaunica.admins'))) {
+        if (in_array($userSenhaUnica->codpes, config('senhaunica.admins')))
             $user->is_admin = true;
-        }
 
         $user->last_login_at = now();
         $user->save();
 
-        // vincular a pessoa e o vinculo ao setor
-        foreach ($userSenhaUnica->vinculo as $vinculo) {
-            if ($setor = Setor::where('cod_set_replicado', $vinculo['codigoSetor'])->first()) {
+        // vincula a pessoa ao setor
+        foreach ($userSenhaUnica->vinculo as $vinculo)
+            if ($setor = Setor::where('cod_set_replicado', $vinculo['codigoSetor'])->first())
                 Setor::vincularPessoa($setor, $user, $vinculo['nomeVinculo']);
-            }
-        }
 
         Auth::login($user, true);
         session(['perfil' => 'usuario']);
-        return redirect()->intended('/');
+        return redirect('/inscricoes');
     }
 
     public function logout(Request $request)

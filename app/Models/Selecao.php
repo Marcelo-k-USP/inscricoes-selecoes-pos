@@ -714,13 +714,10 @@ class Selecao extends Model
         $status = $this->config->status;
         if ($status) {
             $out = ['Em Andamento' => 'Em andamento (sistema)'];
-            foreach ($status as $item) {
-                foreach ($item as $key => $value) {
-                    if ($key == "label") {
+            foreach ($status as $item)
+                foreach ($item as $key => $value)
+                    if ($key == "label")
                         $out[strtolower($value)] = $value;
-                    }
-                }
-            }
             return $out;
         }
     }
@@ -747,10 +744,8 @@ class Selecao extends Model
 
         if (is_string($value)) {
             $value_decoded = json_decode($value, true); // Decodifica como array associativo
-            if (is_array($value_decoded) && (json_last_error() == JSON_ERROR_NONE)) {
-                // se $value veio como string JSON, vamos utilizar $value_decoded, de modo a poder acessá-lo mais abaixo como array
-                $value = $value_decoded;
-            }
+            if (is_array($value_decoded) && (json_last_error() == JSON_ERROR_NONE))
+                $value = $value_decoded;    // se $value veio como string JSON, vamos utilizar $value_decoded, de modo a poder acessá-lo mais abaixo como array
         }
 
         $config = new \StdClass;

@@ -21,14 +21,12 @@ class JSONForms
     {
         $template = json_decode($selecao->template);
         $validate = [];
-        if ($template) {
-            foreach ($template as $key => $json) {
+        if ($template)
+            foreach ($template as $key => $json)
                 if (isset($json->validate)) {
                     $field = 'extras.' . $key;
                     $validate[$field] = $json->validate;
                 }
-            }
-        }
         return $validate;
     }
 

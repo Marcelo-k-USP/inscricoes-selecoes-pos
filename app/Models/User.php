@@ -105,11 +105,10 @@ class User extends Authenticatable
             //caso utilize o replicado, porém a pessoa não apareça, insere um usuário fake e atualiza o mesmo com dados da senha única no login
             $user->email = (Pessoa::email($codpes)) ?: $codpes . '@usuarios.usp.br';
             $pessoa = Pessoa::dump($codpes);
-            if ($pessoa) {
+            if ($pessoa)
                 $user->name = ($pessoa['nompesttd']);
-            } else {
+            else
                 $user->name = $codpes;
-            }
             $user->telefone = (Pessoa::obterRamalUsp($codpes)) ?: '';
         } else {
             $user->email = $codpes . '@usuarios.usp.br';
@@ -133,9 +132,8 @@ class User extends Authenticatable
     public static function obterOuCriarPorCodpes($codpes)
     {
         $user = User::obterPorCodpes($codpes);
-        if (empty($user)) {
+        if (empty($user))
             $user = User::criarPorCodpes($codpes);
-        }
         return $user;
     }
 
