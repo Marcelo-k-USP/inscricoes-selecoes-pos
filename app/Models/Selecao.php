@@ -698,7 +698,7 @@ class Selecao extends Model
     }
 
     /**
-     * lista de estados padrão. Usado no factory.
+     * lista de estados padrão
      */
     public static function estados()
     {

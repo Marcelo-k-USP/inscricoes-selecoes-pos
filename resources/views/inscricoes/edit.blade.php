@@ -27,16 +27,23 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card card-outline card-primary">
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-between align-items-top">
           <div class="card-title my-0">
             @if ($modo == 'edit')
-              <a href="inscricoes">Inscrições</a> <i class="fas fa-angle-right mx-2"></i> Inscrição nº {{ $inscricao->id }}
+              <div>
+                <a href="inscricoes">Inscrições</a> <i class="fas fa-angle-right mx-2"></i> Inscrição nº {{ $inscricao->id }}
+              </div>
             @else
               Nova Inscrição
             @endif
             para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})<br />
             <span class="text-muted">{{ $inscricao->selecao->descricao }}</span>
           </div>
+          @if ($modo == 'edit')
+            <div class="ml-auto">
+              Situação: {{ $inscricao->estado }}
+            </div>
+          @endif
         </div>
         @include('inscricoes.partials.badge-instrucoes-da-selecao')
         @include('inscricoes.partials.instrucoes-da-selecao')

@@ -24,6 +24,7 @@
         <tr>
           <th>Inscrito</th>
           <th>Seleção</th>
+          <th>Situação</th>
           <th class="text-right">Efetuada em</th>
           <th class="text-right">Atualização</th>
         </tr>
@@ -46,6 +47,9 @@
             </td>
             <td>
               {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})
+            </td>
+            <td>
+              {{ $inscricao->estado }}
             </td>
             <td class="text-right">
               <span class="d-none">{{ $inscricao->created_at }}</span>

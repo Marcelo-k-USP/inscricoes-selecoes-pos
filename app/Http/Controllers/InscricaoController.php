@@ -154,6 +154,7 @@ class InscricaoController extends Controller
 
             $inscricao = new Inscricao;
             $inscricao->selecao_id = $selecao->id;
+            $inscricao->estado = 'Realizada';
             $inscricao->extras = json_encode($request->extras);
 
             // vamos salvar sem evento pois o autor ainda não está cadastrado

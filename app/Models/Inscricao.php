@@ -44,6 +44,14 @@ class Inscricao extends Model
     }
 
     /**
+     * lista de estados padrão
+     */
+    public static function estados()
+    {
+        return ['Realizada', 'Em avaliação', 'Aceita', 'Rejeitada', 'Aguardando Documentação', 'Pendente', 'Cancelada', 'Concluída'];
+    }
+
+    /**
      * Retorna os tipos de arquivo possíveis na seleção.
      */
     public static function tiposArquivo()
