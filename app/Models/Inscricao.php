@@ -71,7 +71,8 @@ class Inscricao extends Model
             ],
             [
                 'nome' => 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica',
-                'validate' => 'required'
+                'validate' => 'required',
+                'minimum_required' => 2
             ],
             [
                 'nome' => 'Boleto de Pagamento da Inscrição',
@@ -164,6 +165,47 @@ class Inscricao extends Model
     {
         $inscricoes = Inscricao::where('selecao_id', $selecao->id)->whereYear('created_at', $ano)->get();
         return $inscricoes;
+    }
+
+    /**
+     * Verifica os arquivos da inscrição
+     * Conforme for o caso, altera o estado da inscrição
+     */
+    public function verificarArquivos()
+    {
+        // obtém os tipos de arquivo requeridos
+        $tipos_arquivo_requeridos = collect(self::tiposArquivo())->filter(function ($tipo) {
+            return (isset($tipo['validate']) && ($tipo['validate'] == 'required'));
+        });
+
+        // obtém os tipos de arquivo da inscrição
+        $arquivos_inscricao = $this->arquivos->pluck('pivot.tipo')->countBy()->all();
+
+        // verifica se todos os tipos requeridos estão presentes nos arquivos da inscrição
+        $todos_requeridos_presentes = function() use ($tipos_arquivo_requeridos, $arquivos_inscricao) {
+            foreach ($tipos_arquivo_requeridos as $tipo_arquivo_requerido) {
+                $tipo_nome = $tipo_arquivo_requerido['nome'];
+                $minimo_requerido = ($tipo_arquivo_requerido['minimum_required'] ?? 1);
+                if (!isset($arquivos_inscricao[$tipo_nome]) || ($arquivos_inscricao[$tipo_nome] < $minimo_requerido))
+                    return false;
+            }
+            return true;
+        };
+
+        switch ($this->estado) {
+            case 'Aguardando Documentação':
+                if ($todos_requeridos_presentes()) {
+                    $this->estado = 'Realizada';                  // avança o estado
+                    $this->save();
+                }
+                break;
+
+            case 'Realizada':
+                if (!$todos_requeridos_presentes()) {
+                    $this->estado = 'Aguardando Documentação';    // retrocede o estado
+                    $this->save();
+                }
+        }
     }
 
     /**

@@ -89,6 +89,9 @@ class ArquivoController extends Controller
             $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipo_arquivo]);
         }
 
+        if ($classe_nome == 'Inscricao')
+            $objeto->verificarArquivos();
+
         $request->session()->flash('alert-success', 'Arquivo(s) adicionado(s) com sucesso');
 
         \UspTheme::activeUrl($classe_nome_plural);
@@ -157,6 +160,9 @@ class ArquivoController extends Controller
 
         $arquivo->{$classe_nome_plural}()->detach($objeto->id, ['tipo' => $request->tipo_arquivo]);
         $arquivo->delete();
+
+        if ($classe_nome == 'Inscricao')
+            $objeto->verificarArquivos();
 
         $request->session()->flash('alert-success', 'Arquivo removido com sucesso');
 

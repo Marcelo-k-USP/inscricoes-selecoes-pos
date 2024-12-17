@@ -18,7 +18,7 @@ class CreateArquivoInscricaoTable extends Migration
             $table->foreignId('arquivo_id')->constrained('arquivos')->onDelete('cascade');
             $table->foreignId('inscricao_id')->constrained('inscricoes')->onDelete('cascade');
 
-            $table->string('tipo', 40);
+            $table->string('tipo', 100);
             $table->timestamps();
         });
     }

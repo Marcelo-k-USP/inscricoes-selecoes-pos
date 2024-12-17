@@ -18,7 +18,7 @@ class CreateArquivoSelecaoTable extends Migration
             $table->foreignId('arquivo_id')->constrained('arquivos')->onDelete('cascade');
             $table->foreignId('selecao_id')->constrained('selecoes')->onDelete('cascade');
 
-            $table->string('tipo', 40);
+            $table->string('tipo', 100);
             $table->timestamps();
         });
     }
