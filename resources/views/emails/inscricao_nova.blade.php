@@ -1,7 +1,7 @@
 Olá {{ $autor->name }},<br />
 <br />
-Você realizou sua inscrição com sucesso no processo seletivo {{ $inscricao->selecao->nome }}.<br />
-Não deixe de pagar o boleto em anexo, e também não deixe de enviar todos os arquivos requeridos na inscrição.<br />
+Você iniciou sua inscrição no processo seletivo {{ $inscricao->selecao->nome }}.<br />
+Não deixe de enviar todos os arquivos requeridos na inscrição, e também não deixe de pagar o boleto que segue em anexo.<br />
 <br />
 {!! $arquivo_erro !!}<br />
 @include('emails.rodape')

@@ -168,7 +168,7 @@ class InscricaoController extends Controller
             return $inscricao;
         });
 
-        $request->session()->flash('alert-success', 'Inscrição realizada com sucesso<br />' .
+        $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
             'Não deixe de subir os arquivos necessários para a avaliação da sua inscrição<br />' .
             'Verifique seu e-mail e pague o boleto');
 
