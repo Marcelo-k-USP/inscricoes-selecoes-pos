@@ -89,7 +89,7 @@ class SelecaoController extends Controller
         $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento']));
         $selecao = Selecao::create($requestData);
 
-        $selecao->atualizaStatus();
+        $selecao->atualizarStatus();
         $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
         $request->session()->flash('alert-success', 'Seleção cadastrada com sucesso<br />' .
@@ -110,7 +110,7 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.update');
 
-        Selecao::atualizaStatusSelecoes();
+        Selecao::atualizarStatusSelecoes();
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
@@ -151,7 +151,7 @@ class SelecaoController extends Controller
         }
         $selecao->save();
 
-        $selecao->atualizaStatus();
+        $selecao->atualizarStatus();
         $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
         $request->session()->flash('alert-success', 'Seleção alterada com sucesso');

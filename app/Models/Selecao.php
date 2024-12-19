@@ -768,7 +768,7 @@ class Selecao extends Model
      */
     public static function listarSelecoes()
     {
-        self::atualizaStatusSelecoes();
+        self::atualizarStatusSelecoes();
         return SELF::get();
     }
 
@@ -780,7 +780,7 @@ class Selecao extends Model
      */
     public static function listarSelecoesParaNovaInscricao()
     {
-        self::atualizaStatusSelecoes();
+        self::atualizarStatusSelecoes();
 
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
@@ -796,7 +796,7 @@ class Selecao extends Model
     /**
      * Atualiza o status da seleção
      */
-    public function atualizaStatus()
+    public function atualizarStatus()
     {
         $hoje = Carbon::today();
 
@@ -818,7 +818,7 @@ class Selecao extends Model
     /**
      * Atualiza os status de todas as seleções
      */
-    public static function atualizaStatusSelecoes()
+    public static function atualizarStatusSelecoes()
     {
         $hoje = Carbon::today();
 

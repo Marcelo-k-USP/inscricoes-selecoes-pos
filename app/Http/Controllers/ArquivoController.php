@@ -91,7 +91,7 @@ class ArquivoController extends Controller
 
         switch ($classe_nome) {
             case 'Selecao':
-                $objeto->atualizaStatus();
+                $objeto->atualizarStatus();
                 $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
                 break;
             case 'Inscricao':
@@ -169,7 +169,7 @@ class ArquivoController extends Controller
 
         switch ($classe_nome) {
             case 'Selecao':
-                $objeto->atualizaStatus();
+                $objeto->atualizarStatus();
                 $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
                 break;
             case 'Inscricao':
