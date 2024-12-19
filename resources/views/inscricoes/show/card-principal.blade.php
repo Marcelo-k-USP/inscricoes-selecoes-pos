@@ -136,8 +136,8 @@
 
     function consultar_cep(field_name)
     {
-      var cep = $('input[id="extras\[' + field_name + '\]"]').val().replace('-', '');
-      if (cep)
+      var cep = $('input[id="extras\[' + field_name + '\]"]').val().replace('-', '').trim();
+      if (cep !== '') {
         $('#consultar_' + field_name).text('Consultando ...');
         $.ajax({
           url: '{{ route("consulta.cep") }}',
@@ -166,7 +166,8 @@
             else if (xhr.responseText)
               window.alert(xhr.responseText);
           }
-      });
+        });
+      }
     }
   </script>
 @endsection
