@@ -89,8 +89,14 @@ class ArquivoController extends Controller
             $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipo_arquivo]);
         }
 
-        if ($classe_nome == 'Inscricao')
-            $objeto->verificarArquivos();
+        switch ($classe_nome) {
+            case 'Selecao':
+                $objeto->atualizaStatus();
+                $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
+                break;
+            case 'Inscricao':
+                $objeto->verificarArquivos();
+        }
 
         $request->session()->flash('alert-success', 'Arquivo(s) adicionado(s) com sucesso');
 
@@ -161,8 +167,14 @@ class ArquivoController extends Controller
         $arquivo->{$classe_nome_plural}()->detach($objeto->id, ['tipo' => $request->tipo_arquivo]);
         $arquivo->delete();
 
-        if ($classe_nome == 'Inscricao')
-            $objeto->verificarArquivos();
+        switch ($classe_nome) {
+            case 'Selecao':
+                $objeto->atualizaStatus();
+                $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
+                break;
+            case 'Inscricao':
+                $objeto->verificarArquivos();
+        }
 
         $request->session()->flash('alert-success', 'Arquivo removido com sucesso');
 

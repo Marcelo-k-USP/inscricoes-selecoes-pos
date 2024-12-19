@@ -89,7 +89,7 @@ class SelecaoController extends Controller
         $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento']));
         $selecao = Selecao::create($requestData);
 
-        Selecao::atualizaStatusSelecoes();
+        $selecao->atualizaStatus();
         $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
         $request->session()->flash('alert-success', 'Seleção cadastrada com sucesso<br />' .
@@ -151,7 +151,7 @@ class SelecaoController extends Controller
         }
         $selecao->save();
 
-        Selecao::atualizaStatusSelecoes();
+        $selecao->atualizaStatus();
         $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
         $request->session()->flash('alert-success', 'Seleção alterada com sucesso');

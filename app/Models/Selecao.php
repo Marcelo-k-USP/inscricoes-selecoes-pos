@@ -793,16 +793,57 @@ class Selecao extends Model
         return $categorias;                                              // retorna as seleções dentro de categorias
     }
 
+    /**
+     * Atualiza o status da seleção
+     */
+    public function atualizaStatus()
+    {
+        $hoje = Carbon::today();
+
+        $tipos_arquivo_required = collect(self::tiposArquivo())->where('validate', 'required')->pluck('nome')->toArray();
+        $possui_todos_os_arquivos_required = true;
+        foreach ($tipos_arquivo_required as $tipo_arquivo_required)
+            if (!$this->arquivos->contains('pivot.tipo', $tipo_arquivo_required)) {
+                $possui_todos_os_arquivos_required = false;
+                break;
+            }
+        if ($this->data_inicio > $hoje)
+            $this->update(['estado' => 'Em elaboração']);
+        elseif ($this->data_inicio <= $hoje && $this->data_fim >= $hoje)
+            $this->update(['estado' => $possui_todos_os_arquivos_required ? 'Em andamento' : 'Em elaboração']);
+        elseif ($this->data_fim < $hoje)
+            $this->update(['estado' => 'Encerrada']);
+    }
+
+    /**
+     * Atualiza os status de todas as seleções
+     */
     public static function atualizaStatusSelecoes()
     {
         $hoje = Carbon::today();
+
+        // atualiza o estado de seleções para Em elaboração
         SELF::where('data_inicio', '>', $hoje)
             ->where('estado', '<>', 'Em elaboração')
             ->update(['estado' => 'Em elaboração']);
-        SELF::where('data_inicio', '<=', $hoje)
-            ->where('data_fim', '>=', $hoje)
-            ->where('estado', '<>', 'Em andamento')
-            ->update(['estado' => 'Em andamento']);
+
+        // atualiza o estado de seleções para Em andamento (ou Em elaboração, se não tiver todos os arquivos requeridos)
+        $tipos_arquivo_required = collect(self::tiposArquivo())->where('validate', 'required')->pluck('nome')->toArray();
+        $selecoes_candidatas_a_em_andamento =
+            SELF::where('data_inicio', '<=', $hoje)
+                ->where('data_fim', '>=', $hoje)
+                ->get();
+        foreach ($selecoes_candidatas_a_em_andamento as $selecao_candidata_a_em_andamento) {
+            $possui_todos_os_arquivos_required = true;
+            foreach ($tipos_arquivo_required as $tipo_arquivo_required)
+                if (!$selecao_candidata_a_em_andamento->arquivos->contains('pivot.tipo', $tipo_arquivo_required)) {
+                    $possui_todos_os_arquivos_required = false;
+                    break;
+                }
+            $selecao_candidata_a_em_andamento->update(['estado' => ($possui_todos_os_arquivos_required ? 'Em andamento' : 'Em elaboração')]);
+        }
+
+        // atualiza o estado de seleções para Encerrada
         SELF::where('data_fim', '<', $hoje)
             ->where('estado', '<>', 'Encerrada')
             ->update(['estado' => 'Encerrada']);
