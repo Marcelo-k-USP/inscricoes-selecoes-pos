@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Uspdev\Boleto;
 
 class BoletoService
@@ -49,15 +50,14 @@ class BoletoService
                 $obter = $boleto->obter($id);
 
                 // grava o boleto como um dos arquivos da inscrição, para o candidato poder acessar no site
-                $arquivo_nome = 'boleto_' . Carbon::now()->format('Ymd_His') . '.pdf';
-                $arquivo_caminho = './arquivos/' . $inscricao->created_at->year . '/' . $arquivo_nome;
+                $arquivo_caminho = './arquivos/' . $inscricao->created_at->year . '/' . uniqid() . Str::random(27) . '.pdf';
                 $arquivo_conteudo = base64_decode($obter['value']);
                 Storage::put($arquivo_caminho, $arquivo_conteudo);
 
                 // grava informações do arquivo no banco de dados
                 $arquivo = new Arquivo;
                 $arquivo->user_id = \Auth::user()->id;
-                $arquivo->nome_original = $arquivo_nome;
+                $arquivo->nome_original = 'boleto_' . $inscricao->id . '_' . Carbon::now()->format('Ymd_His') . '.pdf';
                 $arquivo->caminho = $arquivo_caminho;
                 $arquivo->mimeType = 'application/pdf';
                 $arquivo->save();
