@@ -3,18 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\InscricaoRequest;
+use App\Mail\InscricaoMail;
 use App\Models\Inscricao;
 use App\Models\LocalUser;
 use App\Models\Selecao;
 use App\Models\User;
 use App\Services\RecaptchaService;
 use App\Utils\JSONForms;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class InscricaoController extends Controller
 {
@@ -105,11 +108,36 @@ class InscricaoController extends Controller
      */
     public function store(Request $request, RecaptchaService $recaptcha_service)
     {
-        $selecao = Selecao::find($request->selecao_id);
         $this->authorize('inscricoes.create');
 
+        $selecao = Selecao::find($request->selecao_id);
         $user_logado = Auth::check();
-        if (!$user_logado) {
+        if ($user_logado) {
+
+            // transaction para não ter problema de inconsistência do DB
+            $inscricao = DB::transaction(function () use ($request, $selecao) {
+                $user = \Auth::user();
+
+                // grava a inscrição
+                $inscricao = new Inscricao;
+                $inscricao->selecao_id = $selecao->id;
+                $inscricao->estado = 'Aguardando Documentação';
+                $inscricao->extras = json_encode($request->extras);
+                $inscricao->saveQuietly();    // vamos salvar sem evento pois o autor ainda não está cadastrado
+                $inscricao->users()->attach($user, ['papel' => 'Autor']);
+
+                return $inscricao;
+            });
+
+            $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
+                'Não deixe de subir os arquivos necessários para a avaliação da sua inscrição');
+
+            \UspTheme::activeUrl('inscricoes/create');
+            return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+
+        } else {
+            // usuário não logado
+
             // para as validações, começa sempre com o reCAPTCHA... depois valida cada campo na ordem em que aparecem na tela
 
             // revalida o reCAPTCHA
@@ -130,50 +158,53 @@ class InscricaoController extends Controller
             ]);
             if ($validator->fails())
                 return $this->processa_erro_store(json_decode($validator->errors())->password, $selecao, $request);
-        }
 
-        // transaction para não ter problema de inconsistência do DB
-        $inscricao = DB::transaction(function () use ($request, $selecao, $user_logado) {
-            if (!$user_logado) {
+            // transaction para não ter problema de inconsistência do DB
+            $inscricao = DB::transaction(function () use ($request, $selecao) {
 
                 // grava o usuário na tabela local
-                $user = LocalUser::create(
+                $localuser = LocalUser::create(
                     $request->extras['nome'],
                     $request->extras['e_mail'],
                     $request->password,
                     $request->extras['celular']
                 );
+                $localuser->save();
 
-                // loga automaticamente o usuário
-                $user->givePermissionTo('user');
-                $user->last_login_at = now();
-                $user->save();
-                Auth::login($user, true);
-                session(['perfil' => 'usuario']);
-            }
+                // grava a inscrição
+                $inscricao = new Inscricao;
+                $inscricao->selecao_id = $selecao->id;
+                $inscricao->estado = 'Aguardando Documentação';
+                $inscricao->extras = json_encode($request->extras);
+                $inscricao->saveQuietly();    // vamos salvar sem evento pois o autor ainda não está cadastrado
+                $inscricao->users()->attach(User::find($localuser->id), ['papel' => 'Autor']);
 
-            $inscricao = new Inscricao;
-            $inscricao->selecao_id = $selecao->id;
-            $inscricao->estado = 'Aguardando Documentação';
-            $inscricao->extras = json_encode($request->extras);
+                // gera um token e o armazena no banco de dados
+                $token = Str::random(60);
+                DB::table('email_confirmations')->updateOrInsert(
+                    ['email' => $localuser->email],    // procura por registro com este e-mail
+                    [                                  // atualiza ou insere com os dados abaixo
+                        'email' => $localuser->email,
+                        'token' => Hash::make($token),
+                        'created_at' => now()
+                    ]
+                );
 
-            // vamos salvar sem evento pois o autor ainda não está cadastrado
-            $inscricao->saveQuietly();
+                // envia e-mail pedindo a confirmação do endereço de e-mail
+                $passo = 'confirmação de e-mail';
+                $email_confirmation_url = url('localusers/confirmaemail', $token);
+                \Mail::to($localuser->email)
+                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'localuser', 'email_confirmation_url')));
 
-            $inscricao->users()->attach(\Auth::user(), ['papel' => 'Autor']);
+                return $inscricao;
+            });
 
-            // agora sim vamos disparar o evento
-            event('eloquent.created: App\Models\Inscricao', $inscricao);
+            $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
+                'Verifique seu e-mail para confirmar seu endereço de e-mail e, em seguida, suba os arquivos necessários para a avaliação da sua inscrição');
 
-            return $inscricao;
-        });
-
-        $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
-            'Não deixe de subir os arquivos necessários para a avaliação da sua inscrição<br />' .
-            'Verifique seu e-mail e pague o boleto');
-
-        \UspTheme::activeUrl('inscricoes/create');
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+            \UspTheme::activeUrl('inscricoes/create');
+            return redirect('/');    // volta para a tela de informações
+        }
     }
 
     /**
@@ -224,7 +255,7 @@ class InscricaoController extends Controller
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
-    private function monta_compact(Inscricao $inscricao, string $modo)
+    public function monta_compact(Inscricao $inscricao, string $modo)
     {
         $data = (object) self::$data;
         $inscricao->selecao->template = JSONForms::orderTemplate($inscricao->selecao->template);

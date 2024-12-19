@@ -14,12 +14,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class LocalUserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['showLogin', 'login', 'esqueceuSenha', 'iniciaRedefinicaoSenha', 'redefineSenha']);    // exige que o usuário esteja logado, exceto para showLogin, login, etc.
+        $this->middleware('auth')->except(['showLogin', 'login', 'esqueceuSenha', 'iniciaRedefinicaoSenha', 'redefineSenha', 'confirmaEmail']);    // exige que o usuário esteja logado, exceto para showLogin, login, etc.
     }
 
     public function showLogin()
@@ -41,6 +42,14 @@ class LocalUserController extends Controller
         $credentials = $request->only('email', 'password');
         if (!Auth::attempt($credentials))
             return $this->processa_erro_login('Usuário e senha incorretos');
+
+        $localuser = Auth::user();
+        if ($localuser->local && !$localuser->email_confirmado) {
+            Auth::logout();
+
+            request()->session()->flash('alert-danger', 'E-mail não confirmado');
+            return back();
+        }
 
         return redirect('/inscricoes');
     }
@@ -140,6 +149,32 @@ class LocalUserController extends Controller
 
         request()->session()->flash('alert-success', 'Senha redefinida com sucesso');
         return view('localusers.login');
+    }
+
+    public function confirmaEmail(string $token)
+    {
+        // verifica se o token recebido existe
+        $email_confirmation = DB::table('email_confirmations')->get()->first(function ($confirmation) use ($token) {
+            return Hash::check($token, $confirmation->token);
+        });
+        if (!$email_confirmation)
+            return $this->processa_erro_confirmation('Este link é inválido');
+
+        // loga automaticamente o usuário
+        $localuser = User::where('email', $email_confirmation->email)->first();
+        $localuser->givePermissionTo('user');
+        $localuser->last_login_at = now();
+        $localuser->email_confirmado = true;
+        $localuser->save();
+        Auth::login($localuser, true);
+        session(['perfil' => 'usuario']);
+
+        request()->session()->flash('alert-success', 'E-mail confirmado com sucesso<br />' .
+            'Suba os arquivos necessários para a avaliação da sua inscrição<br />');
+
+        \UspTheme::activeUrl('inscricoes');
+        $inscricao = $localuser->inscricoes()->wherePivot('papel', 'Autor')->orderBy('user_inscricao.created_at', 'desc')->first();    // obtém a inscrição mais recente desse usuário
+        return view('inscricoes.edit', (new InscricaoController())->monta_compact($inscricao, 'edit'));
     }
 
     private function processa_erro_login(string $msg)

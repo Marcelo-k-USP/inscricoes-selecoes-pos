@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('codpes')->nullable();
             $table->string('telefone')->nullable();
             $table->boolean('local')->default(0);
+            $table->boolean('email_confirmado')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('last_login_at')->nullable();
 

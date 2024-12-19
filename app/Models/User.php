@@ -26,6 +26,7 @@ class User extends Authenticatable
         'codpes',
         'telefone',
         'local',
+        'email_confirmado',
         'is_admin',
         'config',
     ];

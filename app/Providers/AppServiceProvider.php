@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Inscricao;
-use App\Observers\InscricaoObserver;
 use App\Services\BoletoService;
 use App\Services\RecaptchaService;
 use App\Services\ViacepService;
@@ -43,8 +42,5 @@ class AppServiceProvider extends ServiceProvider
 
         if(config('selecoes-pos.forcar_https'))
             \URL::forceScheme('https');
-
-        // registra os observers
-        Inscricao::observe(InscricaoObserver::class);
     }
 }

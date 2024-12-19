@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InscricaoMail;
 use App\Models\Arquivo;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\Selecao;
+use App\Services\BoletoService;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -14,9 +16,12 @@ use Illuminate\Support\Facades\URL;
 
 class ArquivoController extends Controller
 {
-    public function __construct()
+    protected $boletoService;
+
+    public function __construct(BoletoService $boletoService)
     {
         $this->middleware('auth')->except('show');
+        $this->boletoService = $boletoService;
     }
 
     /**
@@ -89,6 +94,7 @@ class ArquivoController extends Controller
             $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipo_arquivo]);
         }
 
+        $info_adicional = '';
         switch ($classe_nome) {
             case 'Selecao':
                 $objeto->atualizarStatus();
@@ -96,9 +102,26 @@ class ArquivoController extends Controller
                 break;
             case 'Inscricao':
                 $objeto->verificarArquivos();
+                if (($objeto->estado == 'Realizada') && (!$objeto->boleto_enviado)) {
+                    // envia e-mail com o boleto
+                    $passo = 'boleto';
+                    $inscricao = $objeto;
+                    $user = \Auth::user();
+                    $papel = 'Candidato';
+                    $arquivo_nome = 'boleto.pdf';
+                    $arquivo_conteudo = $this->boletoService->gerarBoleto($inscricao);
+                    \Mail::to($user->email)
+                        ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivo_nome', 'arquivo_conteudo')));
+
+                    $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
+                    $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
+                    $objeto->save();
+                    $info_adicional = '<br />' .
+                        'Sua inscrição foi completada e seu boleto foi enviado, não deixe de pagá-lo';
+                }
         }
 
-        $request->session()->flash('alert-success', 'Arquivo(s) adicionado(s) com sucesso');
+        $request->session()->flash('alert-success', 'Arquivo(s) adicionado(s) com sucesso' . $info_adicional);
 
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
