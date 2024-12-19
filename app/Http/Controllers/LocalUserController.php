@@ -59,10 +59,8 @@ class LocalUserController extends Controller
         if (is_null($localuser))
             return $this->processa_erro_login('E-mail não encontrado');
 
-        // gera um token
+        // gera um token e o armazena no banco de dados
         $token = Str::random(60);
-
-        // armazena o token no banco de dados
         DB::table('password_resets')->updateOrInsert(
             ['email' => $localuser->email],    // procura por registro com este e-mail
             [                                  // atualiza ou insere com os dados abaixo
