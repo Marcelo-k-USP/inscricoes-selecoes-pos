@@ -51,6 +51,7 @@ class LocalUserController extends Controller
             return back();
         }
 
+        session(['perfil' => 'usuario']);
         return redirect('/inscricoes');
     }
 
