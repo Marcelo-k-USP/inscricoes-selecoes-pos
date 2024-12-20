@@ -25,7 +25,7 @@ class Selecao extends Model
 
     # valores default na criação de nova seleção
     protected $attributes = [
-        'estado' => 'Em elaboração',
+        'estado' => 'Aguardando Documentação',
         'template' => '{
             "nome": {
                 "label": "Nome",
@@ -702,7 +702,7 @@ class Selecao extends Model
      */
     public static function estados()
     {
-        return ['Em elaboração', 'Em andamento', 'Encerrada'];
+        return ['Aguardando Documentação', 'Aguardando Início', 'Em Andamento', 'Encerrada'];
     }
 
     /**
@@ -713,7 +713,7 @@ class Selecao extends Model
     {
         $status = $this->config->status;
         if ($status) {
-            $out = ['Em Andamento' => 'Em andamento (sistema)'];
+            $out = ['Em Andamento' => 'Em Andamento (sistema)'];
             foreach ($status as $item)
                 foreach ($item as $key => $value)
                     if ($key == "label")
@@ -798,8 +798,6 @@ class Selecao extends Model
      */
     public function atualizarStatus()
     {
-        $hoje = Carbon::today();
-
         $tipos_arquivo_required = collect(self::tiposArquivo())->where('validate', 'required')->pluck('nome')->toArray();
         $possui_todos_os_arquivos_required = true;
         foreach ($tipos_arquivo_required as $tipo_arquivo_required)
@@ -807,46 +805,25 @@ class Selecao extends Model
                 $possui_todos_os_arquivos_required = false;
                 break;
             }
+
+        $hoje = Carbon::today();
         if ($this->data_inicio > $hoje)
-            $this->update(['estado' => 'Em elaboração']);
+            $this->update(['estado' => $possui_todos_os_arquivos_required ? 'Aguardando Início' : 'Aguardando Documentação']);
         elseif ($this->data_inicio <= $hoje && $this->data_fim >= $hoje)
-            $this->update(['estado' => $possui_todos_os_arquivos_required ? 'Em andamento' : 'Em elaboração']);
+            $this->update(['estado' => $possui_todos_os_arquivos_required ? 'Em Andamento' : 'Aguardando Documentação']);
         elseif ($this->data_fim < $hoje)
             $this->update(['estado' => 'Encerrada']);
     }
 
     /**
-     * Atualiza os status de todas as seleções
+     * Atualiza os status de todas as seleções dos últimos 5 anos
      */
     public static function atualizarStatusSelecoes()
     {
-        $hoje = Carbon::today();
-
-        // atualiza o estado de seleções para Em elaboração
-        SELF::where('data_inicio', '>', $hoje)
-            ->where('estado', '<>', 'Em elaboração')
-            ->update(['estado' => 'Em elaboração']);
-
-        // atualiza o estado de seleções para Em andamento (ou Em elaboração, se não tiver todos os arquivos requeridos)
-        $tipos_arquivo_required = collect(self::tiposArquivo())->where('validate', 'required')->pluck('nome')->toArray();
-        $selecoes_candidatas_a_em_andamento =
-            SELF::where('data_inicio', '<=', $hoje)
-                ->where('data_fim', '>=', $hoje)
-                ->get();
-        foreach ($selecoes_candidatas_a_em_andamento as $selecao_candidata_a_em_andamento) {
-            $possui_todos_os_arquivos_required = true;
-            foreach ($tipos_arquivo_required as $tipo_arquivo_required)
-                if (!$selecao_candidata_a_em_andamento->arquivos->contains('pivot.tipo', $tipo_arquivo_required)) {
-                    $possui_todos_os_arquivos_required = false;
-                    break;
-                }
-            $selecao_candidata_a_em_andamento->update(['estado' => ($possui_todos_os_arquivos_required ? 'Em andamento' : 'Em elaboração')]);
-        }
-
-        // atualiza o estado de seleções para Encerrada
-        SELF::where('data_fim', '<', $hoje)
-            ->where('estado', '<>', 'Encerrada')
-            ->update(['estado' => 'Encerrada']);
+        $data_limite = Carbon::today()->subYears(5);
+        $selecoes = self::where('created_at', '>=', $data_limite)->get();
+        foreach ($selecoes as $selecao)
+            $selecao->atualizarStatus();
     }
 
     public function contarInscricoesPorAno()

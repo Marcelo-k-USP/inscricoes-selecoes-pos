@@ -18,7 +18,7 @@
       </a>
     @endif
     @can('perfiladmin')
-      @if ($condicao_elaboracao)
+      @if ($condicao_nao_iniciada)
         @include('selecoes.partials.btn-template-show-json-modal')
       @endif
     @endcan

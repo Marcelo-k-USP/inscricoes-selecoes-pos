@@ -2,7 +2,7 @@
 @section('content')
 @parent
   @php
-    $condicao_elaboracao = ($selecao->estado == 'Em elaboração');
+    $condicao_nao_iniciada = (in_array($selecao->estado, ['Aguardando Documentação', 'Aguardando Início']));
   @endphp
   @include('common.modal-processando')
   <div class="row">
@@ -46,7 +46,7 @@
                             <input class="form-control" name="value[{{ $tkey }}][label]" value="{{ $tvalue['label'] }}">
                           </div>
                           <div class="col">
-                            @if ($condicao_elaboracao)
+                            @if ($condicao_nao_iniciada)
                               <button class="btn btn-danger" type="button" onclick="apaga_campo(this)">Apagar</button>
                             @endif
                             <input type="hidden" name="value[{{ $tkey }}][order]" id="index[{{ $i }}]" value="{{ $i }}">
@@ -59,7 +59,7 @@
                         @endphp
                       @endforeach
                       <br />
-                      @if ($condicao_elaboracao)
+                      @if ($condicao_nao_iniciada)
                         <button class="btn btn-primary ml-1" type="submit">Salvar</button>
                       @endif
                     @else

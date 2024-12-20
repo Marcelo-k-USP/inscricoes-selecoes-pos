@@ -2,7 +2,7 @@
 @section('content')
 @parent
   @php
-    $condicao_elaboracao = ($selecao->estado == 'Em elaboração');
+    $condicao_nao_iniciada = (in_array($selecao->estado, ['Aguardando Documentação', 'Aguardando Início']));
   @endphp
   @include('common.modal-processando')
   <div class="row">
@@ -112,7 +112,7 @@
                             </div>
                           @endforeach
                           <div class="col">
-                            @if ($condicao_elaboracao)
+                            @if ($condicao_nao_iniciada)
                               <button class="btn btn-danger" type="button" onclick="apaga_campo(this)"{{ $disable_functions }}>Apagar</button>
                             @endif
                             <input type="hidden" name="template[{{ $tkey }}][order]" id="index[{{ $i }}]" value="{{ $i }}">
@@ -129,7 +129,7 @@
                       <br />
                     @endif
                     <br />
-                    @if ($template && $condicao_elaboracao)
+                    @if ($template && $condicao_nao_iniciada)
                       <button class="btn btn-primary ml-1" type="submit">Salvar</button>
                     @endif
                     <a class="btn btn-secondary" href="{{ route('selecoes.edit', ['selecao' => $selecao->id]) }}">Voltar</a>
