@@ -32,6 +32,8 @@
             @if ($modo == 'edit')
               <div>
                 <a href="inscricoes">Inscrições</a> <i class="fas fa-angle-right mx-2"></i> Inscrição nº {{ $inscricao->id }}
+                &nbsp; | &nbsp;
+                @include('inscricoes.partials.btn-enable-disable')
               </div>
             @else
               Nova Inscrição
@@ -39,11 +41,6 @@
             para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})<br />
             <span class="text-muted">{{ $inscricao->selecao->descricao }}</span>
           </div>
-          @if ($modo == 'edit')
-            <div class="ml-auto">
-              Situação: {{ $inscricao->estado }}
-            </div>
-          @endif
         </div>
         @include('inscricoes.partials.badge-instrucoes-da-selecao')
         @include('inscricoes.partials.instrucoes-da-selecao')

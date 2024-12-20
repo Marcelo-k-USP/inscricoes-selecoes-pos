@@ -24,7 +24,6 @@
         <tr>
           <th>Inscrito</th>
           <th>Seleção</th>
-          <th>Situação</th>
           <th class="text-right">Efetuada em</th>
           <th class="text-right">Atualização</th>
         </tr>
@@ -33,6 +32,7 @@
         @foreach ($objetos as $inscricao)
           <tr>
             <td>
+              @include('inscricoes.partials.status-small')
               <a href="inscricoes/edit/{{ $inscricao->id }}">
                 @php
                   $nome = null;
@@ -42,14 +42,11 @@
                       $nome = Str::limit($extras->nome, 20);
                   }
                 @endphp
-                {{ $nome }}
-              </a>
+                {{ $nome }}</a>
+              @include('inscricoes.partials.status-muted')
             </td>
             <td>
               {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})
-            </td>
-            <td>
-              {{ $inscricao->estado }}
             </td>
             <td class="text-right">
               <span class="d-none">{{ $inscricao->created_at }}</span>
