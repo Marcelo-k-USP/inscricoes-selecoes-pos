@@ -228,7 +228,7 @@ class UserController extends Controller
             session(['perfil' => $perfil]);
             $request->session()->flash('alert-info', $ret['msg']);
         }
-        return redirect('/');
+        return view('index');    // se eu retornar redirect('/'), a mensagem flash desaparece muito rapidamente, pois o IndexController.index redireciona para a view index... então melhor ir direto para a view index
     }
 
     /**
