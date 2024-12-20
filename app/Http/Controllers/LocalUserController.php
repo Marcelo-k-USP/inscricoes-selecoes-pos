@@ -160,21 +160,17 @@ class LocalUserController extends Controller
         if (!$email_confirmation)
             return $this->processa_erro_confirmation('Este link é inválido');
 
-        // loga automaticamente o usuário
+        // marca o e-mail como confirmado
         $localuser = User::where('email', $email_confirmation->email)->first();
         $localuser->givePermissionTo('user');
-        $localuser->last_login_at = now();
         $localuser->email_confirmado = true;
         $localuser->save();
-        Auth::login($localuser, true);
-        session(['perfil' => 'usuario']);
 
         request()->session()->flash('alert-success', 'E-mail confirmado com sucesso<br />' .
-            'Suba os arquivos necessários para a avaliação da sua inscrição<br />');
+            'Entre na sua inscrição e suba os documentos necessários para a avaliação<br />');
 
         \UspTheme::activeUrl('inscricoes');
-        $inscricao = $localuser->inscricoes()->wherePivot('papel', 'Autor')->orderBy('user_inscricao.created_at', 'desc')->first();    // obtém a inscrição mais recente desse usuário
-        return view('inscricoes.edit', (new InscricaoController())->monta_compact($inscricao, 'edit'));
+        return view('localusers.login');
     }
 
     private function processa_erro_login(string $msg)
