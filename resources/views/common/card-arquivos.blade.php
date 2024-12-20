@@ -20,7 +20,7 @@
   <a name="card_arquivos"></a>
   <div class="card bg-light mb-3 w-100" id="card-arquivos">
     <div class="card-header form-inline">
-      Arquivos
+      Documentos
       <span data-toggle="tooltip" data-html="true" title="Tamanho máximo de cada arquivo: {{ $max_upload_size }}KB ">
         <i class="fas fa-question-circle text-secondary ml-2"></i>
       </span>

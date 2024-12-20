@@ -121,7 +121,7 @@ class ArquivoController extends Controller
                 }
         }
 
-        $request->session()->flash('alert-success', 'Arquivo(s) adicionado(s) com sucesso' . $info_adicional);
+        $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso' . $info_adicional);
 
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
@@ -161,7 +161,7 @@ class ArquivoController extends Controller
         $arquivo->nome_original = $request->nome_arquivo . '.' . $extensao;
         $arquivo->update();
 
-        $request->session()->flash('alert-success', 'Arquivo renomeado com sucesso');
+        $request->session()->flash('alert-success', 'Documento renomeado com sucesso');
 
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
@@ -199,7 +199,7 @@ class ArquivoController extends Controller
                 $objeto->verificarArquivos();
         }
 
-        $request->session()->flash('alert-success', 'Arquivo removido com sucesso');
+        $request->session()->flash('alert-success', 'Documento removido com sucesso');
 
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));

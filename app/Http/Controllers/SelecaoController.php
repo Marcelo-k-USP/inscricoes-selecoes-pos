@@ -93,7 +93,7 @@ class SelecaoController extends Controller
         $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
         $request->session()->flash('alert-success', 'Seleção cadastrada com sucesso<br />' .
-            'Agora adicione o edital e demais arquivos relacionados ao processo');
+            'Agora adicione os documentos relacionados ao processo');
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));

@@ -130,7 +130,7 @@ class InscricaoController extends Controller
             });
 
             $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
-                'Não deixe de subir os arquivos necessários para a avaliação da sua inscrição');
+                'Não deixe de subir os documentos necessários para a avaliação da sua inscrição');
 
             \UspTheme::activeUrl('inscricoes/create');
             return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
@@ -200,7 +200,8 @@ class InscricaoController extends Controller
             });
 
             $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
-                'Verifique seu e-mail para confirmar seu endereço de e-mail e, em seguida, suba os arquivos necessários para a avaliação da sua inscrição');
+                'Verifique seu e-mail para confirmar seu endereço de e-mail<br />' .
+                'Em seguida, suba os documentos necessários para a avaliação da sua inscrição');
 
             \UspTheme::activeUrl('inscricoes/create');
             return redirect('/');    // volta para a tela de informações

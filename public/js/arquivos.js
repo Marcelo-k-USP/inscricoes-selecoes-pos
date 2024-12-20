@@ -16,7 +16,7 @@ function toggle_modo_edicao(element, arquivo_id) {
 }
 
 function excluir_arquivo(arquivo_id, arquivo_nome) {
-  if (confirm('Tem certeza que deseja deletar ' + arquivo_nome + '?'))
+  if (confirm('Tem certeza que deseja deletar o documento ' + arquivo_nome + '?'))
     submete_form('arquivos/' + arquivo_id, 'delete');
 }
 
