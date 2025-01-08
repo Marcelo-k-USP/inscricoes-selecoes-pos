@@ -29,10 +29,10 @@ class SelecaoSeeder extends Seeder
                 'estado' => 'Aguardando Documentação',
                 'descricao' => 'Processo Seletivo 2025 Aluno Regular',
                 'data_inicio' => Carbon::createFromFormat('d/m/Y', '01/11/2024')->format('Y-m-d'),
-                'data_fim' => Carbon::createFromFormat('d/m/Y', '01/01/2025')->format('Y-m-d'),
+                'data_fim' => Carbon::createFromFormat('d/m/Y', '01/02/2025')->format('Y-m-d'),
                 'boleto_valor' => 50.0,
                 'boleto_texto' => 'Boleto de Inscrição do Processo Seletivo da Pós-Graduação',
-                'boleto_data_vencimento' => Carbon::createFromFormat('d/m/Y', '02/01/2025')->format('Y-m-d'),
+                'boleto_data_vencimento' => Carbon::createFromFormat('d/m/Y', '02/02/2025')->format('Y-m-d'),
                 'template' => '{
                     "nome": {
                         "label": "Nome",
