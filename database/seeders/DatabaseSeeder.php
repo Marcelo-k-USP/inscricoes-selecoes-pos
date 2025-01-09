@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             SelecaoSeeder::class,           // adiciona seleções
             LinhaPesquisaSeeder::class,     // adiciona linhas de pesquisa
             ParametroSeeder::class,         // adiciona parâmetros
+            MotivoIsencaoTaxaSeeder::class, // adiciona motivos de isenção de taxa
         ]);
     }
 }

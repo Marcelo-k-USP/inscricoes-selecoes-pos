@@ -853,6 +853,14 @@ class Selecao extends Model
     }
 
     /**
+     * relacionamento com motivos de isenção de taxa
+     */
+    public function motivosisencaotaxa()
+    {
+        return $this->belongsToMany('App\Models\MotivoIsencaoTaxa', 'motivoisencaotaxa_selecao', 'selecao_id', 'motivoisencaotaxa_id')->withTimestamps();
+    }
+
+    /**
      * Relacionamento: seleção pertence a categoria
      */
     public function categoria()
