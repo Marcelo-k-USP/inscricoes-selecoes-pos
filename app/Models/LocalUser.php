@@ -36,7 +36,7 @@ class LocalUser extends Model
 
     public static function getFields()
     {
-        $fields = SELF::fields;
+        $fields = self::fields;
         return $fields;
     }
 

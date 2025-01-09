@@ -30,7 +30,7 @@ class Categoria extends Model
     // uso no crud generico
     public static function getFields()
     {
-        return SELF::fields;
+        return self::fields;
     }
 
     /**
@@ -39,7 +39,7 @@ class Categoria extends Model
      */
     public static function allToSelect()
     {
-        $categorias = SELF::get();
+        $categorias = self::get();
         $ret = [];
         foreach ($categorias as $categoria)
             if (Gate::allows('categorias.view', $categoria))

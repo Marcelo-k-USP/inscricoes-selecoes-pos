@@ -30,7 +30,7 @@ class Programa extends Model
     // uso no crud generico
     public static function getFields()
     {
-        return SELF::fields;
+        return self::fields;
     }
 
     /**
@@ -39,7 +39,7 @@ class Programa extends Model
      */
     public static function allToSelect()
     {
-        $programas = SELF::get();
+        $programas = self::get();
         $ret = [];
         foreach ($programas as $programa)
             if (Gate::allows('programas.view', $programa))

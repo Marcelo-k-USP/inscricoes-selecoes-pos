@@ -31,6 +31,6 @@ class Parametro extends Model
     // uso no crud generico
     public static function getFields()
     {
-        return SELF::fields;
+        return self::fields;
     }
 }

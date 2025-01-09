@@ -56,7 +56,7 @@ class Setor extends Model
      */
     public static function getFields()
     {
-        $fields = SELF::fields;
+        $fields = self::fields;
         foreach ($fields as &$field)
             if (substr($field['name'], -3) == '_id') {
                 $class = '\\App\\Models\\' . $field['model'];
@@ -71,7 +71,7 @@ class Setor extends Model
      */
     public static function allToSelect()
     {
-        $setores = SELF::get();
+        $setores = self::get();
         $ret = [];
         foreach ($setores as $setor)
             if (Gate::allows('setores.view', $setor))

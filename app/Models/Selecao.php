@@ -642,7 +642,7 @@ class Selecao extends Model
     // uso no crud generico
     public static function getFields()
     {
-        $fields = SELF::fields;
+        $fields = self::fields;
         foreach ($fields as &$field)
             if (substr($field['name'], -3) == '_id') {
                 $class = '\\App\\Models\\' . $field['model'];
@@ -666,7 +666,7 @@ class Selecao extends Model
      */
     public static function allToSelect()
     {
-        $selecoes = SELF::get();
+        $selecoes = self::get();
         $ret = [];
         foreach ($selecoes as $selecao)
             if (Gate::allows('selecoes.view'))
@@ -769,7 +769,7 @@ class Selecao extends Model
     public static function listarSelecoes()
     {
         self::atualizarStatusSelecoes();
-        return SELF::get();
+        return self::get();
     }
 
     /**

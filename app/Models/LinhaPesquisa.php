@@ -41,7 +41,7 @@ class LinhaPesquisa extends Model
     // uso no crud generico
     public static function getFields()
     {
-        $fields = SELF::fields;
+        $fields = self::fields;
         foreach ($fields as &$field) {
             if (substr($field['name'], -3) == '_id') {
                 $class = '\\App\\Models\\' . $field['model'];
@@ -57,7 +57,7 @@ class LinhaPesquisa extends Model
      */
     public static function allToSelect()
     {
-        $linhaspesquisa = SELF::get();
+        $linhaspesquisa = self::get();
         $ret = [];
         foreach ($linhaspesquisa as $linhapesquisa)
             if (Gate::allows('linhaspesquisa.view', $linhapesquisa))
@@ -68,9 +68,9 @@ class LinhaPesquisa extends Model
     public static function listarLinhasPesquisa(Programa $programa)
     {
         if ((!is_null($programa)) && ($programa->id > 0))
-            return SELF::where('programa_id', $programa->id)->get();
+            return self::where('programa_id', $programa->id)->get();
         else
-            return SELF::get();
+            return self::get();
     }
 
     /**
