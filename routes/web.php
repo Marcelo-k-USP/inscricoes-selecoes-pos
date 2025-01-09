@@ -13,6 +13,7 @@ use App\Http\Controllers\MotivoIsencaoTaxaController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\SelecaoController;
+use App\Http\Controllers\SolicitacaoIsencaoTaxaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
 
@@ -23,11 +24,14 @@ Route::get('login', [LoginController::class, 'redirectToProvider'])->name('login
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
+// SOLICITAÇÕES DE ISENÇÃO DE TAXA
+Route::get('solicitacoesisencaotaxa', [SolicitacaoIsencaoTaxaController::class, 'index'])->name('solicitacoesisencaotaxa.index');
+Route::get('solicitacoesisencaotaxa/create', [SolicitacaoIsencaoTaxaController::class, 'listaSelecoesParaSolicitacaoIsencaoTaxa'])->name('solicitacoesisencaotaxa.create');
+Route::get('solicitacoesisencaotaxa/create/{selecao}', [SolicitacaoIsencaoTaxaController::class, 'create'])->name('solicitacoesisencaotaxa.create.selecao');
+Route::post('solicitacoesisencaotaxa/create', [SolicitacaoIsencaoTaxaController::class, 'store'])->name('solicitacoesisencaotaxa.store');
+
 // INSCRIÇÕES
 Route::get('inscricoes', [InscricaoController::class, 'index'])->name('inscricoes.index');
-Route::get('inscricoes/solicitaisencaotaxa', [InscricaoController::class, 'listaSelecoesParaIsencaoTaxa'])->name('inscricoes.iniciasolicitacaoisencaotaxa');
-Route::get('inscricoes/solicitaisencaotaxa/{selecao}', [InscricaoController::class, 'iniciaSolicitacaoIsencaoTaxa'])->name('inscricoes.iniciasolicitacaoisencaotaxa.selecao');
-Route::post('inscricoes/solicitaisencaotaxa', [InscricaoController::class, 'solicitaIsencaoTaxa'])->name('inscricoes.solicitaisencaotaxa');
 Route::get('inscricoes/create', [InscricaoController::class, 'listaSelecoesParaNovaInscricao'])->name('inscricoes.create');
 Route::get('inscricoes/create/{selecao}', [InscricaoController::class, 'create'])->name('inscricoes.create.selecao');
 Route::post('inscricoes/create', [InscricaoController::class, 'store'])->name('inscricoes.store');

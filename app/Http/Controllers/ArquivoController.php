@@ -7,6 +7,7 @@ use App\Models\Arquivo;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\Selecao;
+use App\Models\SolicitacaoIsencaoTaxa;
 use App\Services\BoletoService;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
@@ -44,7 +45,9 @@ class ArquivoController extends Controller
     {
         if (Arquivo::find($arquivo->id)->selecoes()->exists())
             $classe_nome = 'Selecao';
-        elseif (Arquivo::find($arquivo->id)->inscricoes()->exists())
+        elseif (Arquivo::find($arquivo->id)->inscricoes()->exists() && in_array(Arquivo::find($arquivo->id)->inscricoes()->first()->estado, (new SolicitacaoIsencaoTaxa())->estado()))
+            $classe_nome = 'SolicitacaoIsencaoTaxa';
+        else
             $classe_nome = 'Inscricao';
         $this->authorize('arquivos.view', [$arquivo, $classe_nome]);
 
@@ -99,6 +102,12 @@ class ArquivoController extends Controller
             case 'Selecao':
                 $objeto->atualizarStatus();
                 $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
+                break;
+            case 'SolicitacaoIsencaoTaxa':
+                $objeto->verificarArquivos();
+                if (($objeto->estado == 'Isenção de Taxa Solicitada'))
+                    $info_adicional = '<br />' .
+                        'Sua solicitação de isenção de taxa de inscrição foi completada';
                 break;
             case 'Inscricao':
                 $objeto->verificarArquivos();
@@ -195,7 +204,9 @@ class ArquivoController extends Controller
                 $objeto->atualizarStatus();
                 $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
                 break;
+            case 'SolicitacaoIsencaoTaxa':
             case 'Inscricao':
+                // ambos 'SolicitacaoIsencaoTaxa' e 'Inscricao' executam a linha abaixo
                 $objeto->verificarArquivos();
         }
 
@@ -209,6 +220,8 @@ class ArquivoController extends Controller
         switch ($classe_nome) {
             case 'Selecao':
                 return 'selecoes';
+            case 'SolicitacaoIsencaoTaxa':
+                return 'solicitacoesisencaotaxa';
             case 'Inscricao':
                 return 'inscricoes';
         }
@@ -218,6 +231,8 @@ class ArquivoController extends Controller
         switch ($classe_nome) {
             case 'Selecao':
                 return Selecao::class;
+            case 'SolicitacaoIsencaoTaxa':
+                return SolicitacaoIsencaoTaxa::class;
             case 'Inscricao':
                 return Inscricao::class;
         }
@@ -227,7 +242,9 @@ class ArquivoController extends Controller
         switch ($classe_nome) {
             case 'Selecao':
                 return null;
+            case 'SolicitacaoIsencaoTaxa':
             case 'Inscricao':
+                // ambos 'SolicitacaoIsencaoTaxa' e 'Inscricao' executam as linhas abaixo
                 $objeto->selecao->template = JSONForms::orderTemplate($objeto->selecao->template);
                 return JSONForms::generateForm($objeto->selecao, $objeto);
         }

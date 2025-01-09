@@ -35,12 +35,19 @@ class ArquivoPolicy
         if ($classe_nome == 'Selecao')
             return true;                                           // permite que todos baixem arquivos de seleções
 
-        if (Gate::allows('perfilusuario'))
+        if (Gate::allows('perfilusuario')) {
+            foreach ($arquivo->solicitacoesisencaotaxa as $solicitacaoisencaotaxa) {
+                $autor_solicitacaoisencaotaxa = $solicitacaoisencaotaxa->pessoas('Autor');
+                if ($autor_solicitacaoisencaotaxa && ($autor_solicitacaoisencaotaxa->id == $user->id))
+                    return true;                                   // permite que usuários baixem arquivos de suas solicitações de isenção de taxa
+            }
+
             foreach ($arquivo->inscricoes as $inscricao) {
                 $autor_inscricao = $inscricao->pessoas('Autor');
                 if ($autor_inscricao && ($autor_inscricao->id == $user->id))
                     return true;                                   // permite que usuários baixem arquivos de suas inscrições
             }
+        }
 
         return Gate::any(['perfiladmin', 'perfilgerente']);        // permite que admins e gerentes baixem todos os arquivos
     }
@@ -59,9 +66,9 @@ class ArquivoPolicy
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes subam arquivos de seleção
 
         if (Gate::allows('perfilusuario')) {
-            $autor_inscricao = $objeto->pessoas('Autor');
-            if ($autor_inscricao && ($autor_inscricao->id == $user->id))
-                return true;                                       // permite que usuários subam arquivos em sua inscrição
+            $autor_solicitacaoisencaotaxa_ou_inscricao = $objeto->pessoas('Autor');
+            if ($autor_solicitacaoisencaotaxa_ou_inscricao && ($autor_solicitacaoisencaotaxa_ou_inscricao->id == $user->id))
+                return true;                                       // permite que usuários subam arquivos em suas solicitações de isenção de taxa e inscrições
         }
     }
 
@@ -122,9 +129,14 @@ class ArquivoPolicy
 
         if (Gate::allows('perfilusuario')) {
             $autor_arquivo_id = $arquivo->user_id;
-            $autor_inscricao = $objeto->pessoas('Autor');
+
+            $autor_solicitacaoisencaotaxa = $objeto->pessoas('Autor');
+            if (($autor_solicitacaoisencaotaxa == $user->id) && $autor_solicitacaoisencaotaxa && ($autor_solicitacaoisencaotaxa->id == $user->id))
+                return true;                                       // permite que usuários renomeiem/apaguem arquivos em suas solicitações de isenção de taxa
+
+                $autor_inscricao = $objeto->pessoas('Autor');
             if (($autor_arquivo_id == $user->id) && $autor_inscricao && ($autor_inscricao->id == $user->id))
-                return true;                                       // permite que usuários renomeiem/apaguem arquivos em sua inscrição
+                return true;                                       // permite que usuários renomeiem/apaguem arquivos em suas inscrições
         }
     }
 }

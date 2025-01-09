@@ -94,7 +94,7 @@ class User extends Authenticatable
 
     public static function getFields()
     {
-        $fields = SELF::fields;
+        $fields = self::fields;
         return $fields;
     }
 
@@ -199,9 +199,21 @@ class User extends Authenticatable
     /**
      * Relacionamento n:n com inscrição:
      */
+    public function solicitacoesisencaotaxa()
+    {
+        return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao')
+            ->whereIn('inscricao.estado', (new SolicitacaoIsencaoTaxa())->estado())
+            ->withTimestamps();
+    }
+
+    /**
+     * Relacionamento n:n com inscrição:
+     */
     public function inscricoes()
     {
-        return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao')->withTimestamps();
+        return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao')
+            ->whereIn('inscricao.estado', (new Inscricao())->estado())
+            ->withTimestamps();
     }
 
     /**

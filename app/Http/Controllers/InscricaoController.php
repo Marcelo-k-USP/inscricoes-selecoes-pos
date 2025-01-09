@@ -12,6 +12,7 @@ use App\Services\RecaptchaService;
 use App\Utils\JSONForms;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -34,7 +35,11 @@ class InscricaoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth')->except(['listaSelecoes', 'create', 'store']);    // exige que o usuário esteja logado, exceto para listaSelecoes, create e store
+        $this->middleware('auth')->except([
+            'listaSelecoesParaNovaInscricao',
+            'create',
+            'store'
+        ]);    // exige que o usuário esteja logado, exceto para estes métodos listados
     }
 
     /**
@@ -63,7 +68,7 @@ class InscricaoController extends Controller
      * @param  \Illuminate\Http\Request   $request
      * @return \Illuminate\Http\Response
      */
-    public function listaSelecoes(Request $request)
+    public function listaSelecoesParaNovaInscricao(Request $request)
     {
         $this->authorize('inscricoes.create');
 
@@ -71,7 +76,7 @@ class InscricaoController extends Controller
 
         \UspTheme::activeUrl('inscricoes/create');
         $categorias = Selecao::listarSelecoesParaNovaInscricao();          // obtém as seleções dentro das categorias
-        return view('inscricoes.listaselecoes', compact('categorias'));
+        return view('inscricoes.listaselecoesparanovainscricao', compact('categorias'));
     }
 
     /**

@@ -1,15 +1,15 @@
 <?php
 
-$isencaotaxa = [
+$solicitacaoisencaotaxa = [
     [
-        'text' => '<i class="far fa-plus-square"></i> Nova Solicitação',
-        'url' => 'inscricoes/solicitaisencaotaxa',
-        'can' => 'inscricoes.solicitaIsencaoTaxa',
+        'text' => '<i class="far fa-plus-square"></i> Nova Solicitação de Isenção de Taxa',
+        'url' => 'solicitacoesisencaotaxa/create',
+        'can' => 'solicitacoesisencaotaxa.create',
     ],
     [
-        'text' => '<i class="far fa-list-alt"></i> Minhas Solicitações',
-        'url' => 'inscricoes/solicitacoesisencaotaxa',
-        'can' => 'inscricoes.viewTheir',
+        'text' => '<i class="far fa-list-alt"></i> Minhas Solicitações de Isenção de Taxa',
+        'url' => 'solicitacoesisencaotaxa',
+        'can' => 'solicitacoesisencaotaxa.viewTheir',
     ],
 ];
 
@@ -65,9 +65,14 @@ $admin = [
 
 $menu = [
     [
-        'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Isenção de Taxa',
-        'submenu' => $isencaotaxa,
-        'can' => 'inscricoes.solicitaIsencaoTaxa',
+        'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Solicitações de Isenção de Taxa',
+        'submenu' => $solicitacaoisencaotaxa,
+        'can' => 'solicitacoesisencaotaxa.create',
+    ],
+    [
+        'text' => '<i class="far fa-list-alt"></i> Solicitações de Isenção de Taxa',
+        'url' => 'solicitacoesisencaotaxa',
+        'can' => 'solicitacoesisencaotaxa.viewAny',
     ],
     [
         'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Inscrições',

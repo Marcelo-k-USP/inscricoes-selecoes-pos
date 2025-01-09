@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Inscricao;
 use App\Models\Selecao;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
-class Inscricao extends Model
+class SolicitacaoIsencaoTaxa extends Model
 {
     use HasFactory;
 
     # inscrições não segue convenção do laravel para nomes de tabela
-    protected $table = 'inscricoes';
+    protected $table = 'inscricoes';    // SolicitacaoIsencaoTaxa e Inscricao utilizam a mesma tabela inscricoes
 
     protected $fillable = [
         'selecao_id',
@@ -49,37 +50,20 @@ class Inscricao extends Model
     public static function estados()
     {
         return [
-            'Aguardando Documentação', 'Realizada',
-            'Em Avaliação', 'Aprovada', 'Rejeitada'
+            'Aguardando Comprovação', 'Isenção de Taxa Solicitada',
+            'Isenção de Taxa em Avaliação', 'Isenção de Taxa Aprovada', 'Isenção de Taxa Rejeitada'
         ];
     }
 
     /**
-     * Retorna os tipos de arquivo possíveis na inscrição.
+     * Retorna os tipos de arquivo possíveis na solicitação de isenção de taxa.
      */
     public static function tiposArquivo()
     {
         return [
             [
-                'nome' => 'Documento com Foto',
+                'nome' => 'Comprovação',
                 'validate' => 'required'
-            ],
-            [
-                'nome' => 'Comprovação de Proficiência em Língua Estrangeira',
-                'validate' => 'required'
-            ],
-            [
-                'nome' => 'Histórico Escolar e Diploma de Gradução',
-                'validate' => 'required'
-            ],
-            [
-                'nome' => 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica',
-                'validate' => 'required',
-                'minimum_required' => 2
-            ],
-            [
-                'nome' => 'Boleto de Pagamento da Inscrição',
-                'editable' => 'none'
             ]
         ];
     }
@@ -97,74 +81,27 @@ class Inscricao extends Model
     }
 
     /**
-     * Retorna a contagem de inscrições por ano
+     * Lista as solicitações de isenção de taxa autorizadas para o usuário
      *
-     * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
-     *
-     * @param  \App\Models\Selecao $selecao
-     * @return int
-     */
-    public static function contarInscricoesPorAno(?Selecao $selecao = null)
-    {
-        $contagem = self::selectRaw('year(created_at) ano, count(*) count')
-            ->where('selecao_id', $selecao->id)
-            ->whereYear('created_at', '>=', date('Y') - 5) // ultimos 5 anos
-            ->whereIn('estado', $this->estado())
-            ->groupBy('ano')->get();
-        return $contagem;
-    }
-
-    /**
-     * Retorna a contagem de inscrições por mês de determinado ano
-     *
-     * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
-     *
-     * Retorno em array sendo o 1o elemento correspondente à contagem de janeiro,
-     * o segundo elemento é a contagem de fevereiro, e assim por diante.
-     * o array de retorno, portanto, possui 12 elementos
-     *
-     * @param  int $ano
-     * @param  \App\Models\Selecao $selecao
-     * @return array
-     */
-    public static function contarInscricoesPorMes(int $ano, ?Selecao $selecao = null)
-    {
-        $contagem = self::selectRaw('month(created_at) mes, count(*) count')
-            ->where('selecao_id', $selecao->id)
-            ->whereYear('created_at', $ano)
-            ->whereIn('estado', $this->estado())
-            ->groupBy('mes')->get();
-
-        // vamos organizar em array por mês para facilitar a apresentação
-        $ret = [];
-        for ($i = 0; $i < 12; $i++) {
-            $ret[] = $contagem->where('mes', $i + 1)->first()->count ?? '';
-        }
-        return $ret;
-    }
-
-    /**
-     * Lista as inscrições autorizadas para o usuário
-     *
-     * Se perfiladmin mostra todas as inscrições
-     * Se perfilusuario mostra as inscrições que ele está cadastrado como criador
+     * Se perfiladmin mostra todas as solicitações de isenção de taxa
+     * Se perfilusuario mostra as solicitações de isenção de taxa que ele está cadastrado como criador
      *
      * @return Collection
      */
-    public static function listarInscricoes()
+    public static function listarSolicitacoesIsencaoTaxa()
     {
         if (Gate::any(['perfiladmin', 'perfilgerente']))
-            $inscricoes = self::whereIn('estado', $this->estado)->get();
+            $solicitacoesisencaotaxa = self::whereIn('estado', $this->estado)->get();
         else
-            $inscricoes = Auth::user()->inscricoes()
+            $solicitacoesisencaotaxa = Auth::user()->solicitacoesisencaotaxa()
                 ->wherePivotIn('papel', ['Autor'])
                 ->whereIn('estado', $this->estado())
                 ->get();
 
-        return $inscricoes;
+        return $solicitacoesisencaotaxa;
     }
 
-    public static function listarInscricoesPorSelecao(Selecao $selecao, int $ano)
+    public static function listarSolicitacoesIsencaoTaxaPorSelecao(Selecao $selecao, int $ano)
     {
         return self::where('selecao_id', $selecao->id)
             ->whereYear('created_at', $ano)
@@ -173,8 +110,8 @@ class Inscricao extends Model
     }
 
     /**
-     * Verifica os arquivos da inscrição
-     * Conforme for o caso, altera o estado da inscrição
+     * Verifica os arquivos da solicitação de isenção de taxa
+     * Conforme for o caso, altera o estado da solicitação de isenção de taxa
      */
     public function verificarArquivos()
     {
@@ -183,42 +120,42 @@ class Inscricao extends Model
             return (isset($tipo['validate']) && ($tipo['validate'] == 'required'));
         });
 
-        // obtém os tipos de arquivo da inscrição
-        $arquivos_inscricao = $this->arquivos->pluck('pivot.tipo')->countBy()->all();
+        // obtém os tipos de arquivo da solicitação de isenção de taxa
+        $arquivos_solicitacaoisencaotaxa = $this->arquivos->pluck('pivot.tipo')->countBy()->all();
 
-        // verifica se todos os tipos requeridos estão presentes nos arquivos da inscrição
-        $todos_requeridos_presentes = function() use ($tipos_arquivo_requeridos, $arquivos_inscricao) {
+        // verifica se todos os tipos requeridos estão presentes nos arquivos da solicitação de isenção de taxa
+        $todos_requeridos_presentes = function() use ($tipos_arquivo_requeridos, $arquivos_solicitacaoisencaotaxa) {
             foreach ($tipos_arquivo_requeridos as $tipo_arquivo_requerido) {
                 $tipo_nome = $tipo_arquivo_requerido['nome'];
                 $minimo_requerido = ($tipo_arquivo_requerido['minimum_required'] ?? 1);
-                if (!isset($arquivos_inscricao[$tipo_nome]) || ($arquivos_inscricao[$tipo_nome] < $minimo_requerido))
+                if (!isset($arquivos_solicitacaoisencaotaxa[$tipo_nome]) || ($arquivos_solicitacaoisencaotaxa[$tipo_nome] < $minimo_requerido))
                     return false;
             }
             return true;
         };
 
         switch ($this->estado) {
-            case 'Aguardando Documentação':
+            case 'Aguardando Comprovação':
                 if ($todos_requeridos_presentes()) {
-                    $this->estado = 'Realizada';                  // avança o estado
+                    $this->estado = 'Isenção de Taxa Solicitada';    // avança o estado
                     $this->save();
                 }
                 break;
 
             case 'Realizada':
                 if (!$todos_requeridos_presentes()) {
-                    $this->estado = 'Aguardando Documentação';    // retrocede o estado
+                    $this->estado = 'Aguardando Comprovação';        // retrocede o estado
                     $this->save();
                 }
         }
     }
 
     /**
-     * Mostra as pessoas que têm vínculo com a inscrição
+     * Mostra as pessoas que têm vínculo com a solicitação de isenção de taxa
      *
      * Se informado $pivot, retorna somente o primeiro usuário, senão retorna a lista completa
      *
-     * @param  $pivot Papel da pessoa na inscrição (autor, null = todos)
+     * @param  $pivot Papel da pessoa na solicitação de isenção de taxa (autor, null = todos)
      * @return App\Models\User|Collection
      */
     public function pessoas($pivot = null)

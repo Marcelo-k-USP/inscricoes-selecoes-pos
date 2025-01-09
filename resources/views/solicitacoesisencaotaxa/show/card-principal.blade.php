@@ -1,35 +1,69 @@
 @section('styles')
 @parent
   <style>
-    #card-inscricao-principal {
+    #card-solicitacaoisencaotaxa-principal {
       border: 1px solid coral;
       border-top: 3px solid coral;
     }
   </style>
 @endsection
 
-{{ html()->form('post', $data->url . (($modo == 'edit') ? ('/edit/' . $inscricao->id) : '/create'))
-  ->attribute('id', 'form_principal')
-  ->attribute('novalidate', '')          // pois faço minha validação manual em $('#form_principal').on('submit'
+{{ html()->form('post', $data->url . (($modo == 'edit') ? ('/edit/' . $solicitacaoisencaotaxa->id) : '/create'))
+  ->attribute('id', 'form_principal_solicitacaoisencaotaxa')
+  ->attribute('novalidate', '')          // pois faço minha validação manual em $('#form_principal_solicitacaoisencaotaxa').on('submit'
   ->open() }}
   @csrf
   @method($modo == 'edit' ? 'put' : 'post')
   {{ html()->hidden('id') }}
-  <input type="hidden" id="selecao_id" name="selecao_id" value="{{ $inscricao->selecao->id }}">
-  <div class="card mb-3 w-100" id="card-inscricao-principal">
+  <input type="hidden" id="selecao_id" name="selecao_id" value="{{ $solicitacaoisencaotaxa->selecao->id }}">
+  <div class="card mb-3 w-100" id="card-solicitacaoisencaotaxa-principal">
     <div class="card-header">
       Informações básicas
     </div>
     <div class="card-body">
       <div class="list_table_div_form">
         @if (isset($form))
+          {{-- campos nome, tipo_de_documento, numero_do_documento, cpf e e_mail --}}
           @foreach ($form as $input)
             @if (is_array($input))
-              <div class="form-group row">
-                @foreach ($input as $element)
-                  {!! $element !!}<br />
+              @php
+                $input_id = null;
+                if (preg_match('/id="extras\[(.+?)\]"/', $input[0], $matches))
+                  $input_id = $matches[1];
+              @endphp
+              @if ($input_id && in_array($input_id, ['nome', 'tipo_de_documento', 'numero_do_documento', 'cpf', 'e_mail']))    {{-- somente estes campos do formulário da seleção são preenchidos neste momento de solicitação de isenção de taxa --}}
+                <div class="form-group row">
+                  @foreach ($input as $element)
+                    {!! $element !!}<br />
+                  @endforeach
+                </div>
+              @endif
+            @endif
+          @endforeach
+          {{-- campo Motivo da Solicitação --}}
+          <div class="form-group row">
+            <div class="col-sm-3">
+              <label class="col-form-label va-middle" for="extras[motivo_isencao_taxa]">Motivo da <span style="white-space: nowrap;">Solicitação <small class="text-required">(*)</small></span></label>
+            </div>
+            <div class="col-sm-9">
+              <select class="form-control w-100" name="extras[motivo_isencao_taxa]" id="extras[motivo_isencao_taxa]" required>
+                <option value="" disabled selected>Selecione...</option>
+                @foreach ($motivosisencaotaxa as $motivoisencaotaxa)
+                  <option value="{{ $motivoisencaotaxa->id }}">{{ $motivoisencaotaxa->nome }}</option>
                 @endforeach
-              </div>
+              </select>
+            </div>
+          </div>
+          {{-- campo de captcha --}}
+          @foreach ($form as $input)
+            @if (is_array($input))
+              @if (strpos($input[0], 'class="g-recaptcha"'))
+                <div class="form-group row">
+                  @foreach ($input as $element)
+                    {!! $element !!}<br />
+                  @endforeach
+                </div>
+              @endif
             @endif
           @endforeach
         @endif
@@ -50,9 +84,9 @@
   <script type="text/javascript">
     $(document).ready(function() {
 
-      $('#form_principal').find(':input:visible:first').focus();
+      $('#form_principal_solicitacaoisencaotaxa').find(':input:visible:first').focus();
 
-      $('#form_principal').each(function () {
+      $('#form_principal_solicitacaoisencaotaxa').each(function () {
         this.oninput = function(e) {
           e.target.setCustomValidity('');
         }
@@ -60,14 +94,6 @@
 
       $('input[id="extras\[cpf\]"], input[id^="extras\[cpf_"]').each(function() {
         $(this).mask('000.000.000-00');
-      });
-
-      $('input[id="extras\[cep\]"], input[id^="extras\[cep_"]').each(function() {
-        $(this).mask('00000-000');
-      });
-
-      $('input[id="extras\[celular\]"], input[id^="extras\[celular_"]').each(function() {
-        $(this).mask('(00) 00000-0000');
       });
 
       $('select[id="extras\[tipo_de_documento\]"]').change(function () {
@@ -83,10 +109,10 @@
       $('select[id="extras\[tipo_de_documento\]"]').trigger('change');
     });
 
-    $('#form_principal').on('submit', function(event) {
+    $('#form_principal_solicitacaoisencaotaxa').on('submit', function(event) {
       var form_valid = true;
 
-      $('#form_principal [required]').each(function () {
+      $('#form_principal_solicitacaoisencaotaxa [required]').each(function () {
         if (!this.validity.valid) {
           form_valid = false;
           switch (this.type) {
@@ -131,42 +157,6 @@
       obj.setCustomValidity(msg);
       obj.reportValidity();
       return false;
-    }
-
-    function consultar_cep(field_name)
-    {
-      var cep = $('input[id="extras\[' + field_name + '\]"]').val().replace('-', '').trim();
-      if (cep !== '') {
-        $('#consultar_' + field_name).text('Consultando ...');
-        $.ajax({
-          url: '{{ route("consulta.cep") }}',
-          type: 'get',
-          data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            cep: cep
-          },
-          success: function(data) {
-            var field_suffix = '';
-            if (field_name.includes('_'))
-              field_suffix = '_' + field_name.split('_')[1];
-
-            $('input[id="extras\[endereco_residencial' + field_suffix + '\]"]').val(data.logradouro);
-            $('input[id="extras\[bairro' + field_suffix + '\]"]').val(data.bairro);
-            $('input[id="extras\[cidade' + field_suffix + '\]"]').val(data.localidade);
-            $('select[id="extras\[uf' + field_suffix + '\]"]').val(data.uf.toLowerCase());
-
-            $('#consultar_' + field_name).text('Consultar CEP');
-          },
-          error: function(xhr, status, error) {
-            $('#consultar_' + field_name).text('Consultar CEP');
-
-            if (xhr.responseJSON && xhr.responseJSON.error)
-              window.alert(xhr.responseJSON.error);
-            else if (xhr.responseText)
-              window.alert(xhr.responseText);
-          }
-        });
-      }
     }
   </script>
 @endsection

@@ -28,7 +28,7 @@ class MotivoIsencaoTaxa extends Model
     // uso no crud generico
     public static function getFields()
     {
-        $fields = SELF::fields;
+        $fields = self::fields;
         foreach ($fields as &$field) {
             if (substr($field['name'], -3) == '_id') {
                 $class = '\\App\\Models\\' . $field['model'];
@@ -44,7 +44,7 @@ class MotivoIsencaoTaxa extends Model
      */
     public static function allToSelect()
     {
-        $motivosisencaotaxa = SELF::get();
+        $motivosisencaotaxa = self::get();
         $ret = [];
         foreach ($motivosisencaotaxa as $motivoisencaotaxa)
             if (Gate::allows('motivosisencaotaxa.view', $motivoisencaotaxa))
@@ -54,7 +54,7 @@ class MotivoIsencaoTaxa extends Model
 
     public static function listarMotivosIsencaoTaxa()
     {
-        return SELF::get();
+        return self::get();
     }
 
     /**

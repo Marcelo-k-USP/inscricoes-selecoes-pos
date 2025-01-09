@@ -20,7 +20,14 @@ class LocalUserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['showLogin', 'login', 'esqueceuSenha', 'iniciaRedefinicaoSenha', 'redefineSenha', 'confirmaEmail']);    // exige que o usuário esteja logado, exceto para showLogin, login, etc.
+        $this->middleware('auth')->except([
+            'showLogin',
+            'login',
+            'esqueceuSenha',
+            'iniciaRedefinicaoSenha',
+            'redefineSenha',
+            'confirmaEmail'
+        ]);    // exige que o usuário esteja logado, exceto para estes métodos listados
     }
 
     public function showLogin()

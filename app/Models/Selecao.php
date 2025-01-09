@@ -774,6 +774,27 @@ class Selecao extends Model
 
     /**
      * Mostra lista de categorias e respectivas seleções
+     * para selecionar e solicitar isenção de taxa
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public static function listarSelecoesParaSolicitacaoIsencaoTaxa()
+    {
+        self::atualizarStatusSelecoes();
+
+        $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
+        foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
+            $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
+            $selecoes = $selecoes->filter(function ($selecao, $key) {    // agora vamos remover as seleções onde não se pode inscrever... a ordem de liberação é relevante!
+                return ($selecao->estado != 'Encerrada');                // descarta as seleções encerradas
+            });
+            $categoria->selecoes = $selecoes;
+        }
+        return $categorias;                                              // retorna as seleções dentro de categorias
+    }
+
+    /**
+     * Mostra lista de categorias e respectivas seleções
      * para selecionar e criar nova inscrição
      *
      * @return \Illuminate\Http\Response

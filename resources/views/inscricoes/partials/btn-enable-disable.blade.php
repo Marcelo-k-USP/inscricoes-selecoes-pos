@@ -19,29 +19,14 @@
   <button class="btn btn-sm {{ ($inscricao->estado == 'Em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Em Avaliação">
     Em Avaliação
   </button>
-  @if ($inscricao->estado == 'Aceita')
-    <button class="btn btn-sm btn-success" disabled name="estado" value="Aceita">
-      Aceita
+  @if ($inscricao->estado == 'Aprovada')
+    <button class="btn btn-sm btn-success" disabled name="estado" value="Aprovada">
+      Aprovada
     </button>
   @endif
   @if ($inscricao->estado == 'Rejeitada')
     <button class="btn btn-sm btn-danger" disabled name="estado" value="Rejeitada">
       Rejeitada
-    </button>
-  @endif
-  @if ($inscricao->estado == 'Pendente')
-    <button class="btn btn-sm btn-warning" disabled name="estado" value="Pendente">
-      Pendente
-    </button>
-  @endif
-  @if ($inscricao->estado == 'Cancelada')
-    <button class="btn btn-sm btn-danger" disabled name="estado" value="Cancelada">
-      Cancelada
-    </button>
-  @endif
-  @if ($inscricao->estado == 'Concluída')
-    <button class="btn btn-sm btn-success" disabled name="estado" value="Concluída">
-      Concluída
     </button>
   @endif
 </div>
