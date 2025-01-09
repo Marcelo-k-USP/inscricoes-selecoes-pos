@@ -6,6 +6,7 @@ use App\Http\Requests\SelecaoRequest;
 use App\Models\Categoria;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
+use App\Models\MotivoIsencaoTaxa;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Utils\JSONForms;
@@ -323,6 +324,49 @@ class SelecaoController extends Controller
     }
 
     /**
+     * Adicionar motivos de isenção de taxa relacionados à seleção
+     * autorizado a qualquer um que tenha acesso à seleção
+     * request->codpes = required, int
+     */
+    public function storeMotivoIsencaoTaxa(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.update');
+
+        $request->validate([
+            'id' => 'required',
+        ],
+        [
+            'id.required' => 'Motivo de isenção de taxa obrigatório',
+        ]);
+
+        $motivoisencaotaxa = MotivoIsencaoTaxa::where('id', $request->id)->first();
+
+        $existia = $selecao->motivosisencaotaxa()->detach($motivoisencaotaxa);
+
+        $selecao->motivosisencaotaxa()->attach($motivoisencaotaxa);
+
+        if (!$existia)
+            $request->session()->flash('alert-success', 'O motivo de isenção de taxa ' . $motivoisencaotaxa->nome . ' foi adicionado à essa seleção.');
+        else
+            $request->session()->flash('alert-info', 'O motivo de isenção de taxa ' . $motivoisencaotaxa->nome . ' já estava vinculado à essa seleção.');
+        return back();
+    }
+
+    /**
+     * Remove motivos de isenção de taxa relacionados à seleção
+     * $user = required
+     */
+    public function destroyMotivoIsencaoTaxa(Request $request, Selecao $selecao, MotivoIsencaoTaxa $motivoisencaotaxa)
+    {
+        $this->authorize('selecoes.update');
+
+        $selecao->motivosisencaotaxa()->detach($motivoisencaotaxa);
+
+        $request->session()->flash('alert-success', 'O motivo de isenção de taxa ' . $motivoisencaotaxa->nome . ' foi removido dessa seleção.');
+        return back();
+    }
+
+    /**
      * Baixa as inscrições especificadas
      *
      * @param $request->ano
@@ -373,8 +417,9 @@ class SelecaoController extends Controller
         $classe_nome_plural = 'selecoes';
         $rules = SelecaoRequest::rules;
         $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($objeto->programa) ? (new Programa) : $objeto->programa);
+        $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa(is_null($objeto->programa) ? (new Programa) : $objeto->programa);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'max_upload_size', 'rules');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'motivosisencaotaxa', 'max_upload_size', 'rules');
     }
 }
