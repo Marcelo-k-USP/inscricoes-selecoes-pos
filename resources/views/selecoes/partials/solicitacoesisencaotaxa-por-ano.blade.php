@@ -15,14 +15,14 @@
     <th>nov</th>
     <th>dez</th>
   </tr>
-  @foreach ($selecao->contarInscricoesPorAno() as $anual)
+  @foreach ($selecao->contarSolicitacoesIsencaoTaxaPorAno() as $anual)
     <tr>
       <th>{{ $anual->ano }}</th>
       <th>
         {{ $anual->count }}
-        <a href="{{ route('selecoes.downloadinscricoes', $selecao) }}?ano={{ $anual->ano }}" title="Fazer download das inscrições"><i class="fas fa-download"></i></a>
+        <a href="{{ route('selecoes.downloadsolicitacoesisencaotaxa', $selecao) }}?ano={{ $anual->ano }}" title="Fazer download das solicitações"><i class="fas fa-download"></i></a>
       </th>
-      @foreach ($selecao->contarInscricoesPorMes($anual->ano) as $mes)
+      @foreach ($selecao->contarSolicitacoesIsencaoTaxaPorMes($anual->ano) as $mes)
         <td>{{ $mes }}</td>
       @endforeach
     </tr>

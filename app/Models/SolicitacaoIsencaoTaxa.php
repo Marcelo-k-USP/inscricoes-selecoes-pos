@@ -81,6 +81,53 @@ class SolicitacaoIsencaoTaxa extends Model
     }
 
     /**
+     * Retorna a contagem de solicitações de isenção de taxa por ano
+     *
+     * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
+     *
+     * @param  \App\Models\Selecao $selecao
+     * @return int
+     */
+    public static function contarSolicitacoesIsencaoTaxaPorAno(?Selecao $selecao = null)
+    {
+        $contagem = self::selectRaw('year(created_at) ano, count(*) count')
+            ->where('selecao_id', $selecao->id)
+            ->whereYear('created_at', '>=', date('Y') - 5) // ultimos 5 anos
+            ->whereIn('estado', self::estados())
+            ->groupBy('ano')->get();
+        return $contagem;
+    }
+
+    /**
+     * Retorna a contagem de solicitações de isenção de taxa por mês de determinado ano
+     *
+     * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
+     *
+     * Retorno em array sendo o 1o elemento correspondente à contagem de janeiro,
+     * o segundo elemento é a contagem de fevereiro, e assim por diante.
+     * o array de retorno, portanto, possui 12 elementos
+     *
+     * @param  int $ano
+     * @param  \App\Models\Selecao $selecao
+     * @return array
+     */
+    public static function contarSolicitacoesIsencaoTaxaPorMes(int $ano, ?Selecao $selecao = null)
+    {
+        $contagem = self::selectRaw('month(created_at) mes, count(*) count')
+            ->where('selecao_id', $selecao->id)
+            ->whereYear('created_at', $ano)
+            ->whereIn('estado', self::estados())
+            ->groupBy('mes')->get();
+
+        // vamos organizar em array por mês para facilitar a apresentação
+        $ret = [];
+        for ($i = 0; $i < 12; $i++) {
+            $ret[] = $contagem->where('mes', $i + 1)->first()->count ?? '';
+        }
+        return $ret;
+    }
+
+    /**
      * Lista as solicitações de isenção de taxa autorizadas para o usuário
      *
      * Se perfiladmin mostra todas as solicitações de isenção de taxa
@@ -91,11 +138,11 @@ class SolicitacaoIsencaoTaxa extends Model
     public static function listarSolicitacoesIsencaoTaxa()
     {
         if (Gate::any(['perfiladmin', 'perfilgerente']))
-            $solicitacoesisencaotaxa = self::whereIn('estado', $this->estado)->get();
+            $solicitacoesisencaotaxa = self::whereIn('estado', self::estados())->get();
         else
             $solicitacoesisencaotaxa = Auth::user()->solicitacoesisencaotaxa()
                 ->wherePivotIn('papel', ['Autor'])
-                ->whereIn('estado', $this->estado())
+                ->whereIn('estado', self::estados())
                 ->get();
 
         return $solicitacoesisencaotaxa;
@@ -105,7 +152,7 @@ class SolicitacaoIsencaoTaxa extends Model
     {
         return self::where('selecao_id', $selecao->id)
             ->whereYear('created_at', $ano)
-            ->whereIn('estado', $this->estado())
+            ->whereIn('estado', self::estados())
             ->get();
     }
 
@@ -161,14 +208,9 @@ class SolicitacaoIsencaoTaxa extends Model
     public function pessoas($pivot = null)
     {
         if ($pivot)
-            return $this->users()
-                ->whereIn('estado', $this->estado())
-                ->wherePivot('papel', $pivot)
-                ->first();
+            return $this->users()->wherePivot('papel', $pivot)->first();
         else
-            return $this->users()
-                ->whereIn('estado', $this->estado())
-                ->withPivot('papel');
+            return $this->users()->withPivot('papel');
     }
 
     /**
@@ -176,10 +218,7 @@ class SolicitacaoIsencaoTaxa extends Model
      */
     public function arquivos()
     {
-        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_inscricao')
-            ->whereIn('inscricao.estado', $this->estado())
-            ->withPivot('tipo')
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_inscricao')->withPivot('tipo')->withTimestamps();
     }
 
     /**
@@ -187,9 +226,7 @@ class SolicitacaoIsencaoTaxa extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\Models\User', 'user_inscricao')
-            ->whereIn('inscricao.estado', $this->estado())
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\User', 'user_inscricao', 'inscricao_id', 'user_id')->withTimestamps();    // preciso explicitar inscricao_id, senão o Laravel acha que é solicitacao_isencao_taxa_id, e não é, ocorreria erro
     }
 
     /**
@@ -197,7 +234,6 @@ class SolicitacaoIsencaoTaxa extends Model
      */
     public function selecao()
     {
-        return $this->belongsTo(Selecao::class)
-            ->whereIn('estado', $this->estado());
+        return $this->belongsTo(Selecao::class);
     }
 }

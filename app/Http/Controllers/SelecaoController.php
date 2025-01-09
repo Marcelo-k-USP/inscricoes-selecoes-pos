@@ -9,6 +9,7 @@ use App\Models\LinhaPesquisa;
 use App\Models\MotivoIsencaoTaxa;
 use App\Models\Programa;
 use App\Models\Selecao;
+use App\Models\SolicitacaoIsencaoTaxa;
 use App\Utils\JSONForms;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -367,13 +368,56 @@ class SelecaoController extends Controller
     }
 
     /**
+     * Baixa as solicitações de isenção de taxa especificadas
+     *
+     * @param $request->ano
+     * @param $selecao
+     * @return Stream
+     */
+    public function downloadSolicitacoesIsencaoTaxa(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.view');
+        $request->validate([
+            'ano' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+        ]);
+        $ano = $request->ano;
+
+        $solicitacoesisencaotaxa = SolicitacaoIsencaoTaxa::listarSolicitacoesIsencaoTaxaPorSelecao($selecao, $ano);
+
+        // vamos pegar o template da seleção para saber quais são os campos extras
+        $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
+        $keys = array_keys($template);
+
+        $arr = [];
+        foreach ($solicitacoesisencaotaxa as $solicitacaoisencaotaxa) {
+            $i = [];
+
+            $autor = $solicitacaoisencaotaxa->users()->wherePivot('papel', 'Autor')->first();
+            $i['autor'] = $autor ? $autor->name : '';
+
+            $extras = json_decode($solicitacaoisencaotaxa->extras, true) ?? [];
+            foreach ($keys as $field)
+                if (in_array($field, ['nome', 'tipo_de_documento', 'numero_do_documento', 'cpf', 'e_mail']))    // somente estes campos do formulário da seleção são utilizados na solicitação de isenção de taxa
+                    $i[$field] = isset($extras[$field]) ? $extras[$field] : '';
+
+            $i['criado_em'] = $solicitacaoisencaotaxa->created_at->format('d/m/Y');
+            $i['atualizado_em'] = $solicitacaoisencaotaxa->updated_at->format('d/m/Y');
+
+            $arr[] = $i;
+        }
+
+        $writer = SimpleExcelWriter::streamDownload('solicitacoesisencaotaxa_' . $ano . '_selecao' . $selecao->id . '.xlsx')
+            ->addRows($arr);
+    }
+
+    /**
      * Baixa as inscrições especificadas
      *
      * @param $request->ano
      * @param $selecao
      * @return Stream
      */
-    public function download(Request $request, Selecao $selecao)
+    public function downloadInscricoes(Request $request, Selecao $selecao)
     {
         $this->authorize('selecoes.view');
         $request->validate([

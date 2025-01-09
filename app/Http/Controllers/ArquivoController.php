@@ -45,7 +45,7 @@ class ArquivoController extends Controller
     {
         if (Arquivo::find($arquivo->id)->selecoes()->exists())
             $classe_nome = 'Selecao';
-        elseif (Arquivo::find($arquivo->id)->inscricoes()->exists() && in_array(Arquivo::find($arquivo->id)->inscricoes()->first()->estado, (new SolicitacaoIsencaoTaxa())->estado()))
+        elseif (Arquivo::find($arquivo->id)->inscricoes()->exists() && in_array(Arquivo::find($arquivo->id)->inscricoes()->first()->estado, (new SolicitacaoIsencaoTaxa())->estados()))
             $classe_nome = 'SolicitacaoIsencaoTaxa';
         else
             $classe_nome = 'Inscricao';

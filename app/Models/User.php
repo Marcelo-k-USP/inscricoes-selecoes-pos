@@ -201,9 +201,7 @@ class User extends Authenticatable
      */
     public function solicitacoesisencaotaxa()
     {
-        return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao')
-            ->whereIn('inscricao.estado', (new SolicitacaoIsencaoTaxa())->estado())
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao', 'user_id', 'inscricao_id')->whereIn('inscricoes.estado', (new SolicitacaoIsencaoTaxa())->estados())->withTimestamps();    // preciso explicitar inscricao_id, senão o Laravel acha que é solicitacao_isencao_taxa_id, e não é, ocorreria erro
     }
 
     /**
@@ -211,9 +209,7 @@ class User extends Authenticatable
      */
     public function inscricoes()
     {
-        return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao')
-            ->whereIn('inscricao.estado', (new Inscricao())->estado())
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao')->whereIn('inscricoes.estado', (new Inscricao())->estados())->withTimestamps();
     }
 
     /**
@@ -222,9 +218,7 @@ class User extends Authenticatable
      */
     public function setores()
     {
-        return $this->belongsToMany('App\Models\Setor', 'user_setor')
-            ->withPivot('funcao')
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\Setor', 'user_setor')->withPivot('funcao')->withTimestamps();
     }
 
     // este método é invocado pelo senhaunica-socialite, por isso é preciso que ele exista aqui

@@ -40,7 +40,7 @@ class LocalUser extends Model
         return $fields;
     }
 
-    public static function create(string $nome, string $email, string $senha, string $celular)
+    public static function create(string $nome, string $email, string $senha, string $celular = null)
     {
         $user = new User;
         $user->name = $nome;

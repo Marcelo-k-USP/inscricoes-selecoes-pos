@@ -175,7 +175,7 @@ class LocalUserController extends Controller
         $localuser->save();
 
         request()->session()->flash('alert-success', 'E-mail confirmado com sucesso<br />' .
-            'Entre na sua inscrição e suba os documentos necessários para a avaliação<br />');
+            'Entre na sua solicitação ou inscrição e suba os documentos necessários para a avaliação<br />');
 
         \UspTheme::activeUrl('inscricoes');
         return view('localusers.login');

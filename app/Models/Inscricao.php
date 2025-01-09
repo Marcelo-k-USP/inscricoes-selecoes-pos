@@ -109,7 +109,7 @@ class Inscricao extends Model
         $contagem = self::selectRaw('year(created_at) ano, count(*) count')
             ->where('selecao_id', $selecao->id)
             ->whereYear('created_at', '>=', date('Y') - 5) // ultimos 5 anos
-            ->whereIn('estado', $this->estado())
+            ->whereIn('estado', self::estados())
             ->groupBy('ano')->get();
         return $contagem;
     }
@@ -132,7 +132,7 @@ class Inscricao extends Model
         $contagem = self::selectRaw('month(created_at) mes, count(*) count')
             ->where('selecao_id', $selecao->id)
             ->whereYear('created_at', $ano)
-            ->whereIn('estado', $this->estado())
+            ->whereIn('estado', self::estados())
             ->groupBy('mes')->get();
 
         // vamos organizar em array por mês para facilitar a apresentação
@@ -154,11 +154,11 @@ class Inscricao extends Model
     public static function listarInscricoes()
     {
         if (Gate::any(['perfiladmin', 'perfilgerente']))
-            $inscricoes = self::whereIn('estado', $this->estado)->get();
+            $inscricoes = self::whereIn('estado', self::estados())->get();
         else
             $inscricoes = Auth::user()->inscricoes()
                 ->wherePivotIn('papel', ['Autor'])
-                ->whereIn('estado', $this->estado())
+                ->whereIn('estado', self::estados())
                 ->get();
 
         return $inscricoes;
@@ -168,7 +168,7 @@ class Inscricao extends Model
     {
         return self::where('selecao_id', $selecao->id)
             ->whereYear('created_at', $ano)
-            ->whereIn('estado', $this->estado())
+            ->whereIn('estado', self::estados())
             ->get();
     }
 
@@ -224,14 +224,9 @@ class Inscricao extends Model
     public function pessoas($pivot = null)
     {
         if ($pivot)
-            return $this->users()
-                ->whereIn('estado', $this->estado())
-                ->wherePivot('papel', $pivot)
-                ->first();
+            return $this->users()->wherePivot('papel', $pivot)->first();
         else
-            return $this->users()
-                ->whereIn('estado', $this->estado())
-                ->withPivot('papel');
+            return $this->users()->withPivot('papel');
     }
 
     /**
@@ -239,10 +234,7 @@ class Inscricao extends Model
      */
     public function arquivos()
     {
-        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_inscricao')
-            ->whereIn('inscricao.estado', $this->estado())
-            ->withPivot('tipo')
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_inscricao')->withPivot('tipo')->withTimestamps();
     }
 
     /**
@@ -250,9 +242,7 @@ class Inscricao extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\Models\User', 'user_inscricao')
-            ->whereIn('inscricao.estado', $this->estado())
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\User', 'user_inscricao')->withTimestamps();
     }
 
     /**
@@ -260,7 +250,6 @@ class Inscricao extends Model
      */
     public function selecao()
     {
-        return $this->belongsTo(Selecao::class)
-            ->whereIn('estado', $this->estado());
+        return $this->belongsTo(Selecao::class);
     }
 }

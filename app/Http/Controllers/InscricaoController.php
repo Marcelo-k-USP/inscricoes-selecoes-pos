@@ -128,7 +128,8 @@ class InscricaoController extends Controller
                 $inscricao->selecao_id = $selecao->id;
                 $inscricao->estado = 'Aguardando Documentação';
                 $inscricao->extras = json_encode($request->extras);
-                $inscricao->saveQuietly();    // vamos salvar sem evento pois o autor ainda não está cadastrado
+                $inscricao->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
+                $inscricao->load('selecao');    // com isso, $inscricao->selecao é carregado
                 $inscricao->users()->attach($user, ['papel' => 'Autor']);
 
                 return $inscricao;
@@ -181,7 +182,8 @@ class InscricaoController extends Controller
                 $inscricao->selecao_id = $selecao->id;
                 $inscricao->estado = 'Aguardando Documentação';
                 $inscricao->extras = json_encode($request->extras);
-                $inscricao->saveQuietly();    // vamos salvar sem evento pois o autor ainda não está cadastrado
+                $inscricao->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
+                $inscricao->load('selecao');    // com isso, $inscricao->selecao é carregado
                 $inscricao->users()->attach(User::find($localuser->id), ['papel' => 'Autor']);
 
                 // gera um token e o armazena no banco de dados
@@ -206,7 +208,7 @@ class InscricaoController extends Controller
 
             $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
                 'Verifique seu e-mail para confirmar seu endereço de e-mail<br />' .
-                'Em seguida, suba os documentos necessários para a avaliação da sua inscrição');
+                'Em seguida, faça login e suba os documentos necessários para a avaliação da sua inscrição');
 
             \UspTheme::activeUrl('inscricoes/create');
             return redirect('/');    // volta para a tela de informações

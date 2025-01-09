@@ -847,6 +847,16 @@ class Selecao extends Model
             $selecao->atualizarStatus();
     }
 
+    public function contarSolicitacoesIsencaoTaxaPorAno()
+    {
+        return SolicitacaoIsencaoTaxa::contarSolicitacoesIsencaoTaxaPorAno($this);
+    }
+
+    public function contarSolicitacoesIsencaoTaxaPorMes(int $ano)
+    {
+        return SolicitacaoIsencaoTaxa::contarSolicitacoesIsencaoTaxaPorMes($ano, $this);
+    }
+
     public function contarInscricoesPorAno()
     {
         return Inscricao::contarInscricoesPorAno($this);

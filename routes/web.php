@@ -60,7 +60,8 @@ Route::post('selecoes/create', [SelecaoController::class, 'store'])->name('selec
 Route::get('selecoes/edit/{selecao}', [SelecaoController::class, 'edit'])->name('selecoes.edit');
 Route::put('selecoes/edit/{selecao}', [SelecaoController::class, 'update'])->name('selecoes.update');
 Route::put('selecoes/edit-status/{selecao}', [SelecaoController::class, 'updateStatus'])->name('selecoes.update-status');
-Route::get('selecoes/{selecao}/download', [SelecaoController::class, 'download'])->name('selecoes.download');
+Route::get('selecoes/{selecao}/downloadsolicitacoesisencaotaxa', [SelecaoController::class, 'downloadSolicitacoesIsencaoTaxa'])->name('selecoes.downloadsolicitacoesisencaotaxa');
+Route::get('selecoes/{selecao}/downloadinscricoes', [SelecaoController::class, 'downloadInscricoes'])->name('selecoes.downloadinscricoes');
 
 // SELEÇÕES - LINHAS DE PESQUISA
 Route::post('selecoes/{selecao}/linhaspesquisa', [SelecaoController::class, 'storeLinhaPesquisa']);

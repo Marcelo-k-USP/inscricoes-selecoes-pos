@@ -10,21 +10,21 @@
 @endsection
 
 <div class="btn-group btn-enable-disable">
-  <button class="btn btn-sm {{ ($inscricao->estado == 'Aguardando Documentação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Documentação">
+  <button class="btn btn-sm {{ ($solicitacaoisencaotaxa_ou_inscricao->estado == 'Aguardando Documentação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Documentação">
     Aguardando Documentação
   </button>
-  <button class="btn btn-sm {{ ($inscricao->estado == 'Realizada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Realizada">
+  <button class="btn btn-sm {{ ($solicitacaoisencaotaxa_ou_inscricao->estado == 'Realizada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Realizada">
     Realizada
   </button>
-  <button class="btn btn-sm {{ ($inscricao->estado == 'Em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Em Avaliação">
+  <button class="btn btn-sm {{ ($solicitacaoisencaotaxa_ou_inscricao->estado == 'Em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Em Avaliação">
     Em Avaliação
   </button>
-  @if ($inscricao->estado == 'Aprovada')
+  @if ($solicitacaoisencaotaxa_ou_inscricao->estado == 'Aprovada')
     <button class="btn btn-sm btn-success" disabled name="estado" value="Aprovada">
       Aprovada
     </button>
   @endif
-  @if ($inscricao->estado == 'Rejeitada')
+  @if ($solicitacaoisencaotaxa_ou_inscricao->estado == 'Rejeitada')
     <button class="btn btn-sm btn-danger" disabled name="estado" value="Rejeitada">
       Rejeitada
     </button>

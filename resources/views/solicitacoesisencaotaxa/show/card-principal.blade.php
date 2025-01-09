@@ -23,7 +23,7 @@
     <div class="card-body">
       <div class="list_table_div_form">
         @if (isset($form))
-          {{-- campos nome, tipo_de_documento, numero_do_documento, cpf e e_mail --}}
+          {{-- campos extras['nome'], extras['tipo_de_documento'], extras['numero_do_documento'], extras['cpf'] e extras['e_mail'] --}}
           @foreach ($form as $input)
             @if (is_array($input))
               @php
@@ -40,7 +40,7 @@
               @endif
             @endif
           @endforeach
-          {{-- campo Motivo da Solicitação --}}
+          {{-- campo extras[motivo_isencao_taxa] --}}
           <div class="form-group row">
             <div class="col-sm-3">
               <label class="col-form-label va-middle" for="extras[motivo_isencao_taxa]">Motivo da <span style="white-space: nowrap;">Solicitação <small class="text-required">(*)</small></span></label>
@@ -54,10 +54,10 @@
               </select>
             </div>
           </div>
-          {{-- campo de captcha --}}
+          {{-- campos de captcha e senha --}}
           @foreach ($form as $input)
             @if (is_array($input))
-              @if (strpos($input[0], 'class="g-recaptcha"'))
+              @if (strpos($input[0], 'class="g-recaptcha"') || strpos($input[0], 'id="password"'))
                 <div class="form-group row">
                   @foreach ($input as $element)
                     {!! $element !!}<br />
