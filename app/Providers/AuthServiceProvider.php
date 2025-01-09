@@ -65,9 +65,13 @@ class AuthServiceProvider extends ServiceProvider
         Gate::resource('arquivos', 'App\Policies\ArquivoPolicy');
         Gate::resource('categorias', 'App\Policies\CategoriaPolicy');
         Gate::resource('inscricoes', 'App\Policies\InscricaoPolicy');
-        Gate::define('inscricoes.viewTheir', 'App\Policies\InscricaoPolicy@viewTheir');    // Gate::resource só define policies padrão (viewAny, view, create, etc.), então, para viewTheir, precisamos explicitamente criar o apontamento para a policy
+        // Gate::resource só define policies padrão (viewAny, view, create, etc.)
+        // portanto, para policies fora do padrão como solicitaIsencaoTaxa e viewTheir, precisamos explicitamente criar os apontamentos para elas
+        Gate::define('inscricoes.solicitaIsencaoTaxa', 'App\Policies\InscricaoPolicy@solicitaIsencaoTaxa');
+        Gate::define('inscricoes.viewTheir', 'App\Policies\InscricaoPolicy@viewTheir');
         Gate::resource('linhaspesquisa', 'App\Policies\LinhaPesquisaPolicy');
         Gate::resource('localusers', 'App\Policies\LocalUserPolicy');
+        Gate::resource('motivosisencaotaxa', 'App\Policies\MotivoIsencaoTaxaPolicy');
         Gate::resource('parametros', 'App\Policies\ParametroPolicy');
         Gate::resource('programas', 'App\Policies\ProgramaPolicy');
         Gate::resource('selecoes', 'App\Policies\SelecaoPolicy');

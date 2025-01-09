@@ -1,5 +1,31 @@
 <?php
 
+$isencaotaxa = [
+    [
+        'text' => '<i class="far fa-plus-square"></i> Nova Solicitação',
+        'url' => 'inscricoes/solicitaisencaotaxa',
+        'can' => 'inscricoes.solicitaIsencaoTaxa',
+    ],
+    [
+        'text' => '<i class="far fa-list-alt"></i> Minhas Solicitações',
+        'url' => 'inscricoes/solicitacoesisencaotaxa',
+        'can' => 'inscricoes.viewTheir',
+    ],
+];
+
+$inscricoes = [
+    [
+        'text' => '<i class="far fa-plus-square"></i> Nova Inscrição',
+        'url' => 'inscricoes/create',
+        'can' => 'inscricoes.create',
+    ],
+    [
+        'text' => '<i class="far fa-list-alt"></i> Minhas Inscrições',
+        'url' => 'inscricoes',
+        'can' => 'inscricoes.viewTheir',
+    ],
+];
+
 $admin = [
     [
         'text' => '<i class="fas fa-boxes"></i> Categorias',
@@ -15,6 +41,11 @@ $admin = [
         'text' => '<i class="fa fa-bookmark"></i> Linhas de Pesquisa',
         'url' => 'linhaspesquisa',
         'can' => 'linhaspesquisa.viewAny',
+    ],
+    [
+        'text' => '<i class="fa fa-gift"></i> Motivos de Isenção de Taxa',
+        'url' => 'motivosisencaotaxa',
+        'can' => 'motivosisencaotaxa.viewAny',
     ],
     [
         'type' => 'divider',
@@ -34,14 +65,14 @@ $admin = [
 
 $menu = [
     [
-        'text' => '<i class="far fa-plus-square"></i> Nova Inscrição',
-        'url' => 'inscricoes/create',
-        'can' => 'inscricoes.create',
+        'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Isenção de Taxa',
+        'submenu' => $isencaotaxa,
+        'can' => 'inscricoes.solicitaIsencaoTaxa',
     ],
     [
-        'text' => '<i class="far fa-list-alt"></i> Minhas Inscrições',
-        'url' => 'inscricoes',
-        'can' => 'inscricoes.viewTheir',
+        'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Inscrições',
+        'submenu' => $inscricoes,
+        'can' => 'inscricoes.create',
     ],
     [
         'text' => '<i class="far fa-list-alt"></i> Inscrições',

@@ -1,0 +1,125 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\MotivoIsencaoTaxaRequest;
+use App\Models\MotivoIsencaoTaxa;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+
+class MotivoIsencaoTaxaController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $this->authorize('motivosisencaotaxa.viewAny');
+        \UspTheme::activeUrl('motivosisencaotaxa');
+
+        $motivosisencaotaxa = MotivoIsencaoTaxa::all();
+        $fields = MotivoIsencaoTaxa::getFields();
+
+        if ($request->ajax()) {
+            // formatado para datatables
+            #return response(['data' => $motivosisencaotaxa]);
+        } else {
+            $modal['url'] = 'motivosisencaotaxa';
+            $modal['title'] = 'Editar Motivo de Isenção de Taxa';
+            $rules = MotivoIsencaoTaxaRequest::rules;
+            return view('motivosisencaotaxa.tree', compact('motivosisencaotaxa', 'fields', 'modal', 'rules'));
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @param  string                     $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, string $id)
+    {
+        $this->authorize('motivosisencaotaxa.view');
+        \UspTheme::activeUrl('motivosisencaotaxa');
+
+        if ($request->ajax())
+            return MotivoIsencaoTaxa::find((int) $id);    // preenche os dados do form de edição de um motivo de isenção de taxa
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\MotivoIsencaoTaxaRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(MotivoIsencaoTaxaRequest $request)
+    {
+        $this->authorize('motivosisencaotaxa.create');
+
+        $validator = Validator::make($request->all(), MotivoIsencaoTaxaRequest::rules, MotivoIsencaoTaxaRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
+
+        $motivoisencaotaxa = MotivoIsencaoTaxa::create($request->all());
+
+        $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
+        return back();
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\MotivoIsencaoTaxaRequest  $request
+     * @param  string                                       $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(MotivoIsencaoTaxaRequest $request, string $id)
+    {
+        $this->authorize('motivosisencaotaxa.update');
+
+        $validator = Validator::make($request->all(), MotivoIsencaoTaxaRequest::rules, MotivoIsencaoTaxaRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
+
+        $motivoisencaotaxa = MotivoIsencaoTaxa::find((int) $id);
+        $motivoisencaotaxa->fill($request->all());
+        $motivoisencaotaxa->save();
+
+        $request->session()->flash('alert-success', 'Dados editados com sucesso');
+        return back();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Http\Requests\MotivoIsencaoTaxaRequest  $request
+     * @param  string                                       $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(MotivoIsencaoTaxaRequest $request, string $id)
+    {
+        $this->authorize('motivosisencaotaxa.delete');
+
+        $motivoisencaotaxa = MotivoIsencaoTaxa::find((int) $id);
+        if ($motivoisencaotaxa->selecoes()->exists()) {
+            $request->session()->flash('alert-danger', 'Há seleções que fazem uso deste motivo de isenção de taxa!');
+            return back();
+        }
+        $motivoisencaotaxa->delete();
+
+        $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
+        return back();
+    }
+}
