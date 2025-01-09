@@ -9,6 +9,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\LinhaPesquisaController;
 use App\Http\Controllers\LocalUserController;
+use App\Http\Controllers\MotivoIsencaoTaxaController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\SelecaoController;
@@ -24,8 +25,11 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 // INSCRIÇÕES
 Route::get('inscricoes', [InscricaoController::class, 'index'])->name('inscricoes.index');
-Route::get('inscricoes/create', [InscricaoController::class, 'listaSelecoes'])->name('inscricoes.create');
-Route::get('inscricoes/create/{selecao}', [InscricaoController::class, 'create'])->name('inscricoes.create');
+Route::get('inscricoes/solicitaisencaotaxa', [InscricaoController::class, 'listaSelecoesParaIsencaoTaxa'])->name('inscricoes.iniciasolicitacaoisencaotaxa');
+Route::get('inscricoes/solicitaisencaotaxa/{selecao}', [InscricaoController::class, 'iniciaSolicitacaoIsencaoTaxa'])->name('inscricoes.iniciasolicitacaoisencaotaxa.selecao');
+Route::post('inscricoes/solicitaisencaotaxa', [InscricaoController::class, 'solicitaIsencaoTaxa'])->name('inscricoes.solicitaisencaotaxa');
+Route::get('inscricoes/create', [InscricaoController::class, 'listaSelecoesParaNovaInscricao'])->name('inscricoes.create');
+Route::get('inscricoes/create/{selecao}', [InscricaoController::class, 'create'])->name('inscricoes.create.selecao');
 Route::post('inscricoes/create', [InscricaoController::class, 'store'])->name('inscricoes.store');
 Route::get('inscricoes/edit/{inscricao}', [InscricaoController::class, 'edit'])->name('inscricoes.edit');
 Route::put('inscricoes/edit/{inscricao}', [InscricaoController::class, 'update'])->name('inscricoes.update');
@@ -42,6 +46,9 @@ Route::resource('programas', ProgramaController::class);
 // LINHAS DE PESQUISA
 Route::resource('linhaspesquisa', LinhaPesquisaController::class);
 
+// MOTIVOS DE ISENÇÃO DE TAXA
+Route::resource('motivosisencaotaxa', MotivoIsencaoTaxaController::class);
+
 // SELEÇÕES
 Route::get('selecoes', [SelecaoController::class, 'index'])->name('selecoes.index');
 Route::get('selecoes/create', [SelecaoController::class, 'create'])->name('selecoes.create');
@@ -54,6 +61,10 @@ Route::get('selecoes/{selecao}/download', [SelecaoController::class, 'download']
 // SELEÇÕES - LINHAS DE PESQUISA
 Route::post('selecoes/{selecao}/linhaspesquisa', [SelecaoController::class, 'storeLinhaPesquisa']);
 Route::delete('selecoes/{selecao}/linhaspesquisa/{linhapesquisa}', [SelecaoController::class, 'destroyLinhaPesquisa']);
+
+// SELEÇÕES - MOTIVOS DE ISENÇÂO DE TAXA
+Route::post('selecoes/{selecao}/motivosisencaotaxa', [SelecaoController::class, 'storeMotivoIsencaoTaxa']);
+Route::delete('selecoes/{selecao}/motivosisencaotaxa/{motivoisencaotaxa}', [SelecaoController::class, 'destroyMotivoIsencaoTaxa']);
 
 // SELEÇÕES - FORMULÁRIO
 Route::post('selecoes/{selecao}/template_json', [SelecaoController::class, 'storeTemplateJson']);

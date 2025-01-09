@@ -38,16 +38,17 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @include('selecoes.show.card-principal')          {{-- Principal --}}
+              @include('selecoes.show.card-principal')              {{-- Principal --}}
               @if ($modo == 'edit')
-                @include('selecoes.show.card-formulario')       {{-- Formulario --}}
+                @include('selecoes.show.card-formulario')           {{-- Formulario --}}
               @endif
             </div>
             <div class="col-md-5">
               @if ($modo == 'edit')
-                @include('selecoes.show.card-linhaspesquisa')   {{-- Linhas de Pesquisa --}}
-                @include('common.card-arquivos')                {{-- Arquivos --}}
-                @include('selecoes.show.card-inscricoes')       {{-- Inscrições --}}
+                @include('selecoes.show.card-linhaspesquisa')       {{-- Linhas de Pesquisa --}}
+                @include('selecoes.show.card-motivosisencaotaxa')   {{-- Motivos de Isenção de Taxa --}}
+                @include('common.card-arquivos')                    {{-- Arquivos --}}
+                @include('selecoes.show.card-inscricoes')           {{-- Inscrições --}}
               @endif
             </div>
           </div>
