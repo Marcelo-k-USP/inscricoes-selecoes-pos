@@ -270,7 +270,7 @@ class InscricaoController extends Controller
         $objeto = $inscricao;
         $classe_nome = 'Inscricao';
         $classe_nome_plural = 'inscricoes';
-        $form = JSONForms::generateForm($objeto->selecao, $objeto);
+        $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'max_upload_size');

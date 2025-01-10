@@ -6,6 +6,7 @@ use App\Mail\InscricaoMail;
 use App\Models\Arquivo;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
+use App\Models\MotivoIsencaoTaxa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Services\BoletoService;
@@ -246,15 +247,16 @@ class ArquivoController extends Controller
             case 'Inscricao':
                 // ambos 'SolicitacaoIsencaoTaxa' e 'Inscricao' executam as linhas abaixo
                 $objeto->selecao->template = JSONForms::orderTemplate($objeto->selecao->template);
-                return JSONForms::generateForm($objeto->selecao, $objeto);
+                return JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         }
     }
 
     private function monta_compact(object $objeto, string $classe_nome, string $classe_nome_plural, $form, string $modo) {
         $data = (object) ('App\\Http\\Controllers\\' . $classe_nome . 'Controller')::$data;
         $linhaspesquisa = LinhaPesquisa::all();
+        $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'motivosisencaotaxa', 'max_upload_size');
     }
 }

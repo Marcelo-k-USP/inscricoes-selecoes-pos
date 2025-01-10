@@ -269,7 +269,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $objeto = $solicitacaoisencaotaxa;
         $classe_nome = 'SolicitacaoIsencaoTaxa';
         $classe_nome_plural = 'solicitacoesisencaotaxa';
-        $form = JSONForms::generateForm($objeto->selecao, $objeto);
+        $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
 

@@ -461,7 +461,7 @@ class SelecaoController extends Controller
         $classe_nome_plural = 'selecoes';
         $rules = SelecaoRequest::rules;
         $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($objeto->programa) ? (new Programa) : $objeto->programa);
-        $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa(is_null($objeto->programa) ? (new Programa) : $objeto->programa);
+        $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'motivosisencaotaxa', 'max_upload_size', 'rules');

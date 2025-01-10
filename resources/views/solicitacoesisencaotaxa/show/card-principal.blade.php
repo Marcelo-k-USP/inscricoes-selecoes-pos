@@ -23,47 +23,13 @@
     <div class="card-body">
       <div class="list_table_div_form">
         @if (isset($form))
-          {{-- campos extras['nome'], extras['tipo_de_documento'], extras['numero_do_documento'], extras['cpf'] e extras['e_mail'] --}}
           @foreach ($form as $input)
             @if (is_array($input))
-              @php
-                $input_id = null;
-                if (preg_match('/id="extras\[(.+?)\]"/', $input[0], $matches))
-                  $input_id = $matches[1];
-              @endphp
-              @if ($input_id && in_array($input_id, ['nome', 'tipo_de_documento', 'numero_do_documento', 'cpf', 'e_mail']))    {{-- somente estes campos do formulário da seleção são preenchidos neste momento de solicitação de isenção de taxa --}}
-                <div class="form-group row">
-                  @foreach ($input as $element)
-                    {!! $element !!}<br />
-                  @endforeach
-                </div>
-              @endif
-            @endif
-          @endforeach
-          {{-- campo extras[motivo_isencao_taxa] --}}
-          <div class="form-group row">
-            <div class="col-sm-3">
-              <label class="col-form-label va-middle" for="extras[motivo_isencao_taxa]">Motivo da <span style="white-space: nowrap;">Solicitação <small class="text-required">(*)</small></span></label>
-            </div>
-            <div class="col-sm-9">
-              <select class="form-control w-100" name="extras[motivo_isencao_taxa]" id="extras[motivo_isencao_taxa]" required>
-                <option value="" disabled selected>Selecione...</option>
-                @foreach ($motivosisencaotaxa as $motivoisencaotaxa)
-                  <option value="{{ $motivoisencaotaxa->id }}">{{ $motivoisencaotaxa->nome }}</option>
+              <div class="form-group row">
+                @foreach ($input as $element)
+                  {!! $element !!}<br />
                 @endforeach
-              </select>
-            </div>
-          </div>
-          {{-- campos de captcha e senha --}}
-          @foreach ($form as $input)
-            @if (is_array($input))
-              @if (strpos($input[0], 'class="g-recaptcha"') || strpos($input[0], 'id="password"'))
-                <div class="form-group row">
-                  @foreach ($input as $element)
-                    {!! $element !!}<br />
-                  @endforeach
-                </div>
-              @endif
+              </div>
             @endif
           @endforeach
         @endif
