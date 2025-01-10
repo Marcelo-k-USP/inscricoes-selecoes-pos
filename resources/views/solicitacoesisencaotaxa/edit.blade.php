@@ -46,15 +46,15 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @include('solicitacoesisencaotaxa.show.card-principal')     {{-- Principal --}}
+              @include('solicitacoesisencaotaxa.show.card-principal')    {{-- Principal --}}
             </div>
             <div class="col-md-5">
               @php
                 $selecao = $solicitacaoisencaotaxa->selecao;    // para o include abaixo
               @endphp
-              @include('inscricoes.show.card-informativos')                 {{-- Informativos --}}
+              @include('inscricoes.show.card-informativos')              {{-- Informativos --}}
               @if ($modo == 'edit')
-                @include('common.card-arquivos')                            {{-- Arquivos --}}
+                @include('common.card-arquivos')                         {{-- Arquivos --}}
               @endif
             </div>
           </div>

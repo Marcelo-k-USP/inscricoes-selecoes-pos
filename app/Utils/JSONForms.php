@@ -142,7 +142,7 @@ class JSONForms
                                             '<div id="barra_forca_password" style="height: 10px; width: 0px;">&nbsp;</div>' . PHP_EOL .
                                             '<p id="texto_forca_password" style="margin-top: 5px;">&nbsp;</p>' . PHP_EOL .
                                         '</div>' . PHP_EOL;
-                        if (($key == 'e_mail') && ($classe_nome == 'SolicitacaoIsencaoTaxa')) {
+                        if (($key == 'nome') && ($classe_nome == 'SolicitacaoIsencaoTaxa')) {
                             $html_string_motivoisencaotaxa .=
                                         '<div class="col-sm-3">' . PHP_EOL .
                                             '<label class="col-form-label va-middle" for="extras[motivo_isencao_taxa]">Motivo <small class="text-required">(*)</small></label>' . PHP_EOL .
@@ -160,7 +160,7 @@ class JSONForms
                 }
 
                 // fora do fluxo normal: inclui campo de motivo de isenção de taxa, pois ele não fica no $template
-                // este campo é inserido antes do e-mail
+                // este campo é inserido antes do nome
                 if ($html_string_motivoisencaotaxa != '')
                     $form[] = [new HtmlString($html_string_motivoisencaotaxa)];
 
@@ -176,8 +176,7 @@ class JSONForms
                     $input[] = new HtmlString($html_string);
                 }
 
-                // fluxo normal: inclui o campo propriamente dito
-                // vamos incluir o input se "can for igual ao perfil" ou "se não houver can"
+                // fluxo normal: inclui o campo propriamente dito, desde que "can for igual ao perfil" ou "se não houver can"
                 if (($perfil && isset($json->can) && $json->can == $perfil) || (!$perfil && !isset($json->can)))
                     $form[] = $input;
 

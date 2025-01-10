@@ -131,7 +131,7 @@ class ArquivoPolicy
             $autor_arquivo_id = $arquivo->user_id;
 
             $autor_solicitacaoisencaotaxa = $objeto->pessoas('Autor');
-            if (($autor_solicitacaoisencaotaxa == $user->id) && $autor_solicitacaoisencaotaxa && ($autor_solicitacaoisencaotaxa->id == $user->id))
+            if ($autor_solicitacaoisencaotaxa && ($autor_solicitacaoisencaotaxa->id == $user->id))
                 return true;                                       // permite que usuários renomeiem/apaguem arquivos em suas solicitações de isenção de taxa
 
                 $autor_inscricao = $objeto->pessoas('Autor');

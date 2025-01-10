@@ -176,7 +176,7 @@ class SolicitacaoIsencaoTaxa extends Model
                 }
                 break;
 
-            case 'Realizada':
+            case 'Isenção de Taxa Solicitada':
                 if (!$todos_requeridos_presentes()) {
                     $this->estado = 'Aguardando Comprovação';        // retrocede o estado
                     $this->save();
@@ -205,7 +205,7 @@ class SolicitacaoIsencaoTaxa extends Model
      */
     public function arquivos()
     {
-        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_solicitacaoisencaotaxa', 'solicitacaoisencaotaxa_id', 'arquivo_id')->withTimestamps();    // se eu não especificar o nome do campo como solicitacaoisencaotaxa_id, o Laravel vai pensar que é solicitacao_isencao_taxa_id, e vai dar erro
+        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_solicitacaoisencaotaxa', 'solicitacaoisencaotaxa_id', 'arquivo_id')->withPivot('tipo')->withTimestamps();    // se eu não especificar o nome do campo como solicitacaoisencaotaxa_id, o Laravel vai pensar que é solicitacao_isencao_taxa_id, e vai dar erro
     }
 
     /**
