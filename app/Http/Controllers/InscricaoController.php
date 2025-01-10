@@ -7,6 +7,7 @@ use App\Mail\InscricaoMail;
 use App\Models\Inscricao;
 use App\Models\LocalUser;
 use App\Models\Selecao;
+use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\User;
 use App\Services\RecaptchaService;
 use App\Utils\JSONForms;
@@ -92,16 +93,30 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes/create');
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
+        $solicitacaoisencaotaxa = null;
         // se for usuário logado (tanto usuário local quanto não local)...
         if (Auth::check()) {
             $user = Auth::user();
-            $extras = array(
-                'nome' => $user->name,
-                'e_mail' => $user->email,
-            );
+
+            // se o usuário já solicitou isenção de taxa para esta seleção, e ela foi aprovada...
+            $solicitacaoisencaotaxa = $user->solicitacoesIsencaoTaxa()->where('selecao_id', $selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
+            if ($solicitacaoisencaotaxa) {
+                $solicitacaoisencaotaxa_extras = json_decode($solicitacaoisencaotaxa->extras, true);
+                $extras = array(
+                    'nome' => $user->name,
+                    'tipo_de_documento' => $solicitacaoisencaotaxa_extras['tipo_de_documento'],
+                    'numero_do_documento' => $solicitacaoisencaotaxa_extras['numero_do_documento'],
+                    'cpf' => $solicitacaoisencaotaxa_extras['cpf'],
+                    'e_mail' => $user->email,
+                );
+            } else
+                $extras = array(
+                    'nome' => $user->name,
+                    'e_mail' => $user->email,
+                );
             $inscricao->extras = json_encode($extras);
         }
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create', $solicitacaoisencaotaxa));
     }
 
     /**
@@ -287,7 +302,7 @@ class InscricaoController extends Controller
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
-    public function monta_compact(Inscricao $inscricao, string $modo)
+    public function monta_compact(Inscricao $inscricao, string $modo, ?SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa = null)
     {
         $data = (object) self::$data;
         $inscricao->selecao->template = JSONForms::orderTemplate($inscricao->selecao->template);
@@ -297,6 +312,6 @@ class InscricaoController extends Controller
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'solicitacaoisencaotaxa', 'max_upload_size');
     }
 }
