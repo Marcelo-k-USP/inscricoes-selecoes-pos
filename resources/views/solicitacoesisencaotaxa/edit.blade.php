@@ -20,7 +20,6 @@
 @parent
   @php
     $solicitacaoisencaotaxa = $objeto;
-    $inscricao = $solicitacaoisencaotaxa;    // necessário porque fazemos include de alguns blades de inscrições, que referenciam $inscricao ao invés de $solicitacaoisencaotaxa
     $classe_nome = 'SolicitacaoIsencaoTaxa';
     $condicao_disponivel = ($solicitacaoisencaotaxa->selecao->estado == 'Em Andamento');
     $condicao_ativa = true;
@@ -34,7 +33,7 @@
               <div>
                 <a href="solicitacoesisencaotaxa">Solicitações de Isenção de Taxa</a>
                 &nbsp; | &nbsp;
-                @include('inscricoes.partials.btn-enable-disable')
+                @include('solicitacoesisencaotaxa.partials.btn-enable-disable')
               </div>
             @else
               Nova Solicitação de Isenção de Taxa
@@ -43,7 +42,7 @@
             <span class="text-muted">{{ $solicitacaoisencaotaxa->selecao->descricao }}</span>
           </div>
         </div>
-        @include('inscricoes.partials.badge-instrucoes-da-selecao')
+        @include('solicitacoesisencaotaxa.partials.badge-instrucoes-da-selecao')
         @include('solicitacoesisencaotaxa.partials.instrucoes-da-selecao')
         <div class="card-body">
           <div class="row">
@@ -55,6 +54,9 @@
               @endif
             </div>
             <div class="col-md-5">
+              @php
+                $selecao = $solicitacaoisencaotaxa->selecao;    // para o include abaixo
+              @endphp
               @include('inscricoes.show.card-informativos')                 {{-- Informativos --}}
               @if ($condicao_disponivel && ($modo == 'edit'))
                 @include('common.card-arquivos')                            {{-- Arquivos --}}

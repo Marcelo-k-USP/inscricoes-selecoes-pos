@@ -214,6 +214,41 @@ class SolicitacaoIsencaoTaxaController extends Controller
         }
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request            $request
+     * @param  \App\Models\SolicitacaoIsencaoTaxa  $solicitacaoisencaotaxa
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
+    {
+        $this->authorize('solicitacoesisencaotaxa.view', $solicitacaoisencaotaxa);    // este 1o passo da edição é somente um show, não chega a haver um update
+
+        \UspTheme::activeUrl('solicitacoesisencaotaxa');
+        return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request            $request
+     * @param  \App\Models\SolicitacaoIsencaoTaxa  $solicitacaoisencaotaxa
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
+    {
+        $this->authorize('solicitacoesisencaotaxa.update', $solicitacaoisencaotaxa);
+
+        $solicitacaoisencaotaxa->extras = json_encode($request->extras);
+        $solicitacaoisencaotaxa->save();
+
+        $request->session()->flash('alert-success', 'Solicitação de isenção de taxa alterada com sucesso');
+
+        \UspTheme::activeUrl('solicitacoesisencaotaxa');
+        return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
+    }
+
     private function processa_erro_store(string|array $msgs, Selecao $selecao, Request $request)
     {
         if (is_array($msgs))

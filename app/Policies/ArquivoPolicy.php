@@ -66,8 +66,8 @@ class ArquivoPolicy
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes subam arquivos de seleção
 
         if (Gate::allows('perfilusuario')) {
-            $autor_solicitacaoisencaotaxa_ou_inscricao = $objeto->pessoas('Autor');
-            if ($autor_solicitacaoisencaotaxa_ou_inscricao && ($autor_solicitacaoisencaotaxa_ou_inscricao->id == $user->id))
+            $autor_inscricao = $objeto->pessoas('Autor');
+            if ($autor_inscricao && ($autor_inscricao->id == $user->id))
                 return true;                                       // permite que usuários subam arquivos em suas solicitações de isenção de taxa e inscrições
         }
     }
