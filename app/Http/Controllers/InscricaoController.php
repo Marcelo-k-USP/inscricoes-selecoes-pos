@@ -93,12 +93,10 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes/create');
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
-        $solicitacaoisencaotaxa_aprovada = null;
         // se for usuário logado (tanto usuário local quanto não local)...
         if (Auth::check()) {
             $user = Auth::user();
 
-            $solicitacaoisencaotaxa_aprovada = $user->solicitacoesIsencaoTaxa()->where('selecao_id', $selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
             // se o usuário já solicitou isenção de taxa para esta seleção...
             $solicitacaoisencaotaxa = $user->solicitacoesIsencaoTaxa()->where('selecao_id', $selecao->id)->first();
             if ($solicitacaoisencaotaxa) {
@@ -118,7 +116,7 @@ class InscricaoController extends Controller
             $inscricao->extras = json_encode($extras);
         }
 
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create', $solicitacaoisencaotaxa_aprovada));
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
     /**
@@ -304,7 +302,7 @@ class InscricaoController extends Controller
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
-    public function monta_compact(Inscricao $inscricao, string $modo, ?SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa_aprovada = null)
+    public function monta_compact(Inscricao $inscricao, string $modo)
     {
         $data = (object) self::$data;
         $inscricao->selecao->template = JSONForms::orderTemplate($inscricao->selecao->template);
@@ -312,6 +310,7 @@ class InscricaoController extends Controller
         $classe_nome = 'Inscricao';
         $classe_nome_plural = 'inscricoes';
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
+        $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao_id)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');

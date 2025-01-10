@@ -113,21 +113,25 @@ class ArquivoController extends Controller
             case 'Inscricao':
                 $objeto->verificarArquivos();
                 if (($objeto->estado == 'Realizada') && (!$objeto->boleto_enviado)) {
-                    // envia e-mail com o boleto
-                    $passo = 'boleto';
-                    $inscricao = $objeto;
                     $user = \Auth::user();
-                    $papel = 'Candidato';
-                    $arquivo_nome = 'boleto.pdf';
-                    $arquivo_conteudo = $this->boletoService->gerarBoleto($inscricao);
-                    \Mail::to($user->email)
-                        ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivo_nome', 'arquivo_conteudo')));
+                    if ($user->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
+                        // envia e-mail com o boleto
+                        $passo = 'boleto';
+                        $inscricao = $objeto;
+                        $papel = 'Candidato';
+                        $arquivo_nome = 'boleto.pdf';
+                        $arquivo_conteudo = $this->boletoService->gerarBoleto($inscricao);
+                        \Mail::to($user->email)
+                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivo_nome', 'arquivo_conteudo')));
 
-                    $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
-                    $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
-                    $objeto->save();
-                    $info_adicional = '<br />' .
-                        'Sua inscrição foi completada e seu boleto foi enviado, não deixe de pagá-lo';
+                        $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
+                        $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
+                        $objeto->save();
+                        $info_adicional = '<br />' .
+                            'Sua inscrição foi completada e seu boleto foi enviado, não deixe de pagá-lo';
+                    } else
+                        $info_adicional = '<br />' .
+                            'Sua inscrição foi completada';
                 }
         }
 
@@ -251,12 +255,14 @@ class ArquivoController extends Controller
         }
     }
 
-    private function monta_compact(object $objeto, string $classe_nome, string $classe_nome_plural, $form, string $modo) {
+    private function monta_compact(object $objeto, string $classe_nome, string $classe_nome_plural, $form, string $modo)
+    {
         $data = (object) ('App\\Http\\Controllers\\' . $classe_nome . 'Controller')::$data;
         $linhaspesquisa = LinhaPesquisa::all();
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
+        $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'motivosisencaotaxa', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'motivosisencaotaxa', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
     }
 }
