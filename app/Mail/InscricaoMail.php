@@ -11,13 +11,15 @@ class InscricaoMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    // campos gerais
     protected $passo;
     protected $inscricao;
+    protected $user;
 
-    protected $localuser;
+    // campos adicionais para confirmação de e-mail
     protected $email_confirmation_url;
 
-    protected $user;
+    // campos adicionais para boleto
     protected $papel;
     protected $arquivo_nome;
     protected $arquivo_conteudo;
@@ -32,18 +34,25 @@ class InscricaoMail extends Mailable
     {
         $this->passo = $data['passo'];
         $this->inscricao = $data['inscricao'];
+        $this->user = $data['user'];
+
         switch ($this->passo) {
             case 'confirmação de e-mail':
-                $this->localuser = $data['localuser'];
                 $this->email_confirmation_url = $data['email_confirmation_url'];
                 break;
+
             case 'boleto':
-                $this->user = $data['user'];
                 $this->papel = $data['papel'];
                 $this->arquivo_nome = $data['arquivo_nome'];
                 $this->arquivo_conteudo = $data['arquivo_conteudo'];
                 $this->arquivo_erro = (!empty($this->arquivo_conteudo) ? '' : 'Ocorreu um erro na geração do boleto.<br />' . PHP_EOL .
                     'Por favor, entre em contato conosco em infor@ip.usp.br, informando-nos sobre esse problema.<br />' . PHP_EOL);
+                break;
+
+            case 'aprovação':
+                break;
+
+            case 'rejeição':
         }
     }
 
@@ -62,9 +71,10 @@ class InscricaoMail extends Mailable
                     ->view('emails.inscricao_confirmacaodeemail')
                     ->with([
                         'inscricao' => $this->inscricao,
-                        'localuser' => $this->localuser,
+                        'user' => $this->user,
                         'email_confirmation_url' => $this->email_confirmation_url,
                     ]);
+
             case 'boleto':
                 return $this
                     ->subject('[' . config('app.name') . '] Inscrição Realizada com Sucesso')
@@ -79,6 +89,26 @@ class InscricaoMail extends Mailable
                     ->when(!empty($this->arquivo_conteudo), function ($message) {
                         $message->attachData(base64_decode($this->arquivo_conteudo), $this->arquivo_nome, ['mime' => 'application/pdf']);
                     });
+
+            case 'aprovação':
+                return $this
+                    ->subject('[' . config('app.name') . '] Aprovação de Inscrição')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.inscricao_aprovacao')
+                    ->with([
+                        'inscricao' => $this->inscricao,
+                        'user' => $this->user,
+                    ]);
+
+            case 'rejeição':
+                return $this
+                    ->subject('[' . config('app.name') . '] Rejeição de Inscrição')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.inscricao_rejeicao')
+                    ->with([
+                        'inscricao' => $this->inscricao,
+                        'user' => $this->user,
+                    ]);
         }
     }
 }

@@ -198,9 +198,10 @@ class SolicitacaoIsencaoTaxaController extends Controller
 
                 // envia e-mail pedindo a confirmação do endereço de e-mail
                 $passo = 'confirmação de e-mail';
+                $user = $localuser;
                 $email_confirmation_url = url('localusers/confirmaemail', $token);
                 \Mail::to($localuser->email)
-                    ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'localuser', 'email_confirmation_url')));
+                    ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user', 'email_confirmation_url')));
 
                 return $solicitacaoisencaotaxa;
             });
@@ -241,8 +242,21 @@ class SolicitacaoIsencaoTaxaController extends Controller
         if ($request->conjunto_alterado == 'estado') {
             $this->authorize('solicitacoesisencaotaxa.updateStatus', $solicitacaoisencaotaxa);
 
-            $solicitacaoisencaotaxa->estado = $request->estado;
-            $solicitacaoisencaotaxa->save();
+            // transaction para não ter problema de inconsistência do DB
+            $solicitacaoisencaotaxa = DB::transaction(function () use ($request, $solicitacaoisencaotaxa) {
+
+                $solicitacaoisencaotaxa->estado = $request->estado;
+                $solicitacaoisencaotaxa->save();
+
+                // envia e-mail avisando o usuário da aprovação/rejeição da solicitação de isenção de taxa
+                if (in_array($solicitacaoisencaotaxa->estado, ['Isenção de Taxa Aprovada', 'Isenção de Taxa Rejeitada'])) {
+                    $passo = (($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada') ? 'aprovação' : 'rejeição');
+                    $user = $solicitacaoisencaotaxa->users()->wherePivot('papel', 'Autor')->first();
+                    \Mail::to($user->email)
+                        ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user')));
+                }
+                return $solicitacaoisencaotaxa;
+            });
 
             $request->session()->flash('alert-success', 'Estado da solicitação de isenção de taxa alterado com sucesso');
 

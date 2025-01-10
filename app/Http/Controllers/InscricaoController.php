@@ -199,9 +199,10 @@ class InscricaoController extends Controller
 
                 // envia e-mail pedindo a confirmação do endereço de e-mail
                 $passo = 'confirmação de e-mail';
+                $user = $localuser;
                 $email_confirmation_url = url('localusers/confirmaemail', $token);
                 \Mail::to($localuser->email)
-                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'localuser', 'email_confirmation_url')));
+                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'email_confirmation_url')));
 
                 return $inscricao;
             });
@@ -242,8 +243,21 @@ class InscricaoController extends Controller
         if ($request->conjunto_alterado == 'estado') {
             $this->authorize('inscricoes.updateStatus', $inscricao);
 
-            $inscricao->estado = $request->estado;
-            $inscricao->save();
+            // transaction para não ter problema de inconsistência do DB
+            $inscricao = DB::transaction(function () use ($request, $inscricao) {
+
+                $inscricao->estado = $request->estado;
+                $inscricao->save();
+
+                // envia e-mail avisando o usuário da aprovação/rejeição da inscrição
+                if (in_array($inscricao->estado, ['Aprovada', 'Rejeitada'])) {
+                    $passo = (($inscricao->estado == 'Aprovada') ? 'aprovação' : 'rejeição');
+                    $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
+                    \Mail::to($user->email)
+                        ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
+                }
+                return $inscricao;
+            });
 
             $request->session()->flash('alert-success', 'Estado da inscrição alterado com sucesso');
 
