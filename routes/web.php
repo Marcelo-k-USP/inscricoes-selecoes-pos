@@ -29,6 +29,8 @@ Route::get('solicitacoesisencaotaxa', [SolicitacaoIsencaoTaxaController::class, 
 Route::get('solicitacoesisencaotaxa/create', [SolicitacaoIsencaoTaxaController::class, 'listaSelecoesParaSolicitacaoIsencaoTaxa'])->name('solicitacoesisencaotaxa.create');
 Route::get('solicitacoesisencaotaxa/create/{selecao}', [SolicitacaoIsencaoTaxaController::class, 'create'])->name('solicitacoesisencaotaxa.create.selecao');
 Route::post('solicitacoesisencaotaxa/create', [SolicitacaoIsencaoTaxaController::class, 'store'])->name('solicitacoesisencaotaxa.store');
+Route::get('solicitacoesisencaotaxa/edit/{solicitacaoisencaotaxa}', [SolicitacaoIsencaoTaxaController::class, 'edit'])->name('solicitacoesisencaotaxa.edit');
+Route::put('solicitacoesisencaotaxa/edit/{solicitacaoisencaotaxa}', [SolicitacaoIsencaoTaxaController::class, 'update'])->name('solicitacoesisencaotaxa.update');
 
 // INSCRIÇÕES
 Route::get('inscricoes', [InscricaoController::class, 'index'])->name('inscricoes.index');

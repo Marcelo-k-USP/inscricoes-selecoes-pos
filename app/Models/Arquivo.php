@@ -22,7 +22,7 @@ class Arquivo extends Model
      */
     public function solicitacoesisencaotaxa()
     {
-        return $this->belongsToMany('App\Models\SolicitacaoIsencaoTaxa', 'arquivo_solicitacaoisencaotaxa')->withPivot('tipo')->withTimestamps();
+        return $this->belongsToMany('App\Models\SolicitacaoIsencaoTaxa', 'arquivo_solicitacaoisencaotaxa', 'arquivo_id', 'solicitacaoisencaotaxa_id')->withTimestamps();    // se eu não especificar o nome do campo como solicitacaoisencaotaxa_id, o Laravel vai pensar que é solicitacao_isencao_taxa_id, e vai dar erro
     }
 
     /**

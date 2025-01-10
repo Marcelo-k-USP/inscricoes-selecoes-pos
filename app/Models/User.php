@@ -201,7 +201,7 @@ class User extends Authenticatable
      */
     public function solicitacoesisencaotaxa()
     {
-        return $this->belongsToMany('App\Models\SolicitacaoIsencaoTaxa', 'user_solicitacaoisencaotaxa')->withTimestamps();
+        return $this->belongsToMany('App\Models\SolicitacaoIsencaoTaxa', 'user_solicitacaoisencaotaxa', 'user_id', 'solicitacaoisencaotaxa_id')->withTimestamps();    // se eu não especificar o nome do campo como solicitacaoisencaotaxa_id, o Laravel vai pensar que é solicitacao_isencao_taxa_id, e vai dar erro
     }
 
     /**

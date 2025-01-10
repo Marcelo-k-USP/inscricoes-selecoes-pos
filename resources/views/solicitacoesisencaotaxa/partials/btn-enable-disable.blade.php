@@ -10,21 +10,21 @@
 @endsection
 
 <div class="btn-group btn-enable-disable">
-  <button class="btn btn-sm {{ ($inscricao->estado == 'Aguardando Comprovação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Comprovação">
+  <button class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Aguardando Comprovação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Comprovação">
     Aguardando Comprovação
   </button>
-  <button class="btn btn-sm {{ ($inscricao->estado == 'Isenção de Taxa Solicitada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Isenção de Taxa Solicitada">
+  <button class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Solicitada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Isenção de Taxa Solicitada">
     Isenção de Taxa Solicitada
   </button>
-  <button class="btn btn-sm {{ ($inscricao->estado == 'Isenção de Taxa em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Isenção de Taxa em Avaliação">
+  <button class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Isenção de Taxa em Avaliação">
   Isenção de Taxa em Avaliação
   </button>
-  @if ($inscricao->estado == 'Isenção de Taxa Aprovada')
+  @if ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada')
     <button class="btn btn-sm btn-success" disabled name="estado" value="Isenção de Taxa Aprovada">
       Isenção de Taxa Aprovada
     </button>
   @endif
-  @if ($inscricao->estado == 'Isenção de Taxa Rejeitada')
+  @if ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Rejeitada')
     <button class="btn btn-sm btn-danger" disabled name="estado" value="Isenção de Taxa Rejeitada">
       Isenção de Taxa Rejeitada
     </button>
