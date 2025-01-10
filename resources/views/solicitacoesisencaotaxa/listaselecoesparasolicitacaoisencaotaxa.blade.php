@@ -20,7 +20,7 @@
 
   @if ($existem_selecoes)
     <br />
-    Para qual processo seletivo você deseja solicitar isenção de taxa<br />
+    Para qual processo seletivo você deseja solicitar isenção de taxa?<br />
     <table class="table table-sm table-hover solicitacao-isencao-taxa display responsive" style="width: 100%;">
       <thead>
         <tr>
