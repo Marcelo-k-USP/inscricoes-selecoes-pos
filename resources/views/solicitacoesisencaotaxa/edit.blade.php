@@ -21,7 +21,6 @@
   @php
     $solicitacaoisencaotaxa = $objeto;
     $classe_nome = 'SolicitacaoIsencaoTaxa';
-    $condicao_disponivel = ($solicitacaoisencaotaxa->selecao->estado == 'Em Andamento');
     $condicao_ativa = true;
   @endphp
   <div class="row">
@@ -47,18 +46,14 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @if ($condicao_disponivel)
-                @include('solicitacoesisencaotaxa.show.card-principal')     {{-- Principal --}}
-              @else
-                @include('inscricoes.show.card-naodisponivel')              {{-- Não Disponível --}}
-              @endif
+              @include('solicitacoesisencaotaxa.show.card-principal')     {{-- Principal --}}
             </div>
             <div class="col-md-5">
               @php
                 $selecao = $solicitacaoisencaotaxa->selecao;    // para o include abaixo
               @endphp
               @include('inscricoes.show.card-informativos')                 {{-- Informativos --}}
-              @if ($condicao_disponivel && ($modo == 'edit'))
+              @if ($modo == 'edit')
                 @include('common.card-arquivos')                            {{-- Arquivos --}}
               @endif
             </div>

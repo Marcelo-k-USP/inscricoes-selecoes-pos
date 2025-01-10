@@ -18,6 +18,14 @@ class Arquivo extends Model
     }
 
     /**
+     * relacionamento com solicitação de isenção de taxa
+     */
+    public function solicitacoesisencaotaxa()
+    {
+        return $this->belongsToMany('App\Models\SolicitacaoIsencaoTaxa', 'arquivo_solicitacaoisencaotaxa')->withPivot('tipo')->withTimestamps();
+    }
+
+    /**
      * relacionamento com inscrição
      */
     public function inscricoes()

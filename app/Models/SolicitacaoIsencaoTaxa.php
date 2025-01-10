@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Inscricao;
 use App\Models\Selecao;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,8 +12,8 @@ class SolicitacaoIsencaoTaxa extends Model
 {
     use HasFactory;
 
-    # inscrições não segue convenção do laravel para nomes de tabela
-    protected $table = 'inscricoes';    // SolicitacaoIsencaoTaxa e Inscricao utilizam a mesma tabela inscricoes
+    # solicitações de isenção de taxa não segue convenção do laravel para nomes de tabela
+    protected $table = 'solicitacoesisencaotaxa';
 
     protected $fillable = [
         'selecao_id',
@@ -35,12 +34,11 @@ class SolicitacaoIsencaoTaxa extends Model
     public static function getFields()
     {
         $fields = self::fields;
-        foreach ($fields as &$field) {
+        foreach ($fields as &$field)
             if (substr($field['name'], -3) == '_id') {
                 $class = '\\App\\Models\\' . $field['model'];
                 $field['data'] = $class::allToSelect();
             }
-        }
         return $fields;
     }
 
@@ -90,12 +88,10 @@ class SolicitacaoIsencaoTaxa extends Model
      */
     public static function contarSolicitacoesIsencaoTaxaPorAno(?Selecao $selecao = null)
     {
-        $contagem = self::selectRaw('year(created_at) ano, count(*) count')
+        return self::selectRaw('year(created_at) ano, count(*) count')
             ->where('selecao_id', $selecao->id)
             ->whereYear('created_at', '>=', date('Y') - 5) // ultimos 5 anos
-            ->whereIn('estado', self::estados())
             ->groupBy('ano')->get();
-        return $contagem;
     }
 
     /**
@@ -116,7 +112,6 @@ class SolicitacaoIsencaoTaxa extends Model
         $contagem = self::selectRaw('month(created_at) mes, count(*) count')
             ->where('selecao_id', $selecao->id)
             ->whereYear('created_at', $ano)
-            ->whereIn('estado', self::estados())
             ->groupBy('mes')->get();
 
         // vamos organizar em array por mês para facilitar a apresentação
@@ -138,22 +133,14 @@ class SolicitacaoIsencaoTaxa extends Model
     public static function listarSolicitacoesIsencaoTaxa()
     {
         if (Gate::any(['perfiladmin', 'perfilgerente']))
-            $solicitacoesisencaotaxa = self::whereIn('estado', self::estados())->get();
+            return self::get();
         else
-            $solicitacoesisencaotaxa = Auth::user()->solicitacoesisencaotaxa()
-                ->wherePivotIn('papel', ['Autor'])
-                ->whereIn('estado', self::estados())
-                ->get();
-
-        return $solicitacoesisencaotaxa;
+            return Auth::user()->solicitacoesisencaotaxa()->wherePivotIn('papel', ['Autor'])->get();
     }
 
     public static function listarSolicitacoesIsencaoTaxaPorSelecao(Selecao $selecao, int $ano)
     {
-        return self::where('selecao_id', $selecao->id)
-            ->whereYear('created_at', $ano)
-            ->whereIn('estado', self::estados())
-            ->get();
+        return self::where('selecao_id', $selecao->id)->whereYear('created_at', $ano)->get();
     }
 
     /**
@@ -218,7 +205,7 @@ class SolicitacaoIsencaoTaxa extends Model
      */
     public function arquivos()
     {
-        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_inscricao')->withPivot('tipo')->withTimestamps();
+        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_solicitacaoisencaotaxa', 'solicitacaoisencaotaxa_id', 'arquivo_id')->withTimestamps();    // se eu não especificar o nome do campo como solicitacaoisencaotaxa_id, o Laravel vai pensar que é solicitacao_isencao_taxa_id, e vai dar erro
     }
 
     /**
@@ -226,7 +213,7 @@ class SolicitacaoIsencaoTaxa extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\Models\User', 'user_inscricao', 'inscricao_id', 'user_id')->withTimestamps();    // preciso explicitar inscricao_id, senão o Laravel acha que é solicitacao_isencao_taxa_id, e não é, ocorreria erro
+        return $this->belongsToMany('App\Models\User', 'user_solicitacaoisencaotaxa', 'solicitacaoisencaotaxa_id', 'user_id')->withTimestamps();    // se eu não especificar o nome do campo como solicitacaoisencaotaxa_id, o Laravel vai pensar que é solicitacao_isencao_taxa_id, e vai dar erro
     }
 
     /**

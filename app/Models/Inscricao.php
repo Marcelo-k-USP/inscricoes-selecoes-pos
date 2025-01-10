@@ -34,12 +34,11 @@ class Inscricao extends Model
     public static function getFields()
     {
         $fields = self::fields;
-        foreach ($fields as &$field) {
+        foreach ($fields as &$field)
             if (substr($field['name'], -3) == '_id') {
                 $class = '\\App\\Models\\' . $field['model'];
                 $field['data'] = $class::allToSelect();
             }
-        }
         return $fields;
     }
 
@@ -106,12 +105,10 @@ class Inscricao extends Model
      */
     public static function contarInscricoesPorAno(?Selecao $selecao = null)
     {
-        $contagem = self::selectRaw('year(created_at) ano, count(*) count')
+        return self::selectRaw('year(created_at) ano, count(*) count')
             ->where('selecao_id', $selecao->id)
             ->whereYear('created_at', '>=', date('Y') - 5) // ultimos 5 anos
-            ->whereIn('estado', self::estados())
             ->groupBy('ano')->get();
-        return $contagem;
     }
 
     /**
@@ -132,14 +129,12 @@ class Inscricao extends Model
         $contagem = self::selectRaw('month(created_at) mes, count(*) count')
             ->where('selecao_id', $selecao->id)
             ->whereYear('created_at', $ano)
-            ->whereIn('estado', self::estados())
             ->groupBy('mes')->get();
 
         // vamos organizar em array por mês para facilitar a apresentação
         $ret = [];
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; $i++)
             $ret[] = $contagem->where('mes', $i + 1)->first()->count ?? '';
-        }
         return $ret;
     }
 
@@ -154,22 +149,14 @@ class Inscricao extends Model
     public static function listarInscricoes()
     {
         if (Gate::any(['perfiladmin', 'perfilgerente']))
-            $inscricoes = self::whereIn('estado', self::estados())->get();
+            return self::get();
         else
-            $inscricoes = Auth::user()->inscricoes()
-                ->wherePivotIn('papel', ['Autor'])
-                ->whereIn('estado', self::estados())
-                ->get();
-
-        return $inscricoes;
+            return Auth::user()->inscricoes()->wherePivotIn('papel', ['Autor'])->get();
     }
 
     public static function listarInscricoesPorSelecao(Selecao $selecao, int $ano)
     {
-        return self::where('selecao_id', $selecao->id)
-            ->whereYear('created_at', $ano)
-            ->whereIn('estado', self::estados())
-            ->get();
+        return self::where('selecao_id', $selecao->id)->whereYear('created_at', $ano)->get();
     }
 
     /**
