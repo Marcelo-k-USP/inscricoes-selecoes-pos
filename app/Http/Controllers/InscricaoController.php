@@ -93,13 +93,14 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes/create');
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
-        $solicitacaoisencaotaxa = null;
+        $solicitacaoisencaotaxa_aprovada = null;
         // se for usuário logado (tanto usuário local quanto não local)...
         if (Auth::check()) {
             $user = Auth::user();
 
-            // se o usuário já solicitou isenção de taxa para esta seleção, e ela foi aprovada...
-            $solicitacaoisencaotaxa = $user->solicitacoesIsencaoTaxa()->where('selecao_id', $selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
+            $solicitacaoisencaotaxa_aprovada = $user->solicitacoesIsencaoTaxa()->where('selecao_id', $selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
+            // se o usuário já solicitou isenção de taxa para esta seleção...
+            $solicitacaoisencaotaxa = $user->solicitacoesIsencaoTaxa()->where('selecao_id', $selecao->id)->first();
             if ($solicitacaoisencaotaxa) {
                 $solicitacaoisencaotaxa_extras = json_decode($solicitacaoisencaotaxa->extras, true);
                 $extras = array(
@@ -116,7 +117,8 @@ class InscricaoController extends Controller
                 );
             $inscricao->extras = json_encode($extras);
         }
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create', $solicitacaoisencaotaxa));
+
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create', $solicitacaoisencaotaxa_aprovada));
     }
 
     /**
@@ -302,7 +304,7 @@ class InscricaoController extends Controller
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
-    public function monta_compact(Inscricao $inscricao, string $modo, ?SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa = null)
+    public function monta_compact(Inscricao $inscricao, string $modo, ?SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa_aprovada = null)
     {
         $data = (object) self::$data;
         $inscricao->selecao->template = JSONForms::orderTemplate($inscricao->selecao->template);
@@ -312,6 +314,6 @@ class InscricaoController extends Controller
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'solicitacaoisencaotaxa', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
     }
 }
