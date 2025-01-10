@@ -239,16 +239,26 @@ class InscricaoController extends Controller
      */
     public function update(Request $request, Inscricao $inscricao)
     {
-        $this->authorize('inscricoes.update', $inscricao);
+        if ($request->conjunto_alterado == 'estado') {
+            $this->authorize('inscricoes.updateStatus', $inscricao);
 
-        $inscricao->extras = json_encode($request->extras);
-        $inscricao->save();
+            $inscricao->estado = $request->estado;
+            $inscricao->save();
 
-        $request->session()->flash('alert-success', 'Inscrição alterada com sucesso');
+            $request->session()->flash('alert-success', 'Estado da inscrição alterado com sucesso');
+
+        } else {
+            $this->authorize('inscricoes.update', $inscricao);
+
+            $inscricao->extras = json_encode($request->extras);
+            $inscricao->save();
+
+            $request->session()->flash('alert-success', 'Inscrição alterada com sucesso');
+        }
 
         \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
-    }
+}
 
     private function processa_erro_store(string|array $msgs, Selecao $selecao, Request $request)
     {

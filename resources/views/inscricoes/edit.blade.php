@@ -30,7 +30,7 @@
         <div class="card-header d-flex justify-content-between align-items-top">
           <div class="card-title my-0">
             @if ($modo == 'edit')
-              <div>
+              <div style="display: flex; align-items: center; white-space: nowrap;">
                 <a href="inscricoes">Inscrições</a> <i class="fas fa-angle-right mx-2"></i> Inscrição nº {{ $inscricao->id }}
                 &nbsp; | &nbsp;
                 @include('inscricoes.partials.btn-enable-disable')

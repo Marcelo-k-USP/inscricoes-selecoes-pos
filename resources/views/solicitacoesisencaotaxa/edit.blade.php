@@ -29,7 +29,7 @@
         <div class="card-header d-flex justify-content-between align-items-top">
           <div class="card-title my-0">
             @if ($modo == 'edit')
-              <div>
+              <div style="display: flex; align-items: center; white-space: nowrap;">
                 <a href="solicitacoesisencaotaxa">Solicitações de Isenção de Taxa</a>
                 &nbsp; | &nbsp;
                 @include('solicitacoesisencaotaxa.partials.btn-enable-disable')

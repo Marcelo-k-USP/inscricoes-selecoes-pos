@@ -238,12 +238,22 @@ class SolicitacaoIsencaoTaxaController extends Controller
      */
     public function update(Request $request, SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
     {
-        $this->authorize('solicitacoesisencaotaxa.update', $solicitacaoisencaotaxa);
+        if ($request->conjunto_alterado == 'estado') {
+            $this->authorize('solicitacoesisencaotaxa.updateStatus', $solicitacaoisencaotaxa);
 
-        $solicitacaoisencaotaxa->extras = json_encode($request->extras);
-        $solicitacaoisencaotaxa->save();
+            $solicitacaoisencaotaxa->estado = $request->estado;
+            $solicitacaoisencaotaxa->save();
 
-        $request->session()->flash('alert-success', 'Solicitação de isenção de taxa alterada com sucesso');
+            $request->session()->flash('alert-success', 'Estado da solicitação de isenção de taxa alterado com sucesso');
+
+        } else {
+            $this->authorize('solicitacoesisencaotaxa.update', $solicitacaoisencaotaxa);
+
+            $solicitacaoisencaotaxa->extras = json_encode($request->extras);
+            $solicitacaoisencaotaxa->save();
+
+            $request->session()->flash('alert-success', 'Solicitação de isenção de taxa alterada com sucesso');
+        }
 
         \UspTheme::activeUrl('solicitacoesisencaotaxa');
         return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));

@@ -75,6 +75,18 @@ class InscricaoPolicy
     }
 
     /**
+     * Determine whether the user can update the inscrição status.
+     *
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Inscricao  $inscricao
+     * @return mixed
+     */
+    public function updateStatus(User $user, Inscricao $inscricao)
+    {
+        return Gate::any(['perfiladmin', 'perfilgerente']);
+    }
+
+    /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user

@@ -75,6 +75,18 @@ class SolicitacaoIsencaoTaxaPolicy
     }
 
     /**
+     * Determine whether the user can update the solicitação de isenção de taxa status.
+     *
+     * @param  \App\Models\User                    $user
+     * @param  \App\Models\SolicitacaoIsencaoTaxa  $solicitacaoisencaotaxa
+     * @return mixed
+     */
+    public function updateStatus(User $user, SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
+    {
+        return Gate::any(['perfiladmin', 'perfilgerente']);
+    }
+
+    /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
