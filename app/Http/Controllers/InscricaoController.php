@@ -98,7 +98,7 @@ class InscricaoController extends Controller
             $user = Auth::user();
 
             // se o usuário já solicitou isenção de taxa para esta seleção...
-            $solicitacaoisencaotaxa = $user->solicitacoesIsencaoTaxa()->where('selecao_id', $selecao->id)->first();
+            $solicitacaoisencaotaxa = $user->solicitacoesIsencaoTaxa()?->where('selecao_id', $selecao->id)->first();
             if ($solicitacaoisencaotaxa) {
                 $solicitacaoisencaotaxa_extras = json_decode($solicitacaoisencaotaxa->extras, true);
                 $extras = array(
@@ -310,7 +310,7 @@ class InscricaoController extends Controller
         $classe_nome = 'Inscricao';
         $classe_nome_plural = 'inscricoes';
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
-        $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao_id)->where('estado', 'Isenção de Taxa Aprovada')->first();
+        $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');

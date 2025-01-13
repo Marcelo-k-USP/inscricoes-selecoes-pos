@@ -1,4 +1,4 @@
-Olá {{ $localuser->name }},<br />
+Olá {{ $user->name }},<br />
 <br />
 Você iniciou sua inscrição no processo seletivo {{ $inscricao->selecao->nome }}.<br />
 Clique neste link para confirmar seu e-mail: {{ $email_confirmation_url }}<br />

@@ -1,4 +1,4 @@
-Olá {{ $localuser->name }},<br />
+Olá {{ $user->name }},<br />
 <br />
 Você iniciou sua solicitação de isenção de taxa no processo seletivo {{ $solicitacaoisencaotaxa->selecao->nome }}.<br />
 Clique neste link para confirmar seu e-mail: {{ $email_confirmation_url }}<br />

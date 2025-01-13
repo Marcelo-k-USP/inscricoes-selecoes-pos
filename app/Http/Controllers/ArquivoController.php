@@ -114,7 +114,7 @@ class ArquivoController extends Controller
                 $objeto->verificarArquivos();
                 if (($objeto->estado == 'Realizada') && (!$objeto->boleto_enviado)) {
                     $user = \Auth::user();
-                    if ($user->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
+                    if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
                         // envia e-mail com o boleto
                         $passo = 'boleto';
                         $inscricao = $objeto;
@@ -127,6 +127,7 @@ class ArquivoController extends Controller
                         $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
                         $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
                         $objeto->save();
+
                         $info_adicional = '<br />' .
                             'Sua inscrição foi completada e seu boleto foi enviado, não deixe de pagá-lo';
                     } else
