@@ -18,8 +18,8 @@ class CreateSelecoesTable extends Migration
             $table->string('nome', 100);
             $table->string('estado', 90);
             $table->string('descricao', 255)->nullable();
-            $table->date('data_inicio');
-            $table->date('data_fim');
+            $table->datetime('datahora_inicio');
+            $table->datetime('datahora_fim');
             $table->decimal('boleto_valor', 8, 2);
             $table->string('boleto_texto')->nullable();
             $table->date('boleto_data_vencimento');

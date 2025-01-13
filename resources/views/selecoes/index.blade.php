@@ -34,8 +34,8 @@
             @include('selecoes.partials.status-muted')
           </td>
           <td>{{ $selecao->descricao }}</td>
-          <td>{{ formatarData($selecao->data_inicio) }}</td>
-          <td>{{ formatarData($selecao->data_fim) }}</td>
+          <td>{{ formatarDataHora($selecao->datahora_inicio) }}</td>
+          <td>{{ formatarDataHora($selecao->datahora_fim) }}</td>
         </tr>
       @endforeach
     </tbody>

@@ -578,8 +578,8 @@ class Selecao extends Model
     protected $fillable = [
         'nome',
         'descricao',
-        'data_inicio',
-        'data_fim',
+        'datahora_inicio',
+        'datahora_fim',
         'boleto_valor',
         'boleto_texto',
         'boleto_data_vencimento',
@@ -614,14 +614,14 @@ class Selecao extends Model
             'label' => 'Descrição',
         ],
         [
-            'name' => 'data_inicio',
+            'name' => 'datahora_inicio',
             'label' => 'Início',
-            'type' => 'date',
+            'type' => 'datetime',
         ],
         [
-            'name' => 'data_fim',
+            'name' => 'datahora_fim',
             'label' => 'Fim',
-            'type' => 'date',
+            'type' => 'datetime',
         ],
         [
             'name' => 'boleto_data_vencimento',
@@ -827,12 +827,12 @@ class Selecao extends Model
                 break;
             }
 
-        $hoje = Carbon::today();
-        if ($this->data_inicio > $hoje)
+        $agora = Carbon::now();
+        if ($this->datahora_inicio > $agora)
             $this->update(['estado' => $possui_todos_os_arquivos_required ? 'Aguardando Início' : 'Aguardando Documentação']);
-        elseif ($this->data_inicio <= $hoje && $this->data_fim >= $hoje)
+        elseif ($this->datahora_inicio <= $agora && $this->datahora_fim >= $agora)
             $this->update(['estado' => $possui_todos_os_arquivos_required ? 'Em Andamento' : 'Aguardando Documentação']);
-        elseif ($this->data_fim < $hoje)
+        elseif ($this->datahora_fim < $agora)
             $this->update(['estado' => 'Encerrada']);
     }
 

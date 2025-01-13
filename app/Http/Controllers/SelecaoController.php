@@ -85,8 +85,8 @@ class SelecaoController extends Controller
         }
 
         $requestData = $request->all();
-        $requestData['data_inicio'] = (is_null($requestData['data_inicio']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_inicio']));
-        $requestData['data_fim'] = (is_null($requestData['data_fim']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['data_fim']));
+        $requestData['datahora_inicio'] = (is_null($requestData['data_inicio'] || is_null($requestData['hora_inicio'])) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['data_inicio'] . ' ' . $requestData['hora_inicio']));
+        $requestData['datahora_fim'] = (is_null($requestData['data_fim'] || is_null($requestData['hora_fim'])) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['data_fim'] . ' ' . $requestData['hora_fim']));
         $requestData['boleto_valor'] = str_replace(',', '.', $requestData['boleto_valor']);
         $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento']));
         $selecao = Selecao::create($requestData);
@@ -138,8 +138,8 @@ class SelecaoController extends Controller
         $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
         $this->updateField($request, $selecao, 'nome', 'nome', 'o');
         $this->updateField($request, $selecao, 'descricao', 'descrição', 'a');
-        $this->updateField($request, $selecao, 'data_inicio', 'data início', 'a');
-        $this->updateField($request, $selecao, 'data_fim', 'data fim', 'a');
+        $this->updateField($request, $selecao, 'datahora_inicio', 'data/hora início', 'a');
+        $this->updateField($request, $selecao, 'datahora_fim', 'data/hora fim', 'a');
         $this->updateField($request, $selecao, 'boleto_valor', 'valor do boleto', 'o');
         $this->updateField($request, $selecao, 'boleto_texto', 'texto do boleto', 'o');
         $this->updateField($request, $selecao, 'boleto_data_vencimento', 'data de vencimento do boleto', 'a');
@@ -164,6 +164,13 @@ class SelecaoController extends Controller
 
     private function updateField(SelecaoRequest $request, Selecao $selecao, string $field, string $field_name, string $genero)
     {
+        if ((strpos($field, 'datahora_') === 0) || (strpos($field, '_datahora_') !== false)) {
+            $request->$field = (is_null($request->{str_replace('datahora_', 'data_', $field)}) ||
+                                is_null($request->{str_replace('datahora_', 'hora_', $field)}) ? null : Carbon::createFromFormat('d/m/Y H:i', $request->{str_replace('datahora_', 'data_', $field)} .
+                                                                                                                                              ' ' .
+                                                                                                                                              $request->{str_replace('datahora_', 'hora_', $field)})->format('Y-m-d H:i'));
+        }
+
         if ((strpos($field, 'data_') === 0) || (strpos($field, '_data_') !== false))
             $request->$field = (is_null($request->$field) ? null : Carbon::createFromFormat('d/m/Y', $request->$field)->format('Y-m-d'));
 

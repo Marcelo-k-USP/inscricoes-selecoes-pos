@@ -54,11 +54,19 @@ if (!function_exists('formatarData')) {
     }
 }
 
+if (!function_exists('formatarHora')) {
+    function formatarHora($hora)
+    {
+        // parece haver um bug nesta versão do Carbon que, se a hora for nula, ele formata uma hora anterior que ele formatou ao invés de retornar null
+        return ((is_null($hora)) ? '' : Carbon::parse($hora)->format('H:i'));
+    }
+}
+
 if (!function_exists('formatarDataHora')) {
     function formatarDataHora($data_hora)
     {
         // parece haver um bug nesta versão do Carbon que, se a data for nula, ele formata uma data anterior que ele formatou ao invés de retornar null
-        return ((is_null($data_hora)) ? '' : Carbon::parse($data_hora)->format('d/m/Y H:i:s'));
+        return ((is_null($data_hora)) ? '' : Carbon::parse($data_hora)->format('d/m/Y H:i'));
     }
 }
 
