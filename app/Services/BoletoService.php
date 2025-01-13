@@ -18,7 +18,7 @@ class BoletoService
     public function gerarBoleto(Inscricao $inscricao)
     {
         $extras = json_decode($inscricao->extras, true);
-        $cpf = (($extras['tipo_de_documento'] == 'Passaporte') ? '99999999999' : str_replace(['-', '.'], '', $extras['cpf']));
+        $cpf = ((strtolower($extras['tipo_de_documento']) == 'passaporte') ? '99999999999' : str_replace(['-', '.'], '', $extras['cpf']));
         $parametros = Parametro::first();
 
         $boleto = new Boleto(config('selecoes-pos.ws_boleto_usuario'), config('selecoes-pos.ws_boleto_senha'));
