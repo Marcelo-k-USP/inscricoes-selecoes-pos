@@ -168,20 +168,16 @@ class SolicitacaoIsencaoTaxa extends Model
             return true;
         };
 
-        switch ($this->estado) {
-            case 'Aguardando Comprovação':
-                if ($todos_requeridos_presentes()) {
-                    $this->estado = 'Isenção de Taxa Solicitada';    // avança o estado
-                    $this->save();
-                }
-                break;
-
-            case 'Isenção de Taxa Solicitada':
-                if (!$todos_requeridos_presentes()) {
-                    $this->estado = 'Aguardando Comprovação';        // retrocede o estado
-                    $this->save();
-                }
-        }
+        if ($this->estado == 'Aguardando Comprovação') {
+            if ($todos_requeridos_presentes()) {
+                $this->estado = 'Isenção de Taxa Solicitada';    // avança o estado
+                $this->save();
+            }
+        } else
+            if (!$todos_requeridos_presentes()) {
+                $this->estado = 'Aguardando Comprovação';        // retrocede o estado
+                $this->save();
+            }
     }
 
     /**

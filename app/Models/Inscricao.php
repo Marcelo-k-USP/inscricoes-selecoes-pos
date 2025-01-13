@@ -184,20 +184,16 @@ class Inscricao extends Model
             return true;
         };
 
-        switch ($this->estado) {
-            case 'Aguardando Documentação':
-                if ($todos_requeridos_presentes()) {
-                    $this->estado = 'Realizada';                  // avança o estado
-                    $this->save();
-                }
-                break;
-
-            case 'Realizada':
-                if (!$todos_requeridos_presentes()) {
-                    $this->estado = 'Aguardando Documentação';    // retrocede o estado
-                    $this->save();
-                }
-        }
+        if ($this->estado == 'Aguardando Documentação') {
+            if ($todos_requeridos_presentes()) {
+                $this->estado = 'Realizada';                  // avança o estado
+                $this->save();
+            }
+        } else
+            if (!$todos_requeridos_presentes()) {
+                $this->estado = 'Aguardando Documentação';    // retrocede o estado
+                $this->save();
+            }
     }
 
     /**
