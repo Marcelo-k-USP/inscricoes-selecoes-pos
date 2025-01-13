@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Arquivo;
-use App\Models\Feriado;
 use App\Models\Inscricao;
 use App\Models\Parametro;
 use Carbon\Carbon;
