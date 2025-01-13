@@ -841,7 +841,7 @@ class Selecao extends Model
      */
     public static function atualizarStatusSelecoes()
     {
-        $data_limite = Carbon::today()->subYears(5);
+        $data_limite = Carbon::today()->subYears(2);
         $selecoes = self::where('created_at', '>=', $data_limite)->get();
         foreach ($selecoes as $selecao)
             $selecao->atualizarStatus();
