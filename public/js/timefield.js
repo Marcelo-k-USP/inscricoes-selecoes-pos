@@ -22,8 +22,22 @@ $(document).ready(function() {
   $('.form-group .flatpickr-hour, .form-group .flatpickr-time-separator, .form-group .flatpickr-minute').css('color', $('.form-group').first().css('color') + ' !important');
 });
 
-// habilita navegação para fora dos campos do flatpickr via <TAB> e <SHIFT> + <TAB>
+$(document).on('input', '.flatpickr-hour, .flatpickr-minute', function() {
+
+  // impede que se digite mais de dois caracteres
+  if (this.value.length > 2)
+    this.value = this.value.slice(0, 2);
+});
+
 $(document).on('keydown', '.flatpickr-hour, .flatpickr-minute', function(e) {
+
+  // impede digitação de caracteres não numéricos
+  const isControlKey = e.CtrlKey || e.metaKey || e.altKey;
+  const isNavigationKey = ['Tab', 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown', 'Escape', 'Enter'].includes(e.key);
+  if (!e.key.match(/^\d$/) && !isControlKey && !isNavigationKey && !(key === 'Tab' && e.shiftKey))
+    e.preventDefault();
+
+  // habilita navegação para fora dos campos do flatpickr via <TAB> e <SHIFT> + <TAB>
   const currentClass = $(this).attr('class');
   const allInputs = $(this).closest('form').find('input').not('.timefield');    // pula o input timefield, pois ele não é visível e não recebe foco com <TAB> ou <SHIFT> + <TAB>
   const currentIndex = allInputs.index(this);
