@@ -19,7 +19,7 @@
     .form-group .flatpickr-calendar {
       top: 0px !important;
       height: 36px !important;
-      width: 106px !important;
+      width: 86px !important;
       border-radius: .2rem !important;
     }
 
