@@ -5,6 +5,8 @@ $(document).ready(function() {
         enableTime: true,
         noCalendar: true,
         dateFormat: "H:i",
+        defaultHour: null,
+        defaultMinute: null,
         time_24hr: true,
         minuteIncrement: 1,
         allowInput: false,
