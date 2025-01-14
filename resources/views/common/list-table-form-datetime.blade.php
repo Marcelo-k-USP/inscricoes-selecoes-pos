@@ -7,6 +7,7 @@
     {{ html()->input('text', str_replace('datahora_', 'data_', $col['name']))
       ->value(old(str_replace('datahora_', 'data_', $col['name']), $modo == 'edit' ? formatarData($objeto->{$col['name']}) : ''))
       ->class('form-control datepicker')
+      ->attribute('style', 'width: 106px;')
     }}
     &nbsp; &nbsp;
     {{ html()->input('text', str_replace('datahora_', 'hora_', $col['name']))

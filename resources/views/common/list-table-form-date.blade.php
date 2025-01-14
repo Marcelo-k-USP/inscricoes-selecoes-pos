@@ -7,6 +7,7 @@
     {{ html()->input('text', $col['name'])
       ->value(old($col['name'], $modo == 'edit' ? formatarData($objeto->{$col['name']}) : ''))
       ->class('form-control datepicker')
+      ->attribute('style', 'width: 106px;')
     }}
   </div>
 </div>
