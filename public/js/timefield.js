@@ -25,7 +25,7 @@ $(document).ready(function() {
 // habilita navegação para fora dos campos do flatpickr via <TAB> e <SHIFT> + <TAB>
 $(document).on('keydown', '.flatpickr-hour, .flatpickr-minute', function(e) {
   const currentClass = $(this).attr('class');
-  const allInputs = $(this).closest('form').find('input');
+  const allInputs = $(this).closest('form').find('input').not('.timefield');    // pula o input timefield, pois ele não é visível e não recebe foco com <TAB> ou <SHIFT> + <TAB>
   const currentIndex = allInputs.index(this);
 
   if (e.key === 'Tab' && (!e.shiftKey) && (currentClass == 'numInput flatpickr-minute')) {
@@ -33,6 +33,6 @@ $(document).on('keydown', '.flatpickr-hour, .flatpickr-minute', function(e) {
     allInputs.eq(currentIndex + 1).focus();    // move para o próximo elemento
   } else if (e.key === 'Tab' && e.shiftKey && (currentClass == 'numInput flatpickr-hour')) {
     e.preventDefault();
-    allInputs.eq(currentIndex - 2).focus();    // move para o elemento anterior (se eu colocasse - 1, cairia no <input type="text" style="display: none;">... preciso pulá-lo, por isso - 2)
+    allInputs.eq(currentIndex - 1).focus();    // move para o elemento anterior
   }
 });
