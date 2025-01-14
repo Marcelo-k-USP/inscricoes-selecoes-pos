@@ -8,10 +8,11 @@
       ->value(old(str_replace('datahora_', 'data_', $col['name']), $modo == 'edit' ? formatarData($objeto->{$col['name']}) : ''))
       ->class('form-control datepicker')
     }}
-    &nbsp;
-    {{ html()->input('time', str_replace('datahora_', 'hora_', $col['name']))
+    &nbsp; &nbsp;
+    {{ html()->input('text', str_replace('datahora_', 'hora_', $col['name']))
       ->value(old(str_replace('datahora_', 'hora_', $col['name']), $modo == 'edit' ? formatarHora($objeto->{$col['name']}) : ''))
-      ->class('form-control')
+      ->class('form-control timefield')
+      ->attribute('style', 'display: none;')
     }}
   </div>
 </div>

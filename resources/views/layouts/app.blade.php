@@ -15,6 +15,24 @@
       border-bottom-width: medium !important;
       border-bottom-color: red !important;
     }
+
+    .form-group .flatpickr-calendar {
+      top: 0px !important;
+      height: 36px !important;
+      border-radius: .2rem !important;
+    }
+
+    .form-group .flatpickr-time {
+      position: relative !important;
+      top: -2px !important;
+      border: 0 !important;
+    }
+
+    .form-group .flatpickr-hour, .form-group .flatpickr-time-separator, .form-group .flatpickr-minute {
+      font-size: 1rem !important;
+      font-weight: 400 !important;
+      color: #495057 !important;
+    }
   </style>
 @endsection
 
@@ -62,7 +80,14 @@
     });
   </script>
 
+  {{-- datepicker --}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
   <script src="{{ asset('js/datepicker.js') }}" type="text/javascript"></script>
+
+  {{-- flatpickr --}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+  <script src="{{ asset('js/timefield.js') }}" type="text/javascript"></script>
 @endsection
