@@ -15,7 +15,7 @@ class LinhaPesquisa extends Model
 
     protected $fillable = [
         'nome',
-        'codpes_docente',
+        'codpes_orientador',
         'programa_id',
     ];
 
@@ -26,8 +26,8 @@ class LinhaPesquisa extends Model
             'label' => 'Nome',
         ],
         [
-            'name' => 'codpes_docente',
-            'label' => 'Docente Responsável',
+            'name' => 'codpes_orientador',
+            'label' => 'Orientador',
         ],
         [
             'name' => 'programa_id',

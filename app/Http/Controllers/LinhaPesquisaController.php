@@ -60,7 +60,7 @@ class LinhaPesquisaController extends Controller
 
         if ($request->ajax()) {
             $linhapesquisa = LinhaPesquisa::find((int) $id);    // preenche os dados do form de edição de uma linha de pesquisa
-            $linhapesquisa->codpes_docente = $linhapesquisa->codpes_docente . ' ' . (new UserController)->codpes(new Request(['term' => $linhapesquisa->codpes_docente]));
+            $linhapesquisa->codpes_orientador = $linhapesquisa->codpes_orientador . ' ' . (new UserController)->codpes(new Request(['term' => $linhapesquisa->codpes_orientador]));
             return $linhapesquisa;
         }
     }
