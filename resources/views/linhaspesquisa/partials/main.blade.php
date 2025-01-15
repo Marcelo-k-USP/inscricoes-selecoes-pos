@@ -11,9 +11,23 @@
 </div>
 
 <table class="table table-sm my-0 ml-3">
+  @php
+    $programa_anterior = '';
+  @endphp
   @foreach ($linhaspesquisa as $linhapesquisa)
+    @if ($linhapesquisa->programa->nome != $programa_anterior)
+      <tr>
+        <td colspan="2">
+          {{ $linhapesquisa->programa->nome }}
+        </td>
+      </tr>
+      @php
+        $programa_anterior = $linhapesquisa->programa->nome;
+      @endphp
+    @endif
     {{-- Mostra o conteúdo de uma linha de pesquisa --}}
     <tr>
+      <td>&nbsp;</td>
       <td>
         <div>
           <a name="{{ \Str::lower($linhapesquisa->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $linhapesquisa->nome }}</a>

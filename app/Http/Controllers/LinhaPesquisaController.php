@@ -28,7 +28,7 @@ class LinhaPesquisaController extends Controller
         $this->authorize('linhaspesquisa.viewAny');
         \UspTheme::activeUrl('linhaspesquisa');
 
-        $linhaspesquisa = LinhaPesquisa::all();
+        $linhaspesquisa = LinhaPesquisa::with('programa')->get();
         $fields = LinhaPesquisa::getFields();
 
         # para o form de adicionar pessoas
