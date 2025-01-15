@@ -1,6 +1,10 @@
 # Seleções Pós (Laravel 11)
 
-Permite ...
+Permite que candidatos solicitem isenção de taxa de inscrição e realizem inscrição.
+Ambas as "entidades" (isenção de taxa de solicitação e inscrição) possuem fluxo de estados.
+Se uma solicitação de isenção de taxa for aprovada pelo gerente, o candidato deve realizar login no sistema para então se inscrever obtendo esse benefício.
+Os gerentes são atrelados aos programas dos departamentos, não aos departamentos.
+Cada gerente pode acessar solicitações de taxa de inscrição e inscrições somente de seus programas associados.
     
 ## Instalação
 

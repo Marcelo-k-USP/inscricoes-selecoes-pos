@@ -15,7 +15,7 @@ class CreateLinhasPesquisaTable extends Migration
     {
         Schema::create('linhaspesquisa', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 100);
+            $table->string('nome', 200);
             $table->integer('codpes_docente');
             $table->foreignId('programa_id')->constrained('programas');
             $table->timestamps();

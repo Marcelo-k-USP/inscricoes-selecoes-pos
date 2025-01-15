@@ -19,7 +19,7 @@ class SelecaoSeeder extends Seeder
     public function run()
     {
         $categoria_id_ALUNOREGULAR = Categoria::where('nome', 'Aluno Regular')->first()->id;
-        $programa_id_PROGRAMA1 = Programa::where('nome', 'Programa 1')->first()->id;
+        $programa_id_NEUROCIENCIAS_E_COMPORTAMENTO = Programa::where('nome', 'Neurociências e Comportamento (NEC)')->first()->id;
 
         // se formos incluir tags com aspas duplas, precisamos usar <a href=\"...\">...</a> ao invés de <a href="...">...</a>
 
@@ -581,7 +581,7 @@ class SelecaoSeeder extends Seeder
                     }
                 }',
                 'categoria_id' => $categoria_id_ALUNOREGULAR,
-                'programa_id' => $programa_id_PROGRAMA1,
+                'programa_id' => $programa_id_NEUROCIENCIAS_E_COMPORTAMENTO,
                 'settings' => '{
                     "instrucoes": "Os campos marcados com (*) são de preenchimento obrigatório"
                 }'

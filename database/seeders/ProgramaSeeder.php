@@ -16,12 +16,24 @@ class ProgramaSeeder extends Seeder
     {
         $programas = [
             [
-                'nome' => 'Programa 1',
-                'descricao' => 'Programa 1'
+                'nome' => 'Neurociências e Comportamento (NEC)',
+                'descricao' => 'Programa de Pós-Graduação em Neurociências e Comportamento'
             ],
             [
-                'nome' => 'Programa 2',
-                'descricao' => 'Programa 2'
+                'nome' => 'Psicologia Escolar e do Desenvolvimento Humano (PSA)',
+                'descricao' => 'Programa de Pós-Graduação em Psicologia Escolar e do Desenvolvimento Humano'
+            ],
+            [
+                'nome' => 'Psicologia Clínica (PSC)',
+                'descricao' => 'Programa de Pós-Graduação em Psicologia Clínica'
+            ],
+            [
+                'nome' => 'Psicologia Experimental (PSE)',
+                'descricao' => 'Programa de Pós-Graduação em Psicologia Experimental'
+            ],
+            [
+                'nome' => 'Psicologia Social (PST)',
+                'descricao' => 'Programa de Pós-Graduação em Psicologia Social'
             ],
         ];
 
