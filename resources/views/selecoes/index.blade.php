@@ -17,23 +17,23 @@
   <table class="table table-striped table-hover datatable-nopagination display responsive" style="width:100%">
     <thead>
       <tr>
-        <th>Categoria</td>
-        <th>Nome</td>
-        <th>Descrição</td>
-        <th>Início</td>
-        <th>Fim</td>
+        <th>Categoria</th>
+        <th>Programa</th>
+        <th>Nome</th>
+        <th>Início</th>
+        <th>Fim</th>
       </tr>
     </thead>
     <tbody>
       @foreach ($objetos as $selecao)
         <tr>
           <td>{{ $selecao->categoria->nome }}</td>
+          <td>{{ $selecao->programa->nome }}</td>
           <td>
             @include('selecoes.partials.status-small')
             <a class="mr-2" href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->nome }}</a>
             @include('selecoes.partials.status-muted')
           </td>
-          <td>{{ $selecao->descricao }}</td>
           <td>{{ formatarDataHora($selecao->datahora_inicio) }}</td>
           <td>{{ formatarDataHora($selecao->datahora_fim) }}</td>
         </tr>
