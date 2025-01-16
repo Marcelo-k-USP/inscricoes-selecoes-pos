@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Uspdev\Replicado\Pessoa;
 
 class LinhaPesquisaController extends Controller
 {
@@ -191,9 +192,9 @@ class LinhaPesquisaController extends Controller
         });
 
         if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'O orientador ' . $db_transaction['orientador']->codpes . ' foi adicionado à essa linha de pesquisa.');
+            $request->session()->flash('alert-success', 'O orientador ' . Pessoa::obterNome($db_transaction['orientador']->codpes) . ' foi adicionado à essa linha de pesquisa');
         else
-            $request->session()->flash('alert-info', 'O orientador ' . $db_transaction['orientador']->codpes . ' já estava vinculado à essa linha de pesquisa.');
+            $request->session()->flash('alert-info', 'O orientador ' . Pessoa::obterNome($db_transaction['orientador']->codpes) . ' já estava vinculado à essa linha de pesquisa');
         return back();
     }
 
@@ -207,13 +208,16 @@ class LinhaPesquisaController extends Controller
 
         $linhapesquisa->orientadores()->detach($orientador);
 
-        $request->session()->flash('alert-success', 'O orientador ' . $orientador->codpes . ' foi removido dessa linha de pesquisa.');
+        $request->session()->flash('alert-success', 'O orientador ' . Pessoa::obterNome($orientador->codpes) . ' foi removido dessa linha de pesquisa');
         return back();
     }
 
     private function monta_compact(LinhaPesquisa $linhapesquisa, string $modo)
     {
         $data = (object) self::$data;
+        if (!is_null($linhapesquisa) && !is_null($linhapesquisa->orientadores))
+            foreach ($linhapesquisa->orientadores as $orientador)
+                $orientador->nome = Pessoa::obterNome($orientador->codpes);
         $objeto = $linhapesquisa;
         $fields_orientador = Orientador::getFields();
 

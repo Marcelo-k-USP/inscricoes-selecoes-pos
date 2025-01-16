@@ -1,6 +1,6 @@
 <div class="d-flex">
   <b>
-    {{ $orientador->codpes }}
+    {{ $orientador->nome }}
   </b>
   <div class="hidden-btn d-none ml-auto">
     @can('linhaspesquisa.update')
