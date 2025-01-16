@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\EnderecoController;
+use App\Http\Controllers\FuncaoController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\LinhaPesquisaController;
@@ -110,6 +111,10 @@ Route::resource('localusers', LocalUserController::class);
 // PARÂMETROS
 Route::get('parametros', [ParametroController::class, 'edit'])->name('parametros.edit');
 Route::put('parametros', [ParametroController::class, 'update'])->name('parametros.update');
+
+// FUNÇÕES
+Route::get('funcoes', [FuncaoController::class, 'edit'])->name('funcoes.edit');
+Route::put('funcoes', [FuncaoController::class, 'update'])->name('funcoes.update');
 
 // ARQUIVOS
 Route::resource('arquivos', ArquivoController::class);

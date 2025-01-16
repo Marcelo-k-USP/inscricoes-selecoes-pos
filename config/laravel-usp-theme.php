@@ -57,6 +57,11 @@ $admin = [
         'can' => 'parametros.viewAny',
     ],
     [
+        'text' => '<i class="fas fa-users-cogs"></i> Funções',
+        'url' => 'funcoes',
+        'can' => 'funcoes.viewAny',
+    ],
+    [
         'text' => '<i class="fa fa-list-ul"></i> Usuários Locais',
         'url' => 'localusers',
         'can' => 'localusers.viewAny',
