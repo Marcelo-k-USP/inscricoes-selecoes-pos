@@ -15,7 +15,6 @@ class LinhaPesquisa extends Model
 
     protected $fillable = [
         'nome',
-        'codpes_orientador',
         'programa_id',
     ];
 
@@ -24,10 +23,6 @@ class LinhaPesquisa extends Model
         [
             'name' => 'nome',
             'label' => 'Nome',
-        ],
-        [
-            'name' => 'codpes_orientador',
-            'label' => 'Orientador',
         ],
         [
             'name' => 'programa_id',
@@ -79,6 +74,14 @@ class LinhaPesquisa extends Model
     public function selecoes()
     {
         return $this->belongsToMany('App\Models\Selecao', 'linhapesquisa_selecao', 'linhapesquisa_id', 'selecao_id')->withTimestamps();
+    }
+
+    /**
+     * relacionamento com orientadores
+     */
+    public function orientadores()
+    {
+        return $this->belongsToMany('App\Models\Orientador', 'orientador_linhapesquisa', 'linhapesquisa_id', 'orientador_id')->withTimestamps();
     }
 
     /**

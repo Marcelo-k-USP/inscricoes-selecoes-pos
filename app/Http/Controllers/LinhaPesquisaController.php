@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LinhaPesquisaRequest;
 use App\Models\LinhaPesquisa;
+use App\Models\Orientador;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
@@ -12,6 +14,17 @@ use Illuminate\Support\Facades\Validator;
 
 class LinhaPesquisaController extends Controller
 {
+    // crud generico
+    public static $data = [
+        'title' => 'Linhas de Pesquisa',
+        'url' => 'linhaspesquisa',     // caminho da rota do resource
+        'modal' => true,
+        'showId' => false,
+        'viewBtn' => true,
+        'editBtn' => false,
+        'model' => 'App\Models\LinhaPesquisa',
+    ];
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -28,7 +41,7 @@ class LinhaPesquisaController extends Controller
         $this->authorize('linhaspesquisa.viewAny');
         \UspTheme::activeUrl('linhaspesquisa');
 
-        $linhaspesquisa = LinhaPesquisa::with('programa')->get();
+        $linhaspesquisa = LinhaPesquisa::with('programa')->orderBy('programa_id')->orderBy('id')->get();
         $fields = LinhaPesquisa::getFields();
 
         # para o form de adicionar pessoas
@@ -47,22 +60,16 @@ class LinhaPesquisaController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for creating a new resource.
      *
-     * @param  \Illuminate\Http\Request   $request
-     * @param  string                     $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, string $id)
+    public function create()
     {
-        $this->authorize('linhaspesquisa.view');
-        \UspTheme::activeUrl('linhaspesquisa');
+        $this->authorize('linhaspesquisa.create');
 
-        if ($request->ajax()) {
-            $linhapesquisa = LinhaPesquisa::find((int) $id);    // preenche os dados do form de edição de uma linha de pesquisa
-            $linhapesquisa->codpes_orientador = $linhapesquisa->codpes_orientador . ' ' . (new UserController)->codpes(new Request(['term' => $linhapesquisa->codpes_orientador]));
-            return $linhapesquisa;
-        }
+        \UspTheme::activeUrl('linhaspesquisa');
+        return view('linhaspesquisa.edit', $this->monta_compact(new LinhaPesquisa, 'create'));
     }
 
     /**
@@ -76,36 +83,59 @@ class LinhaPesquisaController extends Controller
         $this->authorize('linhaspesquisa.create');
 
         $validator = Validator::make($request->all(), LinhaPesquisaRequest::rules, LinhaPesquisaRequest::messages);
-        if ($validator->fails())
+        if ($validator->fails()) {
+            \UspTheme::activeUrl('linhaspesquisa');
             return back()->withErrors($validator)->withInput();
+        }
 
         $linhapesquisa = LinhaPesquisa::create($request->all());
 
-        $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return back();
+        $request->session()->flash('alert-success', 'Linha de pesquisa cadastrada com sucesso');
+
+        \UspTheme::activeUrl('linhaspesquisa');
+        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, LinhaPesquisa $linhapesquisa)
+    {
+        $this->authorize('linhaspesquisa.update');
+
+        \UspTheme::activeUrl('linhaspesquisa');
+        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\LinhaPesquisaRequest  $request
-     * @param  string                                   $id
+     * @param  \App\Models\LinhaPesquisa                $linhapesquisa
      * @return \Illuminate\Http\Response
      */
-    public function update(LinhaPesquisaRequest $request, string $id)
+    public function update(LinhaPesquisaRequest $request, LinhaPesquisa $linhapesquisa)
     {
         $this->authorize('linhaspesquisa.update');
 
         $validator = Validator::make($request->all(), LinhaPesquisaRequest::rules, LinhaPesquisaRequest::messages);
-        if ($validator->fails())
-            return back()->withErrors($validator)->withInput();
+        if ($validator->fails()) {
+            \UspTheme::activeUrl('linhaspesquisa');
+            return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'))->withErrors($validator);    // preciso especificar 'edit'... se eu fizesse um return back(), e o usuário estivesse vindo de um update após um create, a variável $modo voltaria a ser 'create', e a página ficaria errada
+        }
 
-        $linhapesquisa = LinhaPesquisa::find((int) $id);
-        $linhapesquisa->fill($request->all());
+        $linhapesquisa->nome = $request->nome;
+        $linhapesquisa->programa_id = $request->programa_id;
         $linhapesquisa->save();
 
-        $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        return back();
+        $request->session()->flash('alert-success', 'Linha de pesquisa alterada com sucesso');
+
+        \UspTheme::activeUrl('linhaspesquisa');
+        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
 
     /**
@@ -128,5 +158,65 @@ class LinhaPesquisaController extends Controller
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         return back();
+    }
+
+    /**
+     * Adicionar orientadores relacionados à linha de pesquisa
+     * autorizado a qualquer um que tenha acesso à linha de pesquisa
+     * request->codpes = required, int
+     */
+    public function storeOrientador(Request $request, LinhaPesquisa $linhapesquisa)
+    {
+        $this->authorize('linhaspesquisa.update');
+
+        $request->validate([
+            'codpes' => 'required',
+        ],
+        [
+            'codpes.required' => 'Orientador obrigatório',
+        ]);
+
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $linhapesquisa) {
+
+            $orientador = Orientador::where('codpes', $request->codpes)->first();
+            if (is_null($orientador))
+                $orientador = Orientador::create($request->all());
+
+            $existia = $linhapesquisa->orientadores()->detach($orientador);
+
+            $linhapesquisa->orientadores()->attach($orientador);
+
+            return ['orientador' => $orientador, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'O orientador ' . $db_transaction['orientador']->codpes . ' foi adicionado à essa linha de pesquisa.');
+        else
+            $request->session()->flash('alert-info', 'O orientador ' . $db_transaction['orientador']->codpes . ' já estava vinculado à essa linha de pesquisa.');
+        return back();
+    }
+
+    /**
+     * Remove orientadores relacionados à linha de pesquisa
+     * $user = required
+     */
+    public function destroyOrientador(Request $request, LinhaPesquisa $linhapesquisa, Orientador $orientador)
+    {
+        $this->authorize('linhaspesquisa.update');
+
+        $linhapesquisa->orientadores()->detach($orientador);
+
+        $request->session()->flash('alert-success', 'O orientador ' . $orientador->codpes . ' foi removido dessa linha de pesquisa.');
+        return back();
+    }
+
+    private function monta_compact(LinhaPesquisa $linhapesquisa, string $modo)
+    {
+        $data = (object) self::$data;
+        $objeto = $linhapesquisa;
+        $fields_orientador = Orientador::getFields();
+
+        return compact('data', 'objeto', 'fields_orientador', 'modo');
     }
 }

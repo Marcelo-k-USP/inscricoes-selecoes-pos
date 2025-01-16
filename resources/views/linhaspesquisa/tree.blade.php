@@ -7,7 +7,6 @@
   @else
     Sem linhas de pesquisa
   @endif
-  @include('linhaspesquisa.partials.modal')
 @endsection
 
 @section('javascripts_bottom')

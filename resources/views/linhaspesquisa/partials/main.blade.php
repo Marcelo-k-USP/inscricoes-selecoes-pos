@@ -3,10 +3,10 @@
     <span class="h4 mt-2">Linhas de Pesquisa</span>
     @can('create', App\Models\LinhaPesquisa::class)
       &nbsp; &nbsp;
-      <button type="button" class="btn btn-sm btn-success" onclick="add_form()">
+      <a href="{{ route('linhaspesquisa.create') }}" class="btn btn-sm btn-success">
         <i class="fas fa-plus"></i> Nova
-      </button>
-      @endcan
+      </a>
+    @endcan
   </div>
 </div>
 

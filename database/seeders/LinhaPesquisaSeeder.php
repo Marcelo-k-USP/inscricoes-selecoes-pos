@@ -25,92 +25,74 @@ class LinhaPesquisaSeeder extends Seeder
         $linhaspesquisa = [
             [
                 'nome' => 'Sensação, Percepção e Movimento',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_NEUROCIENCIAS_E_COMPORTAMENTO,
             ],
             [
                 'nome' => 'Neurotransmissores e Comportamento',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_NEUROCIENCIAS_E_COMPORTAMENTO,
             ],
             [
                 'nome' => 'Desenvolvimento e Plasticidade',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_NEUROCIENCIAS_E_COMPORTAMENTO,
             ],
             [
                 'nome' => 'História, Filosofia e Educação em Neurociências',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_NEUROCIENCIAS_E_COMPORTAMENTO,
             ],
             [
                 'nome' => 'Desenvolvimento Humano e Aprendizagem',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_ESCOLAR_E_DO_DESENVOLVIMENTO_HUMANO,
             ],
             [
                 'nome' => 'Desenvolvimento Humano e Avaliação Psicológica',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_ESCOLAR_E_DO_DESENVOLVIMENTO_HUMANO,
             ],
             [
                 'nome' => 'Psicologia, Instituições e Sociedade: Mediações do Desenvolvimento Humano',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_ESCOLAR_E_DO_DESENVOLVIMENTO_HUMANO,
             ],
             [
                 'nome' => 'Psicanálise Política: Cultura e Desenvolvimento Humano',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_ESCOLAR_E_DO_DESENVOLVIMENTO_HUMANO,
             ],
             [
                 'nome' => 'Psicologia Escolar, Educação e Políticas Públicas',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_ESCOLAR_E_DO_DESENVOLVIMENTO_HUMANO,
             ],
             [
                 'nome' => 'Psicanálise, Sofrimento e Política',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_CLINICA,
             ],
             [
                 'nome' => 'Psicanálise, Intersubjetividade e Configurações Vinculares',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_CLINICA,
             ],
             [
                 'nome' => 'Intervenções Clínicas em Saúde Mental: Diagnóstico, Ação Terapêutica e Prevenção',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_CLINICA,
             ],
             [
                 'nome' => 'Análise do Comportamento',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_EXPERIMENTAL,
             ],
             [
                 'nome' => 'Comportamento Animal e Etologia Humana',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_EXPERIMENTAL,
             ],
             [
                 'nome' => 'Sensação, Perceção e Cognição',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_EXPERIMENTAL,
             ],
             [
                 'nome' => 'Problemas Teóricos e Metodológicos',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_EXPERIMENTAL,
             ],
             [
                 'nome' => 'Processos e Práticas Psicossociais: Direitos Humanos, Desigualdades e Política',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_SOCIAL,
             ],
             [
                 'nome' => 'Processos e Práticas Psicossociais: Cultura e Subjetividade',
-                'codpes_orientador' => 1543022,
                 'programa_id' => $programa_id_PSICOLOGIA_SOCIAL,
             ],
         ];

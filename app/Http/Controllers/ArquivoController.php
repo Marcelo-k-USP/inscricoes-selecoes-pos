@@ -87,56 +87,63 @@ class ArquivoController extends Controller
         ]);
         $this->authorize('arquivos.create', [$objeto, $classe_nome]);
 
-        foreach ($request->arquivo as $arq) {
-            $arquivo = new Arquivo;
-            $arquivo->user_id = \Auth::user()->id;
-            $arquivo->nome_original = $arq->getClientOriginalName();
-            $arquivo->caminho = $arq->store('./arquivos/' . $objeto->created_at->year);
-            $arquivo->mimeType = $arq->getClientMimeType();
-            $arquivo->save();
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $classe_nome, $classe_nome_plural, $objeto) {
 
-            $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipo_arquivo]);
-        }
+            foreach ($request->arquivo as $arq) {
+                $arquivo = new Arquivo;
+                $arquivo->user_id = \Auth::user()->id;
+                $arquivo->nome_original = $arq->getClientOriginalName();
+                $arquivo->caminho = $arq->store('./arquivos/' . $objeto->created_at->year);
+                $arquivo->mimeType = $arq->getClientMimeType();
+                $arquivo->save();
 
-        $info_adicional = '';
-        switch ($classe_nome) {
-            case 'Selecao':
-                $objeto->atualizarStatus();
-                $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
-                break;
-            case 'SolicitacaoIsencaoTaxa':
-                $objeto->verificarArquivos();
-                if (($objeto->estado == 'Isenção de Taxa Solicitada'))
-                    $info_adicional = '<br />' .
-                        'Sua solicitação de isenção de taxa de inscrição foi completada';
-                break;
-            case 'Inscricao':
-                $objeto->verificarArquivos();
-                if (($objeto->estado == 'Realizada') && (!$objeto->boleto_enviado)) {
-                    $user = \Auth::user();
-                    if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
-                        // envia e-mail com o boleto
-                        $passo = 'boleto';
-                        $inscricao = $objeto;
-                        $papel = 'Candidato';
-                        $arquivo_nome = 'boleto.pdf';
-                        $arquivo_conteudo = $this->boletoService->gerarBoleto($inscricao);
-                        \Mail::to($user->email)
-                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivo_nome', 'arquivo_conteudo')));
+                $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipo_arquivo]);
+            }
 
-                        $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
-                        $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
-                        $objeto->save();
-
+            $info_adicional = '';
+            switch ($classe_nome) {
+                case 'Selecao':
+                    $objeto->atualizarStatus();
+                    $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
+                    break;
+                case 'SolicitacaoIsencaoTaxa':
+                    $objeto->verificarArquivos();
+                    if (($objeto->estado == 'Isenção de Taxa Solicitada'))
                         $info_adicional = '<br />' .
-                            'Sua inscrição foi completada e seu boleto foi enviado, não deixe de pagá-lo';
-                    } else
-                        $info_adicional = '<br />' .
-                            'Sua inscrição foi completada';
-                }
-        }
+                            'Sua solicitação de isenção de taxa de inscrição foi completada';
+                    break;
+                case 'Inscricao':
+                    $objeto->verificarArquivos();
+                    if (($objeto->estado == 'Realizada') && (!$objeto->boleto_enviado)) {
+                        $user = \Auth::user();
+                        if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
+                            // envia e-mail com o boleto
+                            $passo = 'boleto';
+                            $inscricao = $objeto;
+                            $papel = 'Candidato';
+                            $arquivo_nome = 'boleto.pdf';
+                            $arquivo_conteudo = $this->boletoService->gerarBoleto($inscricao);
+                            \Mail::to($user->email)
+                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivo_nome', 'arquivo_conteudo')));
 
-        $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso' . $info_adicional);
+                            $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
+                            $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
+                            $objeto->save();
+
+                            $info_adicional = '<br />' .
+                                'Sua inscrição foi completada e seu boleto foi enviado, não deixe de pagá-lo';
+                        } else
+                            $info_adicional = '<br />' .
+                                'Sua inscrição foi completada';
+                    }
+            }
+
+            return ['objeto' => $objeto, 'info_adicional' => $info_adicional];
+        });
+        $objeto = $db_transaction['objeto'];
+
+        $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso' . $db_transaction['info_adicional']);
 
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
@@ -202,19 +209,25 @@ class ArquivoController extends Controller
         if (Storage::exists($arquivo->caminho))
             Storage::delete($arquivo->caminho);
 
-        $arquivo->{$classe_nome_plural}()->detach($objeto->id, ['tipo' => $request->tipo_arquivo]);
-        $arquivo->delete();
+        // transaction para não ter problema de inconsistência do DB
+        $objeto = DB::transaction(function () use ($request, $arquivo, $classe_nome, $classe_nome_plural, $objeto) {
 
-        switch ($classe_nome) {
-            case 'Selecao':
-                $objeto->atualizarStatus();
-                $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
-                break;
-            case 'SolicitacaoIsencaoTaxa':
-            case 'Inscricao':
-                // ambos 'SolicitacaoIsencaoTaxa' e 'Inscricao' executam a linha abaixo
-                $objeto->verificarArquivos();
-        }
+            $arquivo->{$classe_nome_plural}()->detach($objeto->id, ['tipo' => $request->tipo_arquivo]);
+            $arquivo->delete();
+
+            switch ($classe_nome) {
+                case 'Selecao':
+                    $objeto->atualizarStatus();
+                    $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
+                    break;
+                case 'SolicitacaoIsencaoTaxa':
+                case 'Inscricao':
+                    // ambos 'SolicitacaoIsencaoTaxa' e 'Inscricao' executam a linha abaixo
+                    $objeto->verificarArquivos();
+            }
+
+            return $objeto;
+        });
 
         $request->session()->flash('alert-success', 'Documento removido com sucesso');
 

@@ -304,16 +304,22 @@ class SelecaoController extends Controller
             'id.required' => 'Linha de pesquisa obrigatória',
         ]);
 
-        $linhapesquisa = LinhaPesquisa::where('id', $request->id)->first();
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $selecao) {
 
-        $existia = $selecao->linhaspesquisa()->detach($linhapesquisa);
+            $linhapesquisa = LinhaPesquisa::where('id', $request->id)->first();
 
-        $selecao->linhaspesquisa()->attach($linhapesquisa);
+            $existia = $selecao->linhaspesquisa()->detach($linhapesquisa);
 
-        if (!$existia)
-            $request->session()->flash('alert-success', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi adicionada à essa seleção.');
+            $selecao->linhaspesquisa()->attach($linhapesquisa);
+
+            return ['linhapesquisa' => $linhapesquisa, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'A linha de pesquisa ' . $db_transaction['linhapesquisa']->nome . ' foi adicionada à essa seleção.');
         else
-            $request->session()->flash('alert-info', 'A linha de pesquisa ' . $linhapesquisa->nome . ' já estava vinculada à essa seleção.');
+            $request->session()->flash('alert-info', 'A linha de pesquisa ' . $db_transaction['linhapesquisa']->nome . ' já estava vinculada à essa seleção.');
         return back();
     }
 
@@ -347,16 +353,22 @@ class SelecaoController extends Controller
             'id.required' => 'Motivo de isenção de taxa obrigatório',
         ]);
 
-        $motivoisencaotaxa = MotivoIsencaoTaxa::where('id', $request->id)->first();
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $selecao) {
 
-        $existia = $selecao->motivosisencaotaxa()->detach($motivoisencaotaxa);
+            $motivoisencaotaxa = MotivoIsencaoTaxa::where('id', $request->id)->first();
 
-        $selecao->motivosisencaotaxa()->attach($motivoisencaotaxa);
+            $existia = $selecao->motivosisencaotaxa()->detach($motivoisencaotaxa);
 
-        if (!$existia)
-            $request->session()->flash('alert-success', 'O motivo de isenção de taxa ' . $motivoisencaotaxa->nome . ' foi adicionado à essa seleção.');
+            $selecao->motivosisencaotaxa()->attach($motivoisencaotaxa);
+
+            return ['motivoisencaotaxa' => $motivoisencaotaxa, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'O motivo de isenção de taxa ' . $db_transaction['motivoisencaotaxa']->nome . ' foi adicionado à essa seleção.');
         else
-            $request->session()->flash('alert-info', 'O motivo de isenção de taxa ' . $motivoisencaotaxa->nome . ' já estava vinculado à essa seleção.');
+            $request->session()->flash('alert-info', 'O motivo de isenção de taxa ' . $db_transaction['motivoisencaotaxa']->nome . ' já estava vinculado à essa seleção.');
         return back();
     }
 
