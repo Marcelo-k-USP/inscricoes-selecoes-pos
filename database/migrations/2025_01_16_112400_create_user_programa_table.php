@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProgramasTable extends Migration
+class CreateUserProgramaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateProgramasTable extends Migration
      */
     public function up()
     {
-        Schema::create('programas', function (Blueprint $table) {
+        Schema::create('user_programa', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 100);
-            $table->string('descricao', 255)->nullable();
-            $table->boolean('is_visible')->default(true);
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('programa_id')->constrained('programas')->onDelete('cascade');
+            $table->string('funcao', 100);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateProgramasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('programas');
+        Schema::dropIfExists('user_programa');
     }
 }

@@ -15,6 +15,10 @@ class Programa extends Model
         'descricao',
     ];
 
+    protected $casts = [
+        'is_visible' => 'boolean',
+    ];
+
     // uso no crud generico
     protected const fields = [
         [
@@ -42,8 +46,10 @@ class Programa extends Model
         $programas = self::get();
         $ret = [];
         foreach ($programas as $programa)
-            if (Gate::allows('programas.view', $programa))
-                $ret[$programa->id] = $programa->nome;
+            if (Gate::allows('programas.view', $programa)) {
+                if ($programa->is_visible)
+                    $ret[$programa->id] = $programa->nome;
+            }
         return $ret;
     }
 
@@ -61,5 +67,13 @@ class Programa extends Model
     public function linhaspesquisa()
     {
         return $this->hasMany('App\Models\LinhaPesquisa');
+    }
+
+    /**
+     * Programa possui users
+     */
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\User', 'user_programa')->withPivot('funcao')->withTimestamps();
     }
 }

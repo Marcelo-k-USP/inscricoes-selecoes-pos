@@ -221,6 +221,15 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Models\Setor', 'user_setor')->withPivot('funcao')->withTimestamps();
     }
 
+    /**
+     * Relacionamento n:n com programa, atributo funcao:
+     *  - Secretario, Coordenador do Programa, Coordenador da Pos-Graduacao
+     */
+    public function programas()
+    {
+        return $this->belongsToMany('App\Models\Programa', 'user_programa')->withPivot('funcao')->withTimestamps();
+    }
+
     // este método é invocado pelo senhaunica-socialite, por isso é preciso que ele exista aqui
     // ele só é invocado quando alguém assume a identidade de um usuário que nunca antes logou no sistema (e que, portanto, nem está gravado na tabela)
     static function findOrCreateFromReplicado($codpes) {
