@@ -52,7 +52,7 @@ class LinhaPesquisaSeeder extends Seeder
                 'programa_id' => $programa_id_PSICOLOGIA_ESCOLAR_E_DO_DESENVOLVIMENTO_HUMANO,
             ],
             [
-                'nome' => 'Psicanálise Política: Cultura e Desenvolvimento Humano',
+                'nome' => 'Psicanálise e Política: Cultura e Desenvolvimento Humano',
                 'programa_id' => $programa_id_PSICOLOGIA_ESCOLAR_E_DO_DESENVOLVIMENTO_HUMANO,
             ],
             [
