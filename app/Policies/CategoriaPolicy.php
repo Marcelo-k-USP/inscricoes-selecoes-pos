@@ -18,7 +18,7 @@ class CategoriaPolicy
      */
     public function viewAny(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        return Gate::allows('perfiladmin');
     }
 
     /**
@@ -29,7 +29,7 @@ class CategoriaPolicy
      */
     public function view(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        return Gate::allows('perfiladmin');
     }
 
     /**
@@ -40,7 +40,7 @@ class CategoriaPolicy
      */
     public function create(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        return Gate::allows('perfiladmin');
     }
 
     /**
@@ -51,7 +51,7 @@ class CategoriaPolicy
      */
     public function update(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        return Gate::allows('perfiladmin');
     }
 
     /**
@@ -62,7 +62,7 @@ class CategoriaPolicy
      */
     public function delete(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        return Gate::allows('perfiladmin');
     }
 
     /**
