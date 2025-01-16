@@ -1,4 +1,4 @@
-# Seleções Pós (Laravel 11)
+# Inscrições para Seleções Pós (Laravel 11)
 
 Permite que candidatos solicitem isenção de taxa de inscrição e realizem inscrição.
 Ambas as "entidades" (isenção de taxa de solicitação e inscrição) possuem fluxo de estados.
@@ -17,8 +17,8 @@ Cada gerente pode acessar solicitações de taxa de inscrição e inscrições s
 Descomentar a linha extension=soap do php.ini    
 
 ```bash
-    git clone git@github.com:uspdev/selecoes-pos selecoes-pos
-    cd selecoes-pos
+    git clone git@github.com:uspdev/inscricoes-selecoes-pos inscricoes-selecoes-pos
+    cd inscricoes-selecoes-pos
     composer update
     cp .env.example .env
     php artisan key:generate
@@ -29,7 +29,7 @@ Descomentar a linha extension=soap do php.ini
 
 ```bash
     git remote remove origin
-    git remote add origin git@github.com:uspdev/selecoes-pos
+    git remote add origin git@github.com:uspdev/inscricoes-selecoes-pos
     git push -u origin main
 ```
 
@@ -79,7 +79,7 @@ php artisan migrate
 ### Básico
 
 ```sh
-git clone git@github.com:uspdev/selecoes-pos
+git clone git@github.com:uspdev/inscricoes-selecoes-pos
 composer install
 cp .env.example .env
 php artisan key:generate
@@ -144,10 +144,10 @@ Para as filas de envio de email o sistema precisa de um gerenciador que mantenha
 
     sudo apt install supervisor
 
-Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/supervisor/conf.d/selecoes_pos_queue_worker_default.conf` com o conteúdo abaixo:
+Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/supervisor/conf.d/inscricoes-selecoes_pos_queue_worker_default.conf` com o conteúdo abaixo:
 
-    [program:selecoes_pos_queue_worker_default]
-    command=/usr/bin/php /home/sistemas/selecoes-pos/artisan queue:listen --queue=default --tries=3 --timeout=60
+    [program:inscricoes-selecoes_pos_queue_worker_default]
+    command=/usr/bin/php /home/sistemas/inscricoes-selecoes-pos/artisan queue:listen --queue=default --tries=3 --timeout=60
     process_num=1
     username=www-data
     numprocs=1
@@ -157,12 +157,12 @@ Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/super
     autorestart=unexpected
     startretries=3
     stopsignal=QUIT
-    stderr_logfile=/var/log/supervisor/selecoes_pos_queue_worker_default.log
+    stderr_logfile=/var/log/supervisor/inscricoes-selecoes_pos_queue_worker_default.log
 
 Ajustes necessários:
 
     command=<ajuste o caminho da aplicação>
-    username=<nome do usuário do processo do selecoes-pos>
+    username=<nome do usuário do processo do inscricoes-selecoes-pos>
     stderr_logfile = <aplicacao>/storage/logs/<seu arquivo de log>
 
 Reinicie o **Supervisor**
