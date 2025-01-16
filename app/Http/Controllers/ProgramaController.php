@@ -28,7 +28,7 @@ class ProgramaController extends Controller
         $this->authorize('programas.viewAny');
         \UspTheme::activeUrl('programas');
 
-        $programas = Programa::where('is_visible', true)->get();
+        $programas = Programa::all();
         $fields = Programa::getFields();
 
         if ($request->ajax()) {

@@ -15,10 +15,6 @@ class Programa extends Model
         'descricao',
     ];
 
-    protected $casts = [
-        'is_visible' => 'boolean',
-    ];
-
     // uso no crud generico
     protected const fields = [
         [
@@ -47,8 +43,7 @@ class Programa extends Model
         $ret = [];
         foreach ($programas as $programa)
             if (Gate::allows('programas.view', $programa)) {
-                if ($programa->is_visible)
-                    $ret[$programa->id] = $programa->nome;
+                $ret[$programa->id] = $programa->nome;
             }
         return $ret;
     }

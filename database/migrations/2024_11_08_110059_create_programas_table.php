@@ -17,7 +17,6 @@ class CreateProgramasTable extends Migration
             $table->id();
             $table->string('nome', 100);
             $table->string('descricao', 255)->nullable();
-            $table->boolean('is_visible')->default(true);
             $table->timestamps();
         });
     }

@@ -16,11 +16,6 @@ class ProgramaSeeder extends Seeder
     {
         $programas = [
             [
-                'nome' => 'Todos',
-                'descricao' => 'Todos os Programas',
-                'is_visible' => false
-            ],
-            [
                 'nome' => 'Neurociências e Comportamento (NEC)',
                 'descricao' => 'Programa de Pós-Graduação em Neurociências e Comportamento'
             ],
