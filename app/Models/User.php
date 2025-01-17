@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Traits\HasRoles;
 use Uspdev\Replicado\Pessoa;
@@ -194,6 +195,31 @@ class User extends Authenticatable
     public static function emailExiste($email)
     {
         return self::where('email', $email)->exists();
+    }
+
+    public function associarProgramaFuncao(?string $programa, string $funcao)
+    {
+        if (is_null($programa))
+            // insere manualmente registro na tabela relacional... não funciona fazer attach de usuário para um programa inexistente
+            $this->programas()->newPivotStatement()->insert([
+                'user_id' => $this->id,
+                'programa_id' => null,
+                'funcao' => $funcao,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        else
+            $this->programas()->attach(Programa::where('nome', $programa)->first()->id, ['funcao' => $funcao]);
+    }
+
+    public function desassociarProgramaFuncao(?string $programa, string $funcao)
+    {
+        // remove manualmente registro na tabela relacional... não funciona fazer detach de usuário para um programa inexistente, nem detach em que se especifica o pivot
+        DB::table('user_programa')
+            ->where('user_id', $this->id)
+            ->where('programa_id', is_null($programa) ? null : Programa::where('nome', $programa)->first()->id)
+            ->where('funcao', $funcao)
+            ->delete();
     }
 
     /**
