@@ -71,9 +71,14 @@ class FuncaoController extends Controller
     public function update(Request $request)
     {
         if ($add = $request->add_codpes) {
-            $user = User::findOrCreateFromReplicado($add);
-            if ($user)
-                $user->associarProgramaFuncao($request->programa, $request->funcao);
+
+            // transaction para não ter problema de inconsistência do DB
+            DB::transaction(function () use ($request, $add) {
+
+                $user = User::findOrCreateFromReplicado($add);
+                if ($user)
+                    $user->associarProgramaFuncao($request->programa, $request->funcao);
+            });
         }
 
         if ($rem = $request->rem_codpes) {

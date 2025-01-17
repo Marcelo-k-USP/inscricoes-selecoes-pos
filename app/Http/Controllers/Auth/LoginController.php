@@ -8,6 +8,7 @@ use App\Models\User;
 use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Socialite;
 
 class LoginController extends Controller
@@ -86,9 +87,12 @@ class LoginController extends Controller
         $user->save();
 
         // vincula a pessoa ao setor
-        foreach ($userSenhaUnica->vinculo as $vinculo)
+        foreach ($userSenhaUnica->vinculo as $vinculo) {
+            if ((!in_array($vinculo['nomeVinculo'], ['Admin', 'Gerente'])) && ($user->programas()->exists()))    // se o vínculo do usuário não for nem de admin nem de gerente, e ele tiver alguma relação com algum programa...
+                $vinculo['nomeVinculo'] = 'Gerente';    // iremos vinculá-lo ao seu setor como gerente, subindo seu grau de autorizações para que ele tenha acesso gerencial aos seus programas
             if ($setor = Setor::where('cod_set_replicado', $vinculo['codigoSetor'])->first())
                 Setor::vincularPessoa($setor, $user, $vinculo['nomeVinculo']);
+        }
 
         Auth::login($user, true);
         if (Gate::allows('admin'))

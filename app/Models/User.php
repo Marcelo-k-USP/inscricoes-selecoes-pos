@@ -200,8 +200,7 @@ class User extends Authenticatable
     public function associarProgramaFuncao(?string $programa, string $funcao)
     {
         if (is_null($programa))
-            // insere manualmente registro na tabela relacional... não funciona fazer attach de usuário para um programa inexistente
-            $this->programas()->newPivotStatement()->insert([
+            $this->programas()->newPivotStatement()->insert([    // insere manualmente registro na tabela relacional... não funciona fazer attach de usuário para um programa inexistente
                 'user_id' => $this->id,
                 'programa_id' => null,
                 'funcao' => $funcao,
