@@ -10,6 +10,7 @@ use App\Models\MotivoIsencaoTaxa;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
+use App\Models\User;
 use App\Utils\JSONForms;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -50,7 +51,8 @@ class SelecaoController extends Controller
 
         \UspTheme::activeUrl('selecoes');
         $data = self::$data;
-        $objetos = Selecao::listarSelecoes();
+        $objetos = Selecao::listarSelecoes(\Auth::user()->listarProgramasGerenciados());
+        \Illuminate\Support\Facades\Log::info(json_encode($objetos));
         $classe_nome = 'Selecao';
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
         return view('selecoes.index', compact('data', 'objetos', 'classe_nome', 'max_upload_size'));
