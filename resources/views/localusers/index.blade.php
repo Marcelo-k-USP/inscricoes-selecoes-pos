@@ -6,7 +6,7 @@
     <div class="col-md-12 form-inline">
       <span class="h4 mt-2">Usuários Locais</span>
       @include('partials.datatable-filter-box', ['otable'=>'oTable'])
-      @can('create', App\Models\LocalUser::class)
+      @can('localusers.create')
         <button type="button" class="btn btn-sm btn-success" onclick="add_form()">
           <i class="fas fa-plus"></i> Novo
         </button>
@@ -32,10 +32,10 @@
             <td>{{ $localuser->email }}</td>
             <td>
               <div id="actions">
-                @can('update', App\Models\LocalUser::class)
+                @can('localusers.update')
                   @include('localusers.partials.btn-edit')
                 @endcan
-                @can('delete', App\Models\LocalUser::class)
+                @can('localusers.delete')
                   @include('localusers.partials.btn-delete')
                 @endcan
               </div>

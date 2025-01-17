@@ -13,7 +13,7 @@
   <div class="card-header">
     Motivos de Isenção de Taxa
     <span class="badge badge-pill badge-primary">{{ is_null($selecao->motivosisencaotaxa) ? 0 : $selecao->motivosisencaotaxa->count() }}</span>
-    @can('selecoes.update')
+    @can('selecoes.update', $selecao)
       @if ($condicao_ativa)
         @include('motivosisencaotaxa.partials.modal-add')
       @endif

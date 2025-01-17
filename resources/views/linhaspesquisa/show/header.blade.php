@@ -3,7 +3,7 @@
     {{ $linhapesquisa->nome }}
   </b>
   <div class="hidden-btn d-none ml-auto">
-    @can('selecoes.update')
+    @can('selecoes.update', $selecao)
       @if ($condicao_ativa)
         @include('common.btn-delete-sm', ['action' => "selecoes/{$selecao->id}/linhaspesquisa/{$linhapesquisa->id}"])
       @endif

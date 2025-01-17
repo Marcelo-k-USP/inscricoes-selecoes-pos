@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Selecao;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
@@ -24,66 +25,50 @@ class SelecaoPolicy
     /**
      * Determine whether the user can view the seleção.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User     $user
+     * @param  \App\Models\Selecao  $selecao
      * @return mixed
      */
-    public function view(User $user)
+    public function view(User $user, Selecao $selecao)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($selecao->programa_id);
+        else
+            return false;
     }
 
     /**
      * Determine whether the user can create seleções.
      *
-     * @param  \App\Models\User     $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($selecao->programa_id);
+        else
+            return false;
     }
 
     /**
      * Determine whether the user can update the seleção.
      *
-     * @param  \App\Models\User     $user
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Selecao  $selecao
      * @return mixed
      */
-    public function update(User $user)
+    public function update(User $user, Selecao $selecao)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
-    }
-
-    /**
-     * Determine whether the user can delete the seleção.
-     *
-     * @param  \App\Models\User     $user
-     * @return mixed
-     */
-    public function delete(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the seleção.
-     *
-     * @param  \App\Models\User     $user
-     * @return mixed
-     */
-    public function restore(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the seleção.
-     *
-     * @param  \App\Models\User     $user
-     * @return mixed
-     */
-    public function forceDelete(User $user)
-    {
-        //
+        if (Gate::allows('perfiladmin'))
+            return $user->gerenciaPrograma($selecao->programa_id);//return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($selecao->programa_id);
+        else
+            return false;
     }
 }

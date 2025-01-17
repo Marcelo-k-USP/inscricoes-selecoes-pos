@@ -25,7 +25,7 @@ class InscricaoPolicy
     /**
      * Determine whether the user can view all inscrições.
      *
-     * @param  \App\User  $user
+     * @param  \App\User              $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -42,10 +42,12 @@ class InscricaoPolicy
      */
     public function view(User $user, Inscricao $inscricao)
     {
-        if (Gate::allows('perfilusuario'))
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($selecao->programa_id);
+        else
             return ($inscricao->pessoas('Autor')->id == $user->id);    // permite que o usuário autor da inscrição a visualize
-
-        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**
@@ -83,39 +85,11 @@ class InscricaoPolicy
      */
     public function updateStatus(User $user, Inscricao $inscricao)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function delete(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function restore(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function forceDelete(User $user)
-    {
-        //
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($selecao->programa_id);
+        else
+            return false;
     }
 }

@@ -111,7 +111,7 @@ class SelecaoController extends Controller
      */
     public function edit(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
 
         Selecao::atualizarStatusSelecoes();
 
@@ -128,7 +128,7 @@ class SelecaoController extends Controller
      */
     public function update(SelecaoRequest $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
 
         $validator = Validator::make($request->all(), SelecaoRequest::rules, SelecaoRequest::messages);
         if ($validator->fails()) {
@@ -183,7 +183,7 @@ class SelecaoController extends Controller
 
     public function storeTemplateJson(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
 
         $newjson = $request->template;
         $selecao->template = $newjson;
@@ -194,7 +194,7 @@ class SelecaoController extends Controller
 
     public function createTemplate(Selecao $selecao)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
         \UspTheme::activeUrl('selecoes');
 
         $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
@@ -203,7 +203,7 @@ class SelecaoController extends Controller
 
     public function storeTemplate(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
 
         $request->validate([
             'template.*.label' => 'required',
@@ -245,7 +245,7 @@ class SelecaoController extends Controller
 
     public function createTemplateValue(Selecao $selecao, string $field)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
         \UspTheme::activeUrl('selecoes');
 
         $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
@@ -254,7 +254,7 @@ class SelecaoController extends Controller
 
     public function storeTemplateValue(Request $request, Selecao $selecao, string $field)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
 
         $request->validate([
             'value.*.label' => 'required',
@@ -296,7 +296,7 @@ class SelecaoController extends Controller
      */
     public function storeLinhaPesquisa(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
 
         $request->validate([
             'id' => 'required',
@@ -330,7 +330,7 @@ class SelecaoController extends Controller
      */
     public function destroyLinhaPesquisa(Request $request, Selecao $selecao, LinhaPesquisa $linhapesquisa)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
 
         $selecao->linhaspesquisa()->detach($linhapesquisa);
 
@@ -345,7 +345,7 @@ class SelecaoController extends Controller
      */
     public function storeMotivoIsencaoTaxa(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
 
         $request->validate([
             'id' => 'required',
@@ -379,7 +379,7 @@ class SelecaoController extends Controller
      */
     public function destroyMotivoIsencaoTaxa(Request $request, Selecao $selecao, MotivoIsencaoTaxa $motivoisencaotaxa)
     {
-        $this->authorize('selecoes.update');
+        $this->authorize('selecoes.update', $selecao);
 
         $selecao->motivosisencaotaxa()->detach($motivoisencaotaxa);
 
@@ -396,7 +396,7 @@ class SelecaoController extends Controller
      */
     public function downloadSolicitacoesIsencaoTaxa(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.view');
+        $this->authorize('selecoes.view', $selecao);
         $request->validate([
             'ano' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
@@ -439,7 +439,7 @@ class SelecaoController extends Controller
      */
     public function downloadInscricoes(Request $request, Selecao $selecao)
     {
-        $this->authorize('selecoes.view');
+        $this->authorize('selecoes.view', $selecao);
         $request->validate([
             'ano' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);

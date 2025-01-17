@@ -51,8 +51,10 @@ class InscricaoController extends Controller
      */
     public function index(Request $request)
     {
-        $perfil_admin_ou_gerente = ((session('perfil') == 'admin') || (session('perfil') == 'gerente'));
-        $this->authorize('inscricoes.view' . ($perfil_admin_ou_gerente ? 'Any' : 'Their'));
+        if ((session('perfil') == 'admin') || (session('perfil') == 'gerente'))
+            $this->authorize('inscricoes.viewAny');
+        else
+            $this->authorize('inscricoes.viewTheir');
 
         \UspTheme::activeUrl('inscricoes');
         $data = self::$data;

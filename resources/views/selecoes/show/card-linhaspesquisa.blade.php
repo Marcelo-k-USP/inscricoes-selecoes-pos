@@ -13,7 +13,7 @@
   <div class="card-header">
     Linhas de Pesquisa
     <span class="badge badge-pill badge-primary">{{ is_null($selecao->linhaspesquisa) ? 0 : $selecao->linhaspesquisa->count() }}</span>
-    @can('selecoes.update')
+    @can('selecoes.update', $selecao)
       @if ($condicao_ativa)
         @include('linhaspesquisa.partials.modal-add')
       @endif

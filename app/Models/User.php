@@ -221,6 +221,19 @@ class User extends Authenticatable
             ->delete();
     }
 
+    public function gerenciaPrograma(int $programa_id)
+    {
+        if ($this->programas()->where('programa_id', $programa_id)->exists())
+            return true;
+
+        return DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
+            ->where('user_id', $this->id)
+            ->where(function ($query) {
+                $query->where('funcao', 'Serviço de Pós-Graduação')
+                    ->orWhere('funcao', 'Coordenadores da Pós-Graduação');
+            })->exists();
+    }
+
     /**
      * Relacionamento n:n com inscrição:
      */
