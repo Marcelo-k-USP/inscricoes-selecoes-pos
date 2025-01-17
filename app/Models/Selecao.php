@@ -766,10 +766,10 @@ class Selecao extends Model
      *
      * @return coleção de seleções
      */
-    public static function listarSelecoes($programas)
+    public static function listarSelecoes()
     {
         self::atualizarStatusSelecoes();
-        return self::whereIn('programa_id', $programas->pluck('id'))->get();
+        return self::whereIn('programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'))->get();
     }
 
     /**

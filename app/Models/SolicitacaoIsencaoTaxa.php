@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Selecao;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class SolicitacaoIsencaoTaxa extends Model
@@ -133,7 +133,11 @@ class SolicitacaoIsencaoTaxa extends Model
     public static function listarSolicitacoesIsencaoTaxa()
     {
         if (Gate::any(['perfiladmin', 'perfilgerente']))
-            return self::get();
+            return DB::table('solicitacoesisencaotaxa')
+                     ->join('selecoes', 'solicitacoesisencaotaxa.selecao_id', '=', 'selecoes.id')
+                     ->whereIn('selecoes.programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'))
+                     ->select('solicitacoesisencaotaxa.*')
+                     ->get();
         else
             return Auth::user()->solicitacoesisencaotaxa()->wherePivotIn('papel', ['Autor'])->get();
     }

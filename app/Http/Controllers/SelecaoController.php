@@ -51,8 +51,7 @@ class SelecaoController extends Controller
 
         \UspTheme::activeUrl('selecoes');
         $data = self::$data;
-        $objetos = Selecao::listarSelecoes(\Auth::user()->listarProgramasGerenciados());
-        \Illuminate\Support\Facades\Log::info(json_encode($objetos));
+        $objetos = Selecao::listarSelecoes();
         $classe_nome = 'Selecao';
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
         return view('selecoes.index', compact('data', 'objetos', 'classe_nome', 'max_upload_size'));

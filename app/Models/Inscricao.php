@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Selecao;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class Inscricao extends Model
@@ -149,7 +149,11 @@ class Inscricao extends Model
     public static function listarInscricoes()
     {
         if (Gate::any(['perfiladmin', 'perfilgerente']))
-            return self::get();
+            return DB::table('inscricoes')
+                     ->join('selecoes', 'inscricoes.selecao_id', '=', 'selecoes.id')
+                     ->whereIn('selecoes.programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'))
+                     ->select('inscricoes.*')
+                     ->get();
         else
             return Auth::user()->inscricoes()->wherePivotIn('papel', ['Autor'])->get();
     }
