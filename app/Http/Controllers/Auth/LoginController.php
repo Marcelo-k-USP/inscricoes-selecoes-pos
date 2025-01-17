@@ -91,7 +91,12 @@ class LoginController extends Controller
                 Setor::vincularPessoa($setor, $user, $vinculo['nomeVinculo']);
 
         Auth::login($user, true);
-        session(['perfil' => 'usuario']);
+        if (Gate::allows('admin'))
+            session(['perfil' => 'admin']);
+        elseif (Gate::allows('gerente'))
+            session(['perfil' => 'gerente']);
+        else
+            session(['perfil' => 'usuario']);
         return redirect('/inscricoes');
     }
 
