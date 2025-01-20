@@ -1,0 +1,45 @@
+.responsaveis-lista{
+    margin-top: 16px;
+}
+.responsaveis-lista ul li{
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    height: 24px;
+    overflow:hidden;
+}
+.responsaveis-lista ul li a {
+    color: #212529;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-bottom: -2px;
+}
+.responsaveis-lista ul  li a:hover, .responsaveis-lista ul a:hover {
+    color:#007bff;
+    text-decoration: none;
+}
+.responsaveis-acoes{
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    transition: all .5s;
+    display: flex;
+}
+.responsaveis-lista ul li.modo-visualizacao:hover .responsaveis-acoes{
+    width: 73px;
+    height: auto;
+}
+.responsaveis-lista .btn-responsaveis-acao{
+    font-size: 13px;
+    padding: 0px 5px;
+    margin-right: 4px;
+}
+.responsaveis-lista .btn-responsaveis-acao.btn-editar{
+    padding-right: 3px;
+}
+.responsavel-img{
+    max-height: 35px;
+}

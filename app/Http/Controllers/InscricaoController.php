@@ -312,9 +312,10 @@ class InscricaoController extends Controller
         $classe_nome = 'Inscricao';
         $classe_nome_plural = 'inscricoes';
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
+        $responsaveis = $objeto->selecao->programa->obterResponsaveis();
         $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
     }
 }

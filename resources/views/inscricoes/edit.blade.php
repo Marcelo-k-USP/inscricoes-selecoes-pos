@@ -57,6 +57,7 @@
               @php
                 $selecao = $inscricao->selecao;    // para o include abaixo
               @endphp
+              @include('inscricoes.show.card-responsaveis')     {{-- Responsáveis --}}
               @include('inscricoes.show.card-informativos')     {{-- Informativos --}}
               @if ($condicao_disponivel && ($modo == 'edit'))
                 @include('common.card-arquivos')                {{-- Arquivos --}}

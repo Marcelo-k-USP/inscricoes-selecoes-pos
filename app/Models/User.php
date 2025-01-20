@@ -248,6 +248,17 @@ class User extends Authenticatable
                    })->exists();
     }
 
+    public function gerenciaProgramaFuncao(string $funcao, ?int $programa_id = null)
+    {
+        if (in_array($funcao, ['Serviço de Pós-Graduação', 'Coordenadores da Pós-Graduação']))
+            return DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
+                       ->where('user_id', $this->id)
+                       ->where('funcao', $funcao)
+                       ->exists();
+
+        return $this->programas()->where('programa_id', $programa_id)->where('funcao', $funcao)->exists();
+    }
+
     /**
      * Relacionamento n:n com inscrição:
      */

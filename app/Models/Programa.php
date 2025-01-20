@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class Programa extends Model
@@ -46,6 +47,28 @@ class Programa extends Model
                 $ret[$programa->id] = $programa->nome;
             }
         return $ret;
+    }
+
+    public function obterResponsaveis()
+    {
+        return [
+            [
+                'funcao' => 'Secretários(as) dos Programas',
+                'users' => $this->users()->wherePivot('funcao', 'Secretários(as) dos Programas')->orderBy('id')->get(),
+            ],
+            [
+                'funcao' => 'Coordenadores dos Programas',
+                'users' => $this->users()->wherePivot('funcao', 'Coordenadores dos Programas')->orderBy('id')->get(),
+            ],
+            [
+                'funcao' => 'Serviço de Pós-Graduação',
+                'users' => DB::table('user_programa')->join('users', 'user_programa.user_id', '=', 'users.id')->where('user_programa.funcao', 'Serviço de Pós-Graduação')->orderBy('user_programa.id')->get(),    // não dá pra partir de Programa::, pelo fato de programa_id ser null na tabela relacional
+            ],
+            [
+                'funcao' => 'Coordenadores da Pós-Graduação',
+                'users' => DB::table('user_programa')->join('users', 'user_programa.user_id', '=', 'users.id')->where('user_programa.funcao', 'Coordenadores da Pós-Graduação')->orderBy('user_programa.id')->get(),    // não dá pra partir de Programa::, pelo fato de programa_id ser null na tabela relacional
+            ],
+        ];
     }
 
     /**

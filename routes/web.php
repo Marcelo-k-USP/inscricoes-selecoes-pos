@@ -13,6 +13,7 @@ use App\Http\Controllers\LocalUserController;
 use App\Http\Controllers\MotivoIsencaoTaxaController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\ProgramaController;
+use App\Http\Controllers\ResponsavelController;
 use App\Http\Controllers\SelecaoController;
 use App\Http\Controllers\SolicitacaoIsencaoTaxaController;
 use App\Http\Controllers\UserController;
@@ -115,6 +116,9 @@ Route::put('parametros', [ParametroController::class, 'update'])->name('parametr
 // FUNÇÕES
 Route::get('funcoes', [FuncaoController::class, 'edit'])->name('funcoes.edit');
 Route::put('funcoes', [FuncaoController::class, 'update'])->name('funcoes.update');
+
+// RESPONSÁVEIS
+Route::get('responsaveis/{id}/{funcao}/{programa_id?}', [ResponsavelController::class, 'show']);
 
 // ARQUIVOS
 Route::resource('arquivos', ArquivoController::class);

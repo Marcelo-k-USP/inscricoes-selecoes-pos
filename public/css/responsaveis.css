@@ -1,0 +1,69 @@
+.nome-responsavel{
+    font-weight: 400;
+    font-size: 14px;
+    display:none;
+}
+.nome-responsavel p{
+    margin-bottom: 4px;
+    margin-top: 7px;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.nome-responsavel .preview-responsaveis{
+    list-style-type: none;
+    padding-left: 0;
+}
+.nome-responsavel .preview-responsaveis li.disabled{
+    color: red;
+    opacity: 0.8;
+}
+.responsaveis-lista{
+    margin-top: 16px;
+}
+.responsaveis-lista ul li{
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    height: 24px;
+    overflow:hidden;
+}
+.responsaveis-lista ul li a {
+    color: #212529;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-bottom: -2px;
+}
+.responsaveis-lista ul  li a:hover, .responsaveis-lista ul a:hover {
+    color:#007bff;
+    text-decoration: none;
+}
+.responsavel-acoes{
+    width: 0px;
+    height: 24px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    transition: width .5s;
+}
+.responsaveis-lista ul li.modo-visualizacao:hover .responsavel-acoes{
+    width: 73px;
+}
+.responsaveis-lista .btn-responsavel-acao{
+    font-size: 13px;
+    padding: 0px 5px;
+    margin-right: 4px;
+    position: relative;
+    top: -2px;
+    line-height: normal;
+}
+.responsaveis-lista .btn-responsavel-acao.btn-editar{
+    padding-right: 3px;
+}
+.responsavel-img{
+    max-height: 35px;
+}
