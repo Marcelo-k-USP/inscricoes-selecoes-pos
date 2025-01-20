@@ -17,12 +17,31 @@
     <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Aguardando Documentação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Documentação">
       Aguardando Documentação
     </button>
-    <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Realizada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Realizada">
-      Realizada
-    </button>
-    <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($inscricao->estado != 'Realizada')) disabled @endif name="estado" value="Em Avaliação">
-      Em Avaliação
-    </button>
+    @if ($inscricao->estado != 'Aguardando Documentação')
+      <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Realizada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Realizada">
+        Realizada
+      </button>
+    @endif
+    @if ($inscricao->estado != 'Aguardando Documentação')
+      <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Em Pré-Avaliação') ? 'btn-warning' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($inscricao->estado != 'Realizada')) disabled @endif name="estado" value="Em Pré-Avaliação">
+        Em Pré-Avaliação
+      </button>
+    @endif
+    @if (in_array($inscricao->estado, ['Em Pré-Avaliação', 'Pré-Aprovada', 'Em Avaliação', 'Aprovada', 'Rejeitada']))
+      <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Pré-Aprovada') ? 'btn-success' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($inscricao->estado != 'Em Pré-Avaliação')) disabled @endif name="estado" value="Pré-Aprovada">
+        Pré-Aprovada
+      </button>
+    @endif
+    @if (in_array($inscricao->estado, ['Em Pré-Avaliação', 'Pré-Rejeitada']))
+      <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Pré-Rejeitada') ? 'btn-danger' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($inscricao->estado != 'Em Pré-Avaliação')) disabled @endif name="estado" value="Pré-Rejeitada">
+        Pré-Rejeitada
+      </button>
+    @endif
+    @if (in_array($inscricao->estado, ['Pré-Aprovada', 'Em Avaliação', 'Aprovada', 'Rejeitada']))
+      <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($inscricao->estado != 'Pré-Aprovada')) disabled @endif name="estado" value="Em Avaliação">
+        Em Avaliação
+      </button>
+    @endif
     @if (in_array($inscricao->estado, ['Em Avaliação', 'Aprovada']))
       <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Aprovada') ? 'btn-success' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($inscricao->estado != 'Em Avaliação')) disabled @endif name="estado" value="Aprovada">
         Aprovada

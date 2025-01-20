@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Uspdev\Replicado\Pessoa;
 
 class InscricaoController extends Controller
 {
@@ -266,13 +267,35 @@ class InscricaoController extends Controller
                 $inscricao->estado = $request->estado;
                 $inscricao->save();
 
-                // envia e-mail avisando o usuário da aprovação/rejeição da inscrição
-                if (in_array($inscricao->estado, ['Aprovada', 'Rejeitada'])) {
-                    $passo = (($inscricao->estado == 'Aprovada') ? 'aprovação' : 'rejeição');
-                    $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
-                    \Mail::to($user->email)
-                        ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
+                switch ($inscricao->estado) {
+                    case 'Realizada':
+                        // envia e-mails avisando os secretários do programa sobre a realização da inscrição
+                        $passo = 'realização';
+                        // TODO
+                        break;
+
+                    case 'Pré-Aprovada':
+                        // envia e-mails avisando os orientadores das linhas de pesquisa do programa sobre a pré-aprovação da inscrição
+                        $passo = 'pré-aprovação';
+                        $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
+                        $orientadores = [];
+                        foreach ($inscricao->selecao->linhaspesquisa as $linhapesquisa)
+                            foreach ($linhapesquisa->orientadores as $orientador) {
+                                $orientador->nome = Pessoa::obterNome($orientador->codpes);
+                                \Mail::to(Pessoa::email($orientador->codpes))
+                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'orientador')));
+                            }
+                        break;
+
+                    case 'Aprovada':
+                    case 'Rejeitada':
+                        // envia e-mail avisando o candidato da aprovação/rejeição da inscrição
+                        $passo = (($inscricao->estado == 'Aprovada') ? 'aprovação' : 'rejeição');
+                        $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
+                        \Mail::to($user->email)
+                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
                 }
+
                 return $inscricao;
             });
 

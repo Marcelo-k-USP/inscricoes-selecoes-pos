@@ -248,7 +248,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
                 $solicitacaoisencaotaxa->estado = $request->estado;
                 $solicitacaoisencaotaxa->save();
 
-                // envia e-mail avisando o usuário da aprovação/rejeição da solicitação de isenção de taxa
+                // envia e-mail avisando o candidato da aprovação/rejeição da solicitação de isenção de taxa
                 if (in_array($solicitacaoisencaotaxa->estado, ['Isenção de Taxa Aprovada', 'Isenção de Taxa Rejeitada'])) {
                     $passo = (($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada') ? 'aprovação' : 'rejeição');
                     $user = $solicitacaoisencaotaxa->users()->wherePivot('papel', 'Autor')->first();

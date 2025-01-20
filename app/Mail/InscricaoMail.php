@@ -25,6 +25,9 @@ class InscricaoMail extends Mailable
     protected $arquivo_conteudo;
     protected $arquivo_erro;
 
+    // campos adicionais para inscrição realizada
+    protected $orientador;
+
     /**
      * Create a new message instance.
      *
@@ -47,6 +50,14 @@ class InscricaoMail extends Mailable
                 $this->arquivo_conteudo = $data['arquivo_conteudo'];
                 $this->arquivo_erro = (!empty($this->arquivo_conteudo) ? '' : 'Ocorreu um erro na geração do boleto.<br />' . PHP_EOL .
                     'Por favor, entre em contato conosco em infor@ip.usp.br, informando-nos sobre esse problema.<br />' . PHP_EOL);
+                break;
+
+            case 'realização':
+                // TODO
+                break;
+
+            case 'pré-aprovação':
+                $this->orientador = $data['orientador'];
                 break;
 
             case 'aprovação':
@@ -89,6 +100,20 @@ class InscricaoMail extends Mailable
                     ->when(!empty($this->arquivo_conteudo), function ($message) {
                         $message->attachData(base64_decode($this->arquivo_conteudo), $this->arquivo_nome, ['mime' => 'application/pdf']);
                     });
+
+            case 'realização':
+                // TODO
+                return null;
+
+            case 'pré-aprovação':
+                return $this
+                    ->subject('[' . config('app.name') . '] Realização de Inscrição')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.inscricao_realizacao')
+                    ->with([
+                        'inscricao' => $this->inscricao,
+                        'orientador' => $this->orientador,
+                    ]);
 
             case 'aprovação':
                 return $this

@@ -48,8 +48,9 @@ class Inscricao extends Model
     public static function estados()
     {
         return [
-            'Aguardando Documentação', 'Realizada',
-            'Em Avaliação', 'Aprovada', 'Rejeitada'
+            'Aguardando Documentação', 'Realizada',                 // decorrem de ações do candidato
+            'Em Pré-Avaliação', 'Pré-Aprovada', 'Pré-Rejeitada',    // decorrem de ações dos(as) secretários(as) do programa
+            'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos orientadores do programa
         ];
     }
 

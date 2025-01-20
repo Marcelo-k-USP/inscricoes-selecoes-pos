@@ -45,7 +45,7 @@ class InscricaoPolicy
         if (Gate::allows('perfiladmin'))
             return true;
         elseif (Gate::allows('perfilgerente'))
-            return $user->gerenciaPrograma($selecao->programa_id);
+            return $user->gerenciaPrograma($inscricao->selecao->programa_id);
         else
             return ($inscricao->pessoas('Autor')->id == $user->id);    // permite que o usuário autor da inscrição a visualize
     }
@@ -88,7 +88,7 @@ class InscricaoPolicy
         if (Gate::allows('perfiladmin'))
             return true;
         elseif (Gate::allows('perfilgerente'))
-            return $user->gerenciaPrograma($selecao->programa_id);
+            return $user->gerenciaPrograma($inscricao->selecao->programa_id);
         else
             return false;
     }
