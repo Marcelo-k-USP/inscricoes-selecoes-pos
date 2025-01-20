@@ -47,12 +47,7 @@ class SelecaoPolicy
      */
     public function create(User $user)
     {
-        if (Gate::allows('perfiladmin'))
-            return true;
-        elseif (Gate::allows('perfilgerente'))
-            return $user->gerenciaPrograma($selecao->programa_id);
-        else
-            return false;
+        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**

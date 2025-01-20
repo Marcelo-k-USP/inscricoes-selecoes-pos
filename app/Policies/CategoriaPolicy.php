@@ -29,7 +29,7 @@ class CategoriaPolicy
      */
     public function view(User $user)
     {
-        return Gate::allows('perfiladmin');
+        return Gate::any(['perfiladmin', 'perfilgerente']);
     }
 
     /**
