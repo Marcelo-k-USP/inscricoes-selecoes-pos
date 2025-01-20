@@ -692,7 +692,7 @@ class Selecao extends Model
                 'nome' => 'Errata'
             ],
             [
-                'nome' => 'Lista de Aprovados'
+                'nome' => 'Lista de Inscritos'
             ],
         ];
     }
