@@ -33,12 +33,10 @@
 .arquivos-lista ul li a {
     color: #212529;
     font-size: 14px;
-    
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     margin-bottom: -2px;
-   
 }
 .arquivos-lista ul  li a:hover, .arquivos-lista ul a:hover {
     color:#007bff;
@@ -55,7 +53,6 @@
 .arquivos-lista ul li.modo-visualizacao:hover .arquivo-acoes{
     width: 73px;
 }
-
 .arquivos-lista .btn-arquivo-acao{
     font-size: 13px;
     padding: 0px 5px;
@@ -76,7 +73,7 @@
     border-bottom: 1px solid #8e8a8a;
     height: 24px;
 }
-.editar-nome-arquivo-form .input-wrapper .input-nome-arquivo{ 
+.editar-nome-arquivo-form .input-wrapper .input-nome-arquivo{
     height: 28px;
     background: transparent;
     outline: none;
@@ -87,7 +84,7 @@
     width: calc(100% + 4px);
     font-size: 14px;
 }
-.editar-nome-arquivo-form .btns-wrapper{ 
+.editar-nome-arquivo-form .btns-wrapper{
     position: relative;
     top: -2px;
     align-items: center;
