@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Programa;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
@@ -24,12 +25,18 @@ class ProgramaPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User      $user
+     * @param  \App\Models\Programa  $programa
      * @return mixed
      */
-    public function view(User $user)
+    public function view(User $user, Programa $programa)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($programa->id);
+        else
+            return false;
     }
 
     /**

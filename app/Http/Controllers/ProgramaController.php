@@ -51,7 +51,7 @@ class ProgramaController extends Controller
      */
     public function show(Request $request, string $id)
     {
-        $this->authorize('programas.view');
+        $this->authorize('programas.view', Programa::where('id', $id));
         \UspTheme::activeUrl('programas');
 
         if ($request->ajax())
