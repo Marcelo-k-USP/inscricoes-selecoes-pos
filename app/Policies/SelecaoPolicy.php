@@ -65,7 +65,7 @@ class SelecaoPolicy
     public function update(User $user, Selecao $selecao)
     {
         if (Gate::allows('perfiladmin'))
-            return $user->gerenciaPrograma($selecao->programa_id);//return true;
+            return true;
         elseif (Gate::allows('perfilgerente'))
             return $user->gerenciaPrograma($selecao->programa_id);
         else

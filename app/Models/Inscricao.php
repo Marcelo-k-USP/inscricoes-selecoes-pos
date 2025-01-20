@@ -149,11 +149,10 @@ class Inscricao extends Model
     public static function listarInscricoes()
     {
         if (Gate::any(['perfiladmin', 'perfilgerente']))
-            return DB::table('inscricoes')
-                     ->join('selecoes', 'inscricoes.selecao_id', '=', 'selecoes.id')
-                     ->whereIn('selecoes.programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'))
-                     ->select('inscricoes.*')
-                     ->get();
+            return Inscricao::with('selecao')->whereHas('selecao', function ($query) {
+                $query->whereIn('programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'));
+            })
+            ->get();
         else
             return Auth::user()->inscricoes()->wherePivotIn('papel', ['Autor'])->get();
     }

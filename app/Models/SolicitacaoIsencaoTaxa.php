@@ -133,11 +133,10 @@ class SolicitacaoIsencaoTaxa extends Model
     public static function listarSolicitacoesIsencaoTaxa()
     {
         if (Gate::any(['perfiladmin', 'perfilgerente']))
-            return DB::table('solicitacoesisencaotaxa')
-                     ->join('selecoes', 'solicitacoesisencaotaxa.selecao_id', '=', 'selecoes.id')
-                     ->whereIn('selecoes.programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'))
-                     ->select('solicitacoesisencaotaxa.*')
-                     ->get();
+            return SolicitacaoIsencaoTaxa::with('selecao')->whereHas('selecao', function ($query) {
+                $query->whereIn('programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'));
+            })
+            ->get();
         else
             return Auth::user()->solicitacoesisencaotaxa()->wherePivotIn('papel', ['Autor'])->get();
     }
