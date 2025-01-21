@@ -17,12 +17,16 @@
     <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Aguardando Comprovação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Comprovação">
       Aguardando Comprovação
     </button>
-    <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Solicitada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Isenção de Taxa Solicitada">
-      Isenção de Taxa Solicitada
-    </button>
-    <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($solicitacaoisencaotaxa->estado != 'Isenção de Taxa Solicitada')) disabled @endif name="estado" value="Isenção de Taxa em Avaliação">
-      Isenção de Taxa em Avaliação
-    </button>
+    @if ($solicitacaoisencaotaxa->estado != 'Aguardando Comprovação')
+      <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Solicitada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Isenção de Taxa Solicitada">
+        Isenção de Taxa Solicitada
+      </button>
+    @endif
+    @if ($solicitacaoisencaotaxa->estado != 'Aguardando Comprovação')
+      <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($solicitacaoisencaotaxa->estado != 'Isenção de Taxa Solicitada')) disabled @endif name="estado" value="Isenção de Taxa em Avaliação">
+        Isenção de Taxa em Avaliação
+      </button>
+    @endif
     @if (in_array($solicitacaoisencaotaxa->estado, ['Isenção de Taxa em Avaliação', 'Isenção de Taxa Aprovada']))
       <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada') ? 'btn-success' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($solicitacaoisencaotaxa->estado != 'Isenção de Taxa em Avaliação')) disabled @endif name="estado" value="Isenção de Taxa Aprovada">
         Isenção de Taxa Aprovada
