@@ -20,7 +20,7 @@
 
   @if ($existem_selecoes)
     <br />
-    Para qual processo seletivo você deseja se inscrever?<br />
+    Para qual processo seletivo e linha de pesquisa você deseja se inscrever?<br />
     <table class="table table-sm table-hover nova-inscricao display responsive" style="width: 100%;">
       <thead>
         <tr>
@@ -35,11 +35,14 @@
                 {{ $categoria->nome }}
                 @foreach ($categoria->selecoes as $selecao)
                   <div class="ml-3">
-                    <a href="inscricoes/create/{{ $selecao['id'] }}">{{ $selecao->nome }}
-                      @if (!is_null($selecao->descricao))
-                        - {{ $selecao->descricao }}
-                      @endif
-                    </a>
+                    {{ $selecao->nome }} @if (!is_null($selecao->descricao)) - {{ $selecao->descricao }} @endif
+                    @foreach ($selecao->linhaspesquisa as $linhapesquisa)
+                      <div class="ml-3">
+                        <a href="inscricoes/create/{{ $selecao['id'] }}/{{ $linhapesquisa['id'] }}">
+                          {{ $linhapesquisa->nome }}
+                        </a>
+                      </div>
+                    @endforeach
                   </div>
                 @endforeach
                 <br>

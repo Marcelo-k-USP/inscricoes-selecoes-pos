@@ -28,6 +28,13 @@ class Inscricao extends Model
             'model' => 'Selecao',
             'data' => [],
         ],
+        [
+            'name' => 'linhapesquisa_id',
+            'label' => 'Linha de Pesquisa',
+            'type' => 'hidden',
+            'model' => 'LinhaPesquisa',
+            'data' => [],
+        ],
     ];
 
     // uso no crud generico
@@ -238,5 +245,13 @@ class Inscricao extends Model
     public function selecao()
     {
         return $this->belongsTo(Selecao::class);
+    }
+
+    /**
+     * relacionamento com linha de pesquisa
+     */
+    public function linhapesquisa()
+    {
+        return $this->belongsTo(LinhaPesquisa::class);
     }
 }

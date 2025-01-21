@@ -21,6 +21,7 @@ class CreateInscricoesTable extends Migration
 
             /* Relacionamentos */
             $table->foreignId('selecao_id')->constrained('selecoes');
+            $table->foreignId('linhapesquisa_id')->constrained('linhaspesquisa');
 
             $table->timestamps();
         });

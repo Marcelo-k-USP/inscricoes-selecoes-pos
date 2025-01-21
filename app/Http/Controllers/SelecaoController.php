@@ -413,6 +413,9 @@ class SelecaoController extends Controller
         foreach ($solicitacoesisencaotaxa as $solicitacaoisencaotaxa) {
             $i = [];
 
+            $i['programa'] = $solicitacaoisencaotaxa->selecao->programa->nome;
+            $i['selecao'] = $solicitacaoisencaotaxa->selecao->nome;
+
             $autor = $solicitacaoisencaotaxa->users()->wherePivot('papel', 'Autor')->first();
             $i['autor'] = $autor ? $autor->name : '';
 
@@ -455,6 +458,10 @@ class SelecaoController extends Controller
         $arr = [];
         foreach ($inscricoes as $inscricao) {
             $i = [];
+
+            $i['programa'] = $inscricao->selecao->programa->nome;
+            $i['selecao'] = $inscricao->selecao->nome;
+            $i['linhapesquisa'] = $inscricao->linhapesquisa->nome;
 
             $autor = $inscricao->users()->wherePivot('papel', 'Autor')->first();
             $i['autor'] = $autor ? $autor->name : '';

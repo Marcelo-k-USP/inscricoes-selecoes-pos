@@ -38,8 +38,8 @@
             @else
               Nova Inscrição
             @endif
-            para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})<br />
-            <span class="text-muted">{{ $inscricao->selecao->descricao }}</span>
+            para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }}) / {{ $inscricao->linhapesquisa->nome }}<br />
+            <span class="text-muted">{{ $inscricao->selecao->descricao }}</span><br />
           </div>
         </div>
         @include('inscricoes.partials.badge-instrucoes-da-selecao')

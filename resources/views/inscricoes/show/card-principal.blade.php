@@ -16,6 +16,7 @@
   @method($modo == 'edit' ? 'put' : 'post')
   {{ html()->hidden('id') }}
   <input type="hidden" id="selecao_id" name="selecao_id" value="{{ $inscricao->selecao->id }}">
+  <input type="hidden" id="linhapesquisa_id" name="linhapesquisa_id" value="{{ $inscricao->linhapesquisa->id }}">
   <div class="card mb-3 w-100" id="card-inscricao-principal">
     <div class="card-header">
       Informações básicas

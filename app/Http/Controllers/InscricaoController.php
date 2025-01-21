@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InscricaoRequest;
 use App\Mail\InscricaoMail;
 use App\Models\Inscricao;
+use App\Models\LinhaPesquisa;
 use App\Models\LocalUser;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
@@ -87,15 +88,17 @@ class InscricaoController extends Controller
      * Show the form for creating a new resource.
      *
      * @param  \App\Models\Selecao        $selecao
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return \Illuminate\Http\Response
      */
-    public function create(Selecao $selecao)
+    public function create(Selecao $selecao, LinhaPesquisa $linhapesquisa)
     {
         $this->authorize('inscricoes.create');
 
         \UspTheme::activeUrl('inscricoes/create');
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
+        $inscricao->linhapesquisa = $linhapesquisa;
         // se for usuário logado (tanto usuário local quanto não local)...
         if (Auth::check()) {
             $user = Auth::user();
@@ -134,16 +137,18 @@ class InscricaoController extends Controller
         $this->authorize('inscricoes.create');
 
         $selecao = Selecao::find($request->selecao_id);
+        $linhapesquisa = LinhaPesquisa::find($request->linhapesquisa_id);
         $user_logado = Auth::check();
         if ($user_logado) {
 
             // transaction para não ter problema de inconsistência do DB
-            $inscricao = DB::transaction(function () use ($request, $selecao) {
+            $inscricao = DB::transaction(function () use ($request, $selecao, $linhapesquisa) {
                 $user = \Auth::user();
 
                 // grava a inscrição
                 $inscricao = new Inscricao;
                 $inscricao->selecao_id = $selecao->id;
+                $inscricao->linhapesquisa_id = $linhapesquisa->id;
                 $inscricao->estado = 'Aguardando Documentação';
                 $inscricao->extras = json_encode($request->extras);
                 $inscricao->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
