@@ -23,7 +23,7 @@
     <div class="card-body">
       <div class="responsaveis-lista">
         @php
-          $funcao = 'Secretários(as) dos Programas';
+          $funcao = 'Secretários(as) do Programa';
           $programa_secretarios = array_filter($responsaveis, function ($record) use ($funcao) {
             return ($record['funcao'] == $funcao);
           });
@@ -44,7 +44,7 @@
       </div>
       <div class="responsaveis-lista">
         @php
-          $funcao = 'Coordenadores dos Programas';
+          $funcao = 'Coordenadores do Programa';
           $programa_coordenadores = array_filter($responsaveis, function ($record) use ($funcao) {
             return ($record['funcao'] == $funcao);
           });

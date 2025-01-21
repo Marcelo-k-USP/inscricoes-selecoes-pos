@@ -25,6 +25,9 @@ class InscricaoMail extends Mailable
     protected $arquivo_conteudo;
     protected $arquivo_erro;
 
+    // campos adicionais para inscrição realizada
+    protected $secretario_nome;
+
     // campos adicionais para inscrição pré-aprovada
     protected $orientador_nome;
 
@@ -53,7 +56,7 @@ class InscricaoMail extends Mailable
                 break;
 
             case 'realização':
-                // TODO
+                $this->secretario_nome = $data['secretario_nome'];
                 break;
 
             case 'pré-aprovação':
@@ -102,12 +105,18 @@ class InscricaoMail extends Mailable
                     });
 
             case 'realização':
-                // TODO
-                return null;
+                return $this
+                    ->subject('[' . config('app.name') . '] Realização de Inscrição')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.inscricao_realizacao')
+                    ->with([
+                        'inscricao' => $this->inscricao,
+                        'secretario_nome' => $this->secretario_nome,
+                    ]);
 
             case 'pré-aprovação':
                 return $this
-                    ->subject('[' . config('app.name') . '] Realização de Inscrição')
+                    ->subject('[' . config('app.name') . '] Pré-Aprovação de Inscrição')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_preaprovacao')
                     ->with([

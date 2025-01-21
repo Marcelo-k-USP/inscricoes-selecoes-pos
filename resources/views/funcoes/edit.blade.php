@@ -35,7 +35,7 @@
       <div class="card-container">
         <div class="card card-funcoes">
           <div class="card-header">
-            Secretários(as) dos Programas
+            Secretários(as) do Programa
           </div>
           <div class="card-body">
             @php
@@ -47,7 +47,7 @@
                 @csrf
                 @method('put')
                 {{ html()->hidden('id') }}
-                {{ html()->hidden('funcao', 'Secretários(as) dos Programas') }}
+                {{ html()->hidden('funcao', 'Secretários(as) do Programa') }}
                 {{ html()->hidden('programa', $programa_secretario->nome) }}
                 <div class="card my-2">
                   @if ($programa_secretario->nome != $programa_anterior)
@@ -79,7 +79,7 @@
         </div>
         <div class="card card-funcoes">
           <div class="card-header">
-            Coordenadores dos Programas
+            Coordenadores do Programa
           </div>
           <div class="card-body">
             @php
@@ -91,7 +91,7 @@
                 @csrf
                 @method('put')
                 {{ html()->hidden('id') }}
-                {{ html()->hidden('funcao', 'Coordenadores dos Programas') }}
+                {{ html()->hidden('funcao', 'Coordenadores do Programa') }}
                 {{ html()->hidden('programa', $programa_coordenador->nome) }}
                 <div class="card my-2">
                   @if ($programa_coordenador->nome != $programa_anterior)

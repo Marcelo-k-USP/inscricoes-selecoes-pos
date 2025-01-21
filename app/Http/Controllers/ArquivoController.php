@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Uspdev\Replicado\Pessoa;
 
 class ArquivoController extends Controller
 {
@@ -119,14 +120,23 @@ class ArquivoController extends Controller
                     if (($objeto->estado == 'Realizada') && (!$objeto->boleto_enviado)) {
                         $user = \Auth::user();
                         if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
-                            // envia e-mail com o boleto
-                            $passo = 'boleto';
                             $inscricao = $objeto;
+
+                            // envia e-mail para o candidato com o boleto
+                            $passo = 'boleto';
                             $papel = 'Candidato';
                             $arquivo_nome = 'boleto.pdf';
                             $arquivo_conteudo = $this->boletoService->gerarBoleto($inscricao);
                             \Mail::to($user->email)
                                 ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivo_nome', 'arquivo_conteudo')));
+
+                            // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
+                            $passo = 'realização';
+                            foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
+                                $secretario_nome = Pessoa::obterNome($secretario->codpes);
+                                \Mail::to($secretario->email)
+                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'secretario_nome')));
+                            }
 
                             $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
                             $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado

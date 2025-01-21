@@ -29,12 +29,12 @@ class FuncaoController extends Controller
         \UspTheme::activeUrl('funcoes');
 
         $programas_secretarios = Programa::with(['users' => function ($query) {
-            $query->where('funcao', 'Secretários(as) dos Programas')
+            $query->where('funcao', 'Secretários(as) do Programa')
                   ->orderBy('user_programa.programa_id')
                   ->orderBy('user_programa.user_id');
         }])->get();
         $programas_coordenadores = Programa::with(['users' => function ($query) {
-            $query->where('funcao', 'Coordenadores dos Programas')
+            $query->where('funcao', 'Coordenadores do Programa')
                   ->orderBy('user_programa.programa_id')
                   ->orderBy('user_programa.user_id');
         }])->get();

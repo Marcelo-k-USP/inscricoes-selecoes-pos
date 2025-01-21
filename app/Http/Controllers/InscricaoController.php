@@ -273,17 +273,10 @@ class InscricaoController extends Controller
                 $inscricao->save();
 
                 switch ($inscricao->estado) {
-                    case 'Realizada':
-                        // envia e-mails avisando os secretários do programa sobre a realização da inscrição
-                        $passo = 'realização';
-                        // TODO
-                        break;
-
                     case 'Pré-Aprovada':
-                        // envia e-mails avisando os orientadores das linhas de pesquisa da inscrição sobre a pré-aprovação da inscrição
+                        // envia e-mails avisando os orientadores da linha de pesquisa da inscrição sobre a pré-aprovação da inscrição
                         $passo = 'pré-aprovação';
                         $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
-                        $orientadores = [];
                         foreach ($inscricao->linhapesquisa->orientadores as $orientador) {
                             $orientador_nome = Pessoa::obterNome($orientador->codpes);
                             \Mail::to(Pessoa::email($orientador->codpes))

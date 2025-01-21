@@ -45,7 +45,7 @@
             $('#nome').val(row['name']);
             $('#telefone').val(row['telefone']);
 
-            if (funcao !== 'Secretários(as) dos Programas')
+            if (funcao !== 'Secretários(as) do Programa')
               $('#row-telefone').hide();
             else
               $('#row-telefone').show();

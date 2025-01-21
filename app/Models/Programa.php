@@ -53,12 +53,12 @@ class Programa extends Model
     {
         return [
             [
-                'funcao' => 'Secretários(as) dos Programas',
-                'users' => $this->users()->wherePivot('funcao', 'Secretários(as) dos Programas')->orderBy('id')->get(),
+                'funcao' => 'Secretários(as) do Programa',
+                'users' => $this->users()->wherePivot('funcao', 'Secretários(as) do Programa')->orderBy('id')->get(),
             ],
             [
-                'funcao' => 'Coordenadores dos Programas',
-                'users' => $this->users()->wherePivot('funcao', 'Coordenadores dos Programas')->orderBy('id')->get(),
+                'funcao' => 'Coordenadores do Programa',
+                'users' => $this->users()->wherePivot('funcao', 'Coordenadores do Programa')->orderBy('id')->get(),
             ],
             [
                 'funcao' => 'Serviço de Pós-Graduação',

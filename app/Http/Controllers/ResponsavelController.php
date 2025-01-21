@@ -35,7 +35,7 @@ class ResponsavelController extends Controller
             $user = User::find((int) $id);
             if ($user->gerenciaProgramaFuncao($funcao, $programa_id)) {    // traz dados apenas de quem possui a dada função no dado programa
 
-                if ($funcao != 'Secretários(as) dos Programas')
+                if ($funcao != 'Secretários(as) do Programa')
                     $user->telefone = '';
 
                 return $user;    // preenche os dados do modal de exibição de um responsável
