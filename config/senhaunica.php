@@ -70,5 +70,8 @@ return [
     // relevante se permission=true
     'codigoUnidade' => env('SENHAUNICA_CODIGO_UNIDADE'),
 
+    // se true, oculta a opção de login na barra do SenhaUnica
+    'hideLogin' => (bool) env('SENHAUNICA_HIDELOGIN', false),
+
     // SENHAUNICA_KEY e SENHAUNICA_SECRET são carregados em services.php da biblioteca
 ];

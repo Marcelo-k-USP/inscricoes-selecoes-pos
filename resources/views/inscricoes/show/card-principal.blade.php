@@ -46,7 +46,6 @@
 
 @section('javascripts_bottom')
 @parent
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <script src="js/functions.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
@@ -117,10 +116,6 @@
 
       if (!form_valid)
         event.preventDefault();
-      else if (grecaptcha.getResponse().length === 0) {
-        event.preventDefault();
-        window.alert('Favor preencher o captcha');
-      }
     });
 
     $('#password').on('input', function () {

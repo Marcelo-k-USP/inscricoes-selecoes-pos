@@ -9,7 +9,6 @@ use App\Models\MotivoIsencaoTaxa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\User;
-use App\Services\RecaptchaService;
 use App\Utils\JSONForms;
 use Hash;
 use Illuminate\Http\Request;
@@ -90,18 +89,16 @@ class SolicitacaoIsencaoTaxaController extends Controller
     {
         $this->authorize('solicitacoesisencaotaxa.create');
 
-        \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
         $solicitacaoisencaotaxa = new SolicitacaoIsencaoTaxa;
         $solicitacaoisencaotaxa->selecao = $selecao;
-        // se for usuário logado (tanto usuário local quanto não local)...
-        if (Auth::check()) {
-            $user = Auth::user();
-            $extras = array(
-                'nome' => $user->name,
-                'e_mail' => $user->email,
-            );
-            $solicitacaoisencaotaxa->extras = json_encode($extras);
-        }
+        $user = Auth::user();
+        $extras = array(
+            'nome' => $user->name,
+            'e_mail' => $user->email,
+        );
+        $solicitacaoisencaotaxa->extras = json_encode($extras);
+
+        \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
         return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'create'));
     }
 
@@ -109,110 +106,34 @@ class SolicitacaoIsencaoTaxaController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request        $request
-     * @param  \App\Services\RecaptchaService  $recaptcha_service
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, RecaptchaService $recaptcha_service)
+    public function store(Request $request)
     {
         $this->authorize('solicitacoesisencaotaxa.create');
 
-        $selecao = Selecao::find($request->selecao_id);
-        $user_logado = Auth::check();
-        if ($user_logado) {
+        // transaction para não ter problema de inconsistência do DB
+        $solicitacaoisencaotaxa = DB::transaction(function () use ($request) {
+            $user = \Auth::user();
+            $selecao = Selecao::find($request->selecao_id);
 
-            // transaction para não ter problema de inconsistência do DB
-            $solicitacaoisencaotaxa = DB::transaction(function () use ($request, $selecao) {
-                $user = \Auth::user();
+            // grava a solicitação de isenção de taxa
+            $solicitacaoisencaotaxa = new SolicitacaoIsencaoTaxa;
+            $solicitacaoisencaotaxa->selecao_id = $selecao->id;
+            $solicitacaoisencaotaxa->estado = 'Aguardando Comprovação';
+            $solicitacaoisencaotaxa->extras = json_encode($request->extras);
+            $solicitacaoisencaotaxa->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
+            $solicitacaoisencaotaxa->load('selecao');    // com isso, $solicitacaoisencaotaxa->selecao é carregado
+            $solicitacaoisencaotaxa->users()->attach($user, ['papel' => 'Autor']);
 
-                // grava a solicitação de isenção de taxa
-                $solicitacaoisencaotaxa = new SolicitacaoIsencaoTaxa;
-                $solicitacaoisencaotaxa->selecao_id = $selecao->id;
-                $solicitacaoisencaotaxa->estado = 'Aguardando Comprovação';
-                $solicitacaoisencaotaxa->extras = json_encode($request->extras);
-                $solicitacaoisencaotaxa->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
-                $solicitacaoisencaotaxa->load('selecao');    // com isso, $solicitacaoisencaotaxa->selecao é carregado
-                $solicitacaoisencaotaxa->users()->attach($user, ['papel' => 'Autor']);
+            return $solicitacaoisencaotaxa;
+        });
 
-                return $solicitacaoisencaotaxa;
-            });
+        $request->session()->flash('alert-success', 'Solicitação de isenção de taxa iniciada com sucesso<br />' .
+            'Não deixe de subir os documentos necessários para a avaliação da sua solicitação');
 
-            $request->session()->flash('alert-success', 'Solicitação de isenção de taxa iniciada com sucesso<br />' .
-                'Não deixe de subir os documentos necessários para a avaliação da sua solicitação');
-
-            \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
-            return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
-
-        } else {
-            // usuário não logado
-
-            // para as validações, começa sempre com o reCAPTCHA... depois valida cada campo na ordem em que aparecem na tela
-
-            // revalida o reCAPTCHA
-            if (!$recaptcha_service->revalidate($request->input('g-recaptcha-response')))
-                return $this->processa_erro_store('Falha na validação do reCAPTCHA. Por favor, tente novamente.', $selecao, $request);
-
-            // verifica se está duplicando o e-mail (pois mais pra baixo este usuário será gravado na tabela users, e não podemos permitir duplicatas)
-            if (User::emailExiste($request->extras['e_mail']))
-                return $this->processa_erro_store('Este e-mail já está cadastrado!', $selecao, $request);
-
-            // verifica se a senha é forte... não usa $request->validate porque ele voltaria para a página apagando todos os campos... pois o {{ old(...) }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old(...) }} dentro do {!! $element !!} do solicitacoesisencaotaxa.show.card-principal
-            $validator = Validator::make($request->all(), [
-                'password' => ['required', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
-            ],[
-                'password.required' => 'A senha é obrigatória!',
-                'password.min' => 'A senha deve ter pelo menos 8 caracteres!',
-                'password.regex' => 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial!',
-            ]);
-            if ($validator->fails())
-                return $this->processa_erro_store(json_decode($validator->errors())->password, $selecao, $request);
-
-            // transaction para não ter problema de inconsistência do DB
-            $solicitacaoisencaotaxa = DB::transaction(function () use ($request, $selecao) {
-
-                // grava o usuário na tabela local
-                $localuser = LocalUser::create(
-                    $request->extras['nome'],
-                    $request->extras['e_mail'],
-                    $request->password
-                );
-                $localuser->save();
-
-                // grava a solicitação de isenção de taxa
-                $solicitacaoisencaotaxa = new SolicitacaoIsencaoTaxa;
-                $solicitacaoisencaotaxa->selecao_id = $selecao->id;
-                $solicitacaoisencaotaxa->estado = 'Aguardando Comprovação';
-                $solicitacaoisencaotaxa->extras = json_encode($request->extras);
-                $solicitacaoisencaotaxa->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
-                $solicitacaoisencaotaxa->users()->attach(User::find($localuser->id), ['papel' => 'Autor']);
-
-                // gera um token e o armazena no banco de dados
-                $token = Str::random(60);
-                DB::table('email_confirmations')->updateOrInsert(
-                    ['email' => $localuser->email],    // procura por registro com este e-mail
-                    [                                  // atualiza ou insere com os dados abaixo
-                        'email' => $localuser->email,
-                        'token' => Hash::make($token),
-                        'created_at' => now()
-                    ]
-                );
-
-                // envia e-mail pedindo a confirmação do endereço de e-mail
-                $passo = 'confirmação de e-mail';
-                $user = $localuser;
-                $email_confirmation_url = url('localusers/confirmaemail', $token);
-                \Mail::to($localuser->email)
-                    ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user', 'email_confirmation_url')));
-
-                return $solicitacaoisencaotaxa;
-            });
-
-            $request->session()->flash('alert-success', 'Solicitação de isenção de taxa iniciada com sucesso<br />' .
-                'Verifique seu e-mail para confirmar seu endereço de e-mail<br />' .
-                'Em seguida, faça login e suba os documentos necessários para a avaliação da sua solicitação');
-
-            \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
-            return redirect('/');    // volta para a tela de informações
-        }
+        \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
+        return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
     }
 
     /**

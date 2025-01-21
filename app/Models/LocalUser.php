@@ -24,6 +24,10 @@ class LocalUser extends Model
             'label' => 'Nome',
         ],
         [
+            'name' => 'telefone',
+            'label' => 'Celular',
+        ],
+        [
             'name' => 'email',
             'label' => 'E-mail',
         ],
@@ -40,13 +44,13 @@ class LocalUser extends Model
         return $fields;
     }
 
-    public static function create(string $nome, string $email, string $senha, string $celular = null)
+    public static function create(string $nome, string $celular, string $email, string $senha)
     {
         $user = new User;
         $user->name = $nome;
+        $user->telefone = $celular;
         $user->email = $email;
         $user->password = Hash::make($senha);
-        $user->telefone = $celular;
         $user->local = '1';
         $user->save();
 

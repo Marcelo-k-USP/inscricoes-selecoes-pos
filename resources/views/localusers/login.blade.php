@@ -19,7 +19,10 @@
           </a>
         </div>
         <button type="submit" class="btn btn-lg btn-success btn-block">Login</button>
-        <a href="javascript:void(0);" onclick="esqueceu_senha()" style="text-decoration: none;"><small style="color: red;">Esqueceu sua senha?</small></a>
+        <a href="javascript:void(0);" onclick="esqueceu_senha()" style="text-decoration: none; color: #007bff; font-size: 11px;">Esqueceu sua senha?</a>
+        <br />
+        <br />
+        <h1 class="h3 mb-3 font-weight-normal">ou <a href="localusers/create" style="text-decoration: none; color: #007bff;">cadastre-se</a></h1>
       </form>
     </div>
   @endauth

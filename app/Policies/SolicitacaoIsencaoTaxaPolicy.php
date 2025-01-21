@@ -56,12 +56,9 @@ class SolicitacaoIsencaoTaxaPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(?User $user = null)    // se não colocarmos a interrogação, esta policy não é invocada no caso de usuário não logado
+    public function create(User $user)
     {
-        if (is_null($user))
-            return true;
-        else
-            return Gate::allows('perfilusuario');
+        return Gate::allows('perfilusuario');
     }
 
     /**

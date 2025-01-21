@@ -20,15 +20,17 @@
     <table class="table table-striped table-hover datatable-nopagination display responsive" style="width:100%">
       <thead>
         <tr>
-          <th width="40%">Nome</th>
-          <th width="30%">E-mail</th>
-          <th width="30%">Ações</th>
+          <th width="35%">Nome</th>
+          <th width="20%">Celular</th>
+          <th width="35%">E-mail</th>
+          <th width="10%">Ações</th>
         </tr>
       </thead>
       <tbody>
         @foreach ($localusers as $localuser)
           <tr>
             <td>{{ $localuser->name }}</td>
+            <td>{{ $localuser->telefone }}</td>
             <td>{{ $localuser->email }}</td>
             <td>
               <div id="actions">

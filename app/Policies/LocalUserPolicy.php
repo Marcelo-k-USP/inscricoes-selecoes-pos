@@ -35,12 +35,12 @@ class LocalUserPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\?User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(?User $user)    // se não colocarmos a interrogação, esta policy não é invocada no caso de usuário não logado
     {
-        return Gate::allows('perfiladmin');
+        return (is_null($user) || Gate::allows('perfiladmin'));
     }
 
     /**

@@ -23,6 +23,7 @@ class LocalUserRequest extends FormRequest
      */
     public const rules = [
         'name' => ['required', 'max:100'],
+        'telefone' => ['required', 'max:100'],
         'email' => ['required', 'email'],
         'password' => ['required', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
     ];
@@ -30,6 +31,7 @@ class LocalUserRequest extends FormRequest
     public const messages = [
         'name.required' => 'O nome do usuário é obrigatório!',
         'name.max' => 'O nome do usuário não pode exceder 100 caracteres!',
+        'telefone' => 'O celular é obrigatório!',
         'email.required' => 'O e-mail do usuário é obrigatório!',
         'email.email' => 'O e-mail do usuário é inválido!',
         'password.required' => 'A senha é obrigatória!',

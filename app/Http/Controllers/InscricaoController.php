@@ -11,7 +11,6 @@ use App\Models\Orientador;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\User;
-use App\Services\RecaptchaService;
 use App\Utils\JSONForms;
 use Hash;
 use Illuminate\Http\Request;
@@ -96,33 +95,29 @@ class InscricaoController extends Controller
     {
         $this->authorize('inscricoes.create');
 
-        \UspTheme::activeUrl('inscricoes/create');
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
         $inscricao->linhapesquisa = $linhapesquisa;
-        // se for usuário logado (tanto usuário local quanto não local)...
-        if (Auth::check()) {
-            $user = Auth::user();
+        $user = Auth::user();
+        // se o usuário já solicitou isenção de taxa para esta seleção...
+        $solicitacaoisencaotaxa = $user->solicitacoesIsencaoTaxa()?->where('selecao_id', $selecao->id)->first();
+        if ($solicitacaoisencaotaxa) {
+            $solicitacaoisencaotaxa_extras = json_decode($solicitacaoisencaotaxa->extras, true);
+            $extras = array(
+                'nome' => $user->name,
+                'tipo_de_documento' => $solicitacaoisencaotaxa_extras['tipo_de_documento'],
+                'numero_do_documento' => $solicitacaoisencaotaxa_extras['numero_do_documento'],
+                'cpf' => $solicitacaoisencaotaxa_extras['cpf'],
+                'e_mail' => $user->email,
+            );
+        } else
+            $extras = array(
+                'nome' => $user->name,
+                'e_mail' => $user->email,
+            );
+        $inscricao->extras = json_encode($extras);
 
-            // se o usuário já solicitou isenção de taxa para esta seleção...
-            $solicitacaoisencaotaxa = $user->solicitacoesIsencaoTaxa()?->where('selecao_id', $selecao->id)->first();
-            if ($solicitacaoisencaotaxa) {
-                $solicitacaoisencaotaxa_extras = json_decode($solicitacaoisencaotaxa->extras, true);
-                $extras = array(
-                    'nome' => $user->name,
-                    'tipo_de_documento' => $solicitacaoisencaotaxa_extras['tipo_de_documento'],
-                    'numero_do_documento' => $solicitacaoisencaotaxa_extras['numero_do_documento'],
-                    'cpf' => $solicitacaoisencaotaxa_extras['cpf'],
-                    'e_mail' => $user->email,
-                );
-            } else
-                $extras = array(
-                    'nome' => $user->name,
-                    'e_mail' => $user->email,
-                );
-            $inscricao->extras = json_encode($extras);
-        }
-
+        \UspTheme::activeUrl('inscricoes/create');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
@@ -130,114 +125,36 @@ class InscricaoController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request        $request
-     * @param  \App\Services\RecaptchaService  $recaptcha_service
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, RecaptchaService $recaptcha_service)
+    public function store(Request $request)
     {
         $this->authorize('inscricoes.create');
 
-        $selecao = Selecao::find($request->selecao_id);
-        $linhapesquisa = LinhaPesquisa::find($request->linhapesquisa_id);
-        $user_logado = Auth::check();
-        if ($user_logado) {
+        // transaction para não ter problema de inconsistência do DB
+        $inscricao = DB::transaction(function () use ($request) {
+            $user = \Auth::user();
+            $selecao = Selecao::find($request->selecao_id);
+            $linhapesquisa = LinhaPesquisa::find($request->linhapesquisa_id);
 
-            // transaction para não ter problema de inconsistência do DB
-            $inscricao = DB::transaction(function () use ($request, $selecao, $linhapesquisa) {
-                $user = \Auth::user();
+            // grava a inscrição
+            $inscricao = new Inscricao;
+            $inscricao->selecao_id = $selecao->id;
+            $inscricao->linhapesquisa_id = $linhapesquisa->id;
+            $inscricao->estado = 'Aguardando Documentação';
+            $inscricao->extras = json_encode($request->extras);
+            $inscricao->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
+            $inscricao->load('selecao');    // com isso, $inscricao->selecao é carregado
+            $inscricao->users()->attach($user, ['papel' => 'Autor']);
 
-                // grava a inscrição
-                $inscricao = new Inscricao;
-                $inscricao->selecao_id = $selecao->id;
-                $inscricao->linhapesquisa_id = $linhapesquisa->id;
-                $inscricao->estado = 'Aguardando Documentação';
-                $inscricao->extras = json_encode($request->extras);
-                $inscricao->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
-                $inscricao->load('selecao');    // com isso, $inscricao->selecao é carregado
-                $inscricao->users()->attach($user, ['papel' => 'Autor']);
+            return $inscricao;
+        });
 
-                return $inscricao;
-            });
+        $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
+            'Não deixe de subir os documentos necessários para a avaliação da sua inscrição');
 
-            $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
-                'Não deixe de subir os documentos necessários para a avaliação da sua inscrição');
-
-            \UspTheme::activeUrl('inscricoes/create');
-            return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
-
-        } else {
-            // usuário não logado
-
-            // para as validações, começa sempre com o reCAPTCHA... depois valida cada campo na ordem em que aparecem na tela
-
-            // revalida o reCAPTCHA
-            if (!$recaptcha_service->revalidate($request->input('g-recaptcha-response')))
-                return $this->processa_erro_store('Falha na validação do reCAPTCHA. Por favor, tente novamente.', $selecao, $request);
-
-            // verifica se está duplicando o e-mail (pois mais pra baixo este usuário será gravado na tabela users, e não podemos permitir duplicatas)
-            if (User::emailExiste($request->extras['e_mail']))
-                return $this->processa_erro_store('Este e-mail já está cadastrado!', $selecao, $request);
-
-            // verifica se a senha é forte... não usa $request->validate porque ele voltaria para a página apagando todos os campos... pois o {{ old(...) }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old(...) }} dentro do {!! $element !!} do inscricoes.show.card-principal
-            $validator = Validator::make($request->all(), [
-                'password' => ['required', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
-            ],[
-                'password.required' => 'A senha é obrigatória!',
-                'password.min' => 'A senha deve ter pelo menos 8 caracteres!',
-                'password.regex' => 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial!',
-            ]);
-            if ($validator->fails())
-                return $this->processa_erro_store(json_decode($validator->errors())->password, $selecao, $request);
-
-            // transaction para não ter problema de inconsistência do DB
-            $inscricao = DB::transaction(function () use ($request, $selecao) {
-
-                // grava o usuário na tabela local
-                $localuser = LocalUser::create(
-                    $request->extras['nome'],
-                    $request->extras['e_mail'],
-                    $request->password,
-                    $request->extras['celular']
-                );
-                $localuser->save();
-
-                // grava a inscrição
-                $inscricao = new Inscricao;
-                $inscricao->selecao_id = $selecao->id;
-                $inscricao->estado = 'Aguardando Documentação';
-                $inscricao->extras = json_encode($request->extras);
-                $inscricao->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
-                $inscricao->load('selecao');    // com isso, $inscricao->selecao é carregado
-                $inscricao->users()->attach(User::find($localuser->id), ['papel' => 'Autor']);
-
-                // gera um token e o armazena no banco de dados
-                $token = Str::random(60);
-                DB::table('email_confirmations')->updateOrInsert(
-                    ['email' => $localuser->email],    // procura por registro com este e-mail
-                    [                                  // atualiza ou insere com os dados abaixo
-                        'email' => $localuser->email,
-                        'token' => Hash::make($token),
-                        'created_at' => now()
-                    ]
-                );
-
-                // envia e-mail pedindo a confirmação do endereço de e-mail
-                $passo = 'confirmação de e-mail';
-                $user = $localuser;
-                $email_confirmation_url = url('localusers/confirmaemail', $token);
-                \Mail::to($localuser->email)
-                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'email_confirmation_url')));
-
-                return $inscricao;
-            });
-
-            $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
-                'Verifique seu e-mail para confirmar seu endereço de e-mail<br />' .
-                'Em seguida, faça login e suba os documentos necessários para a avaliação da sua inscrição');
-
-            \UspTheme::activeUrl('inscricoes/create');
-            return redirect('/');    // volta para a tela de informações
-        }
+        \UspTheme::activeUrl('inscricoes/create');
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
     /**

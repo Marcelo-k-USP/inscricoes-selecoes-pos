@@ -187,14 +187,6 @@ class JSONForms
             }
         }
 
-        // fora do fluxo normal: inclui o reCAPTCHA no final do formulário, pois ele não fica no $template
-        if (!Auth::check()) {
-            $html_string = '<div class="col-sm-12">' . PHP_EOL .
-                             '<div class="g-recaptcha" data-sitekey="' . config('inscricoes-selecoes-pos.recaptcha_site_key') . '"></div> &nbsp; &nbsp;' . PHP_EOL .
-                           '</div>' . PHP_EOL;
-            $form[] = [new HtmlString($html_string)];
-        }
-
         return $form;
     }
 

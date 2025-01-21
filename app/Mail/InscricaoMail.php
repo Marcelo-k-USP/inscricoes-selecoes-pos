@@ -16,9 +16,6 @@ class InscricaoMail extends Mailable
     protected $inscricao;
     protected $user;
 
-    // campos adicionais para confirmação de e-mail
-    protected $email_confirmation_url;
-
     // campos adicionais para boleto
     protected $papel;
     protected $arquivo_nome;
@@ -47,10 +44,6 @@ class InscricaoMail extends Mailable
         $this->user = $data['user'];
 
         switch ($this->passo) {
-            case 'confirmação de e-mail':
-                $this->email_confirmation_url = $data['email_confirmation_url'];
-                break;
-
             case 'boleto':
                 $this->papel = $data['papel'];
                 $this->arquivo_nome = $data['arquivo_nome'];
@@ -82,17 +75,6 @@ class InscricaoMail extends Mailable
     public function build()
     {
         switch ($this->passo) {
-            case 'confirmação de e-mail':
-                return $this
-                    ->subject('[' . config('app.name') . '] Confirmação de E-mail')
-                    ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.inscricao_confirmacaodeemail')
-                    ->with([
-                        'inscricao' => $this->inscricao,
-                        'user' => $this->user,
-                        'email_confirmation_url' => $this->email_confirmation_url,
-                    ]);
-
             case 'boleto':
                 return $this
                     ->subject('[' . config('app.name') . '] Inscrição Realizada com Sucesso')

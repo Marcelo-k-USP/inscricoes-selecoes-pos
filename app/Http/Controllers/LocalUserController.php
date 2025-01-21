@@ -9,6 +9,7 @@ use App\Http\Requests\LocalUserRequest;
 use App\Mail\LocalUserMail;
 use App\Models\LocalUser;
 use App\Models\User;
+use App\Services\RecaptchaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -18,6 +19,17 @@ use Spatie\Permission\Models\Role;
 
 class LocalUserController extends Controller
 {
+    // crud generico
+    public static $data = [
+        'title' => 'Usuários Locais',
+        'url' => 'localusers',     // caminho da rota do resource
+        'modal' => true,
+        'showId' => false,
+        'viewBtn' => true,
+        'editBtn' => false,
+        'model' => 'App\Models\LocalUser',
+    ];
+
     public function __construct()
     {
         $this->middleware('auth')->except([
@@ -26,7 +38,9 @@ class LocalUserController extends Controller
             'esqueceuSenha',
             'iniciaRedefinicaoSenha',
             'redefineSenha',
-            'confirmaEmail'
+            'confirmaEmail',
+            'create',
+            'store'
         ]);    // exige que o usuário esteja logado, exceto para estes métodos listados
     }
 
@@ -91,8 +105,9 @@ class LocalUserController extends Controller
         $password_reset_url = url('localusers/redefinesenha', $token);
 
         // envia e-mail para o usuário local... não utilizo observer como no Chamados pois aqui não faz sentido, o observer faz mais sentido disparando seus eventos próprios (created, updated, etc.)
+        $passo = 'reset de senha';
         \Mail::to($localuser->email)
-            ->queue(new LocalUserMail(compact('localuser', 'password_reset_url')));
+            ->queue(new LocalUserMail(compact('passo', 'localuser', 'password_reset_url')));
 
         request()->session()->flash('alert-success', 'E-mail enviado com sucesso');
         return view('localusers.login');
@@ -187,6 +202,12 @@ class LocalUserController extends Controller
         return view('localusers.login');
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @return \Illuminate\Http\Response
+     */
     public function index(Request $request)
     {
         $this->authorize('localusers.viewAny');
@@ -206,6 +227,13 @@ class LocalUserController extends Controller
         }
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @param  string                     $id
+     * @return \Illuminate\Http\Response
+     */
     public function show(Request $request, string $id)
     {
         $this->authorize('localusers.view');
@@ -215,28 +243,105 @@ class LocalUserController extends Controller
             return User::where('id', (int) $id)->where('local', 1)->first();    // preenche os dados do form de edição de um usuário local
     }
 
-    public function store(LocalUserRequest $request)
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
     {
         $this->authorize('localusers.create');
 
-        $validator = Validator::make($request->all(), LocalUserRequest::rules, LocalUserRequest::messages);
-        if ($validator->fails())
-            return back()->withErrors($validator)->withInput();
+        return view('localusers.create', $this->monta_compact('create'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  \App\Services\RecaptchaService  $recaptcha_service
+     * @return \Illuminate\Http\Response
+     */
+    public function store(LocalUserRequest $request, RecaptchaService $recaptcha_service)    // este método é invocado tanto pelo candidato, ao se cadastrar, quanto pelo admin, ao cadastrar um localuser no menu de Administração
+    {
+        $this->authorize('localusers.create');
+
+        // para as validações, começa sempre com o reCAPTCHA... depois valida cada campo na ordem em que aparecem na tela
+
+        if (session('perfil') != 'admin')
+            // revalida o reCAPTCHA
+            if (!$recaptcha_service->revalidate($request->input('g-recaptcha-response')))
+                return $this->processa_erro_store('Falha na validação do reCAPTCHA. Por favor, tente novamente.', $request);
+
+        // verifica se está duplicando o e-mail (pois mais pra baixo este usuário será gravado na tabela users, e não podemos permitir duplicatas)
         if (User::emailExiste($request->email))
             return back()->withErrors(Validator::make([], [])->errors()->add('email', 'Este e-mail já está em uso!'))->withInput();
 
+        // verifica se a senha é forte... não usa $request->validate porque ele voltaria para a página apagando todos os campos... pois o {{ old(...) }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old(...) }} dentro do {!! $element !!} do inscricoes.show.card-principal
+        $validator = Validator::make($request->all(), [
+            'password' => ['required', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
+        ],[
+            'password.required' => 'A senha é obrigatória!',
+            'password.min' => 'A senha deve ter pelo menos 8 caracteres!',
+            'password.regex' => 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial!',
+        ]);
+        if ($validator->fails())
+            return $this->processa_erro_store(json_decode($validator->errors())->password, $request);
+
         $localuser = User::create([
             'name' => $request->name,
+            'telefone' => $request->telefone,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'local' => '1',
         ]);
         $localuser->givePermissionTo('user');
 
-        \UspTheme::activeUrl('localusers');
-        return view('localusers.index', $this->monta_compact());
+        // gera um token e o armazena no banco de dados
+        $token = Str::random(60);
+        DB::table('email_confirmations')->updateOrInsert(
+            ['email' => $localuser->email],    // procura por registro com este e-mail
+            [                                  // atualiza ou insere com os dados abaixo
+                'email' => $localuser->email,
+                'token' => Hash::make($token),
+                'created_at' => now()
+            ]
+        );
+
+        // envia e-mail pedindo a confirmação do endereço de e-mail
+        $passo = 'confirmação de e-mail';
+        $email_confirmation_url = url('localusers/confirmaemail', $token);
+        \Mail::to($localuser->email)
+            ->queue(new LocalUserMail(compact('passo', 'localuser', 'email_confirmation_url')));
+
+        if (session('perfil') == 'admin') {
+            \UspTheme::activeUrl('localusers');
+            return view('localusers.index', $this->monta_compact('create'));
+
+        } else {
+            $request->session()->flash('alert-success', 'Cadastro realizado com sucesso<br />' .
+                'Verifique seu e-mail para confirmar seu endereço de e-mail<br />' .
+                'Em seguida, faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
+            return redirect('/');
+        }
     }
 
+    private function processa_erro_store(string|array $msgs, Request $request)
+    {
+        if (is_array($msgs))
+            $msgs = implode('<br />', $msgs);
+        $request->session()->flash('alert-danger', $msgs);
+
+        return back()->withInput();
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \App\Models\User           $localuser
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, User $localuser)
     {
         $this->authorize('localusers.update');
@@ -249,9 +354,15 @@ class LocalUserController extends Controller
         $localuser->update($request->all());
 
         \UspTheme::activeUrl('localusers');
-        return view('localusers.index', $this->monta_compact());
+        return view('localusers.index', $this->monta_compact('edit'));
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\User           $localuser
+     * @return \Illuminate\Http\Response
+     */
     public function destroy(User $localuser)
     {
         $this->authorize('localusers.delete');
@@ -263,15 +374,16 @@ class LocalUserController extends Controller
         $localuser->delete();
 
         \UspTheme::activeUrl('localusers');
-        return view('localusers.index', $this->monta_compact());
+        return view('localusers.index', $this->monta_compact('edit'));
     }
 
-    private function monta_compact()
+    private function monta_compact(string $modo)
     {
+        $data = (object) self::$data;
         $localusers = User::where('local', '1')->get();
         $fields = LocalUser::getFields();
         $rules = LocalUserRequest::rules;
 
-        return compact('localusers', 'fields', 'rules');
+        return compact('data', 'localusers', 'fields', 'rules', 'modo');
     }
 }

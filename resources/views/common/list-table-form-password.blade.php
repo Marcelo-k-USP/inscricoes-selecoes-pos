@@ -4,11 +4,12 @@
   @endphp
   {{ html()->label($col['label'] ?? $col['name'], $col['name'])->class('col-form-label col-sm-3')->style('margin-top: -20px;') }}
   <div class="col-sm-3" style="margin-top: -20px;">
-    {{ html()->input('password', $col['name'])
-      ->value(old($col['name'], $modo == 'edit' ? $objeto->{$col['name']} : ''))
-      ->class('form-control')
-      ->style('width: 100%; padding-right: 30px;')
-    }}
+    @php
+      $input = html()->input('password', $col['name'])->value(old($col['name'], $modo == 'edit' ? $objeto->{$col['name']} : ''))->class('form-control')->style('width: 100%; padding-right: 30px;');
+      if (in_array('required', $rules[$col['name']]))
+        $input = $input->required();
+    @endphp
+    {{ $input }}
     <a href="javascript:void(0);" onclick="toggle_password('{{ $col['name'] }}')" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">
       <img src="/icons/view.png" id="toggle_icon_{{ $col['name'] }}" style="width: 20px; height: 20px;">
     </a>

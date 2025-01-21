@@ -46,6 +46,10 @@
         $(this).find(':input[type=text]').filter(':visible:first').focus();
       });
 
+      $('input[id="telefone"]').each(function() {
+        $(this).mask('(00) 00000-0000');
+      });
+
       edit_form = function(id) {
         $.get('localusers/' + id
           , function(row) {

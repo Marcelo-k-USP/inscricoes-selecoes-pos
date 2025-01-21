@@ -16,9 +16,6 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
     protected $solicitacaoisencaotaxa;
     protected $user;
 
-    // campos adicionais para confirmação de e-mail
-    protected $email_confirmation_url;
-
     // campos adicionais para solicitação de isenção de taxa realizada
     protected $servicoposgraduacao_nome;
 
@@ -38,10 +35,6 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
         $this->user = $data['user'];
 
         switch ($this->passo) {
-            case 'confirmação de e-mail':
-                $this->email_confirmation_url = $data['email_confirmation_url'];
-                break ;
-
             case 'realização':
                 $this->servicoposgraduacao_nome = $data['servicoposgraduacao_nome'];
                 break;
@@ -61,17 +54,6 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
     public function build()
     {
         switch ($this->passo) {
-            case 'confirmação de e-mail':
-                return $this
-                    ->subject('[' . config('app.name') . '] Confirmação de E-mail')
-                    ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.solicitacaoisencaotaxa_confirmacaodeemail')
-                    ->with([
-                        'solicitacaoisencaotaxa' => $this->solicitacaoisencaotaxa,
-                        'user' => $this->user,
-                        'email_confirmation_url' => $this->email_confirmation_url,
-                    ]);
-
             case 'realização':
                 return $this
                     ->subject('[' . config('app.name') . '] Solicitação de Isenção de Taxa')
