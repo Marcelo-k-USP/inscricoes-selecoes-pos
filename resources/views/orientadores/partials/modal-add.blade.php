@@ -21,15 +21,39 @@
             @php
               $fields = $fields_orientador;
             @endphp
-            @foreach ($fields as $col)
-              @if ($col['name'] == 'codpes')
-                @include('common.list-table-form-pessoa')
-              @elseif (empty($col['type']) || $col['type'] == 'text')
-                @include('common.list-table-form-text')
-              @elseif ($col['type'] == 'select')
-                @include('common.list-table-form-select')
-              @endif
-            @endforeach
+            <div class="form-group row">
+              <div class="col-sm-12 d-flex align-items-center" style="gap: 10px;">
+                <input class="form-control" style="width: auto; margin: 0;" name="externo" id="externo" type="checkbox" onclick="toggle_externo()">
+                <label style="margin: 0;" for="externo">Externo à unidade</label>
+              </div>
+            </div>
+            <div id="grupo_interno">
+              @foreach ($fields as $col)
+                @if ($col['name'] == 'codpes')
+                  @include('common.list-table-form-pessoa')
+                @endif
+              @endforeach
+            </div>
+            <div id="grupo_externo" style="display: none;">
+              <div class="form-group row">
+                {{ html()->label('Nome', 'externo_nome')->class('col-form-label col-sm-3') }}
+                <div class="col-sm-9">
+                  {{ html()->input('text', 'externo_nome')->class('form-control') }}
+                </div>
+              </div>
+              <div class="form-group row">
+                {{ html()->label('Número USP', 'externo_codpes')->class('col-form-label col-sm-3') }}
+                <div class="col-sm-9">
+                  {{ html()->input('text', 'externo_codpes')->class('form-control')->attribute('oninput', 'validateInteger(this)') }}
+                </div>
+              </div>
+              <div class="form-group row">
+                {{ html()->label('E-mail', 'externo_email')->class('col-form-label col-sm-3') }}
+                <div class="col-sm-9">
+                  {{ html()->input('text', 'externo_email')->class('form-control') }}
+                </div>
+              </div>
+            </div>
             <div class="text-right">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
               <button type="submit" class="btn btn-primary">Salvar</button>
@@ -43,6 +67,7 @@
 
 @section('javascripts_bottom')
 @parent
+  <script src="js/functions.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
 
@@ -71,5 +96,16 @@
         document.querySelector('.select2-search__field').focus();
       });
     });
+
+    function toggle_externo()
+    {
+      if ($('#externo').is(':checked')) {
+        $('#grupo_interno').hide();
+        $('#grupo_externo').show();
+      } else {
+        $('#grupo_interno').show();
+        $('#grupo_externo').hide();
+      }
+    }
   </script>
 @endsection

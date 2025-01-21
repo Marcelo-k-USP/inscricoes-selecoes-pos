@@ -16,6 +16,12 @@ class CreateOrientadoresTable extends Migration
         Schema::create('orientadores', function (Blueprint $table) {
             $table->id();
             $table->string('codpes');
+
+            // necessários caso o orientador seja externo à unidade, pois ele não estará no Replicado local:
+            $table->string('nome')->nullable();
+            $table->string('email')->nullable();
+
+            $table->boolean('externo')->default(0);    // indica se o orientador é externo à unidade
             $table->timestamps();
         });
     }

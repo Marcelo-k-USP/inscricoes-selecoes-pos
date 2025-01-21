@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
+use Uspdev\Replicado\Pessoa;
 
 class Orientador extends Model
 {
@@ -36,6 +37,30 @@ class Orientador extends Model
             }
         }
         return $fields;
+    }
+
+    public static function obterNome($codpes)
+    {
+        $orientador = self::where('codpes', $codpes)->first();
+        if (!$orientador)
+            return null;
+
+        if ($orientador->externo)
+            return $orientador->nome;
+        else
+            return Pessoa::obterNome($codpes);
+    }
+
+    public static function obterEmail($codpes)
+    {
+        $orientador = self::where('codpes', $codpes)->first();
+        if (!$orientador)
+            return null;
+
+        if ($orientador->externo)
+            return $orientador->email;
+        else
+            return Pessoa::email($codpes);
     }
 
     /**

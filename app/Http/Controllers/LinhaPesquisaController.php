@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
-use Uspdev\Replicado\Pessoa;
 
 class LinhaPesquisaController extends Controller
 {
@@ -170,19 +169,42 @@ class LinhaPesquisaController extends Controller
     {
         $this->authorize('linhaspesquisa.update');
 
-        $request->validate([
-            'codpes' => 'required',
-        ],
-        [
-            'codpes.required' => 'Orientador obrigatório',
-        ]);
+        if ($request->externo)
+            $request->validate([
+                'externo_nome' => 'required',
+                'externo_codpes' => 'required',
+                'externo_email' => 'required',
+            ], [
+                'externo_nome.required' => 'Nome obrigatório',
+                'externo_codpes.required' => 'Número USP obrigatório',
+                'externo_email.required' => 'E-mail obrigatório',
+                'externo_email.email' => 'O e-mail não é válido!',
+            ]);
+        else
+            $request->validate([
+                'codpes' => 'required',
+            ], [
+                'codpes.required' => 'Orientador obrigatório',
+            ]);
 
         // transaction para não ter problema de inconsistência do DB
         $db_transaction = DB::transaction(function () use ($request, $linhapesquisa) {
 
-            $orientador = Orientador::where('codpes', $request->codpes)->first();
-            if (is_null($orientador))
-                $orientador = Orientador::create($request->all());
+            if ($request->externo) {
+                $orientador = Orientador::where('codpes', $request->externo_codpes)->first();
+                if (is_null($orientador)) {
+                    $orientador = new Orientador();
+                    $orientador->codpes = $request->externo_codpes;
+                    $orientador->nome = $request->externo_nome;
+                    $orientador->email = $request->externo_email;
+                    $orientador->externo = true;
+                    $orientador->save();
+                }
+            } else {
+                $orientador = Orientador::where('codpes', $request->codpes)->first();
+                if (is_null($orientador))
+                    $orientador = Orientador::create($request->all());
+            }
 
             $existia = $linhapesquisa->orientadores()->detach($orientador);
 
@@ -192,9 +214,9 @@ class LinhaPesquisaController extends Controller
         });
 
         if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'O orientador ' . Pessoa::obterNome($db_transaction['orientador']->codpes) . ' foi adicionado à essa linha de pesquisa');
+            $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' foi adicionado à essa linha de pesquisa');
         else
-            $request->session()->flash('alert-info', 'O orientador ' . Pessoa::obterNome($db_transaction['orientador']->codpes) . ' já estava vinculado à essa linha de pesquisa');
+            $request->session()->flash('alert-info', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' já estava vinculado à essa linha de pesquisa');
         return back();
     }
 
@@ -208,7 +230,7 @@ class LinhaPesquisaController extends Controller
 
         $linhapesquisa->orientadores()->detach($orientador);
 
-        $request->session()->flash('alert-success', 'O orientador ' . Pessoa::obterNome($orientador->codpes) . ' foi removido dessa linha de pesquisa');
+        $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($orientador->codpes) . ' foi removido dessa linha de pesquisa');
         return back();
     }
 
@@ -217,7 +239,7 @@ class LinhaPesquisaController extends Controller
         $data = (object) self::$data;
         if (!is_null($linhapesquisa) && !is_null($linhapesquisa->orientadores))
             foreach ($linhapesquisa->orientadores as $orientador)
-                $orientador->nome = Pessoa::obterNome($orientador->codpes);
+                $orientador->nome = Orientador::obterNome($orientador->codpes);
         $objeto = $linhapesquisa;
         $fields_orientador = Orientador::getFields();
 

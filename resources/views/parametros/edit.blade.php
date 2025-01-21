@@ -63,23 +63,5 @@
           $(this).val(formatarDecimal($(this).val()));
       });
     });
-
-    function validateNumber(input) {
-      // remove qualquer caractere que não seja dígito ou vírgula
-      input.value = input.value.replace(/[^0-9,]/g, '');
-
-      // remove toda vírgula após a primeira vírgula
-      var pos_primeira_virgula = input.value.indexOf(',');
-      if (pos_primeira_virgula !== -1) {
-        var string_antes_primeira_virgula = input.value.substring(0, pos_primeira_virgula + 1);
-        var string_depois_primeira_virgula = input.value.substring(pos_primeira_virgula + 1).replace(/,/g, '');
-        input.value = string_antes_primeira_virgula + string_depois_primeira_virgula;
-      }
-    }
-
-    function validateInteger(input) {
-      // remove qualquer caractere que não seja dígito
-      input.value = input.value.replace(/[^0-9]/g, '');
-    }
   </script>
 @endsection

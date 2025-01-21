@@ -7,6 +7,7 @@ use App\Mail\InscricaoMail;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\LocalUser;
+use App\Models\Orientador;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\User;
@@ -278,8 +279,8 @@ class InscricaoController extends Controller
                         $passo = 'pré-aprovação';
                         $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
                         foreach ($inscricao->linhapesquisa->orientadores as $orientador) {
-                            $orientador_nome = Pessoa::obterNome($orientador->codpes);
-                            \Mail::to(Pessoa::email($orientador->codpes))
+                            $orientador_nome = Orientador::obterNome($orientador->codpes);
+                            \Mail::to(Orientador::obterEmail($orientador->codpes))
                                 ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'orientador_nome')));
                         }
                         break;
