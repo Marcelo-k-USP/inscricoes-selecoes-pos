@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
-        if(config('selecoes-pos.forcar_https'))
+        if(config('inscricoes-selecoes-pos.forcar_https'))
             \URL::forceScheme('https');
     }
 }

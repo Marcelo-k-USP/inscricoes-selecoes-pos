@@ -86,7 +86,7 @@ class ArquivoController extends Controller
         $form = $this->obterForm($classe_nome, $objeto);
 
         $request->validate([
-            'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('selecoes-pos.upload_max_filesize'),
+            'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('inscricoes-selecoes-pos.upload_max_filesize'),
             'objeto_id' => 'required|integer|exists:' . $classe_nome_plural . ',id',
         ]);
         $this->authorize('arquivos.create', [$objeto, $classe_nome]);
@@ -306,7 +306,7 @@ class ArquivoController extends Controller
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $responsaveis = (($classe_nome == 'Selecao') ? $objeto : $objeto->selecao)->programa->obterResponsaveis();
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
-        $max_upload_size = config('selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'motivosisencaotaxa', 'responsaveis', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
     }

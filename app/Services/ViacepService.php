@@ -18,7 +18,7 @@ class ViacepService
         try {
             $response = $this->client->request('get', 'https://viacep.com.br/ws/' . $cep . '/json/', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . config('selecoes-pos.correios_api_token'),
+                    'Authorization' => 'Bearer ' . config('inscricoes-selecoes-pos.correios_api_token'),
                     'Content-Type' => 'application/json'
                 ]
             ]);

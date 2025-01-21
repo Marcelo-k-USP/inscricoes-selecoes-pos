@@ -63,7 +63,7 @@ class InscricaoController extends Controller
         $data = self::$data;
         $objetos = Inscricao::listarInscricoes();
         $classe_nome = 'Inscricao';
-        $max_upload_size = config('selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
         return view('inscricoes.index', compact('data', 'objetos', 'classe_nome', 'max_upload_size'));
     }
 
@@ -335,7 +335,7 @@ class InscricaoController extends Controller
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $responsaveis = $objeto->selecao->programa->obterResponsaveis();
         $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
-        $max_upload_size = config('selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
     }

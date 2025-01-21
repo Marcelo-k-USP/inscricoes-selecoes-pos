@@ -103,7 +103,7 @@ class User extends Authenticatable
     {
         $user = new User;
         $user->codpes = $codpes;
-        if (config('selecoes-pos.usar_replicado')) {
+        if (config('inscricoes.selecoes-pos.usar_replicado')) {
 
             //caso utilize o replicado, porém a pessoa não apareça, insere um usuário fake e atualiza o mesmo com dados da senha única no login
             $user->email = (Pessoa::email($codpes)) ?: $codpes . '@usuarios.usp.br';

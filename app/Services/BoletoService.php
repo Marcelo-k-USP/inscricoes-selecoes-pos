@@ -20,7 +20,7 @@ class BoletoService
         $cpf = ((strtolower($extras['tipo_de_documento']) == 'passaporte') ? '99999999999' : str_replace(['-', '.'], '', $extras['cpf']));
         $parametros = Parametro::first();
 
-        $boleto = new Boleto(config('selecoes-pos.ws_boleto_usuario'), config('selecoes-pos.ws_boleto_senha'));
+        $boleto = new Boleto(config('inscricoes-selecoes-pos.ws_boleto_usuario'), config('inscricoes-selecoes-pos.ws_boleto_senha'));
         $data = array(
             'codigoUnidadeDespesa' => 47,
             'codigoFonteRecurso' => $parametros->boleto_codigo_fonte_recurso,
@@ -62,7 +62,7 @@ class BoletoService
                 $arquivo->save();
                 $arquivo->inscricoes()->attach($inscricao->id, ['tipo' => 'Boleto de Pagamento da Inscrição']);
 
-                if (App::environment('local') || config('selecoes-pos.ws_boleto_cancelar')) {
+                if (App::environment('local') || config('inscricoes-selecoes-pos.ws_boleto_cancelar')) {
 
                     // cancela o boleto em ambiente de desenvolvimento, ou também em produção se ligamos a chave WS_BOLETO_CANCELAR
                     Log::info('Cancelando o boleto...');
