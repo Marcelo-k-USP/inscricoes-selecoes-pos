@@ -25,8 +25,8 @@ class InscricaoMail extends Mailable
     protected $arquivo_conteudo;
     protected $arquivo_erro;
 
-    // campos adicionais para inscrição realizada
-    protected $orientador;
+    // campos adicionais para inscrição pré-aprovada
+    protected $orientador_nome;
 
     /**
      * Create a new message instance.
@@ -57,7 +57,7 @@ class InscricaoMail extends Mailable
                 break;
 
             case 'pré-aprovação':
-                $this->orientador = $data['orientador'];
+                $this->orientador_nome = $data['orientador_nome'];
                 break;
 
             case 'aprovação':
@@ -109,10 +109,10 @@ class InscricaoMail extends Mailable
                 return $this
                     ->subject('[' . config('app.name') . '] Realização de Inscrição')
                     ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.inscricao_realizacao')
+                    ->view('emails.inscricao_preaprovacao')
                     ->with([
                         'inscricao' => $this->inscricao,
-                        'orientador' => $this->orientador,
+                        'orientador_nome' => $this->orientador_nome,
                     ]);
 
             case 'aprovação':
