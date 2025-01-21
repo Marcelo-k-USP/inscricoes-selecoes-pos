@@ -31,6 +31,10 @@ class InscricaoMail extends Mailable
     // campos adicionais para inscrição pré-aprovada
     protected $orientador_nome;
 
+    // campos adicionais para inscrição aprovada
+
+    // campos adicionais para inscrição reprovada
+
     /**
      * Create a new message instance.
      *

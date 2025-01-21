@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Mail\InscricaoMail;
+use App\Mail\SolicitacaoIsencaoTaxaMail;
 use App\Models\Arquivo;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\MotivoIsencaoTaxa;
+use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Services\BoletoService;
@@ -109,18 +111,34 @@ class ArquivoController extends Controller
                     $objeto->atualizarStatus();
                     $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
                     break;
+
                 case 'SolicitacaoIsencaoTaxa':
                     $objeto->verificarArquivos();
-                    if (($objeto->estado == 'Isenção de Taxa Solicitada'))
+                    if (($objeto->estado == 'Isenção de Taxa Solicitada')) {
+
+                        $solicitacaoisencaotaxa = $objeto;
+                        $user = \Auth::user();
+
+                        // envia e-mails avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
+                        $passo = 'realização';
+                        foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
+                            $servicoposgraduacao_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
+                            \Mail::to($servicoposgraduacao->email)
+                                ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user', 'servicoposgraduacao_nome')));
+                        }
+
                         $info_adicional = '<br />' .
                             'Sua solicitação de isenção de taxa de inscrição foi completada';
+                    }
                     break;
+
                 case 'Inscricao':
                     $objeto->verificarArquivos();
                     if (($objeto->estado == 'Realizada') && (!$objeto->boleto_enviado)) {
+
+                        $inscricao = $objeto;
                         $user = \Auth::user();
                         if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
-                            $inscricao = $objeto;
 
                             // envia e-mail para o candidato com o boleto
                             $passo = 'boleto';
@@ -129,14 +147,6 @@ class ArquivoController extends Controller
                             $arquivo_conteudo = $this->boletoService->gerarBoleto($inscricao);
                             \Mail::to($user->email)
                                 ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivo_nome', 'arquivo_conteudo')));
-
-                            // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
-                            $passo = 'realização';
-                            foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
-                                $secretario_nome = Pessoa::obterNome($secretario->codpes);
-                                \Mail::to($secretario->email)
-                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'secretario_nome')));
-                            }
 
                             $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
                             $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
@@ -147,6 +157,15 @@ class ArquivoController extends Controller
                         } else
                             $info_adicional = '<br />' .
                                 'Sua inscrição foi completada';
+
+                        // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
+                        $passo = 'realização';
+                        foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
+                            $secretario_nome = Pessoa::obterNome($secretario->codpes);
+                            \Mail::to($secretario->email)
+                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'secretario_nome')));
+                        }
+
                     }
             }
 

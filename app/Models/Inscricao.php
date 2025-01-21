@@ -56,8 +56,8 @@ class Inscricao extends Model
     {
         return [
             'Aguardando Documentação', 'Realizada',                 // decorrem de ações do candidato
-            'Em Pré-Avaliação', 'Pré-Aprovada', 'Pré-Rejeitada',    // decorrem de ações dos(as) secretários(as) do programa
-            'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos orientadores do programa
+            'Em Pré-Avaliação', 'Pré-Aprovada', 'Pré-Rejeitada',    // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição
+            'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos orientadores da linha de pesquisa da seleção da inscrição
         ];
     }
 

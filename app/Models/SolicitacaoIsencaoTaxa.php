@@ -48,8 +48,8 @@ class SolicitacaoIsencaoTaxa extends Model
     public static function estados()
     {
         return [
-            'Aguardando Comprovação', 'Isenção de Taxa Solicitada',
-            'Isenção de Taxa em Avaliação', 'Isenção de Taxa Aprovada', 'Isenção de Taxa Rejeitada'
+            'Aguardando Comprovação', 'Isenção de Taxa Solicitada',                                    // decorrem de ações do candidato
+            'Isenção de Taxa em Avaliação', 'Isenção de Taxa Aprovada', 'Isenção de Taxa Rejeitada'    // decorrem de ações do serviço de pós-graduação
         ];
     }
 
