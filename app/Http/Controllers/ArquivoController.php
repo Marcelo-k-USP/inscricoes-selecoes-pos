@@ -275,7 +275,7 @@ class ArquivoController extends Controller
         $data = (object) ('App\\Http\\Controllers\\' . $classe_nome . 'Controller')::$data;
         $linhaspesquisa = LinhaPesquisa::all();
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
-        $responsaveis = $objeto->selecao->programa->obterResponsaveis();
+        $responsaveis = (($classe_nome == 'Selecao') ? $objeto : $objeto->selecao)->programa->obterResponsaveis();
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
