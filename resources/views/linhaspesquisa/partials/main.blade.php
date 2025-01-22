@@ -1,10 +1,10 @@
 <div class="row">
   <div class="col-md-12 form-inline">
-    <span class="h4 mt-2">Linhas de Pesquisa</span>
+    <span class="h4 mt-2">Linhas de Pesquisa/Temas</span>
     @can('linhaspesquisa.create')
       &nbsp; &nbsp;
       <a href="{{ route('linhaspesquisa.create') }}" class="btn btn-sm btn-success">
-        <i class="fas fa-plus"></i> Nova
+        <i class="fas fa-plus"></i> Novo(a)
       </a>
     @endcan
   </div>

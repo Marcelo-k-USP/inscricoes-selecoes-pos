@@ -5,7 +5,7 @@
   @if ($linhaspesquisa != null)
     @include('linhaspesquisa.partials.main')
   @else
-    Sem linhas de pesquisa
+    Sem linhas de pesquisa/temas
   @endif
 @endsection
 

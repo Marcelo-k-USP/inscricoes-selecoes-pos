@@ -38,7 +38,7 @@ $admin = [
         'can' => 'programas.viewAny',
     ],
     [
-        'text' => '<i class="fa fa-bookmark"></i> Linhas de Pesquisa',
+        'text' => '<i class="fa fa-bookmark"></i> Linhas de Pesquisa/Temas',
         'url' => 'linhaspesquisa',
         'can' => 'linhaspesquisa.viewAny',
     ],

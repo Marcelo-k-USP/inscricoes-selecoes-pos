@@ -6,7 +6,7 @@
   <div class="col-sm-3" style="margin-top: -20px;">
     @php
       $input = html()->input('password', $col['name'])->value(old($col['name'], $modo == 'edit' ? $objeto->{$col['name']} : ''))->class('form-control')->style('width: 100%; padding-right: 30px;');
-      if (in_array('required', $rules[$col['name']]))
+      if (isset($rules) && (in_array('required', $rules[$col['name']])))
         $input = $input->required();
     @endphp
     {{ $input }}

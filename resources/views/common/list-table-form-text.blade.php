@@ -6,7 +6,7 @@
   <div class="col-sm-9">
     @php
       $input = html()->input('text', $col['name'])->value(old($col['name'], $modo == 'edit' ? $objeto->{$col['name']} : ''))->class('form-control');
-      if (in_array('required', $rules[$col['name']]))
+      if (isset($rules) && (in_array('required', $rules[$col['name']])))
         $input = $input->required();
     @endphp
     {{ $input }}
