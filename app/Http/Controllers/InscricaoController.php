@@ -108,11 +108,13 @@ class InscricaoController extends Controller
                 'tipo_de_documento' => $solicitacaoisencaotaxa_extras['tipo_de_documento'],
                 'numero_do_documento' => $solicitacaoisencaotaxa_extras['numero_do_documento'],
                 'cpf' => $solicitacaoisencaotaxa_extras['cpf'],
+                'celular' => $user->telefone,
                 'e_mail' => $user->email,
             );
         } else
             $extras = array(
                 'nome' => $user->name,
+                'celular' => $user->telefone,
                 'e_mail' => $user->email,
             );
         $inscricao->extras = json_encode($extras);

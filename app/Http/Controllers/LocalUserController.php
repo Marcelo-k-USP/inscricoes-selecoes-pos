@@ -109,7 +109,6 @@ class LocalUserController extends Controller
         \Mail::to($localuser->email)
             ->queue(new LocalUserMail(compact('passo', 'localuser', 'password_reset_url')));
 
-        request()->session()->flash('alert-success', 'E-mail enviado com sucesso');
         return view('localusers.login');
     }
 
@@ -190,7 +189,7 @@ class LocalUserController extends Controller
         $localuser->save();
 
         request()->session()->flash('alert-success', 'E-mail confirmado com sucesso<br />' .
-            'Entre na sua solicitação ou inscrição e suba os documentos necessários para a avaliação<br />');
+            'faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
 
         \UspTheme::activeUrl('inscricoes');
         return view('localusers.login');

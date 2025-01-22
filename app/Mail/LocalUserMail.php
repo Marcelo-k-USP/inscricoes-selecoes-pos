@@ -53,7 +53,7 @@ class LocalUserMail extends Mailable
                 return $this
                     ->subject('[' . config('app.name') . '] Confirmação de E-mail')
                     ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.inscricao_confirmacaodeemail')
+                    ->view('emails.localuser_confirmacaodeemail')
                     ->with([
                         'localuser' => $this->localuser,
                         'email_confirmation_url' => $this->email_confirmation_url,
