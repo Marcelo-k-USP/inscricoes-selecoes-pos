@@ -192,14 +192,14 @@ class InscricaoController extends Controller
 
                 switch ($inscricao->estado) {
                     case 'Pré-Aprovada':
-                        // envia e-mails avisando os orientadores da linha de pesquisa da inscrição sobre a pré-aprovação da inscrição
+                        /*// envia e-mails avisando os orientadores da linha de pesquisa da inscrição sobre a pré-aprovação da inscrição
                         $passo = 'pré-aprovação';
                         $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
                         foreach ($inscricao->linhapesquisa->orientadores as $orientador) {
                             $orientador_nome = Orientador::obterNome($orientador->codpes);
                             \Mail::to(Orientador::obterEmail($orientador->codpes))
                                 ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'orientador_nome')));
-                        }
+                        }*/
                         break;
 
                     case 'Aprovada':

@@ -15,6 +15,7 @@ class OrientadorSeeder extends Seeder
      */
     public function run()
     {
+        /*
         $orientadores = [
             ['codpes' =>   '647530'],    // Adriana Marcondes Machado
             ['codpes' =>  '5593721'],    // Andrés Eduardo Aguirre Antúnez
@@ -121,5 +122,6 @@ class OrientadorSeeder extends Seeder
             $orientador->linhaspesquisa()->attach(LinhaPesquisa::where('nome', 'Problemas Teóricos e Metodológicos')->first()->id);
 
         //PST
+        */
     }
 }
