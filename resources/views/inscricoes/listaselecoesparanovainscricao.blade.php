@@ -41,7 +41,8 @@
                         <a href="inscricoes/create/{{ $selecao['id'] }}/{{ $linhapesquisa['id'] }}">
                           {{ $linhapesquisa->nome }}
                         </a>
-                      </div>
+                        {{ $linhapesquisa->orientadores }}
+                        </div>
                     @endforeach
                   </div>
                 @endforeach
