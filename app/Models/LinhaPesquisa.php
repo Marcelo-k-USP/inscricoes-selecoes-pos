@@ -47,7 +47,7 @@ class LinhaPesquisa extends Model
     }
 
     /**
-     * retorna todas as linhas de pesquisa autorizadas para o usuário
+     * retorna todas as linhas de pesquisa/temas autorizados para o usuário
      * utilizado nas views common, para o select
      */
     public static function allToSelect()
@@ -85,7 +85,7 @@ class LinhaPesquisa extends Model
     }
 
     /**
-     * Relacionamento: linha de pesquisa pertence a programa
+     * Relacionamento: linha de pesquisa/tema pertence a programa
      */
     public function programa()
     {

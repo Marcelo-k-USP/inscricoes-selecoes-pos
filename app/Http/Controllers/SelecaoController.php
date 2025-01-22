@@ -147,7 +147,7 @@ class SelecaoController extends Controller
         $this->updateField($request, $selecao, 'boleto_data_vencimento', 'data de vencimento do boleto', 'a');
         if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
             if ($selecao->linhaspesquisa->count() > 0) {
-                $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa do programa antigo cadastradas para esta seleção!');
+                $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa/temas do programa antigo cadastrados para esta seleção!');
                 return back();
             }
             Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Programa antigo: ' . $selecao->programa_id . ' - Novo programa: ' . $request->programa_id);
@@ -291,7 +291,7 @@ class SelecaoController extends Controller
     }
 
     /**
-     * Adicionar linhas de pesquisa relacionadas à seleção
+     * Adicionar linhas de pesquisa/temas relacionados à seleção
      * autorizado a qualquer um que tenha acesso à seleção
      * request->codpes = required, int
      */
@@ -303,7 +303,7 @@ class SelecaoController extends Controller
             'id' => 'required',
         ],
         [
-            'id.required' => 'Linha de pesquisa obrigatória',
+            'id.required' => 'Linha de pesquisa/tema obrigatório',
         ]);
 
         // transaction para não ter problema de inconsistência do DB
@@ -319,14 +319,14 @@ class SelecaoController extends Controller
         });
 
         if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'A linha de pesquisa ' . $db_transaction['linhapesquisa']->nome . ' foi adicionada à essa seleção.');
+            $request->session()->flash('alert-success', 'A linha de pesquisa/tema ' . $db_transaction['linhapesquisa']->nome . ' foi adicionado à essa seleção.');
         else
-            $request->session()->flash('alert-info', 'A linha de pesquisa ' . $db_transaction['linhapesquisa']->nome . ' já estava vinculada à essa seleção.');
+            $request->session()->flash('alert-info', 'A linha de pesquisa/tema ' . $db_transaction['linhapesquisa']->nome . ' já estava vinculado à essa seleção.');
         return back();
     }
 
     /**
-     * Remove linhas de pesquisa relacionadas à seleção
+     * Remove linhas de pesquisa/temas relacionados à seleção
      * $user = required
      */
     public function destroyLinhaPesquisa(Request $request, Selecao $selecao, LinhaPesquisa $linhapesquisa)
@@ -335,7 +335,7 @@ class SelecaoController extends Controller
 
         $selecao->linhaspesquisa()->detach($linhapesquisa);
 
-        $request->session()->flash('alert-success', 'A linha de pesquisa ' . $linhapesquisa->nome . ' foi removida dessa seleção.');
+        $request->session()->flash('alert-success', 'A linha de pesquisa/tema ' . $linhapesquisa->nome . ' foi removido dessa seleção.');
         return back();
     }
 

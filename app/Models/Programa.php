@@ -80,7 +80,7 @@ class Programa extends Model
     }
 
     /**
-     * Programa possui linhas de pesquisa
+     * Programa possui linhas de pesquisa/temas
      */
     public function linhaspesquisa()
     {

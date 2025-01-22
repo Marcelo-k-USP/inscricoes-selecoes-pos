@@ -24,7 +24,7 @@
         <tr>
           <th>Inscrito</th>
           <th>Seleção</th>
-          <th>Linha de Pesquisa</th>
+          <th>Linha de Pesquisa/Tema</th>
           <th class="text-right">Efetuada em</th>
           <th class="text-right">Atualização</th>
         </tr>

@@ -25,7 +25,7 @@
         $programa_anterior = $linhapesquisa->programa->nome;
       @endphp
     @endif
-    {{-- Mostra o conteúdo de uma linha de pesquisa --}}
+    {{-- Mostra o conteúdo de uma linha de pesquisa/tema --}}
     <tr>
       <td>&nbsp;</td>
       <td>

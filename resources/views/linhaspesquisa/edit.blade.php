@@ -20,13 +20,13 @@
         <div class="card-header">
           <div class="card-title form-inline my-0">
             @if ($modo == 'edit')
-              <a href="linhaspesquisa">Linhas de Pesquisa</a> <i class="fas fa-angle-right mx-2"></i>
+              <a href="linhaspesquisa">Linhas de Pesquisa/Temas</a> <i class="fas fa-angle-right mx-2"></i>
               {{ $objeto->nome }}
               @if (!is_null($objeto->programa))
                 &nbsp;({{ $objeto->programa->nome }})
               @endif
             @else
-              Nova Linha de Pesquisa
+              Nova Linha de Pesquisa/Tema
             @endif
           </div>
         </div>

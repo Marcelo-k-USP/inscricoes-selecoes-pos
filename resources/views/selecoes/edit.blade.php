@@ -45,7 +45,7 @@
             </div>
             <div class="col-md-5">
               @if ($modo == 'edit')
-                @include('selecoes.show.card-linhaspesquisa')             {{-- Linhas de Pesquisa --}}
+                @include('selecoes.show.card-linhaspesquisa')             {{-- Linhas de Pesquisa/Temas --}}
                 @include('selecoes.show.card-motivosisencaotaxa')         {{-- Motivos de Isenção de Taxa --}}
                 @include('common.card-arquivos')                          {{-- Arquivos --}}
                 @include('selecoes.show.card-solicitacoesisencaotaxa')    {{-- Solicitações de Isenção de Taxa --}}

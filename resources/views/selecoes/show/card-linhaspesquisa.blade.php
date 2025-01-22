@@ -11,7 +11,7 @@
 <a name="card_linhaspesquisa"></a>
 <div class="card bg-light mb-3" id="card-linhaspesquisa">
   <div class="card-header">
-    Linhas de Pesquisa
+    Linhas de Pesquisa/Temas
     <span class="badge badge-pill badge-primary">{{ is_null($selecao->linhaspesquisa) ? 0 : $selecao->linhaspesquisa->count() }}</span>
     @can('selecoes.update', $selecao)
       @if ($condicao_ativa)

@@ -27,8 +27,8 @@ class LinhaPesquisaRequest extends FormRequest
     ];
 
     public const messages = [
-        'nome.required' => 'O nome da linha de pesquisa é obrigatório!',
-        'nome.max' => 'O nome da linha de pesquisa não pode exceder 100 caracteres!',
+        'nome.required' => 'O nome da linha de pesquisa/tema é obrigatório!',
+        'nome.max' => 'O nome da linha de pesquisa/tema não pode exceder 100 caracteres!',
         'programa_id.required' => 'O programa é obrigatório!',
         'programa_id.numeric' => 'O programa é inválido!',
     ];

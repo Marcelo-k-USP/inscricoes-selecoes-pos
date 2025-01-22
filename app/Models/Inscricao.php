@@ -30,7 +30,7 @@ class Inscricao extends Model
         ],
         [
             'name' => 'linhapesquisa_id',
-            'label' => 'Linha de Pesquisa',
+            'label' => 'Linha de Pesquisa/Tema',
             'type' => 'hidden',
             'model' => 'LinhaPesquisa',
             'data' => [],
@@ -57,7 +57,7 @@ class Inscricao extends Model
         return [
             'Aguardando Documentação', 'Realizada',                 // decorrem de ações do candidato
             'Em Pré-Avaliação', 'Pré-Aprovada', 'Pré-Rejeitada',    // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição
-            'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos orientadores da linha de pesquisa da seleção da inscrição
+            'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos orientadores da linha de pesquisa/tema da seleção da inscrição
         ];
     }
 
@@ -248,7 +248,7 @@ class Inscricao extends Model
     }
 
     /**
-     * relacionamento com linha de pesquisa
+     * relacionamento com linha de pesquisa/tema
      */
     public function linhapesquisa()
     {

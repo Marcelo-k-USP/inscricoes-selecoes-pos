@@ -64,7 +64,7 @@ class Orientador extends Model
     }
 
     /**
-     * relacionamento com linhas de pesquisa
+     * relacionamento com linhas de pesquisa/temas
      */
     public function linhaspesquisa()
     {

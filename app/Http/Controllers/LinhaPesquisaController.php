@@ -16,7 +16,7 @@ class LinhaPesquisaController extends Controller
 {
     // crud generico
     public static $data = [
-        'title' => 'Linhas de Pesquisa',
+        'title' => 'Linhas de Pesquisa/Temas',
         'url' => 'linhaspesquisa',     // caminho da rota do resource
         'modal' => true,
         'showId' => false,
@@ -45,7 +45,7 @@ class LinhaPesquisaController extends Controller
         $fields = LinhaPesquisa::getFields();
 
         # para o form de adicionar pessoas
-        $modal_pessoa['url'] = 'linhas de pesquisa';
+        $modal_pessoa['url'] = 'linhas de pesquisa/temas';
         $modal_pessoa['title'] = 'Adicionar Pessoa';
 
         if ($request->ajax()) {
@@ -53,7 +53,7 @@ class LinhaPesquisaController extends Controller
             #return response(['data' => $linhaspesquisa]);
         } else {
             $modal['url'] = 'linhaspesquisa';
-            $modal['title'] = 'Editar Linha de Pesquisa';
+            $modal['title'] = 'Editar Linha de Pesquisa/Tema';
             $rules = LinhaPesquisaRequest::rules;
             return view('linhaspesquisa.tree', compact('linhaspesquisa', 'fields', 'modal', 'modal_pessoa', 'rules'));
         }
@@ -90,7 +90,7 @@ class LinhaPesquisaController extends Controller
 
         $linhapesquisa = LinhaPesquisa::create($request->all());
 
-        $request->session()->flash('alert-success', 'Linha de pesquisa cadastrada com sucesso');
+        $request->session()->flash('alert-success', 'Linha de pesquisa/tema cadastrado com sucesso');
 
         \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
@@ -132,7 +132,7 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa->programa_id = $request->programa_id;
         $linhapesquisa->save();
 
-        $request->session()->flash('alert-success', 'Linha de pesquisa alterada com sucesso');
+        $request->session()->flash('alert-success', 'Linha de pesquisa/tema alterado com sucesso');
 
         \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
@@ -151,7 +151,7 @@ class LinhaPesquisaController extends Controller
 
         $linhapesquisa = LinhaPesquisa::find((int) $id);
         if ($linhapesquisa->selecoes()->exists()) {
-            $request->session()->flash('alert-danger', 'Há seleções para esta linha de pesquisa!');
+            $request->session()->flash('alert-danger', 'Há seleções para esta linha de pesquisa/tema!');
             return back();
         }
         $linhapesquisa->delete();
@@ -161,8 +161,8 @@ class LinhaPesquisaController extends Controller
     }
 
     /**
-     * Adicionar orientadores relacionados à linha de pesquisa
-     * autorizado a qualquer um que tenha acesso à linha de pesquisa
+     * Adicionar orientadores relacionados à linha de pesquisa/tema
+     * autorizado a qualquer um que tenha acesso à linha de pesquisa/tema
      * request->codpes = required, int
      */
     public function storeOrientador(Request $request, LinhaPesquisa $linhapesquisa)
@@ -214,14 +214,14 @@ class LinhaPesquisaController extends Controller
         });
 
         if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' foi adicionado à essa linha de pesquisa');
+            $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' foi adicionado à essa linha de pesquisa/tema');
         else
-            $request->session()->flash('alert-info', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' já estava vinculado à essa linha de pesquisa');
+            $request->session()->flash('alert-info', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' já estava vinculado à essa linha de pesquisa/tema');
         return back();
     }
 
     /**
-     * Remove orientadores relacionados à linha de pesquisa
+     * Remove orientadores relacionados à linha de pesquisa/tema
      * $user = required
      */
     public function destroyOrientador(Request $request, LinhaPesquisa $linhapesquisa, Orientador $orientador)
@@ -230,7 +230,7 @@ class LinhaPesquisaController extends Controller
 
         $linhapesquisa->orientadores()->detach($orientador);
 
-        $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($orientador->codpes) . ' foi removido dessa linha de pesquisa');
+        $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($orientador->codpes) . ' foi removido dessa linha de pesquisa/tema');
         return back();
     }
 

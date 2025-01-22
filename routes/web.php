@@ -51,13 +51,13 @@ Route::resource('categorias', CategoriaController::class);
 // PROGRAMAS
 Route::resource('programas', ProgramaController::class);
 
-// LINHAS DE PESQUISA
+// LINHAS DE PESQUISA/TEMAS
 Route::resource('linhaspesquisa', LinhaPesquisaController::class);
 Route::post('linhaspesquisa/create', [LinhaPesquisaController::class, 'store'])->name('linhaspesquisa.store');
 Route::get('linhaspesquisa/edit/{linhapesquisa}', [LinhaPesquisaController::class, 'edit'])->name('linhaspesquisa.edit');
 Route::put('linhaspesquisa/edit/{linhapesquisa}', [LinhaPesquisaController::class, 'update'])->name('linhaspesquisa.update');
 
-// LINHAS DE PESQUISA > ORIENTADORES
+// LINHAS DE PESQUISA/TEMAS > ORIENTADORES
 Route::post('linhaspesquisa/{linhapesquisa}/orientadores', [LinhaPesquisaController::class, 'storeOrientador']);
 Route::delete('linhaspesquisa/{linhapesquisa}/orientadores/{orientador}', [LinhaPesquisaController::class, 'destroyOrientador']);
 
@@ -74,7 +74,7 @@ Route::put('selecoes/edit-status/{selecao}', [SelecaoController::class, 'updateS
 Route::get('selecoes/{selecao}/downloadsolicitacoesisencaotaxa', [SelecaoController::class, 'downloadSolicitacoesIsencaoTaxa'])->name('selecoes.downloadsolicitacoesisencaotaxa');
 Route::get('selecoes/{selecao}/downloadinscricoes', [SelecaoController::class, 'downloadInscricoes'])->name('selecoes.downloadinscricoes');
 
-// SELEÇÕES > LINHAS DE PESQUISA
+// SELEÇÕES > LINHAS DE PESQUISA/TEMAS
 Route::post('selecoes/{selecao}/linhaspesquisa', [SelecaoController::class, 'storeLinhaPesquisa']);
 Route::delete('selecoes/{selecao}/linhaspesquisa/{linhapesquisa}', [SelecaoController::class, 'destroyLinhaPesquisa']);
 

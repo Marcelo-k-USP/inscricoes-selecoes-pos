@@ -20,7 +20,7 @@
 
   @if ($existem_selecoes)
     <br />
-    Para qual processo seletivo e linha de pesquisa você deseja se inscrever?<br />
+    Para qual processo seletivo e linha de pesquisa/tema você deseja se inscrever?<br />
     <table class="table table-sm table-hover nova-inscricao display responsive" style="width: 100%;">
       <thead>
         <tr>

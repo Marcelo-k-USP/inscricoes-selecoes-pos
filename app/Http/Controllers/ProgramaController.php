@@ -118,7 +118,7 @@ class ProgramaController extends Controller
             return back();
         }
         if ($programa->linhaspesquisa()->exists()) {
-            $request->session()->flash('alert-danger', 'Há linhas de pesquisa para este programa!');
+            $request->session()->flash('alert-danger', 'Há linhas de pesquisa/temas para este programa!');
             return back();
         }
         $programa->delete();

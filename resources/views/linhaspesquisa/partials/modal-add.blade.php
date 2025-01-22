@@ -7,7 +7,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Adicionar Linha de Pesquisa</h5>
+        <h5 class="modal-title">Adicionar Linha de Pesquisa/Tema</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -19,7 +19,7 @@
             @method('post')
             {{ html()->hidden('id') }}
             <div class="form-group row">
-              <div class="col-form-label col-sm-3">Linha de Pesquisa</div>
+              <div class="col-form-label col-sm-3">Linha de Pesquisa/Tema</div>
               <div class="col-sm-8">
                 <select class="form-control" name="id" id="id_campo1">
                   @foreach ($linhaspesquisa as $linhapesquisa)
