@@ -121,7 +121,7 @@ class User extends Authenticatable
                 $user->name = ($pessoa['nompesttd']);
             else
                 $user->name = $codpes;
-            $user->telefone = (Pessoa::obterRamalUsp($codpes)) ?: '';
+            $user->telefone = Pessoa::obterRamalUsp($codpes);
         } else {
             $user->email = $codpes . '@usuarios.usp.br';
             $user->name = $codpes;
