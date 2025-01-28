@@ -900,6 +900,14 @@ class Selecao extends Model
     }
 
     /**
+     * relacionamento com disciplinas
+     */
+    public function disciplinas()
+    {
+        return $this->belongsToMany('App\Models\Disciplina', 'disciplina_selecao', 'selecao_id', 'disciplina_id')->withTimestamps();
+    }
+
+    /**
      * relacionamento com motivos de isenção de taxa
      */
     public function motivosisencaotaxa()

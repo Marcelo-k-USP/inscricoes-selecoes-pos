@@ -43,6 +43,11 @@ $admin = [
         'can' => 'linhaspesquisa.viewAny',
     ],
     [
+        'text' => '<i class="fa fa-book"></i> Disciplinas',
+        'url' => 'disciplinas',
+        'can' => 'disciplinas.viewAny',
+    ],
+    [
         'text' => '<i class="fa fa-gift"></i> Motivos de Isenção de Taxa',
         'url' => 'motivosisencaotaxa',
         'can' => 'motivosisencaotaxa.viewAny',

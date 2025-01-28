@@ -2,11 +2,11 @@
 
 @section('content')
 @parent
-  @if ($categorias != null)
-    @include('categorias.partials.main')
-    @include('categorias.partials.modal')
+  @if ($disciplinas != null)
+    @include('disciplinas.partials.main')
+    @include('disciplinas.partials.modal')
   @else
-    Sem categorias
+    Sem disciplinas
   @endif
 @endsection
 

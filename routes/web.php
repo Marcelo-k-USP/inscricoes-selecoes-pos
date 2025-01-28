@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\EnderecoController;
 use App\Http\Controllers\FuncaoController;
 use App\Http\Controllers\IndexController;
@@ -60,6 +61,9 @@ Route::put('linhaspesquisa/edit/{linhapesquisa}', [LinhaPesquisaController::clas
 // LINHAS DE PESQUISA/TEMAS > ORIENTADORES
 Route::post('linhaspesquisa/{linhapesquisa}/orientadores', [LinhaPesquisaController::class, 'storeOrientador']);
 Route::delete('linhaspesquisa/{linhapesquisa}/orientadores/{orientador}', [LinhaPesquisaController::class, 'destroyOrientador']);
+
+// DISCIPLINAS
+Route::resource('disciplinas', DisciplinaController::class);
 
 // MOTIVOS DE ISENÇÃO DE TAXA
 Route::resource('motivosisencaotaxa', MotivoIsencaoTaxaController::class);
