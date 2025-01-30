@@ -63,6 +63,10 @@ Route::post('linhaspesquisa/create', [LinhaPesquisaController::class, 'store'])-
 Route::get('linhaspesquisa/edit/{linhapesquisa}', [LinhaPesquisaController::class, 'edit'])->name('linhaspesquisa.edit');
 Route::put('linhaspesquisa/edit/{linhapesquisa}', [LinhaPesquisaController::class, 'update'])->name('linhaspesquisa.update');
 
+// LINHAS DE PESQUISA/TEMAS > NÍVEIS
+Route::post('linhaspesquisa/{linhapesquisa}/niveis', [LinhaPesquisaController::class, 'storeNivel']);
+Route::delete('linhaspesquisa/{linhapesquisa}/niveis/{nivel}', [LinhaPesquisaController::class, 'destroyNivel']);
+
 // LINHAS DE PESQUISA/TEMAS > ORIENTADORES
 Route::post('linhaspesquisa/{linhapesquisa}/orientadores', [LinhaPesquisaController::class, 'storeOrientador']);
 Route::delete('linhaspesquisa/{linhapesquisa}/orientadores/{orientador}', [LinhaPesquisaController::class, 'destroyOrientador']);

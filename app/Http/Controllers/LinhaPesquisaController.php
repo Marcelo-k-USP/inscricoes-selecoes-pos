@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LinhaPesquisaRequest;
 use App\Models\LinhaPesquisa;
+use App\Models\Nivel;
 use App\Models\Orientador;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -147,6 +148,55 @@ class LinhaPesquisaController extends Controller
     }
 
     /**
+     * Adicionar níveis relacionados à linha de pesquisa/tema
+     * autorizado a qualquer um que tenha acesso à linha de pesquisa/tema
+     * request->codpes = required, int
+     */
+    public function storeNivel(Request $request, LinhaPesquisa $linhapesquisa)
+    {
+        $this->authorize('linhaspesquisa.update', $linhapesquisa);
+
+        $request->validate([
+            'id' => 'required',
+        ],
+        [
+            'id.required' => 'Nível obrigatório',
+        ]);
+
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $linhapesquisa) {
+
+            $nivel = Nivel::where('id', $request->id)->first();
+
+            $existia = $linhapesquisa->niveis()->detach($nivel);
+
+            $linhapesquisa->niveis()->attach($nivel);
+
+            return ['nivel' => $nivel, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'O nível ' . $db_transaction['nivel']->nome . ' foi adicionado à essa linha de pesquisa/tema');
+        else
+            $request->session()->flash('alert-info', 'O nível ' . $db_transaction['nivel']->nome . ' já estava vinculado à essa linha de pesquisa/tema');
+        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
+    }
+
+    /**
+     * Remove níveis relacionados à linha de pesquisa/tema
+     * $user = required
+     */
+    public function destroyNivel(Request $request, LinhaPesquisa $linhapesquisa, Nivel $nivel)
+    {
+        $this->authorize('linhaspesquisa.update', $linhapesquisa);
+
+        $linhapesquisa->niveis()->detach($nivel);
+
+        $request->session()->flash('alert-success', 'O nível ' . $nivel->nome . ' foi removido dessa linha de pesquisa/tema');
+        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
+    }
+
+    /**
      * Adicionar orientadores relacionados à linha de pesquisa/tema
      * autorizado a qualquer um que tenha acesso à linha de pesquisa/tema
      * request->codpes = required, int
@@ -241,7 +291,8 @@ class LinhaPesquisaController extends Controller
                 $orientador->nome = Orientador::obterNome($orientador->codpes);
         $objeto = $linhapesquisa;
         $fields_orientador = Orientador::getFields();
+        $niveis = Nivel::all();
 
-        return compact('data', 'objeto', 'fields_orientador', 'modo');
+        return compact('data', 'objeto', 'fields_orientador', 'niveis', 'modo');
     }
 }
