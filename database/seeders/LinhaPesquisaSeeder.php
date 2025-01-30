@@ -108,8 +108,8 @@ class LinhaPesquisaSeeder extends Seeder
                 $linhapesquisa->niveis()->attach($nivel->id);
 
         // adiciona registros na tabela linhapesquisa_selecao
-        $selecao_SELECAO2025 = Selecao::where('nome', 'Seleção 2025')->first();
+        $selecao_SELECAO2025ALUNOREGULAR = Selecao::where('nome', 'Seleção 2025 Aluno Regular')->first();
         $linhapesquisa_id_SENSACAO_PERCEPCAO_E_MOVIMENTO = LinhaPesquisa::where('nome', 'Sensação, Percepção e Movimento')->first()->id;
-        $selecao_SELECAO2025->linhaspesquisa()->attach($linhapesquisa_id_SENSACAO_PERCEPCAO_E_MOVIMENTO);
+        $selecao_SELECAO2025ALUNOREGULAR->linhaspesquisa()->attach($linhapesquisa_id_SENSACAO_PERCEPCAO_E_MOVIMENTO);
     }
 }

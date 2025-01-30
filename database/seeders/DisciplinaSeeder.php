@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Disciplina;
+use App\Models\Selecao;
 
 class DisciplinaSeeder extends Seeder
 {
@@ -200,5 +201,10 @@ class DisciplinaSeeder extends Seeder
         // adiciona registros na tabela disciplinas
         foreach ($disciplinas as $disciplina)
             Disciplina::create($disciplina);
+
+        // adiciona registros na tabela disciplina_selecao
+        $selecao_id_SELECAO2025ALUNOESPECIAL = Selecao::where('nome', 'Seleção 2025 Aluno Especial')->first()->id;
+        foreach (Disciplina::all() as $disciplina)
+            $disciplina->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
     }
 }
