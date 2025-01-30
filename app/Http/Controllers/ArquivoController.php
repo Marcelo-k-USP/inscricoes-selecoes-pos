@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\InscricaoMail;
 use App\Mail\SolicitacaoIsencaoTaxaMail;
 use App\Models\Arquivo;
+use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\MotivoIsencaoTaxa;
@@ -158,14 +159,23 @@ class ArquivoController extends Controller
                             $info_adicional = '<br />' .
                                 'Sua inscrição foi completada';
 
-                        // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
                         $passo = 'realização';
-                        foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
-                            $secretario_nome = Pessoa::obterNome($secretario->codpes);
-                            \Mail::to($secretario->email)
-                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'secretario_nome')));
-                        }
-
+                        if ($objeto->selecao->categoria->nome !== 'Aluno Especial')
+                            // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
+                            foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
+                                $responsavel_nome = Pessoa::obterNome($secretario->codpes);
+                                \Mail::to($secretario->email)
+                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
+                            }
+                        else
+                            // envia e-mails avisando o serviço de pós-graduação sobre a realização da inscrição
+                            foreach (array_filter((new Programa())->obterResponsaveis(), function($responsavel) {
+                                return $responsavel['funcao'] === 'Serviço de Pós-Graduação';
+                            }) as $servicoposgraduacao) {
+                                $responsavel_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
+                                \Mail::to($servicoposgraduacao->email)
+                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
+                            }
                     }
             }
 
@@ -303,11 +313,12 @@ class ArquivoController extends Controller
     {
         $data = (object) ('App\\Http\\Controllers\\' . $classe_nome . 'Controller')::$data;
         $linhaspesquisa = LinhaPesquisa::all();
+        $disciplinas = Disciplina::all();
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
-        $responsaveis = (($classe_nome == 'Selecao') ? $objeto : $objeto->selecao)->programa->obterResponsaveis();
+        $responsaveis = (($classe_nome == 'Selecao') ? $objeto : $objeto->selecao)->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'motivosisencaotaxa', 'responsaveis', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
     }
 }

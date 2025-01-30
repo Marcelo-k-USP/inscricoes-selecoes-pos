@@ -36,6 +36,18 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $('#form_principal').find(':input:visible:first').focus();
+
+      $('#categoria_id').change(function () {
+        var programa_div = $('#programa_id').closest('.form-group');
+        if ($('#categoria_id option:selected').text() !== 'Aluno Especial') {
+          programa_div.show();
+        } else {
+          $('#programa_id option:first').prop('selected', true);
+          programa_div.hide();
+        }
+      });
+
+      $('#categoria_id').trigger('change');
     });
   </script>
 @endsection

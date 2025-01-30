@@ -38,7 +38,7 @@
             @else
               Nova Inscrição
             @endif
-            para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }}) / {{ $inscricao->linhapesquisa->nome }}<br />
+            para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})<br />
             <span class="text-muted">{{ $inscricao->selecao->descricao }}</span><br />
           </div>
         </div>
@@ -61,6 +61,9 @@
               @include('inscricoes.show.card-informativos')     {{-- Informativos --}}
               @if ($condicao_disponivel && ($modo == 'edit'))
                 @include('common.card-arquivos')                {{-- Arquivos --}}
+              @endif
+              @if (($inscricao->selecao->categoria->nome == 'Aluno Especial') && ($modo == 'edit'))
+                @include('inscricoes.show.card-disciplinas')   {{-- Disciplinas --}}
               @endif
             </div>
           </div>

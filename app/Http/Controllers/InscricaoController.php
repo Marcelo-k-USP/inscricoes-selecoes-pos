@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InscricaoRequest;
 use App\Mail\InscricaoMail;
+use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\LocalUser;
 use App\Models\Orientador;
+use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\User;
@@ -61,6 +63,13 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes');
         $data = self::$data;
         $objetos = Inscricao::listarInscricoes();
+        foreach ($objetos as $objeto) {
+            $extras = json_decode($objeto->extras, true);
+            $objeto->linha_pesquisa = (isset($extras['linha_pesquisa']) ? (LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome ?? null) : null);
+            $objeto->disciplinas = (isset($extras['disciplinas']) ? (Disciplina::whereIn('id', $extras['disciplinas'])->get()->map(function ($disciplina) {
+                return $disciplina->sigla . ' - ' . $disciplina->nome;
+            })->implode(',<br />')) : null);
+        }
         $classe_nome = 'Inscricao';
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
         return view('inscricoes.index', compact('data', 'objetos', 'classe_nome', 'max_upload_size'));
@@ -88,16 +97,14 @@ class InscricaoController extends Controller
      * Show the form for creating a new resource.
      *
      * @param  \App\Models\Selecao        $selecao
-     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return \Illuminate\Http\Response
      */
-    public function create(Selecao $selecao, LinhaPesquisa $linhapesquisa)
+    public function create(Selecao $selecao)
     {
         $this->authorize('inscricoes.create');
 
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
-        $inscricao->linhapesquisa = $linhapesquisa;
         $user = Auth::user();
         // se o usuário já solicitou isenção de taxa para esta seleção...
         $solicitacaoisencaotaxa = $user->solicitacoesIsencaoTaxa()?->where('selecao_id', $selecao->id)->first();
@@ -137,12 +144,10 @@ class InscricaoController extends Controller
         $inscricao = DB::transaction(function () use ($request) {
             $user = \Auth::user();
             $selecao = Selecao::find($request->selecao_id);
-            $linhapesquisa = LinhaPesquisa::find($request->linhapesquisa_id);
 
             // grava a inscrição
             $inscricao = new Inscricao;
             $inscricao->selecao_id = $selecao->id;
-            $inscricao->linhapesquisa_id = $linhapesquisa->id;
             $inscricao->estado = 'Aguardando Documentação';
             $inscricao->extras = json_encode($request->extras);
             $inscricao->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
@@ -229,7 +234,70 @@ class InscricaoController extends Controller
 
         \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
-}
+    }
+
+    /**
+     * Adicionar disciplinas relacionadas à inscrição
+     * autorizado a qualquer um que tenha acesso à inscrição
+     * request->codpes = required, int
+     */
+    public function storeDisciplina(Request $request, Inscricao $inscricao)
+    {
+        $this->authorize('inscricoes.update', $inscricao);
+
+        $request->validate([
+            'id' => 'required',
+        ],
+        [
+            'id.required' => 'Disciplina obrigatória',
+        ]);
+
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $inscricao) {
+
+            $disciplina = Disciplina::where('id', $request->id)->first();
+
+            $extras = json_decode($inscricao->extras, true);
+            $disciplinas = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
+            $existia = is_array($disciplinas) && in_array($request->id, $disciplinas);
+
+            if (!$existia) {
+                $extras['disciplinas'][] = $request->id;
+                $inscricao->extras = json_encode($extras);
+                $inscricao->save();
+            }
+
+            return ['disciplina' => $disciplina, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' foi adicionada à essa inscrição.');
+        else
+            $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa inscrição.');
+        return back();
+    }
+
+    /**
+     * Remove disciplinas relacionadas à inscrição
+     * $user = required
+     */
+    public function destroyDisciplina(Request $request, Inscricao $inscricao, Disciplina $disciplina)
+    {
+        $this->authorize('inscricoes.update', $inscricao);
+
+        $extras = json_decode($inscricao->extras, true);
+        $disciplinas = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
+        $indice = array_search($disciplina->id, $disciplinas);
+
+        if ($indice !== false) {
+            unset($extras['disciplinas'][$indice]);
+            $inscricao->extras = json_encode($extras);
+            $inscricao->save();
+        }
+
+        $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa inscrição.');
+        return back();
+    }
 
     private function processa_erro_store(string|array $msgs, Selecao $selecao, Request $request)
     {
@@ -252,10 +320,13 @@ class InscricaoController extends Controller
         $classe_nome = 'Inscricao';
         $classe_nome_plural = 'inscricoes';
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
-        $responsaveis = $objeto->selecao->programa->obterResponsaveis();
+        $responsaveis = $objeto->selecao->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
+        $extras = json_decode($objeto->extras, true);
+        $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
+        $disciplinas = Disciplina::listarDisciplinas($objeto->selecao);
         $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
     }
 }

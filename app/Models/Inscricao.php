@@ -156,13 +156,24 @@ class Inscricao extends Model
      */
     public static function listarInscricoes()
     {
-        if (Gate::any(['perfiladmin', 'perfilgerente']))
-            return Inscricao::with('selecao')->whereHas('selecao', function ($query) {
-                $query->whereIn('programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'));
-            })
-            ->get();
-        else
-            return Auth::user()->inscricoes()->wherePivotIn('papel', ['Autor'])->get();
+        switch (session('perfil')) {
+            case 'admin':
+                return self::all();
+
+            case 'gerente':
+                if (DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
+                        ->where('user_id', Auth::id())
+                        ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenador de Pós-Graduação'])
+                        ->exists())
+                    return self::all();
+                else
+                    return self::with('selecao')->whereHas('selecao', function ($query) {
+                        $query->whereIn('programa_id', Auth::user()->listarProgramasGerenciados()->pluck('id'));
+                    })->get();
+
+            default:
+                return Auth::user()->inscricoes()->wherePivotIn('papel', ['Autor'])->get();
+        }
     }
 
     public static function listarInscricoesPorSelecao(Selecao $selecao, int $ano)
@@ -245,13 +256,5 @@ class Inscricao extends Model
     public function selecao()
     {
         return $this->belongsTo(Selecao::class);
-    }
-
-    /**
-     * relacionamento com linha de pesquisa/tema
-     */
-    public function linhapesquisa()
-    {
-        return $this->belongsTo(LinhaPesquisa::class);
     }
 }

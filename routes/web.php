@@ -38,10 +38,14 @@ Route::put('solicitacoesisencaotaxa/edit/{solicitacaoisencaotaxa}', [Solicitacao
 // INSCRIÇÕES
 Route::get('inscricoes', [InscricaoController::class, 'index'])->name('inscricoes.index');
 Route::get('inscricoes/create', [InscricaoController::class, 'listaSelecoesParaNovaInscricao'])->name('inscricoes.create');
-Route::get('inscricoes/create/{selecao}/{linhapesquisa}', [InscricaoController::class, 'create'])->name('inscricoes.create.selecao');
+Route::get('inscricoes/create/{selecao}', [InscricaoController::class, 'create'])->name('inscricoes.create.selecao');
 Route::post('inscricoes/create', [InscricaoController::class, 'store'])->name('inscricoes.store');
 Route::get('inscricoes/edit/{inscricao}', [InscricaoController::class, 'edit'])->name('inscricoes.edit');
 Route::put('inscricoes/edit/{inscricao}', [InscricaoController::class, 'update'])->name('inscricoes.update');
+
+// INSCRIÇÕES > DISCIPLINAS
+Route::post('inscricoes/{inscricao}/disciplinas', [InscricaoController::class, 'storeDisciplina']);
+Route::delete('inscricoes/{inscricao}/disciplinas/{disciplina}', [InscricaoController::class, 'destroyDisciplina']);
 
 // CONSULTA DE CEP
 Route::get('consulta-cep', [EnderecoController::class, 'consultarCep'])->name('consulta.cep');
@@ -81,6 +85,10 @@ Route::get('selecoes/{selecao}/downloadinscricoes', [SelecaoController::class, '
 // SELEÇÕES > LINHAS DE PESQUISA/TEMAS
 Route::post('selecoes/{selecao}/linhaspesquisa', [SelecaoController::class, 'storeLinhaPesquisa']);
 Route::delete('selecoes/{selecao}/linhaspesquisa/{linhapesquisa}', [SelecaoController::class, 'destroyLinhaPesquisa']);
+
+// SELEÇÕES > DISCIPLINAS
+Route::post('selecoes/{selecao}/disciplinas', [SelecaoController::class, 'storeDisciplina']);
+Route::delete('selecoes/{selecao}/disciplinas/{disciplina}', [SelecaoController::class, 'destroyDisciplina']);
 
 // SELEÇÕES > MOTIVOS DE ISENÇÂO DE TAXA
 Route::post('selecoes/{selecao}/motivosisencaotaxa', [SelecaoController::class, 'storeMotivoIsencaoTaxa']);

@@ -769,7 +769,21 @@ class Selecao extends Model
     public static function listarSelecoes()
     {
         self::atualizarStatusSelecoes();
-        return self::whereIn('programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'))->get();
+        return self::whereIn('programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'))              // seleções de programas que o usuário gerencia, e também...
+                    ->orWhere(function ($query) {
+                        $query->where('categoria_id', Categoria::where('nome', 'Aluno Especial')->value('id'));    // seleções para alunos especiais (sem programa), desde que, neste segundo caso...
+                        $query->where(function ($query) {
+                            if (session('perfil') == 'admin')                                                      // desde que o usuário seja admin, ou...
+                                return;
+                            $query->orWhereExists(function ($query) {
+                                $query->select(\DB::raw(1))
+                                    ->from('user_programa')
+                                    ->where('user_id', \Auth::id())
+                                    ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenador de Pós-Graduação']);    // ou que o usuário seja do Serviço de Pós-Graduação ou Coordenador de Pós-Graduação
+                            });
+                        });
+                    })
+                    ->get();
     }
 
     /**

@@ -28,7 +28,7 @@
       @foreach ($objetos as $selecao)
         <tr>
           <td>{{ $selecao->categoria->nome }}</td>
-          <td>{{ $selecao->programa->nome }}</td>
+          <td>{{ $selecao->programa?->nome ?? 'N/A' }}</td>
           <td>
             @include('selecoes.partials.status-small')
             <a class="mr-2" href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->nome }}</a>

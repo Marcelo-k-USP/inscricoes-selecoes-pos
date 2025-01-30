@@ -54,9 +54,14 @@ class Disciplina extends Model
         return $ret;
     }
 
-    public static function listarDisciplinas()
+    public static function listarDisciplinas(?Selecao $selecao = null)
     {
-        return self::get();
+        if (is_null($selecao))
+            return self::get();
+        else
+            return self::whereHas('selecoes', function ($query) use ($selecao) {
+                $query->where('selecoes.id', $selecao->id);
+            })->get();
     }
 
     /**

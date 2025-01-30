@@ -34,7 +34,7 @@ class JSONForms
     /**
      * Renderiza o formulário como array contendo html
      */
-    protected static function JSON2Form($template, $data, $perfil, $classe_nome)
+    protected static function JSON2Form($selecao, $template, $data, $perfil, $classe_nome)
     {
         // em $template, tenho todos os campos do formulário de inscrição
         // a edição do formulário de uma seleção se refere sempre à edição do formulário de inscrição para essa seleção
@@ -62,7 +62,8 @@ class JSONForms
                 $label_formatted = implode(' ', $label_parts) . ' <span style="white-space: nowrap;">' . $label_last_word . $required_string . '</span>';
                 $html_string          =   '<div class="col-sm-3">' . PHP_EOL .
                                             '<label class="col-form-label va-middle" for="extras[' . $key . ']">' . $label_formatted . '</label> ' . PHP_EOL .
-                                        '</div>' . PHP_EOL;
+                                          '</div>' . PHP_EOL;
+                $html_string_linhapesquisa = '';
                 $html_string_motivoisencaotaxa = '';
                 $html_string_senha = '';
 
@@ -75,13 +76,13 @@ class JSONForms
                         foreach ($json->value as $key => $option)
                             $html_string .=   '<option value="' . $key . '"' . ($key == $value ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
                         $html_string .=     '</select>' . PHP_EOL .
-                                        '</div>' . PHP_EOL;
+                                          '</div>' . PHP_EOL;
                         break;
 
                     case 'date':
                         $html_string .=   '<div class="col-sm-2">' . PHP_EOL .
                                             '<input class="form-control datepicker hasDatePicker" name="extras[' . $key . ']" id="extras[' . $key . ']" type="text" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
-                                        '</div>' . PHP_EOL;
+                                          '</div>' . PHP_EOL;
                         break;
 
                     case 'radio':
@@ -107,13 +108,13 @@ class JSONForms
                         $html_string  =   '<div class="col-sm-12 d-flex align-items-center" style="gap: 10px;">' . PHP_EOL .
                                             '<input class="form-control" style="width: auto; margin: 0;" name="extras[' . $key . ']" id="extras[' . $key . ']" type="checkbox"' . ($value == 'on' ? ' checked' : '') . $required_attrib . '>' . PHP_EOL .
                                             '<label style="margin: 0;" for="extras[' . $key . ']">' . $label . ' ' . $required_string . '</label> ' . PHP_EOL .
-                                        '</div>' . PHP_EOL;
+                                          '</div>' . PHP_EOL;
                         break;
 
                     case 'textarea':
                         $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
                                             '<textarea class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" rows="3"' . $required_attrib . '>' . $value . '</textarea>' . PHP_EOL .
-                                        '</div>' . PHP_EOL;
+                                          '</div>' . PHP_EOL;
                         break;
 
                     default:              // contempla os tipos text, number e email
@@ -125,39 +126,59 @@ class JSONForms
                         }
                         $html_string .=   '<div class="col-sm-' . $largura . '">' . PHP_EOL .
                                             '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
-                                        '</div>' . PHP_EOL .
-                                        $html_string_adicional;
+                                          '</div>' . PHP_EOL .
+                                          $html_string_adicional;
                         if (($key == 'e_mail') && !Auth::check())
                             $html_string_senha .=
-                                        '<div class="col-sm-3" style="margin-top: -20px;">' . PHP_EOL .
+                                          '<div class="col-sm-3" style="margin-top: -20px;">' . PHP_EOL .
                                             '<label class="col-form-label va-middle" for="password">Senha <small class="text-required">(*)</small></label> ' . PHP_EOL .
-                                        '</div>' . PHP_EOL .
-                                        '<div class="col-sm-3" style="margin-top: -20px;">' . PHP_EOL .
+                                          '</div>' . PHP_EOL .
+                                          '<div class="col-sm-3" style="margin-top: -20px;">' . PHP_EOL .
                                             '<input class="form-control" style="width: 100%; padding-right: 30px" name="password" id="password" type="password" required>' . PHP_EOL .
                                             '<a href="javascript:void(0);" onclick="toggle_password(\'password\')" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">' . PHP_EOL .
-                                            '<img src="' . url('/icons/view.png') . '" id="toggle_icon_password" style="width: 20px; height: 20px;">' . PHP_EOL .
+                                              '<img src="' . url('/icons/view.png') . '" id="toggle_icon_password" style="width: 20px; height: 20px;">' . PHP_EOL .
                                             '</a>' . PHP_EOL .
-                                        '</div>' . PHP_EOL .
-                                        '<div id="strength-wrapper">' . PHP_EOL .
+                                          '</div>' . PHP_EOL .
+                                          '<div id="strength-wrapper">' . PHP_EOL .
                                             '<div id="barra_forca_password" style="height: 10px; width: 0px;">&nbsp;</div>' . PHP_EOL .
                                             '<p id="texto_forca_password" style="margin-top: 5px;">&nbsp;</p>' . PHP_EOL .
-                                        '</div>' . PHP_EOL;
+                                          '</div>' . PHP_EOL;
+                        if (($key == 'nome') && ($classe_nome == 'Inscricao') && ($selecao->categoria->nome !== 'Aluno Especial')) {
+                            $html_string_linhapesquisa .=
+                                          '<div class="col-sm-3">' . PHP_EOL .
+                                            '<label class="col-form-label va-middle" for="extras[linha_pesquisa]">Linha de <span style="white-space: nowrap;">Pesquisa/Tema <small class="text-required">(*)</small></span></label>' . PHP_EOL .
+                                          '</div>' . PHP_EOL .
+                                          '<div class="col-sm-9">' . PHP_EOL .
+                                            '<select class="form-control w-100" name="extras[linha_pesquisa]" id="extras[linha_pesquisa]" required>' . PHP_EOL .
+                                              '<option value="" disabled selected>Selecione...</option>' . PHP_EOL;
+                            foreach ($selecao->linhaspesquisa as $linhapesquisa)
+                                $html_string_linhapesquisa .=
+                                              '<option value="' . $linhapesquisa->id . '"' . ((isset($data->linha_pesquisa) && ($linhapesquisa->id == $data->linha_pesquisa)) ? ' selected' : '') . '>' . $linhapesquisa->nome . '</option>' . PHP_EOL;
+                            $html_string_linhapesquisa .=
+                                            '</select>' . PHP_EOL .
+                                          '</div>' . PHP_EOL;
+                        }
                         if (($key == 'nome') && ($classe_nome == 'SolicitacaoIsencaoTaxa')) {
                             $html_string_motivoisencaotaxa .=
-                                        '<div class="col-sm-3">' . PHP_EOL .
+                                          '<div class="col-sm-3">' . PHP_EOL .
                                             '<label class="col-form-label va-middle" for="extras[motivo_isencao_taxa]">Motivo <small class="text-required">(*)</small></label>' . PHP_EOL .
-                                        '</div>' . PHP_EOL .
-                                        '<div class="col-sm-9">' . PHP_EOL .
+                                          '</div>' . PHP_EOL .
+                                          '<div class="col-sm-9">' . PHP_EOL .
                                             '<select class="form-control w-100" name="extras[motivo_isencao_taxa]" id="extras[motivo_isencao_taxa]" required>' . PHP_EOL .
-                                            '<option value="" disabled selected>Selecione...</option>' . PHP_EOL;
+                                              '<option value="" disabled selected>Selecione...</option>' . PHP_EOL;
                             foreach (MotivoIsencaoTaxa::listarMotivosIsencaoTaxa() as $motivoisencaotaxa)
                                 $html_string_motivoisencaotaxa .=
-                                            '<option value="' . $motivoisencaotaxa->id . '"' . ((isset($data->motivo_isencao_taxa) && ($motivoisencaotaxa->id == $data->motivo_isencao_taxa)) ? ' selected' : '') . '>' . $motivoisencaotaxa->nome . '</option>' . PHP_EOL;
+                                              '<option value="' . $motivoisencaotaxa->id . '"' . ((isset($data->motivo_isencao_taxa) && ($motivoisencaotaxa->id == $data->motivo_isencao_taxa)) ? ' selected' : '') . '>' . $motivoisencaotaxa->nome . '</option>' . PHP_EOL;
                             $html_string_motivoisencaotaxa .=
                                             '</select>' . PHP_EOL .
-                                        '</div>' . PHP_EOL;
+                                          '</div>' . PHP_EOL;
                         }
                 }
+
+                // fora do fluxo normal: inclui campo de linha de pesquisa, pois ele não fica no $template
+                // este campo é inserido antes do nome
+                if ($html_string_linhapesquisa != '')
+                    $form[] = [new HtmlString($html_string_linhapesquisa)];
 
                 // fora do fluxo normal: inclui campo de motivo de isenção de taxa, pois ele não fica no $template
                 // este campo é inserido antes do nome
@@ -199,7 +220,7 @@ class JSONForms
         $form = [];
         if ($template) {
             $data = $objeto ? json_decode($objeto->extras) : null;
-            $form = JSONForms::JSON2Form($template, $data, $perfil, $classe_nome);
+            $form = JSONForms::JSON2Form($selecao, $template, $data, $perfil, $classe_nome);
         }
         return $form;
     }

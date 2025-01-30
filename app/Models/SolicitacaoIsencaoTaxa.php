@@ -132,13 +132,24 @@ class SolicitacaoIsencaoTaxa extends Model
      */
     public static function listarSolicitacoesIsencaoTaxa()
     {
-        if (Gate::any(['perfiladmin', 'perfilgerente']))
-            return SolicitacaoIsencaoTaxa::with('selecao')->whereHas('selecao', function ($query) {
-                $query->whereIn('programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'));
-            })
-            ->get();
-        else
-            return Auth::user()->solicitacoesisencaotaxa()->wherePivotIn('papel', ['Autor'])->get();
+        switch (session('perfil')) {
+            case 'admin':
+                return self::all();
+
+            case 'gerente':
+                if (DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
+                        ->where('user_id', Auth::id())
+                        ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenador de Pós-Graduação'])
+                        ->exists())
+                    return self::all();
+                else
+                    return self::with('selecao')->whereHas('selecao', function ($query) {
+                        $query->whereIn('programa_id', Auth::user()->listarProgramasGerenciados()->pluck('id'));
+                    })->get();
+
+            default:
+                return Auth::user()->solicitacoesisencaotaxa()->wherePivotIn('papel', ['Autor'])->get();
+        }
     }
 
     public static function listarSolicitacoesIsencaoTaxaPorSelecao(Selecao $selecao, int $ano)

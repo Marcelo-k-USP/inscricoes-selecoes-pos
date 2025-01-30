@@ -23,7 +23,7 @@ class InscricaoMail extends Mailable
     protected $arquivo_erro;
 
     // campos adicionais para inscrição realizada
-    protected $secretario_nome;
+    protected $responsavel_nome;
 
     // campos adicionais para inscrição pré-aprovada
     protected $orientador_nome;
@@ -53,7 +53,7 @@ class InscricaoMail extends Mailable
                 break;
 
             case 'realização':
-                $this->secretario_nome = $data['secretario_nome'];
+                $this->responsavel_nome = $data['responsavel_nome'];
                 break;
 
             case 'pré-aprovação':
@@ -97,7 +97,7 @@ class InscricaoMail extends Mailable
                     ->view('emails.inscricao_realizacao')
                     ->with([
                         'inscricao' => $this->inscricao,
-                        'secretario_nome' => $this->secretario_nome,
+                        'responsavel_nome' => $this->responsavel_nome,
                     ]);
 
             case 'pré-aprovação':

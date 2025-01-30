@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SelecaoRequest;
 use App\Models\Categoria;
+use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\MotivoIsencaoTaxa;
@@ -80,7 +81,8 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.create');
 
-        $validator = Validator::make($request->all(), SelecaoRequest::rules, SelecaoRequest::messages);
+        $selecaoRequest = new SelecaoRequest();
+        $validator = Validator::make($request->all(), $selecaoRequest->rules(), $selecaoRequest->messages());
         if ($validator->fails()) {
             \UspTheme::activeUrl('selecoes');
             return back()->withErrors($validator)->withInput();
@@ -91,13 +93,25 @@ class SelecaoController extends Controller
         $requestData['datahora_fim'] = (is_null($requestData['data_fim'] || is_null($requestData['hora_fim'])) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['data_fim'] . ' ' . $requestData['hora_fim']));
         $requestData['boleto_valor'] = str_replace(',', '.', $requestData['boleto_valor']);
         $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento']));
-        $selecao = Selecao::create($requestData);
 
-        $selecao->atualizarStatus();
-        $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($requestData) {
+
+            $selecao = Selecao::create($requestData);
+            $selecao->atualizarStatus();
+            $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
+
+            $is_aluno_especial = ($selecao->categoria->nome === 'Aluno Especial');
+            if ($is_aluno_especial)    // cadastra automaticamente todas as disciplinas como possíveis para este processo seletivo
+                foreach (Disciplina::listarDisciplinas() as $disciplina)
+                    $selecao->disciplinas()->attach($disciplina);
+
+            return ['selecao' => $selecao, 'is_aluno_especial' => $is_aluno_especial];
+        });
+        $selecao = $db_transaction['selecao'];
 
         $request->session()->flash('alert-success', 'Seleção cadastrada com sucesso<br />' .
-            'Agora adicione os documentos relacionados ao processo');
+            'Agora ' . (!$db_transaction['is_aluno_especial'] ? 'informe quais são as linhas de pesquisa e ' : '') . 'adicione os documentos relacionados ao processo');
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
@@ -131,7 +145,8 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.update', $selecao);
 
-        $validator = Validator::make($request->all(), SelecaoRequest::rules, SelecaoRequest::messages);
+        $selecaoRequest = new SelecaoRequest();
+        $validator = Validator::make($request->all(), $selecaoRequest->rules(), $selecaoRequest->messages());
         if ($validator->fails()) {
             \UspTheme::activeUrl('selecoes');
             return view('selecoes.edit', $this->monta_compact($selecao, 'edit'))->withErrors($validator);    // preciso especificar 'edit'... se eu fizesse um return back(), e o usuário estivesse vindo de um update após um create, a variável $modo voltaria a ser 'create', e a página ficaria errada
@@ -340,6 +355,55 @@ class SelecaoController extends Controller
     }
 
     /**
+     * Adicionar disciplinas relacionadas à seleção
+     * autorizado a qualquer um que tenha acesso à seleção
+     * request->codpes = required, int
+     */
+    public function storeDisciplina(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $request->validate([
+            'id' => 'required',
+        ],
+        [
+            'id.required' => 'Disciplina obrigatória',
+        ]);
+
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $selecao) {
+
+            $disciplina = Disciplina::where('id', $request->id)->first();
+
+            $existia = $selecao->disciplinas()->detach($disciplina);
+
+            $selecao->disciplinas()->attach($disciplina);
+
+            return ['disciplina' => $disciplina, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' foi adicionada à essa seleção.');
+        else
+            $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa seleção.');
+        return back();
+    }
+
+    /**
+     * Remove disciplinas relacionadas à seleção
+     * $user = required
+     */
+    public function destroyDisciplina(Request $request, Selecao $selecao, Disciplina $disciplina)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $selecao->disciplinas()->detach($disciplina);
+
+        $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa seleção.');
+        return back();
+    }
+
+    /**
      * Adicionar motivos de isenção de taxa relacionados à seleção
      * autorizado a qualquer um que tenha acesso à seleção
      * request->codpes = required, int
@@ -413,17 +477,15 @@ class SelecaoController extends Controller
         foreach ($solicitacoesisencaotaxa as $solicitacaoisencaotaxa) {
             $i = [];
 
-            $i['programa'] = $solicitacaoisencaotaxa->selecao->programa->nome;
+            $extras = json_decode($solicitacaoisencaotaxa->extras, true) ?? [];
+            $i['programa'] = $solicitacaoisencaotaxa->selecao->programa?->nome ?? 'N/A';
             $i['selecao'] = $solicitacaoisencaotaxa->selecao->nome;
-
+            $i['motivo_isencao_taxa'] = MotivoIsencaoTaxa::where('id', $extras['motivo_isencao_taxa'])->first()->nome;
             $autor = $solicitacaoisencaotaxa->users()->wherePivot('papel', 'Autor')->first();
             $i['autor'] = $autor ? $autor->name : '';
-
-            $extras = json_decode($solicitacaoisencaotaxa->extras, true) ?? [];
             foreach ($keys as $field)
                 if (in_array($field, ['nome', 'tipo_de_documento', 'numero_do_documento', 'cpf', 'e_mail']))    // somente estes campos do formulário da seleção são utilizados na solicitação de isenção de taxa
                     $i[$field] = isset($extras[$field]) ? $extras[$field] : '';
-
             $i['criado_em'] = $solicitacaoisencaotaxa->created_at->format('d/m/Y');
             $i['atualizado_em'] = $solicitacaoisencaotaxa->updated_at->format('d/m/Y');
 
@@ -459,17 +521,14 @@ class SelecaoController extends Controller
         foreach ($inscricoes as $inscricao) {
             $i = [];
 
-            $i['programa'] = $inscricao->selecao->programa->nome;
+            $extras = json_decode($inscricao->extras, true) ?? [];
+            $i['programa'] = $inscricao->selecao->programa?->nome ?? 'N/A';
             $i['selecao'] = $inscricao->selecao->nome;
-            $i['linhapesquisa'] = $inscricao->linhapesquisa->nome;
-
+            $i['linha_pesquisa'] = LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome;
             $autor = $inscricao->users()->wherePivot('papel', 'Autor')->first();
             $i['autor'] = $autor ? $autor->name : '';
-
-            $extras = json_decode($inscricao->extras, true) ?? [];
             foreach ($keys as $field)
                 $i[$field] = isset($extras[$field]) ? $extras[$field] : '';
-
             $i['criado_em'] = $inscricao->created_at->format('d/m/Y');
             $i['atualizado_em'] = $inscricao->updated_at->format('d/m/Y');
 
@@ -487,11 +546,12 @@ class SelecaoController extends Controller
         $objeto = $selecao;
         $classe_nome = 'Selecao';
         $classe_nome_plural = 'selecoes';
-        $rules = SelecaoRequest::rules;
+        $rules = (new SelecaoRequest())->rules();
         $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($objeto->programa) ? (new Programa) : $objeto->programa);
+        $disciplinas = Disciplina::listarDisciplinas();
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'motivosisencaotaxa', 'max_upload_size', 'rules');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'max_upload_size', 'rules');
     }
 }
