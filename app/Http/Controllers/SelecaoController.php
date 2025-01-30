@@ -208,7 +208,7 @@ class SelecaoController extends Controller
         $selecao->template = $newjson;
         $selecao->save();
         $request->session()->flash('alert-success', 'Template salvo com sucesso');
-        return back();
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'formulario'));
     }
 
     public function createTemplate(Selecao $selecao)
@@ -259,7 +259,7 @@ class SelecaoController extends Controller
         $selecao->template = JSONForms::fixJson($template);
         $selecao->save();
         $request->session()->flash('alert-success', 'Formulário salvo com sucesso');
-        return back();
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'formulario'));
     }
 
     public function createTemplateValue(Selecao $selecao, string $field)
@@ -340,7 +340,7 @@ class SelecaoController extends Controller
             $request->session()->flash('alert-success', 'A linha de pesquisa/tema ' . $db_transaction['linhapesquisa']->nome . ' foi adicionado à essa seleção.');
         else
             $request->session()->flash('alert-info', 'A linha de pesquisa/tema ' . $db_transaction['linhapesquisa']->nome . ' já estava vinculado à essa seleção.');
-        return back();
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'linhaspesquisa'));
     }
 
     /**
@@ -354,7 +354,7 @@ class SelecaoController extends Controller
         $selecao->linhaspesquisa()->detach($linhapesquisa);
 
         $request->session()->flash('alert-success', 'A linha de pesquisa/tema ' . $linhapesquisa->nome . ' foi removido dessa seleção.');
-        return back();
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'linhaspesquisa'));
     }
 
     /**
@@ -389,8 +389,8 @@ class SelecaoController extends Controller
             $request->session()->flash('alert-success', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' foi adicionada à essa seleção.');
         else
             $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa seleção.');
-        return back();
-    }
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'disciplinas'));
+        }
 
     /**
      * Remove disciplinas relacionadas à seleção
@@ -403,7 +403,7 @@ class SelecaoController extends Controller
         $selecao->disciplinas()->detach($disciplina);
 
         $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa seleção.');
-        return back();
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'disciplinas'));
     }
 
     /**
@@ -438,7 +438,7 @@ class SelecaoController extends Controller
             $request->session()->flash('alert-success', 'O motivo de isenção de taxa ' . $db_transaction['motivoisencaotaxa']->nome . ' foi adicionado à essa seleção');
         else
             $request->session()->flash('alert-info', 'O motivo de isenção de taxa ' . $db_transaction['motivoisencaotaxa']->nome . ' já estava vinculado à essa seleção');
-        return back();
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'motivosisencaotaxa'));
     }
 
     /**
@@ -452,7 +452,7 @@ class SelecaoController extends Controller
         $selecao->motivosisencaotaxa()->detach($motivoisencaotaxa);
 
         $request->session()->flash('alert-success', 'O motivo de isenção de taxa ' . $motivoisencaotaxa->nome . ' foi removido dessa seleção');
-        return back();
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'motivosisencaotaxa'));
     }
 
     /**
@@ -542,7 +542,7 @@ class SelecaoController extends Controller
             ->addRows($arr);
     }
 
-    private function monta_compact(Selecao $selecao, string $modo)
+    private function monta_compact(Selecao $selecao, string $modo, ?string $scroll = null)
     {
         $data = (object) self::$data;
         $selecao->template = JSONForms::orderTemplate($selecao->template);
@@ -555,6 +555,6 @@ class SelecaoController extends Controller
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'max_upload_size', 'rules');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'max_upload_size', 'rules', 'scroll');
     }
 }

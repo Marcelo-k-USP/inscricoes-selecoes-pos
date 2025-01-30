@@ -76,3 +76,17 @@
     </div>
   </div>
 @endsection
+
+@if (isset($scroll))
+  @section('javascripts_bottom')
+  @parent
+    <script type="text/javascript">
+      $(document).ready(function() {
+
+        var element = $('a[name="card_{{ $scroll }}"]');
+        if (element.length)
+          element.get(0).scrollIntoView({ behavior: 'smooth' });
+      });
+    </script>
+  @endsection
+@endif

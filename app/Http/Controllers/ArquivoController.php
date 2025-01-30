@@ -64,16 +64,6 @@ class ArquivoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request   $request
@@ -344,7 +334,8 @@ class ArquivoController extends Controller
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+        $scroll = 'arquivos';
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size', 'scroll');
     }
 }

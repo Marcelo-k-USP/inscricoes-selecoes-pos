@@ -282,7 +282,7 @@ class InscricaoController extends Controller
             $request->session()->flash('alert-success', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' foi adicionada à essa inscrição.');
         else
             $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa inscrição.');
-        return back();
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
     }
 
     /**
@@ -304,7 +304,7 @@ class InscricaoController extends Controller
         }
 
         $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa inscrição.');
-        return back();
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
     }
 
     private function processa_erro_store(string|array $msgs, Selecao $selecao, Request $request)
@@ -320,7 +320,7 @@ class InscricaoController extends Controller
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
-    public function monta_compact(Inscricao $inscricao, string $modo)
+    public function monta_compact(Inscricao $inscricao, string $modo, ?string $scroll = null)
     {
         $data = (object) self::$data;
         $inscricao->selecao->template = JSONForms::orderTemplate($inscricao->selecao->template);
@@ -336,6 +336,6 @@ class InscricaoController extends Controller
         $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size', 'scroll');
     }
 }
