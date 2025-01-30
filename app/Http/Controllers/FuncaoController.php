@@ -28,6 +28,37 @@ class FuncaoController extends Controller
         $this->authorize('funcoes.update');
         \UspTheme::activeUrl('funcoes');
 
+        return view('funcoes.edit', $this->monta_compact());
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request)
+    {
+        if ($add = $request->add_codpes) {
+
+            // transaction para não ter problema de inconsistência do DB
+            DB::transaction(function () use ($request, $add) {
+
+                $user = User::findOrCreateFromReplicado($add);
+                if ($user)
+                    $user->associarProgramaFuncao($request->programa, $request->funcao);
+            });
+        }
+
+        if ($rem = $request->rem_codpes) {
+            $user = User::where('codpes', $rem)->first();
+            if ($user)
+                $user->desassociarProgramaFuncao($request->programa, $request->funcao);
+        }
+
+        $request->session()->flash('alert-success', 'Dados editados com sucesso');
+        return view('funcoes.edit', $this->monta_compact());
+    }
+
+    private function monta_compact()
+    {
         $programas_secretarios = Programa::with(['users' => function ($query) {
             $query->where('funcao', 'Secretários(as) do Programa')
                   ->orderBy('user_programa.programa_id')
@@ -62,32 +93,7 @@ class FuncaoController extends Controller
                     'codpes' => $user->codpes,
                 ];
             })->values()->toArray();
-        return view('funcoes.edit', compact('programas_secretarios', 'programas_coordenadores', 'posgraduacao_servico_users', 'posgraduacao_coordenadores_users'));
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request)
-    {
-        if ($add = $request->add_codpes) {
-
-            // transaction para não ter problema de inconsistência do DB
-            DB::transaction(function () use ($request, $add) {
-
-                $user = User::findOrCreateFromReplicado($add);
-                if ($user)
-                    $user->associarProgramaFuncao($request->programa, $request->funcao);
-            });
-        }
-
-        if ($rem = $request->rem_codpes) {
-            $user = User::where('codpes', $rem)->first();
-            if ($user)
-                $user->desassociarProgramaFuncao($request->programa, $request->funcao);
-        }
-
-        $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        return back();
+        return compact('programas_secretarios', 'programas_coordenadores', 'posgraduacao_servico_users', 'posgraduacao_coordenadores_users');
     }
 }

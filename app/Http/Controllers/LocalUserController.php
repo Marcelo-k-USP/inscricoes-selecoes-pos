@@ -69,7 +69,7 @@ class LocalUserController extends Controller
             Auth::logout();
 
             request()->session()->flash('alert-danger', 'E-mail não confirmado');
-            return back();
+            return redirect('/localusers/login');
         }
 
         session(['perfil' => 'usuario']);
