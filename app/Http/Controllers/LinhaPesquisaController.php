@@ -77,6 +77,9 @@ class LinhaPesquisaController extends Controller
 
         $linhapesquisa = LinhaPesquisa::create($request->all());
 
+        foreach (Nivel::all() as $nivel)    // cadastra automaticamente todos os níveis como possíveis para esta linha de pesquisa/tema
+            $linhapesquisa->niveis()->attach($nivel);
+
         $request->session()->flash('alert-success', 'Linha de pesquisa/tema cadastrado com sucesso');
 
         \UspTheme::activeUrl('linhaspesquisa');
