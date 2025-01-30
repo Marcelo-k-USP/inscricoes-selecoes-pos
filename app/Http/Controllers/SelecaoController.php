@@ -101,7 +101,10 @@ class SelecaoController extends Controller
             $selecao->atualizarStatus();
             $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
-            $is_aluno_especial = ($selecao->categoria->nome === 'Aluno Especial');
+            foreach (MotivoIsencaoTaxa::listarMotivosIsencaoTaxa() as $motivoisencaotaxa)    // cadastra automaticamente todos os motivos de isenção de taxa como possíveis para este processo seletivo
+                $selecao->motivosisencaotaxa()->attach($motivoisencaotaxa);
+
+                    $is_aluno_especial = ($selecao->categoria->nome === 'Aluno Especial');
             if ($is_aluno_especial)    // cadastra automaticamente todas as disciplinas como possíveis para este processo seletivo
                 foreach (Disciplina::listarDisciplinas() as $disciplina)
                     $selecao->disciplinas()->attach($disciplina);
