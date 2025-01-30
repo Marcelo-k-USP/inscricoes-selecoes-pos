@@ -141,20 +141,44 @@ class ArquivoController extends Controller
                         $user = \Auth::user();
                         if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
 
-                            // envia e-mail para o candidato com o boleto
-                            $passo = 'boleto';
+                            $passo = 'boleto(s)';
                             $papel = 'Candidato';
-                            $arquivo_nome = 'boleto.pdf';
-                            $arquivo_conteudo = $this->boletoService->gerarBoleto($inscricao);
-                            \Mail::to($user->email)
-                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivo_nome', 'arquivo_conteudo')));
+                            if ($objeto->selecao->categoria->nome !== 'Aluno Especial') {
+                                // envia e-mail para o candidato com o boleto
+                                $arquivos = [[
+                                    'nome' => 'boleto.pdf',
+                                    'conteudo' => $this->boletoService->gerarBoleto($inscricao),
+                                ]];
+                                \Mail::to($user->email)
+                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
 
-                            $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
-                            $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
-                            $objeto->save();
+                                $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
+                                $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
+                                $objeto->save();
 
-                            $info_adicional = '<br />' .
-                                'Sua inscrição foi completada e seu boleto foi enviado, não deixe de pagá-lo';
+                                $info_adicional = '<br />' .
+                                    'Sua inscrição foi completada e seu boleto foi enviado, não deixe de pagá-lo';
+                            } else {
+                                // envia e-mail para o candidato com os boletos
+                                $extras = json_decode($inscricao->extras, true);
+                                $disciplinas = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
+                                $arquivos = [];
+                                $disciplinas = Disciplina::whereIn('id', array_values($disciplinas))->get();
+                                foreach ($disciplinas as $disciplina)
+                                    $arquivos[] = [
+                                        'nome' => 'boleto_' . strtolower($disciplina->sigla) . '.pdf',
+                                        'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
+                                    ];
+                                \Mail::to($user->email)
+                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
+
+                                $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foram gerados mais arquivos (boletos) para ela
+                                $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
+                                $objeto->save();
+
+                                $info_adicional = '<br />' .
+                                    'Sua inscrição foi completada e seus boletos foram enviados, não deixe de pagá-los';
+                            }
                         } else
                             $info_adicional = '<br />' .
                                 'Sua inscrição foi completada';
@@ -169,9 +193,7 @@ class ArquivoController extends Controller
                             }
                         else
                             // envia e-mails avisando o serviço de pós-graduação sobre a realização da inscrição
-                            foreach (array_filter((new Programa())->obterResponsaveis(), function($responsavel) {
-                                return $responsavel['funcao'] === 'Serviço de Pós-Graduação';
-                            }) as $servicoposgraduacao) {
+                            foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
                                 $responsavel_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
                                 \Mail::to($servicoposgraduacao->email)
                                     ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
@@ -316,9 +338,11 @@ class ArquivoController extends Controller
         $disciplinas = Disciplina::all();
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $responsaveis = (($classe_nome == 'Selecao') ? $objeto : $objeto->selecao)->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
+        $extras = json_decode($objeto->extras, true);
+        $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'inscricao_disciplinas', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
     }
 }

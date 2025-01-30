@@ -85,7 +85,7 @@ class Inscricao extends Model
                 'minimum_required' => 2
             ],
             [
-                'nome' => 'Boleto de Pagamento da Inscrição',
+                'nome' => 'Boleto(s) de Pagamento da Inscrição',
                 'editable' => 'none'
             ]
         ];

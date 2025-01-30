@@ -14,7 +14,7 @@ use Uspdev\Boleto;
 
 class BoletoService
 {
-    public function gerarBoleto(Inscricao $inscricao)
+    public function gerarBoleto(Inscricao $inscricao, ?string $texto_adicional = null)
     {
         $extras = json_decode($inscricao->extras, true);
         $cpf = ((strtolower($extras['tipo_de_documento']) == 'passaporte') ? '99999999999' : str_replace(['-', '.'], '', $extras['cpf']));
@@ -31,8 +31,8 @@ class BoletoService
             'cpfCnpj' => $cpf,
             'nomeSacado' => $extras['nome'],
             'codigoEmail' => $extras['e_mail'],
-            'informacoesBoletoSacado' => 'Boleto de Inscrição do Processo Seletivo da Pós-Graduação - ' . $inscricao->selecao->nome,
-            'instrucoesObjetoCobranca' => 'Não receber apos vencimento!',
+            'informacoesBoletoSacado' => 'Inscrição para Seleção da Pós-Graduação - ' . $inscricao->selecao->nome . $texto_adicional,
+            'instrucoesObjetoCobranca' => 'Não receber após vencimento!',
         );
 
         try {

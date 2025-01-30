@@ -16,11 +16,9 @@ class InscricaoMail extends Mailable
     protected $inscricao;
     protected $user;
 
-    // campos adicionais para boleto
+    // campos adicionais para boleto(s)
     protected $papel;
-    protected $arquivo_nome;
-    protected $arquivo_conteudo;
-    protected $arquivo_erro;
+    protected $arquivos;
 
     // campos adicionais para inscrição realizada
     protected $responsavel_nome;
@@ -44,12 +42,16 @@ class InscricaoMail extends Mailable
         $this->user = $data['user'];
 
         switch ($this->passo) {
-            case 'boleto':
+            case 'boleto(s)':
                 $this->papel = $data['papel'];
-                $this->arquivo_nome = $data['arquivo_nome'];
-                $this->arquivo_conteudo = $data['arquivo_conteudo'];
-                $this->arquivo_erro = (!empty($this->arquivo_conteudo) ? '' : 'Ocorreu um erro na geração do boleto.<br />' . PHP_EOL .
-                    'Por favor, entre em contato conosco em infor@ip.usp.br, informando-nos sobre esse problema.<br />' . PHP_EOL);
+                $this->arquivos = [];
+                foreach ($data['arquivos'] as $data_arquivo)
+                    $this->arquivos[] = [
+                        'nome' => $data_arquivo['nome'],
+                        'conteudo' => $data_arquivo['conteudo'],
+                        'erro' => (!empty($data_arquivo['conteudo']) ? '' : 'Ocorreu um erro na geração do boleto "' . $data_arquivo['nome'] . '".<br />' . PHP_EOL .
+                            'Por favor, entre em contato conosco em infor@ip.usp.br, informando-nos sobre esse problema.<br />' . PHP_EOL),
+                    ];
                 break;
 
             case 'realização':
@@ -75,20 +77,25 @@ class InscricaoMail extends Mailable
     public function build()
     {
         switch ($this->passo) {
-            case 'boleto':
-                return $this
+            case 'boleto(s)':
+                $arquivos_erro = [];
+                foreach ($this->arquivos as $arquivo)
+                    $arquivos_erro[] = $arquivo['erro'];
+                $mail = $this
                     ->subject('[' . config('app.name') . '] Inscrição Realizada com Sucesso')
                     ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.inscricao_enviodeboleto')
+                    ->view('emails.inscricao_enviodeboletos')
                     ->with([
                         'inscricao' => $this->inscricao,
                         'user' => $this->user,
                         'papel' => $this->papel,
-                        'arquivo_erro' => $this->arquivo_erro,
-                    ])
-                    ->when(!empty($this->arquivo_conteudo), function ($message) {
-                        $message->attachData(base64_decode($this->arquivo_conteudo), $this->arquivo_nome, ['mime' => 'application/pdf']);
-                    });
+                        'arquivos_count' => count($this->arquivos),
+                        'arquivos_erro' => $arquivos_erro,
+                    ]);
+                foreach ($this->arquivos as $arquivo)
+                    if (!empty($arquivo['conteudo']))
+                        $mail->attachData(base64_decode($arquivo['conteudo']), $arquivo['nome'], ['mime' => 'application/pdf']);
+                return $mail;
 
             case 'realização':
                 return $this

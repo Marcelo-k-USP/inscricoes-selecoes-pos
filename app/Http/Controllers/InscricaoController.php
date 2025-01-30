@@ -226,7 +226,9 @@ class InscricaoController extends Controller
         } else {
             $this->authorize('inscricoes.update', $inscricao);
 
-            $inscricao->extras = json_encode($request->extras);
+            $extras = json_decode($inscricao->extras, true);
+            $request->merge(['extras' => array_merge($request->input('extras', []), ['disciplinas' => $extras['disciplinas']])]);    // pelo fato de vir do card-principal, $request->extras não vem com as disciplinas... então precisamos recuperá-las a partir de $extras
+            $inscricao->extras = json_encode($request->input('extras'));
             $inscricao->save();
 
             $request->session()->flash('alert-success', 'Inscrição alterada com sucesso');
