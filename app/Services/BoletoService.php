@@ -60,7 +60,7 @@ class BoletoService
                 $arquivo->caminho = $arquivo_caminho;
                 $arquivo->mimeType = 'application/pdf';
                 $arquivo->save();
-                $arquivo->inscricoes()->attach($inscricao->id, ['tipo' => 'Boleto de Pagamento da Inscrição']);
+                $arquivo->inscricoes()->attach($inscricao->id, ['tipo' => 'Boleto(s) de Pagamento da Inscrição']);
 
                 if (App::environment('local') || config('inscricoes-selecoes-pos.ws_boleto_cancelar')) {
 
