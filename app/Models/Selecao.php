@@ -675,6 +675,14 @@ class Selecao extends Model
     }
 
     /**
+     * Retorna os níveis possíveis na seleção.
+     */
+    public static function niveis()
+    {
+        return ['Mestrado', 'Doutorado', 'Doutorado Direto'];
+    }
+
+    /**
      * Retorna os tipos de arquivo possíveis na seleção.
      */
     public static function tiposArquivo()
@@ -823,22 +831,6 @@ class Selecao extends Model
             $selecoes = $selecoes->filter(function ($selecao, $key) {    // agora vamos remover as seleções onde não se pode inscrever... a ordem de liberação é relevante!
                 return ($selecao->estado != 'Encerrada');                // descarta as seleções encerradas
             });
-            foreach ($selecoes as $selecao)
-                foreach ($selecao->linhaspesquisa as $linhapesquisa) {
-                    $orientadores = '';
-                    if ($linhapesquisa->orientadores->count() > 0) {
-                        $orientadores .= '(';
-                        $i = 0;
-                        foreach ($linhapesquisa->orientadores as $orientador) {
-                            if ($i > 0)
-                                $orientadores .= ', ';
-                            $orientadores .= Orientador::obterNome($orientador->codpes);
-                            $i++;
-                        }
-                        $orientadores .= ')';
-                    }
-                    $linhapesquisa->orientadores = $orientadores;
-                }
             $categoria->selecoes = $selecoes;
         }
         return $categorias;                                              // retorna as seleções dentro de categorias

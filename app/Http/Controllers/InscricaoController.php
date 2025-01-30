@@ -97,9 +97,10 @@ class InscricaoController extends Controller
      * Show the form for creating a new resource.
      *
      * @param  \App\Models\Selecao        $selecao
+     * @param  ?string                    $nivel
      * @return \Illuminate\Http\Response
      */
-    public function create(Selecao $selecao)
+    public function create(Selecao $selecao, ?string $nivel = null)
     {
         $this->authorize('inscricoes.create');
 
@@ -124,6 +125,8 @@ class InscricaoController extends Controller
                 'celular' => ((!Str::contains($user->telefone, 'ramal USP')) ? $user->telefone : ''),
                 'e_mail' => $user->email,
             );
+        if ($selecao->categoria->nome !== 'Aluno Especial')
+            $extras['nivel'] = $nivel;
         $inscricao->extras = json_encode($extras);
 
         \UspTheme::activeUrl('inscricoes/create');
@@ -227,7 +230,8 @@ class InscricaoController extends Controller
             $this->authorize('inscricoes.update', $inscricao);
 
             $extras = json_decode($inscricao->extras, true);
-            $request->merge(['extras' => array_merge($request->input('extras', []), ['disciplinas' => $extras['disciplinas']])]);    // pelo fato de vir do card-principal, $request->extras não vem com as disciplinas... então precisamos recuperá-las a partir de $extras
+            if (isset($extras['disciplinas']))
+                $request->merge(['extras' => array_merge($request->input('extras', []), ['disciplinas' => $extras['disciplinas']])]);    // pelo fato de vir do card-principal, $request->extras não vem com as disciplinas... então precisamos recuperá-las a partir de $extras
             $inscricao->extras = json_encode($request->input('extras'));
             $inscricao->save();
 

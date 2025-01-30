@@ -16,6 +16,9 @@
   @method($modo == 'edit' ? 'put' : 'post')
   {{ html()->hidden('id') }}
   <input type="hidden" id="selecao_id" name="selecao_id" value="{{ $inscricao->selecao->id }}">
+  @if ($inscricao->selecao->categoria->nome != 'Aluno Especial')
+    <input type="hidden" id="extras[nivel]" name="extras[nivel]" value="{{ json_decode($inscricao->extras)->nivel }}">
+  @endif
   <div class="card mb-3 w-100" id="card-inscricao-principal">
     <div class="card-header">
       Informações básicas

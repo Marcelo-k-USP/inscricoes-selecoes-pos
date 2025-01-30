@@ -38,7 +38,11 @@
             @else
               Nova Inscrição
             @endif
-            para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})<br />
+            para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})
+            @if ($inscricao->selecao->categoria->nome !== 'Aluno Especial')
+              - {{ json_decode($inscricao->extras)->nivel }}
+            @endif
+            <br />
             <span class="text-muted">{{ $inscricao->selecao->descricao }}</span><br />
           </div>
         </div>
