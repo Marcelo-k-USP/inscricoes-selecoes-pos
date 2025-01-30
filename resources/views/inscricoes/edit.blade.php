@@ -58,6 +58,9 @@
               @endif
             </div>
             <div class="col-md-5">
+              @if (($inscricao->selecao->categoria->nome == 'Aluno Especial') && ($modo == 'edit'))
+                @include('inscricoes.show.card-disciplinas')   {{-- Disciplinas --}}
+              @endif
               @php
                 $selecao = $inscricao->selecao;    // para o include abaixo
               @endphp
@@ -65,9 +68,6 @@
               @include('inscricoes.show.card-informativos')     {{-- Informativos --}}
               @if ($condicao_disponivel && ($modo == 'edit'))
                 @include('common.card-arquivos')                {{-- Arquivos --}}
-              @endif
-              @if (($inscricao->selecao->categoria->nome == 'Aluno Especial') && ($modo == 'edit'))
-                @include('inscricoes.show.card-disciplinas')   {{-- Disciplinas --}}
               @endif
             </div>
           </div>
