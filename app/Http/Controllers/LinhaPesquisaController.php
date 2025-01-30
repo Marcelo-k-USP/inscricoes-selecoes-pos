@@ -41,22 +41,8 @@ class LinhaPesquisaController extends Controller
         $this->authorize('linhaspesquisa.viewAny');
         \UspTheme::activeUrl('linhaspesquisa');
 
-        $linhaspesquisa = LinhaPesquisa::with('programa')->orderBy('programa_id')->orderBy('id')->get();
-        $fields = LinhaPesquisa::getFields();
-
-        # para o form de adicionar pessoas
-        $modal_pessoa['url'] = 'linhas de pesquisa/temas';
-        $modal_pessoa['title'] = 'Adicionar Pessoa';
-
-        if ($request->ajax()) {
-            // formatado para datatables
-            #return response(['data' => $linhaspesquisa]);
-        } else {
-            $modal['url'] = 'linhaspesquisa';
-            $modal['title'] = 'Editar Linha de Pesquisa/Tema';
-            $rules = LinhaPesquisaRequest::rules;
-            return view('linhaspesquisa.tree', compact('linhaspesquisa', 'fields', 'modal', 'modal_pessoa', 'rules'));
-        }
+        if (!$request->ajax())
+            return view('linhaspesquisa.tree', $this->monta_compact0());
     }
 
     /**
@@ -152,12 +138,12 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa = LinhaPesquisa::find((int) $id);
         if ($linhapesquisa->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para esta linha de pesquisa/tema!');
-            return back();
+            return view('linhaspesquisa.tree', $this->monta_compact0());
         }
         $linhapesquisa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return back();
+        return view('linhaspesquisa.tree', $this->monta_compact0());
     }
 
     /**
@@ -217,7 +203,7 @@ class LinhaPesquisaController extends Controller
             $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' foi adicionado à essa linha de pesquisa/tema');
         else
             $request->session()->flash('alert-info', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' já estava vinculado à essa linha de pesquisa/tema');
-        return back();
+        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
 
     /**
@@ -231,7 +217,20 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa->orientadores()->detach($orientador);
 
         $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($orientador->codpes) . ' foi removido dessa linha de pesquisa/tema');
-        return back();
+        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
+    }
+
+    private function monta_compact0()
+    {
+        $linhaspesquisa = LinhaPesquisa::with('programa')->orderBy('programa_id')->orderBy('id')->get();
+        $fields = LinhaPesquisa::getFields();
+        $modal_pessoa['url'] = 'linhas de pesquisa/temas';
+        $modal_pessoa['title'] = 'Adicionar Pessoa';
+        $modal['url'] = 'linhaspesquisa';
+        $modal['title'] = 'Editar Linha de Pesquisa/Tema';
+        $rules = LinhaPesquisaRequest::rules;
+
+        return compact('linhaspesquisa', 'fields', 'modal', 'modal_pessoa', 'rules');
     }
 
     private function monta_compact(LinhaPesquisa $linhapesquisa, string $modo)

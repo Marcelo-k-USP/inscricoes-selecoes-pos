@@ -28,18 +28,8 @@ class ProgramaController extends Controller
         $this->authorize('programas.viewAny');
         \UspTheme::activeUrl('programas');
 
-        $programas = Programa::all();
-        $fields = Programa::getFields();
-
-        if ($request->ajax()) {
-            // formatado para datatables
-            #return response(['data' => $programas]);
-        } else {
-            $modal['url'] = 'programas';
-            $modal['title'] = 'Editar Programa';
-            $rules = ProgramaRequest::rules;
-            return view('programas.tree', compact('programas', 'fields', 'modal', 'rules'));
-        }
+        if (!$request->ajax())
+            return view('programas.tree', $this->monta_compact());
     }
 
     /**
@@ -75,7 +65,7 @@ class ProgramaController extends Controller
         $programa = Programa::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return back();
+        return view('programas.tree', $this->monta_compact());
     }
 
     /**
@@ -98,7 +88,7 @@ class ProgramaController extends Controller
         $programa->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        return back();
+        return view('programas.tree', $this->monta_compact());
     }
 
     /**
@@ -115,15 +105,26 @@ class ProgramaController extends Controller
         $programa = Programa::find((int) $id);
         if ($programa->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para este programa!');
-            return back();
+            return view('programas.tree', $this->monta_compact());
         }
         if ($programa->linhaspesquisa()->exists()) {
             $request->session()->flash('alert-danger', 'Há linhas de pesquisa/temas para este programa!');
-            return back();
+            return view('programas.tree', $this->monta_compact());
         }
         $programa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return back();
+        return view('programas.tree', $this->monta_compact());
+    }
+
+    private function monta_compact()
+    {
+        $programas = Programa::all();
+        $fields = Programa::getFields();
+        $modal['url'] = 'programas';
+        $modal['title'] = 'Editar Programa';
+        $rules = ProgramaRequest::rules;
+
+        return compact('programas', 'fields', 'modal', 'rules');
     }
 }

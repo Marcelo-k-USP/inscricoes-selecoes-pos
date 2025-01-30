@@ -29,18 +29,8 @@ class DisciplinaController extends Controller
         $this->authorize('disciplinas.viewAny');
         \UspTheme::activeUrl('disciplinas');
 
-        $disciplinas = Disciplina::orderBy('sigla')->get();
-        $fields = Disciplina::getFields();
-
-        if ($request->ajax()) {
-            // formatado para datatables
-            #return response(['data' => $disciplinas]);
-        } else {
-            $modal['url'] = 'disciplinas';
-            $modal['title'] = 'Editar Disciplina';
-            $rules = DisciplinaRequest::rules;
-            return view('disciplinas.tree', compact('disciplinas', 'fields', 'modal', 'rules'));
-        }
+        if (!$request->ajax())
+            return view('disciplinas.tree', $this->monta_compact());
     }
 
     /**
@@ -76,7 +66,7 @@ class DisciplinaController extends Controller
         $disciplinas = Disciplina::create($request->all());
 
         $request->session()->flash('alert-success', 'Disciplina cadastrada com sucesso');
-        return back();
+        return view('disciplinas.tree', $this->monta_compact());
     }
 
     /**
@@ -100,7 +90,7 @@ class DisciplinaController extends Controller
         $disciplina->save();
 
         $request->session()->flash('alert-success', 'Disciplina alterada com sucesso');
-        return back();
+        return view('disciplinas.tree', $this->monta_compact());
     }
 
     /**
@@ -117,11 +107,22 @@ class DisciplinaController extends Controller
         $disciplina = Disciplina::find((int) $id);
         if ($disciplina->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para esta disciplina!');
-            return back();
+            return view('disciplinas.tree', $this->monta_compact());
         }
         $disciplina->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return back();
+        return view('disciplinas.tree', $this->monta_compact());
+    }
+
+    private function monta_compact()
+    {
+        $disciplinas = Disciplina::orderBy('sigla')->get();
+        $fields = Disciplina::getFields();
+        $modal['url'] = 'disciplinas';
+        $modal['title'] = 'Editar Disciplina';
+        $rules = DisciplinaRequest::rules;
+
+        return compact('disciplinas', 'fields', 'modal', 'rules');
     }
 }

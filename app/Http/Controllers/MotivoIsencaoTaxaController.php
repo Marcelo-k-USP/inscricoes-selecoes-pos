@@ -28,18 +28,8 @@ class MotivoIsencaoTaxaController extends Controller
         $this->authorize('motivosisencaotaxa.viewAny');
         \UspTheme::activeUrl('motivosisencaotaxa');
 
-        $motivosisencaotaxa = MotivoIsencaoTaxa::all();
-        $fields = MotivoIsencaoTaxa::getFields();
-
-        if ($request->ajax()) {
-            // formatado para datatables
-            #return response(['data' => $motivosisencaotaxa]);
-        } else {
-            $modal['url'] = 'motivosisencaotaxa';
-            $modal['title'] = 'Editar Motivo de Isenção de Taxa';
-            $rules = MotivoIsencaoTaxaRequest::rules;
-            return view('motivosisencaotaxa.tree', compact('motivosisencaotaxa', 'fields', 'modal', 'rules'));
-        }
+        if (!$request->ajax())
+            return view('motivosisencaotaxa.tree', $this->monta_compact());
     }
 
     /**
@@ -75,7 +65,7 @@ class MotivoIsencaoTaxaController extends Controller
         $motivoisencaotaxa = MotivoIsencaoTaxa::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return back();
+        return view('motivosisencaotaxa.tree', $this->monta_compact());
     }
 
     /**
@@ -98,7 +88,7 @@ class MotivoIsencaoTaxaController extends Controller
         $motivoisencaotaxa->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        return back();
+        return view('motivosisencaotaxa.tree', $this->monta_compact());
     }
 
     /**
@@ -115,11 +105,22 @@ class MotivoIsencaoTaxaController extends Controller
         $motivoisencaotaxa = MotivoIsencaoTaxa::find((int) $id);
         if ($motivoisencaotaxa->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções que fazem uso deste motivo de isenção de taxa!');
-            return back();
+            return view('motivosisencaotaxa.tree', $this->monta_compact());
         }
         $motivoisencaotaxa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return back();
+        return view('motivosisencaotaxa.tree', $this->monta_compact());
+    }
+
+    private function monta_compact()
+    {
+        $motivosisencaotaxa = MotivoIsencaoTaxa::all();
+        $fields = MotivoIsencaoTaxa::getFields();
+        $modal['url'] = 'motivosisencaotaxa';
+        $modal['title'] = 'Editar Motivo de Isenção de Taxa';
+        $rules = MotivoIsencaoTaxaRequest::rules;
+
+        return compact('motivosisencaotaxa', 'fields', 'modal', 'rules');
     }
 }

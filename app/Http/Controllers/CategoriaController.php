@@ -28,18 +28,8 @@ class CategoriaController extends Controller
         $this->authorize('categorias.viewAny');
         \UspTheme::activeUrl('categorias');
 
-        $categorias = Categoria::all();
-        $fields = Categoria::getFields();
-
-        if ($request->ajax()) {
-            // formatado para datatables
-            #return response(['data' => $categorias]);
-        } else {
-            $modal['url'] = 'categorias';
-            $modal['title'] = 'Editar Categoria';
-            $rules = CategoriaRequest::rules;
-            return view('categorias.tree', compact('categorias', 'fields', 'modal', 'rules'));
-        }
+        if (!$request->ajax())
+            return view('categorias.tree', $this->monta_compact());
     }
 
     /**
@@ -75,7 +65,7 @@ class CategoriaController extends Controller
         $categoria = Categoria::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return back();
+        return view('categorias.tree', $this->monta_compact());
     }
 
     /**
@@ -98,7 +88,7 @@ class CategoriaController extends Controller
         $categoria->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        return back();
+        return view('categorias.tree', $this->monta_compact());
     }
 
     /**
@@ -115,11 +105,22 @@ class CategoriaController extends Controller
         $categoria = Categoria::find((int) $id);
         if ($categoria->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para esta categoria!');
-            return back();
+            return view('categorias.tree', $this->monta_compact());
         }
         $categoria->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return back();
+        return view('categorias.tree', $this->monta_compact());
+    }
+
+    private function monta_compact()
+    {
+        $categorias = Categoria::all();
+        $fields = Categoria::getFields();
+        $modal['url'] = 'categorias';
+        $modal['title'] = 'Editar Categoria';
+        $rules = CategoriaRequest::rules;
+
+        return compact('categorias', 'fields', 'modal', 'rules');
     }
 }

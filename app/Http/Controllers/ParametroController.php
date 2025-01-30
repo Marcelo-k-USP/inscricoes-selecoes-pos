@@ -27,10 +27,7 @@ class ParametroController extends Controller
         $this->authorize('parametros.update');
         \UspTheme::activeUrl('parametros');
 
-        $parametros = Parametro::first();    // preenche os dados do form de edição dos parâmetros
-        $fields = Parametro::getFields();
-        $rules = ParametroRequest::rules;
-        return view('parametros.edit', compact('parametros', 'fields', 'rules'));
+        return view('parametros.edit', $this->monta_compact());
     }
 
     /**
@@ -53,6 +50,15 @@ class ParametroController extends Controller
         $parametro->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        return back();
+        return view('parametros.edit', $this->monta_compact());
+    }
+
+    private function monta_compact()
+    {
+        $parametros = Parametro::first();    // preenche os dados do form de edição dos parâmetros
+        $fields = Parametro::getFields();
+        $rules = ParametroRequest::rules;
+
+        return compact('parametros', 'fields', 'rules');
     }
 }
