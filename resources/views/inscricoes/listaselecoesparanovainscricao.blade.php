@@ -41,8 +41,8 @@
                         - {{ $selecao->descricao }}
                       @endif
                       <br />
-                      @foreach (\App\Models\Selecao::niveis() as $nivel)
-                        &nbsp; &nbsp; &nbsp;<a href="inscricoes/create/{{ $selecao['id'] }}/{{ $nivel }}">{{ $nivel }}</a><br />
+                      @foreach ($niveis as $nivel)
+                        &nbsp; &nbsp; &nbsp;<a href="inscricoes/create/{{ $selecao['id'] }}/{{ $nivel->id }}">{{ $nivel->nome }}</a><br />
                       @endforeach
                     </div>
                   @endforeach

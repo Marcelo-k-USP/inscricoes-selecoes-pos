@@ -675,14 +675,6 @@ class Selecao extends Model
     }
 
     /**
-     * Retorna os níveis possíveis na seleção.
-     */
-    public static function niveis()
-    {
-        return ['Mestrado', 'Doutorado', 'Doutorado Direto'];
-    }
-
-    /**
      * Retorna os tipos de arquivo possíveis na seleção.
      */
     public static function tiposArquivo()

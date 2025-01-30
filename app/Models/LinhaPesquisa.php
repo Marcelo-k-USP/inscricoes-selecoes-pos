@@ -69,6 +69,14 @@ class LinhaPesquisa extends Model
     }
 
     /**
+     * relacionamento com níveis
+     */
+    public function niveis()
+    {
+        return $this->belongsToMany('App\Models\Nivel', 'linhapesquisa_nivel', 'linhapesquisa_id', 'nivel_id')->withTimestamps();
+    }
+
+    /**
      * relacionamento com seleções
      */
     public function selecoes()

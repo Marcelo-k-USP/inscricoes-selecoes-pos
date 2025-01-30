@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\LinhaPesquisa;
+use App\Models\Nivel;
 use App\Models\Programa;
 use App\Models\Selecao;
 
@@ -100,6 +101,11 @@ class LinhaPesquisaSeeder extends Seeder
         // adiciona registros na tabela linhaspesquisa
         foreach ($linhaspesquisa as $linhapesquisa)
             LinhaPesquisa::create($linhapesquisa);
+
+        // adiciona registros na tabela linhapesquisa_nivel
+        foreach (LinhaPesquisa::all() as $linhapesquisa)
+            foreach (Nivel::all() as $nivel)
+                $linhapesquisa->niveis()->attach($nivel->id);
 
         // adiciona registros na tabela linhapesquisa_selecao
         $selecao_SELECAO2025 = Selecao::where('nome', 'Seleção 2025')->first();

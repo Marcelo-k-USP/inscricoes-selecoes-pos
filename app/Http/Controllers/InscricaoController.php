@@ -8,6 +8,7 @@ use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\LocalUser;
+use App\Models\Nivel;
 use App\Models\Orientador;
 use App\Models\Programa;
 use App\Models\Selecao;
@@ -90,17 +91,18 @@ class InscricaoController extends Controller
 
         \UspTheme::activeUrl('inscricoes/create');
         $categorias = Selecao::listarSelecoesParaNovaInscricao();          // obtém as seleções dentro das categorias
-        return view('inscricoes.listaselecoesparanovainscricao', compact('categorias'));
+        $niveis = Nivel::all();                                            // obtém todos os níveis cadastrados
+        return view('inscricoes.listaselecoesparanovainscricao', compact('categorias', 'niveis'));
     }
 
     /**
      * Show the form for creating a new resource.
      *
      * @param  \App\Models\Selecao        $selecao
-     * @param  ?string                    $nivel
+     * @param  ?\App\Models\Nivel         $nivel
      * @return \Illuminate\Http\Response
      */
-    public function create(Selecao $selecao, ?string $nivel = null)
+    public function create(Selecao $selecao, ?Nivel $nivel = null)
     {
         $this->authorize('inscricoes.create');
 
@@ -126,7 +128,7 @@ class InscricaoController extends Controller
                 'e_mail' => $user->email,
             );
         if ($selecao->categoria->nome !== 'Aluno Especial')
-            $extras['nivel'] = $nivel;
+            $extras['nivel'] = $nivel->id;
         $inscricao->extras = json_encode($extras);
 
         \UspTheme::activeUrl('inscricoes/create');
@@ -330,9 +332,10 @@ class InscricaoController extends Controller
         $extras = json_decode($objeto->extras, true);
         $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
         $disciplinas = Disciplina::listarDisciplinas($objeto->selecao);
+        $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size');
     }
 }
