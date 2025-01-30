@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             SetorReplicadoSeeder::class,    // adiciona todos os setores da unidade do replicado
             ProgramaSeeder::class,          // adiciona programas
             CategoriaSeeder::class,         // adiciona categorias
+            FuncaoSeeder::class,            // adiciona funções
             SelecaoSeeder::class,           // adiciona seleções
             LinhaPesquisaSeeder::class,     // adiciona linhas de pesquisa/temas
             DisciplinaSeeder::class,        // adiciona disciplinas
