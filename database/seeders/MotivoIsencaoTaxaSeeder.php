@@ -16,6 +16,7 @@ class MotivoIsencaoTaxaSeeder extends Seeder
     public function run()
     {
         $selecao_SELECAO2025ALUNOREGULAR = Selecao::where('nome', 'Seleção 2025 Aluno Regular')->first();
+        $selecao_SELECAO2025ALUNOESPECIAL = Selecao::where('nome', 'Seleção 2025 Aluno Especial')->first();
 
         $motivosisencaotaxa = [
             [
@@ -51,8 +52,9 @@ class MotivoIsencaoTaxaSeeder extends Seeder
             // adiciona registro na tabela motivosisencaotaxa
             $motivoisencaotaxa = MotivoIsencaoTaxa::create($motivoisencaotaxa);
 
-            // adiciona registro na tabela motivosisencaotaxa_selecao
+            // adiciona registros na tabela motivosisencaotaxa_selecao
             $selecao_SELECAO2025ALUNOREGULAR->motivosisencaotaxa()->attach($motivoisencaotaxa->id);
+            $selecao_SELECAO2025ALUNOESPECIAL->motivosisencaotaxa()->attach($motivoisencaotaxa->id);
         }
     }
 }
