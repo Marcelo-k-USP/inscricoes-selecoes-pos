@@ -43,7 +43,7 @@ class LinhaPesquisaController extends Controller
         \UspTheme::activeUrl('linhaspesquisa');
 
         if (!$request->ajax())
-            return view('linhaspesquisa.tree', $this->monta_compact0());
+            return view('linhaspesquisa.tree', $this->monta_compact_index());
     }
 
     /**
@@ -142,12 +142,12 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa = LinhaPesquisa::find((int) $id);
         if ($linhapesquisa->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para esta linha de pesquisa/tema!');
-            return view('linhaspesquisa.tree', $this->monta_compact0());
+            return view('linhaspesquisa.tree', $this->monta_compact_index());
         }
         $linhapesquisa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return view('linhaspesquisa.tree', $this->monta_compact0());
+        return view('linhaspesquisa.tree', $this->monta_compact_index());
     }
 
     /**
@@ -273,7 +273,7 @@ class LinhaPesquisaController extends Controller
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
 
-    private function monta_compact0()
+    private function monta_compact_index()
     {
         $linhaspesquisa = LinhaPesquisa::with('programa')->orderBy('programa_id')->orderBy('id')->get();
         $fields = LinhaPesquisa::getFields();

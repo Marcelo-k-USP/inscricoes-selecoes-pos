@@ -29,7 +29,7 @@ class ProgramaController extends Controller
         \UspTheme::activeUrl('programas');
 
         if (!$request->ajax())
-            return view('programas.tree', $this->monta_compact());
+            return view('programas.tree', $this->monta_compact_index());
     }
 
     /**
@@ -65,7 +65,7 @@ class ProgramaController extends Controller
         $programa = Programa::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return view('programas.tree', $this->monta_compact());
+        return view('programas.tree', $this->monta_compact_index());
     }
 
     /**
@@ -88,7 +88,7 @@ class ProgramaController extends Controller
         $programa->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        return view('programas.tree', $this->monta_compact());
+        return view('programas.tree', $this->monta_compact_index());
     }
 
     /**
@@ -105,19 +105,19 @@ class ProgramaController extends Controller
         $programa = Programa::find((int) $id);
         if ($programa->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para este programa!');
-            return view('programas.tree', $this->monta_compact());
+            return view('programas.tree', $this->monta_compact_index());
         }
         if ($programa->linhaspesquisa()->exists()) {
             $request->session()->flash('alert-danger', 'Há linhas de pesquisa/temas para este programa!');
-            return view('programas.tree', $this->monta_compact());
+            return view('programas.tree', $this->monta_compact_index());
         }
         $programa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return view('programas.tree', $this->monta_compact());
+        return view('programas.tree', $this->monta_compact_index());
     }
 
-    private function monta_compact()
+    private function monta_compact_index()
     {
         $programas = Programa::all();
         $fields = Programa::getFields();

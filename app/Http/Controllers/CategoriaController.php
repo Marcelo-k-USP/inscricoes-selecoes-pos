@@ -29,7 +29,7 @@ class CategoriaController extends Controller
         \UspTheme::activeUrl('categorias');
 
         if (!$request->ajax())
-            return view('categorias.tree', $this->monta_compact());
+            return view('categorias.tree', $this->monta_compact_index());
     }
 
     /**
@@ -65,7 +65,7 @@ class CategoriaController extends Controller
         $categoria = Categoria::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return view('categorias.tree', $this->monta_compact());
+        return view('categorias.tree', $this->monta_compact_index());
     }
 
     /**
@@ -88,7 +88,7 @@ class CategoriaController extends Controller
         $categoria->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        return view('categorias.tree', $this->monta_compact());
+        return view('categorias.tree', $this->monta_compact_index());
     }
 
     /**
@@ -105,15 +105,15 @@ class CategoriaController extends Controller
         $categoria = Categoria::find((int) $id);
         if ($categoria->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para esta categoria!');
-            return view('categorias.tree', $this->monta_compact());
+            return view('categorias.tree', $this->monta_compact_index());
         }
         $categoria->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return view('categorias.tree', $this->monta_compact());
+        return view('categorias.tree', $this->monta_compact_index());
     }
 
-    private function monta_compact()
+    private function monta_compact_index()
     {
         $categorias = Categoria::all();
         $fields = Categoria::getFields();

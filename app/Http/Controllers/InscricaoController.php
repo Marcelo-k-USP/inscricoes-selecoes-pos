@@ -62,18 +62,7 @@ class InscricaoController extends Controller
             $this->authorize('inscricoes.viewTheir');
 
         \UspTheme::activeUrl('inscricoes');
-        $data = self::$data;
-        $objetos = Inscricao::listarInscricoes();
-        foreach ($objetos as $objeto) {
-            $extras = json_decode($objeto->extras, true);
-            $objeto->linha_pesquisa = (isset($extras['linha_pesquisa']) ? (LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome ?? null) : null);
-            $objeto->disciplinas = (isset($extras['disciplinas']) ? (Disciplina::whereIn('id', $extras['disciplinas'])->get()->map(function ($disciplina) {
-                return $disciplina->sigla . ' - ' . $disciplina->nome;
-            })->implode(',<br />')) : null);
-        }
-        $classe_nome = 'Inscricao';
-        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
-        return view('inscricoes.index', compact('data', 'objetos', 'classe_nome', 'max_upload_size'));
+        return view('inscricoes.index', $this->monta_compact_index());
     }
 
     /**
@@ -318,6 +307,23 @@ class InscricaoController extends Controller
         $inscricao->selecao = $selecao;
         $inscricao->extras = json_encode($request->extras);    // recarrega a mesma página com os dados que o usuário preencheu antes do submit... pois o {{ old }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old }} dentro do {!! $element !!} do inscricoes.show.card-principal
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
+    }
+
+    public function monta_compact_index()
+    {
+        $data = self::$data;
+        $objetos = Inscricao::listarInscricoes();
+        foreach ($objetos as $objeto) {
+            $extras = json_decode($objeto->extras, true);
+            $objeto->linha_pesquisa = (isset($extras['linha_pesquisa']) ? (LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome ?? null) : null);
+            $objeto->disciplinas = (isset($extras['disciplinas']) ? (Disciplina::whereIn('id', $extras['disciplinas'])->get()->map(function ($disciplina) {
+                return $disciplina->sigla . ' - ' . $disciplina->nome;
+            })->implode(',<br />')) : null);
+        }
+        $classe_nome = 'Inscricao';
+        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+
+        return compact('data', 'objetos', 'classe_nome', 'max_upload_size');
     }
 
     public function monta_compact(Inscricao $inscricao, string $modo, ?string $scroll = null)

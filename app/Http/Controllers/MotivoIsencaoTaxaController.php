@@ -29,7 +29,7 @@ class MotivoIsencaoTaxaController extends Controller
         \UspTheme::activeUrl('motivosisencaotaxa');
 
         if (!$request->ajax())
-            return view('motivosisencaotaxa.tree', $this->monta_compact());
+            return view('motivosisencaotaxa.tree', $this->monta_compact_index());
     }
 
     /**
@@ -65,7 +65,7 @@ class MotivoIsencaoTaxaController extends Controller
         $motivoisencaotaxa = MotivoIsencaoTaxa::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
-        return view('motivosisencaotaxa.tree', $this->monta_compact());
+        return view('motivosisencaotaxa.tree', $this->monta_compact_index());
     }
 
     /**
@@ -88,7 +88,7 @@ class MotivoIsencaoTaxaController extends Controller
         $motivoisencaotaxa->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        return view('motivosisencaotaxa.tree', $this->monta_compact());
+        return view('motivosisencaotaxa.tree', $this->monta_compact_index());
     }
 
     /**
@@ -105,15 +105,15 @@ class MotivoIsencaoTaxaController extends Controller
         $motivoisencaotaxa = MotivoIsencaoTaxa::find((int) $id);
         if ($motivoisencaotaxa->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções que fazem uso deste motivo de isenção de taxa!');
-            return view('motivosisencaotaxa.tree', $this->monta_compact());
+            return view('motivosisencaotaxa.tree', $this->monta_compact_index());
         }
         $motivoisencaotaxa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return view('motivosisencaotaxa.tree', $this->monta_compact());
+        return view('motivosisencaotaxa.tree', $this->monta_compact_index());
     }
 
-    private function monta_compact()
+    private function monta_compact_index()
     {
         $motivosisencaotaxa = MotivoIsencaoTaxa::all();
         $fields = MotivoIsencaoTaxa::getFields();

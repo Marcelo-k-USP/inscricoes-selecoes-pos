@@ -55,11 +55,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $this->authorize('solicitacoesisencaotaxa.view' . ($perfil_admin_ou_gerente ? 'Any' : 'Their'));
 
         \UspTheme::activeUrl('solicitacoesisencaotaxa');
-        $data = self::$data;
-        $objetos = SolicitacaoIsencaoTaxa::listarSolicitacoesIsencaoTaxa();
-        $classe_nome = 'SolicitacaoIsencaoTaxa';
-        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
-        return view('solicitacoesisencaotaxa.index', compact('data', 'objetos', 'classe_nome', 'max_upload_size'));
+        return view('solicitacoesisencaotaxa.index', $this->monta_compact_index());
     }
 
     /**
@@ -206,6 +202,16 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $solicitacaoisencaotaxa->selecao = $selecao;
         $solicitacaoisencaotaxa->extras = json_encode($request->extras);    // recarrega a mesma página com os dados que o usuário preencheu antes do submit... pois o {{ old }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old }} dentro do {!! $element !!} do solicitacoesisencaotaxa.show.card-principal
         return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'create'));
+    }
+
+    public function monta_compact_index()
+    {
+        $data = self::$data;
+        $objetos = SolicitacaoIsencaoTaxa::listarSolicitacoesIsencaoTaxa();
+        $classe_nome = 'SolicitacaoIsencaoTaxa';
+        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+
+        return compact('data', 'objetos', 'classe_nome', 'max_upload_size');
     }
 
     public function monta_compact(SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa, string $modo)

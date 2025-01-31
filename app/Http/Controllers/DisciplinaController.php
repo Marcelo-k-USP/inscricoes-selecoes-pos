@@ -30,7 +30,7 @@ class DisciplinaController extends Controller
         \UspTheme::activeUrl('disciplinas');
 
         if (!$request->ajax())
-            return view('disciplinas.tree', $this->monta_compact());
+            return view('disciplinas.tree', $this->monta_compact_index());
     }
 
     /**
@@ -66,7 +66,7 @@ class DisciplinaController extends Controller
         $disciplinas = Disciplina::create($request->all());
 
         $request->session()->flash('alert-success', 'Disciplina cadastrada com sucesso');
-        return view('disciplinas.tree', $this->monta_compact());
+        return view('disciplinas.tree', $this->monta_compact_index());
     }
 
     /**
@@ -90,7 +90,7 @@ class DisciplinaController extends Controller
         $disciplina->save();
 
         $request->session()->flash('alert-success', 'Disciplina alterada com sucesso');
-        return view('disciplinas.tree', $this->monta_compact());
+        return view('disciplinas.tree', $this->monta_compact_index());
     }
 
     /**
@@ -107,15 +107,15 @@ class DisciplinaController extends Controller
         $disciplina = Disciplina::find((int) $id);
         if ($disciplina->selecoes()->exists()) {
             $request->session()->flash('alert-danger', 'Há seleções para esta disciplina!');
-            return view('disciplinas.tree', $this->monta_compact());
+            return view('disciplinas.tree', $this->monta_compact_index());
         }
         $disciplina->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
-        return view('disciplinas.tree', $this->monta_compact());
+        return view('disciplinas.tree', $this->monta_compact_index());
     }
 
-    private function monta_compact()
+    private function monta_compact_index()
     {
         $disciplinas = Disciplina::orderBy('sigla')->get();
         $fields = Disciplina::getFields();
