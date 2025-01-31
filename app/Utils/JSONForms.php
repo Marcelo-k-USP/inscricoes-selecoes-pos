@@ -2,7 +2,6 @@
 
 namespace App\Utils;
 
-use App\Models\MotivoIsencaoTaxa;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
@@ -167,7 +166,7 @@ class JSONForms
                                           '<div class="col-sm-9">' . PHP_EOL .
                                             '<select class="form-control w-100" name="extras[motivo_isencao_taxa]" id="extras[motivo_isencao_taxa]" required>' . PHP_EOL .
                                               '<option value="" disabled selected>Selecione...</option>' . PHP_EOL;
-                            foreach (MotivoIsencaoTaxa::listarMotivosIsencaoTaxa() as $motivoisencaotaxa)
+                            foreach ($selecao->motivosisencaotaxa as $motivoisencaotaxa)
                                 $html_string_motivoisencaotaxa .=
                                               '<option value="' . $motivoisencaotaxa->id . '"' . ((isset($data->motivo_isencao_taxa) && ($motivoisencaotaxa->id == $data->motivo_isencao_taxa)) ? ' selected' : '') . '>' . $motivoisencaotaxa->nome . '</option>' . PHP_EOL;
                             $html_string_motivoisencaotaxa .=
