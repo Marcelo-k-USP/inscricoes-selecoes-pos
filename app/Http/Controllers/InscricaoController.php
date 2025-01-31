@@ -14,6 +14,7 @@ use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\User;
+use App\Services\BoletoService;
 use App\Utils\JSONForms;
 use Hash;
 use Illuminate\Http\Request;
@@ -28,6 +29,8 @@ use Uspdev\Replicado\Pessoa;
 
 class InscricaoController extends Controller
 {
+    protected $boletoService;
+
     // crud generico
     public static $data = [
         'title' => 'Inscrições',
@@ -39,13 +42,14 @@ class InscricaoController extends Controller
         'model' => 'App\Models\Inscricao',
     ];
 
-    public function __construct()
+    public function __construct(BoletoService $boletoService)
     {
         $this->middleware('auth')->except([
             'listaSelecoesParaNovaInscricao',
             'create',
             'store'
         ]);    // exige que o usuário esteja logado, exceto para estes métodos listados
+        $this->boletoService = $boletoService;
     }
 
     /**
@@ -142,7 +146,7 @@ class InscricaoController extends Controller
             // grava a inscrição
             $inscricao = new Inscricao;
             $inscricao->selecao_id = $selecao->id;
-            $inscricao->estado = 'Aguardando Documentação';
+            $inscricao->estado = 'Aguardando Envio';
             $inscricao->extras = json_encode($request->extras);
             $inscricao->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
             $inscricao->load('selecao');    // com isso, $inscricao->selecao é carregado
@@ -182,6 +186,80 @@ class InscricaoController extends Controller
      */
     public function update(Request $request, Inscricao $inscricao)
     {
+        \UspTheme::activeUrl('inscricoes');
+
+        if ($request->input('acao', null) == 'envio') {
+            if ($inscricao->todosArquivosRequeridosPresentes()) {
+
+                $inscricao->estado = 'Enviada';
+                $inscricao->save();
+
+                $info_adicional = '';
+                $user = \Auth::user();
+                if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
+
+                    $passo = 'boleto(s)';
+                    $papel = 'Candidato';
+                    if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
+                        // envia e-mail para o candidato com o boleto
+                        $arquivos = [[
+                            'nome' => 'boleto.pdf',
+                            'conteudo' => $this->boletoService->gerarBoleto($inscricao),
+                        ]];
+                        \Mail::to($user->email)
+                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
+
+                        $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
+                        $inscricao->save();
+
+                        $info_adicional = ' e seu boleto foi enviado, não deixe de pagá-lo';
+                    } else {
+                        // envia e-mail para o candidato com os boletos
+                        $extras = json_decode($inscricao->extras, true);
+                        $disciplinas = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
+                        $arquivos = [];
+                        $disciplinas = Disciplina::whereIn('id', array_values($disciplinas))->get();
+                        foreach ($disciplinas as $disciplina)
+                            $arquivos[] = [
+                                'nome' => 'boleto_' . strtolower($disciplina->sigla) . '.pdf',
+                                'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
+                            ];
+                        \Mail::to($user->email)
+                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
+
+                        $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foram gerados mais arquivos (boletos) para ela
+                        $inscricao->save();
+
+                        $info_adicional = ' e seus boletos foram enviados, não deixe de pagá-los';
+                    }
+                }
+
+                $passo = 'realização';
+                if ($inscricao->selecao->categoria->nome !== 'Aluno Especial')
+                    // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
+                    foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
+                        $responsavel_nome = Pessoa::obterNome($secretario->codpes);
+                        \Mail::to($secretario->email)
+                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
+                    }
+                else
+                    // envia e-mails avisando o serviço de pós-graduação sobre a realização da inscrição
+                    foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
+                        $responsavel_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
+                        \Mail::to($servicoposgraduacao->email)
+                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
+                    }
+
+                $request->session()->flash('alert-success', 'Sua inscrição foi enviada' . $info_adicional);
+                return view('inscricoes.index', $this->monta_compact_index());
+
+            } else {
+
+                $request->session()->flash('alert-success', 'É necessário antes enviar todos os documentos exigidos');
+                return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+            }
+        }
+
         if ($request->conjunto_alterado == 'estado') {
             $this->authorize('inscricoes.updateStatus', $inscricao);
 
@@ -229,7 +307,6 @@ class InscricaoController extends Controller
             $request->session()->flash('alert-success', 'Inscrição alterada com sucesso');
         }
 
-        \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 

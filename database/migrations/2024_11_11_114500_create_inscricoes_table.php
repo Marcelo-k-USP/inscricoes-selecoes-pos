@@ -17,7 +17,6 @@ class CreateInscricoesTable extends Migration
             $table->bigIncrements('id');
             $table->string('estado', 90);
             $table->json('extras')->nullable();
-            $table->boolean('boleto_enviado')->default(0);
 
             /* Relacionamentos */
             $table->foreignId('selecao_id')->constrained('selecoes');

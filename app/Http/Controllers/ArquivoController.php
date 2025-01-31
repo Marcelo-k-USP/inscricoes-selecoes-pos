@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\InscricaoMail;
-use App\Mail\SolicitacaoIsencaoTaxaMail;
 use App\Models\Arquivo;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
@@ -13,23 +11,18 @@ use App\Models\Nivel;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
-use App\Services\BoletoService;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-use Uspdev\Replicado\Pessoa;
 
 class ArquivoController extends Controller
 {
-    protected $boletoService;
-
-    public function __construct(BoletoService $boletoService)
+    public function __construct()
     {
         $this->middleware('auth')->except('show');
-        $this->boletoService = $boletoService;
     }
 
     /**
@@ -97,106 +90,15 @@ class ArquivoController extends Controller
                 $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipo_arquivo]);
             }
 
-            $info_adicional = '';
-            switch ($classe_nome) {
-                case 'Selecao':
-                    $objeto->atualizarStatus();
-                    $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
-                    break;
-
-                case 'SolicitacaoIsencaoTaxa':
-                    $objeto->verificarArquivos();
-                    if (($objeto->estado == 'Isenção de Taxa Solicitada')) {
-
-                        $solicitacaoisencaotaxa = $objeto;
-                        $user = \Auth::user();
-
-                        // envia e-mails avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
-                        $passo = 'realização';
-                        foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
-                            $servicoposgraduacao_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
-                            \Mail::to($servicoposgraduacao->email)
-                                ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user', 'servicoposgraduacao_nome')));
-                        }
-
-                        $info_adicional = '<br />' .
-                            'Sua solicitação de isenção de taxa de inscrição foi completada';
-                    }
-                    break;
-
-                case 'Inscricao':
-                    $objeto->verificarArquivos();
-                    if (($objeto->estado == 'Realizada') && (!$objeto->boleto_enviado)) {
-
-                        $inscricao = $objeto;
-                        $user = \Auth::user();
-                        if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
-
-                            $passo = 'boleto(s)';
-                            $papel = 'Candidato';
-                            if ($objeto->selecao->categoria->nome !== 'Aluno Especial') {
-                                // envia e-mail para o candidato com o boleto
-                                $arquivos = [[
-                                    'nome' => 'boleto.pdf',
-                                    'conteudo' => $this->boletoService->gerarBoleto($inscricao),
-                                ]];
-                                \Mail::to($user->email)
-                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
-
-                                $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
-                                $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
-                                $objeto->save();
-
-                                $info_adicional = '<br />' .
-                                    'Sua inscrição foi completada e seu boleto foi enviado, não deixe de pagá-lo';
-                            } else {
-                                // envia e-mail para o candidato com os boletos
-                                $extras = json_decode($inscricao->extras, true);
-                                $disciplinas = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
-                                $arquivos = [];
-                                $disciplinas = Disciplina::whereIn('id', array_values($disciplinas))->get();
-                                foreach ($disciplinas as $disciplina)
-                                    $arquivos[] = [
-                                        'nome' => 'boleto_' . strtolower($disciplina->sigla) . '.pdf',
-                                        'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
-                                    ];
-                                \Mail::to($user->email)
-                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
-
-                                $objeto->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foram gerados mais arquivos (boletos) para ela
-                                $objeto->boleto_enviado = true;    // marca a inscrição como com boleto enviado
-                                $objeto->save();
-
-                                $info_adicional = '<br />' .
-                                    'Sua inscrição foi completada e seus boletos foram enviados, não deixe de pagá-los';
-                            }
-                        } else
-                            $info_adicional = '<br />' .
-                                'Sua inscrição foi completada';
-
-                        $passo = 'realização';
-                        if ($objeto->selecao->categoria->nome !== 'Aluno Especial')
-                            // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
-                            foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
-                                $responsavel_nome = Pessoa::obterNome($secretario->codpes);
-                                \Mail::to($secretario->email)
-                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
-                            }
-                        else
-                            // envia e-mails avisando o serviço de pós-graduação sobre a realização da inscrição
-                            foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
-                                $responsavel_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
-                                \Mail::to($servicoposgraduacao->email)
-                                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
-                            }
-                    }
+            if ($classe_nome == 'Selecao') {
+                $objeto->atualizarStatus();
+                $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
             }
 
-            return ['objeto' => $objeto, 'info_adicional' => $info_adicional];
+            return $objeto;
         });
-        $objeto = $db_transaction['objeto'];
 
-        $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso' . $db_transaction['info_adicional']);
+        $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso');
 
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));

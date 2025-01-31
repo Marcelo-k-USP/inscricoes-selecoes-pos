@@ -55,7 +55,7 @@ class Inscricao extends Model
     public static function estados()
     {
         return [
-            'Aguardando Documentação', 'Realizada',                 // decorrem de ações do candidato
+            'Aguardando Envio', 'Enviada',                         // decorrem de ações do candidato
             'Em Pré-Avaliação', 'Pré-Aprovada', 'Pré-Rejeitada',    // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição
             'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos orientadores da linha de pesquisa/tema da seleção da inscrição
         ];
@@ -182,10 +182,10 @@ class Inscricao extends Model
     }
 
     /**
-     * Verifica os arquivos da inscrição
+     * Verifica se todos os arquivos requeridos da inscrição estão presentes
      * Conforme for o caso, altera o estado da inscrição
      */
-    public function verificarArquivos()
+    public function todosArquivosRequeridosPresentes()
     {
         // obtém os tipos de arquivo requeridos
         $tipos_arquivo_requeridos = collect(self::tiposArquivo())->filter(function ($tipo) {
@@ -205,17 +205,7 @@ class Inscricao extends Model
             }
             return true;
         };
-
-        if ($this->estado == 'Aguardando Documentação') {
-            if ($todos_requeridos_presentes()) {
-                $this->estado = 'Realizada';                  // avança o estado
-                $this->save();
-            }
-        } else
-            if (!$todos_requeridos_presentes()) {
-                $this->estado = 'Aguardando Documentação';    // retrocede o estado
-                $this->save();
-            }
+        return $todos_requeridos_presentes();
     }
 
     /**

@@ -14,15 +14,15 @@
   @csrf
   <input type="hidden" name="conjunto_alterado" id="conjunto_alterado" value="estado">
   <div class="btn-group btn-enable-disable">
-    <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Aguardando Comprovação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Comprovação">
-      Aguardando Comprovação
+    <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Aguardando Envio') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Envio">
+      Aguardando Envio
     </button>
-    @if ($solicitacaoisencaotaxa->estado != 'Aguardando Comprovação')
+    @if ($solicitacaoisencaotaxa->estado != 'Aguardando Envio')
       <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Solicitada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Isenção de Taxa Solicitada">
         Isenção de Taxa Solicitada
       </button>
     @endif
-    @if ($solicitacaoisencaotaxa->estado != 'Aguardando Comprovação')
+    @if ($solicitacaoisencaotaxa->estado != 'Aguardando Envio')
       <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa em Avaliação') ? 'btn-warning' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($solicitacaoisencaotaxa->estado != 'Isenção de Taxa Solicitada')) disabled @endif name="estado" value="Isenção de Taxa em Avaliação">
         Isenção de Taxa em Avaliação
       </button>

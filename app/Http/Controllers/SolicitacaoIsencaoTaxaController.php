@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Uspdev\Replicado\Pessoa;
 
 class SolicitacaoIsencaoTaxaController extends Controller
 {
@@ -117,7 +118,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
             // grava a solicitação de isenção de taxa
             $solicitacaoisencaotaxa = new SolicitacaoIsencaoTaxa;
             $solicitacaoisencaotaxa->selecao_id = $selecao->id;
-            $solicitacaoisencaotaxa->estado = 'Aguardando Comprovação';
+            $solicitacaoisencaotaxa->estado = 'Aguardando Envio';
             $solicitacaoisencaotaxa->extras = json_encode($request->extras);
             $solicitacaoisencaotaxa->saveQuietly();      // vamos salvar sem evento pois o autor ainda não está cadastrado
             $solicitacaoisencaotaxa->load('selecao');    // com isso, $solicitacaoisencaotaxa->selecao é carregado
@@ -157,6 +158,32 @@ class SolicitacaoIsencaoTaxaController extends Controller
      */
     public function update(Request $request, SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
     {
+        \UspTheme::activeUrl('solicitacoesisencaotaxa');
+
+        if ($request->input('acao', null) == 'envio') {
+            if ($solicitacaoisencaotaxa->todosArquivosRequeridosPresentes()) {
+
+                $solicitacaoisencaotaxa->estado = 'Isenção de Taxa Solicitada';
+                $solicitacaoisencaotaxa->save();
+
+                // envia e-mails avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
+                $passo = 'realização';
+                $user = \Auth::user();
+                foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
+                    $servicoposgraduacao_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
+                    \Mail::to($servicoposgraduacao->email)
+                        ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user', 'servicoposgraduacao_nome')));
+                }
+
+                $request->session()->flash('alert-success', 'Sua solicitação de isenção de taxa foi enviada');
+                return view('solicitacoesisencaotaxa.index', $this->monta_compact_index());
+
+            } else {
+                $request->session()->flash('alert-success', 'É necessário antes enviar todos os documentos exigidos');
+                return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
+            }
+        }
+
         if ($request->conjunto_alterado == 'estado') {
             $this->authorize('solicitacoesisencaotaxa.updateStatus', $solicitacaoisencaotaxa);
 
@@ -187,7 +214,6 @@ class SolicitacaoIsencaoTaxaController extends Controller
             $request->session()->flash('alert-success', 'Solicitação de isenção de taxa alterada com sucesso');
         }
 
-        \UspTheme::activeUrl('solicitacoesisencaotaxa');
         return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
     }
 

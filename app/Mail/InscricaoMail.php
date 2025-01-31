@@ -20,7 +20,7 @@ class InscricaoMail extends Mailable
     protected $papel;
     protected $arquivos;
 
-    // campos adicionais para inscrição realizada
+    // campos adicionais para inscrição enviada
     protected $responsavel_nome;
 
     // campos adicionais para inscrição pré-aprovada
@@ -82,7 +82,7 @@ class InscricaoMail extends Mailable
                 foreach ($this->arquivos as $arquivo)
                     $arquivos_erro[] = $arquivo['erro'];
                 $mail = $this
-                    ->subject('[' . config('app.name') . '] Inscrição Realizada com Sucesso')
+                    ->subject('[' . config('app.name') . '] Inscrição Enviada com Sucesso')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_enviodeboletos')
                     ->with([

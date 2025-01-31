@@ -34,14 +34,14 @@ Cada linha de pesquisa/tema possui uma relação de orientadores, restritos a pr
 As linhas de pesquisa/temas são relacionadas aos níveis da pós-graduação (mestrado, doutorado, doutorado direto).
 Se um aluno regular se inscreve, por exemplo, para o nível de mestrado, só lhe serão permitidas as linhas de pesquisa/temas desse programa dessa seleção que estejam relacionadas ao nível escolhido.
 
-Ao completar a inscrição, é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição.
+Para completar a inscrição, o candidato deve clicar em Enviar.
+Então é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição.
 No caso de aluno regular, é gerado um único boleto.
 No caso de aluno especial, é gerado um boleto para cada disciplina na qual ele se inscreveu, e enviado para o candidato um único e-mail com todos esses boletos anexados.
 Algumas informações necessárias para a geração de boletos se encontra na tabela parametros, que é editável pelos admins em tela.
 
-E-mails são disparados quando da mudança de estado de solicitações de isenção de taxa e inscrições.
-Os estados são alterados quando de mudanças importantes nas entidades: criação, ou fornecimento de todos os documentos obrigatórios, ou alteração forçada do estado pelo gerente (por exemplo, aprovando ou reprovando uma inscrição).
-Para verificar todos os envios de e-mail que o sistema realiza, basta verificar o método update dos controllers de solicitação de isenção de taxa e de inscrição, bem como o método store do controller de arquivo. Além disso, há também os envios de e-mail para controle de usuário (esqueceu sua senha e cadastro de novo usuário externo).
+E-mails são disparados quando do envio de solicitações de isenção de taxa e inscrições, bem como de mudança de seus estados por parte dos gerentes (por exemplo, colocando em análise, aprovando, ou rejeitando).
+Para verificar todos os envios de e-mail que o sistema realiza, basta verificar o método update dos controllers de solicitação de isenção de taxa e de inscrição. Além disso, há também os envios de e-mail para controle de usuário (esqueceu sua senha e cadastro de novo usuário externo).
 
 ## Changelog
 

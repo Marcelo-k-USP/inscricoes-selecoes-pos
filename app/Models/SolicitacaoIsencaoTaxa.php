@@ -48,7 +48,7 @@ class SolicitacaoIsencaoTaxa extends Model
     public static function estados()
     {
         return [
-            'Aguardando Comprovação', 'Isenção de Taxa Solicitada',                                    // decorrem de ações do candidato
+            'Aguardando Envio', 'Isenção de Taxa Solicitada',                                          // decorrem de ações do candidato
             'Isenção de Taxa em Avaliação', 'Isenção de Taxa Aprovada', 'Isenção de Taxa Rejeitada'    // decorrem de ações do serviço de pós-graduação
         ];
     }
@@ -158,10 +158,9 @@ class SolicitacaoIsencaoTaxa extends Model
     }
 
     /**
-     * Verifica os arquivos da solicitação de isenção de taxa
-     * Conforme for o caso, altera o estado da solicitação de isenção de taxa
+     * Verifica se todos os arquivos requeridos da solicitação de isenção de taxa estão presentes
      */
-    public function verificarArquivos()
+    public function todosArquivosRequeridosPresentes()
     {
         // obtém os tipos de arquivo requeridos
         $tipos_arquivo_requeridos = collect(self::tiposArquivo())->filter(function ($tipo) {
@@ -171,7 +170,6 @@ class SolicitacaoIsencaoTaxa extends Model
         // obtém os tipos de arquivo da solicitação de isenção de taxa
         $arquivos_solicitacaoisencaotaxa = $this->arquivos->pluck('pivot.tipo')->countBy()->all();
 
-        // verifica se todos os tipos requeridos estão presentes nos arquivos da solicitação de isenção de taxa
         $todos_requeridos_presentes = function() use ($tipos_arquivo_requeridos, $arquivos_solicitacaoisencaotaxa) {
             foreach ($tipos_arquivo_requeridos as $tipo_arquivo_requerido) {
                 $tipo_nome = $tipo_arquivo_requerido['nome'];
@@ -181,17 +179,7 @@ class SolicitacaoIsencaoTaxa extends Model
             }
             return true;
         };
-
-        if ($this->estado == 'Aguardando Comprovação') {
-            if ($todos_requeridos_presentes()) {
-                $this->estado = 'Isenção de Taxa Solicitada';    // avança o estado
-                $this->save();
-            }
-        } else
-            if (!$todos_requeridos_presentes()) {
-                $this->estado = 'Aguardando Comprovação';        // retrocede o estado
-                $this->save();
-            }
+        return $todos_requeridos_presentes();
     }
 
     /**

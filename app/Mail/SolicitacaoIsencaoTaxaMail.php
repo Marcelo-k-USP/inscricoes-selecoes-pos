@@ -16,7 +16,7 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
     protected $solicitacaoisencaotaxa;
     protected $user;
 
-    // campos adicionais para solicitação de isenção de taxa realizada
+    // campos adicionais para isenção de taxa solicitada
     protected $servicoposgraduacao_nome;
 
     // campos adicionais para solicitação de isenção de taxa aprovada

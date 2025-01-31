@@ -1,6 +1,6 @@
-@if ($inscricao->estado == 'Aguardando Documentação')
+@if ($inscricao->estado == 'Aguardando Envio')
   <span class="badge badge-light text-secondary"> {{ $inscricao->estado }} </span>
-@elseif ($inscricao->estado == 'Realizada')
+@elseif ($inscricao->estado == 'Enviada')
   <span class="badge badge-light text-secondary"> {{ $inscricao->estado }} </span>
 @elseif ($inscricao->estado == 'Em Pré-Avaliação')
   <span class="badge badge-light text-secondary"> {{ $inscricao->estado }} </span>

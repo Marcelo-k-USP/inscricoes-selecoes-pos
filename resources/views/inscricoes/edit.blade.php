@@ -66,8 +66,11 @@
               @endphp
               @include('inscricoes.show.card-responsaveis')     {{-- Responsáveis --}}
               @include('inscricoes.show.card-informativos')     {{-- Informativos --}}
-              @if ($condicao_disponivel && ($modo == 'edit'))
-                @include('common.card-arquivos')                {{-- Arquivos --}}
+              @if ($modo == 'edit')
+                @if ($condicao_disponivel)
+                  @include('common.card-arquivos')              {{-- Arquivos --}}
+                @endif
+                @include('inscricoes.show.card-envio')          {{-- Envio --}}
               @endif
             </div>
           </div>

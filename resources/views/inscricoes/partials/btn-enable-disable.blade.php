@@ -14,16 +14,16 @@
   @csrf
   <input type="hidden" name="conjunto_alterado" id="conjunto_alterado" value="estado">
   <div class="btn-group btn-enable-disable">
-    <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Aguardando Documentação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Documentação">
-      Aguardando Documentação
+    <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Aguardando Envio') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Envio">
+      Aguardando Envio
     </button>
-    @if ($inscricao->estado != 'Aguardando Documentação')
-      <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Realizada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Realizada">
-        Realizada
+    @if ($inscricao->estado != 'Aguardando Envio')
+      <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Enviada') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Enviada">
+        Enviada
       </button>
     @endif
-    @if ($inscricao->estado != 'Aguardando Documentação')
-      <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Em Pré-Avaliação') ? 'btn-warning' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($inscricao->estado != 'Realizada')) disabled @endif name="estado" value="Em Pré-Avaliação">
+    @if ($inscricao->estado != 'Aguardando Envio')
+      <button type="submit" class="btn btn-sm {{ ($inscricao->estado == 'Em Pré-Avaliação') ? 'btn-warning' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($inscricao->estado != 'Enviada')) disabled @endif name="estado" value="Em Pré-Avaliação">
         Em Pré-Avaliação
       </button>
     @endif
