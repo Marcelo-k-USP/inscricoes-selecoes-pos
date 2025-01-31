@@ -68,6 +68,6 @@ class Orientador extends Model
      */
     public function linhaspesquisa()
     {
-        return $this->belongsToMany('App\Models\LinhaPesquisa', 'orientador_linhapesquisa', 'orientador_id', 'linhapesquisa_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\LinhaPesquisa', 'linhapesquisa_orientador', 'orientador_id', 'linhapesquisa_id')->withTimestamps();
     }
 }

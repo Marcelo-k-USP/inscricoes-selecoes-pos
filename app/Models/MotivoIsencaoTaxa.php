@@ -62,6 +62,6 @@ class MotivoIsencaoTaxa extends Model
      */
     public function selecoes()
     {
-        return $this->belongsToMany('App\Models\Selecao', 'motivoisencaotaxa_selecao', 'motivoisencaotaxa_id', 'selecao_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\Selecao', 'selecao_motivoisencaotaxa', 'motivoisencaotaxa_id', 'selecao_id')->withTimestamps();
     }
 }

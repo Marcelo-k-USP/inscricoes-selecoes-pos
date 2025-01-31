@@ -894,7 +894,7 @@ class Selecao extends Model
      */
     public function linhaspesquisa()
     {
-        return $this->belongsToMany('App\Models\LinhaPesquisa', 'linhapesquisa_selecao', 'selecao_id', 'linhapesquisa_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\LinhaPesquisa', 'selecao_linhapesquisa', 'selecao_id', 'linhapesquisa_id')->withTimestamps();
     }
 
     /**
@@ -902,7 +902,7 @@ class Selecao extends Model
      */
     public function disciplinas()
     {
-        return $this->belongsToMany('App\Models\Disciplina', 'disciplina_selecao', 'selecao_id', 'disciplina_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\Disciplina', 'selecao_disciplina', 'selecao_id', 'disciplina_id')->withTimestamps();
     }
 
     /**
@@ -910,7 +910,7 @@ class Selecao extends Model
      */
     public function motivosisencaotaxa()
     {
-        return $this->belongsToMany('App\Models\MotivoIsencaoTaxa', 'motivoisencaotaxa_selecao', 'selecao_id', 'motivoisencaotaxa_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\MotivoIsencaoTaxa', 'selecao_motivoisencaotaxa', 'selecao_id', 'motivoisencaotaxa_id')->withTimestamps();
     }
 
     /**

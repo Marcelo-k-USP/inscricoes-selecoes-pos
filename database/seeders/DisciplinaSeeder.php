@@ -202,7 +202,7 @@ class DisciplinaSeeder extends Seeder
         foreach ($disciplinas as $disciplina)
             Disciplina::create($disciplina);
 
-        // adiciona registros na tabela disciplina_selecao
+        // adiciona registros na tabela selecao_disciplina
         $selecao_id_SELECAO2025ALUNOESPECIAL = Selecao::where('nome', 'Seleção 2025 Aluno Especial')->first()->id;
         foreach (Disciplina::all() as $disciplina)
             $disciplina->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDisciplinaSelecaoTable extends Migration
+class CreateSelecaoMotivoIsencaoTaxaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateDisciplinaSelecaoTable extends Migration
      */
     public function up()
     {
-        Schema::create('disciplina_selecao', function (Blueprint $table) {
+        Schema::create('selecao_motivoisencaotaxa', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('disciplina_id')->constrained('disciplinas')->onDelete('cascade');
             $table->foreignId('selecao_id')->constrained('selecoes')->onDelete('cascade');
+            $table->foreignId('motivoisencaotaxa_id')->constrained('motivosisencaotaxa')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateDisciplinaSelecaoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('disciplina_selecao');
+        Schema::dropIfExists('selecao_motivoisencaotaxa');
     }
 }

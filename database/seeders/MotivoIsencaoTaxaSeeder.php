@@ -52,7 +52,7 @@ class MotivoIsencaoTaxaSeeder extends Seeder
             // adiciona registro na tabela motivosisencaotaxa
             $motivoisencaotaxa = MotivoIsencaoTaxa::create($motivoisencaotaxa);
 
-            // adiciona registros na tabela motivosisencaotaxa_selecao
+            // adiciona registros na tabela selecao_motivoisencaotaxa
             $selecao_SELECAO2025ALUNOREGULAR->motivosisencaotaxa()->attach($motivoisencaotaxa->id);
             $selecao_SELECAO2025ALUNOESPECIAL->motivosisencaotaxa()->attach($motivoisencaotaxa->id);
         }

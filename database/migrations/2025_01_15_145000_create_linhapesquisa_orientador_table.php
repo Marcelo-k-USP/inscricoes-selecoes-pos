@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrientadorLinhaPesquisaTable extends Migration
+class CreateLinhaPesquisaOrientadorTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateOrientadorLinhaPesquisaTable extends Migration
      */
     public function up()
     {
-        Schema::create('orientador_linhapesquisa', function (Blueprint $table) {
+        Schema::create('linhapesquisa_orientador', function (Blueprint $table) {
             $table->id();
-            $table->string('orientador_id');
             $table->foreignId('linhapesquisa_id')->constrained('linhaspesquisa')->onDelete('cascade');
+            $table->string('orientador_id');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateOrientadorLinhaPesquisaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('orientador_linhapesquisa');
+        Schema::dropIfExists('linhapesquisa_orientador');
     }
 }

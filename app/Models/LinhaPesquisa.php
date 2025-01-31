@@ -81,7 +81,7 @@ class LinhaPesquisa extends Model
      */
     public function selecoes()
     {
-        return $this->belongsToMany('App\Models\Selecao', 'linhapesquisa_selecao', 'linhapesquisa_id', 'selecao_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\Selecao', 'selecao_linhapesquisa', 'linhapesquisa_id', 'selecao_id')->withTimestamps();
     }
 
     /**
@@ -89,7 +89,7 @@ class LinhaPesquisa extends Model
      */
     public function orientadores()
     {
-        return $this->belongsToMany('App\Models\Orientador', 'orientador_linhapesquisa', 'linhapesquisa_id', 'orientador_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\Orientador', 'linhapesquisa_orientador', 'linhapesquisa_id', 'orientador_id')->withTimestamps();
     }
 
     /**

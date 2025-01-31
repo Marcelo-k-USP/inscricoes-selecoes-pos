@@ -69,6 +69,6 @@ class Disciplina extends Model
      */
     public function selecoes()
     {
-        return $this->belongsToMany('App\Models\Selecao', 'disciplina_selecao', 'disciplina_id', 'selecao_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\Selecao', 'selecao_disciplina', 'disciplina_id', 'selecao_id')->withTimestamps();
     }
 }
