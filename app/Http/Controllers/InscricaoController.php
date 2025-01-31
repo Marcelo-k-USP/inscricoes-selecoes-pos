@@ -191,70 +191,74 @@ class InscricaoController extends Controller
         if ($request->input('acao', null) == 'envio') {
             if ($inscricao->todosArquivosRequeridosPresentes()) {
 
-                $inscricao->estado = 'Enviada';
-                $inscricao->save();
+                $extras = json_decode(stripslashes($inscricao->extras), true);
+                $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
+                if (($inscricao->selecao->categoria->nome != 'Aluno Especial') || (count($disciplinas_id) > 0)) {
 
-                $info_adicional = '';
-                $user = \Auth::user();
-                if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
+                    $inscricao->estado = 'Enviada';
+                    $inscricao->save();
 
-                    $passo = 'boleto(s)';
-                    $papel = 'Candidato';
-                    if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
-                        // envia e-mail para o candidato com o boleto
-                        $arquivos = [[
-                            'nome' => 'boleto.pdf',
-                            'conteudo' => $this->boletoService->gerarBoleto($inscricao),
-                        ]];
-                        \Mail::to($user->email)
-                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
+                    $info_adicional = '';
+                    $user = \Auth::user();
+                    if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
 
-                        $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
-                        $inscricao->save();
+                        $passo = 'boleto(s)';
+                        $papel = 'Candidato';
+                        if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
+                            // envia e-mail para o candidato com o boleto
+                            $arquivos = [[
+                                'nome' => 'boleto.pdf',
+                                'conteudo' => $this->boletoService->gerarBoleto($inscricao),
+                            ]];
+                            \Mail::to($user->email)
+                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
 
-                        $info_adicional = ' e seu boleto foi enviado, não deixe de pagá-lo';
-                    } else {
-                        // envia e-mail para o candidato com os boletos
-                        $extras = json_decode($inscricao->extras, true);
-                        $disciplinas = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
-                        $arquivos = [];
-                        $disciplinas = Disciplina::whereIn('id', array_values($disciplinas))->get();
-                        foreach ($disciplinas as $disciplina)
-                            $arquivos[] = [
-                                'nome' => 'boleto_' . strtolower($disciplina->sigla) . '.pdf',
-                                'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
-                            ];
-                        \Mail::to($user->email)
-                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
+                            $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
+                            $inscricao->save();
 
-                        $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foram gerados mais arquivos (boletos) para ela
-                        $inscricao->save();
+                            $info_adicional = ' e seu boleto foi enviado, não deixe de pagá-lo';
+                        } else {
+                            // envia e-mail para o candidato com o(s) boleto(s)
+                            $arquivos = [];
+                            $disciplinas = Disciplina::whereIn('id', array_values($disciplinas_id))->get();
+                            foreach ($disciplinas as $disciplina)
+                                $arquivos[] = [
+                                    'nome' => 'boleto_' . strtolower($disciplina->sigla) . '.pdf',
+                                    'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
+                                ];
+                            \Mail::to($user->email)
+                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
 
-                        $info_adicional = ' e seus boletos foram enviados, não deixe de pagá-los';
+                            $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foram gerados mais arquivos (boletos) para ela
+                            $inscricao->save();
+
+                            $info_adicional = ((count($disciplinas) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los');
+                        }
                     }
+
+                    $passo = 'realização';
+                    if ($inscricao->selecao->categoria->nome !== 'Aluno Especial')
+                        // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
+                        foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
+                            $responsavel_nome = Pessoa::obterNome($secretario->codpes);
+                            \Mail::to($secretario->email)
+                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
+                        }
+                    else
+                        // envia e-mails avisando o serviço de pós-graduação sobre a realização da inscrição
+                        foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
+                            $responsavel_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
+                            \Mail::to($servicoposgraduacao->email)
+                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
+                        }
+
+                    $request->session()->flash('alert-success', 'Sua inscrição foi enviada' . $info_adicional);
+                    return view('inscricoes.index', $this->monta_compact_index());
+                } else {
+                    $request->session()->flash('alert-success', 'É necessário antes escolher a(s) disciplina(s)');
+                    return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
                 }
-
-                $passo = 'realização';
-                if ($inscricao->selecao->categoria->nome !== 'Aluno Especial')
-                    // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
-                    foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
-                        $responsavel_nome = Pessoa::obterNome($secretario->codpes);
-                        \Mail::to($secretario->email)
-                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
-                    }
-                else
-                    // envia e-mails avisando o serviço de pós-graduação sobre a realização da inscrição
-                    foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
-                        $responsavel_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
-                        \Mail::to($servicoposgraduacao->email)
-                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
-                    }
-
-                $request->session()->flash('alert-success', 'Sua inscrição foi enviada' . $info_adicional);
-                return view('inscricoes.index', $this->monta_compact_index());
-
             } else {
-
                 $request->session()->flash('alert-success', 'É necessário antes enviar todos os documentos exigidos');
                 return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
             }
@@ -329,23 +333,28 @@ class InscricaoController extends Controller
         // transaction para não ter problema de inconsistência do DB
         $db_transaction = DB::transaction(function () use ($request, $inscricao) {
 
+            $info_adicional = '';
             $disciplina = Disciplina::where('id', $request->id)->first();
 
             $extras = json_decode($inscricao->extras, true);
-            $disciplinas = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
-            $existia = is_array($disciplinas) && in_array($request->id, $disciplinas);
+            $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
+            $existia = is_array($disciplinas_id) && in_array($request->id, $disciplinas_id);
 
             if (!$existia) {
                 $extras['disciplinas'][] = $request->id;
                 $inscricao->extras = json_encode($extras);
                 $inscricao->save();
+
+                // se já havia enviado a inscrição, avisa para reenviá-la
+                if ($inscricao->estado != 'Aguardando Envio')
+                    $info_adicional = '<br />Reenvie esta inscrição para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
             }
 
-            return ['disciplina' => $disciplina, 'existia' => $existia];
+            return ['disciplina' => $disciplina, 'existia' => $existia, 'info_adicional' => $info_adicional];
         });
 
         if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' foi adicionada à essa inscrição.');
+            $request->session()->flash('alert-success', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' foi adicionada à essa inscrição.' . $db_transaction['info_adicional']);
         else
             $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa inscrição.');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
@@ -360,8 +369,8 @@ class InscricaoController extends Controller
         $this->authorize('inscricoes.update', $inscricao);
 
         $extras = json_decode($inscricao->extras, true);
-        $disciplinas = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
-        $indice = array_search($disciplina->id, $disciplinas);
+        $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
+        $indice = array_search($disciplina->id, $disciplinas_id);
 
         if ($indice !== false) {
             unset($extras['disciplinas'][$indice]);
