@@ -115,7 +115,6 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'Seleção cadastrada com sucesso<br />' .
             'Agora ' . (!$db_transaction['is_aluno_especial'] ? 'informe quais são as linhas de pesquisa e ' : '') . 'adicione os documentos relacionados ao processo');
-
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
@@ -177,7 +176,6 @@ class SelecaoController extends Controller
         $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
 
         $request->session()->flash('alert-success', 'Seleção alterada com sucesso');
-
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
@@ -214,8 +212,8 @@ class SelecaoController extends Controller
     public function createTemplate(Selecao $selecao)
     {
         $this->authorize('selecoes.update', $selecao);
-        \UspTheme::activeUrl('selecoes');
 
+        \UspTheme::activeUrl('selecoes');
         $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
         return view('selecoes.template', compact('selecao', 'template'));
     }
@@ -258,6 +256,7 @@ class SelecaoController extends Controller
         }
         $selecao->template = JSONForms::fixJson($template);
         $selecao->save();
+
         $request->session()->flash('alert-success', 'Formulário salvo com sucesso');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'formulario'));
     }
@@ -265,8 +264,8 @@ class SelecaoController extends Controller
     public function createTemplateValue(Selecao $selecao, string $field)
     {
         $this->authorize('selecoes.update', $selecao);
-        \UspTheme::activeUrl('selecoes');
 
+        \UspTheme::activeUrl('selecoes');
         $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
         return view('selecoes.templatevalue', compact('selecao', 'template', 'field'));
     }
@@ -304,6 +303,7 @@ class SelecaoController extends Controller
         $template->$field->value = $value;
         $selecao->template = JSONForms::fixJson($template);
         $selecao->save();
+
         $request->session()->flash('alert-success', 'Lista salva com sucesso');
         return view('selecoes.templatevalue', compact('selecao', 'template', 'field'));
     }

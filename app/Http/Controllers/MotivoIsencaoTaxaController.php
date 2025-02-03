@@ -26,8 +26,8 @@ class MotivoIsencaoTaxaController extends Controller
     public function index(Request $request)
     {
         $this->authorize('motivosisencaotaxa.viewAny');
-        \UspTheme::activeUrl('motivosisencaotaxa');
 
+        \UspTheme::activeUrl('motivosisencaotaxa');
         if (!$request->ajax())
             return view('motivosisencaotaxa.tree', $this->monta_compact_index());
     }
@@ -42,8 +42,8 @@ class MotivoIsencaoTaxaController extends Controller
     public function show(Request $request, string $id)
     {
         $this->authorize('motivosisencaotaxa.view');
-        \UspTheme::activeUrl('motivosisencaotaxa');
 
+        \UspTheme::activeUrl('motivosisencaotaxa');
         if ($request->ajax())
             return MotivoIsencaoTaxa::find((int) $id);    // preenche os dados do form de edição de um motivo de isenção de taxa
     }
@@ -65,6 +65,7 @@ class MotivoIsencaoTaxaController extends Controller
         $motivoisencaotaxa = MotivoIsencaoTaxa::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
+        \UspTheme::activeUrl('motivosisencaotaxa');
         return view('motivosisencaotaxa.tree', $this->monta_compact_index());
     }
 
@@ -88,6 +89,7 @@ class MotivoIsencaoTaxaController extends Controller
         $motivoisencaotaxa->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
+        \UspTheme::activeUrl('motivosisencaotaxa');
         return view('motivosisencaotaxa.tree', $this->monta_compact_index());
     }
 
@@ -110,6 +112,7 @@ class MotivoIsencaoTaxaController extends Controller
         $motivoisencaotaxa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
+        \UspTheme::activeUrl('motivosisencaotaxa');
         return view('motivosisencaotaxa.tree', $this->monta_compact_index());
     }
 

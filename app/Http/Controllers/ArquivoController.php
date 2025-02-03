@@ -99,7 +99,6 @@ class ArquivoController extends Controller
         });
 
         $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso');
-
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
     }
@@ -139,7 +138,6 @@ class ArquivoController extends Controller
         $arquivo->update();
 
         $request->session()->flash('alert-success', 'Documento renomeado com sucesso');
-
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
     }
@@ -185,7 +183,6 @@ class ArquivoController extends Controller
         });
 
         $request->session()->flash('alert-success', 'Documento removido com sucesso');
-
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
     }

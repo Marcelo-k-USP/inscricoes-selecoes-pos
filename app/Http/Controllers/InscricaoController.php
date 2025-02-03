@@ -157,7 +157,6 @@ class InscricaoController extends Controller
 
         $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
             'Não deixe de subir os documentos necessários para a avaliação da sua inscrição');
-
         \UspTheme::activeUrl('inscricoes/create');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }

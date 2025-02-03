@@ -27,8 +27,8 @@ class DisciplinaController extends Controller
     public function index(Request $request)
     {
         $this->authorize('disciplinas.viewAny');
-        \UspTheme::activeUrl('disciplinas');
 
+        \UspTheme::activeUrl('disciplinas');
         if (!$request->ajax())
             return view('disciplinas.tree', $this->monta_compact_index());
     }
@@ -43,8 +43,8 @@ class DisciplinaController extends Controller
     public function show(Request $request, string $id)
     {
         $this->authorize('disciplinas.viewAny');
-        \UspTheme::activeUrl('disciplinas');
 
+        \UspTheme::activeUrl('disciplinas');
         if ($request->ajax())
             return Disciplina::find((int) $id);    // preenche os dados do form de edição de uma disciplina
     }
@@ -66,6 +66,7 @@ class DisciplinaController extends Controller
         $disciplinas = Disciplina::create($request->all());
 
         $request->session()->flash('alert-success', 'Disciplina cadastrada com sucesso');
+        \UspTheme::activeUrl('disciplinas');
         return view('disciplinas.tree', $this->monta_compact_index());
     }
 
@@ -90,6 +91,7 @@ class DisciplinaController extends Controller
         $disciplina->save();
 
         $request->session()->flash('alert-success', 'Disciplina alterada com sucesso');
+        \UspTheme::activeUrl('disciplinas');
         return view('disciplinas.tree', $this->monta_compact_index());
     }
 
@@ -112,6 +114,7 @@ class DisciplinaController extends Controller
         $disciplina->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
+        \UspTheme::activeUrl('disciplinas');
         return view('disciplinas.tree', $this->monta_compact_index());
     }
 

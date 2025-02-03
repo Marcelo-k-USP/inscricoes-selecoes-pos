@@ -26,8 +26,8 @@ class ProgramaController extends Controller
     public function index(Request $request)
     {
         $this->authorize('programas.viewAny');
-        \UspTheme::activeUrl('programas');
 
+        \UspTheme::activeUrl('programas');
         if (!$request->ajax())
             return view('programas.tree', $this->monta_compact_index());
     }
@@ -42,8 +42,8 @@ class ProgramaController extends Controller
     public function show(Request $request, string $id)
     {
         $this->authorize('programas.view', Programa::where('id', $id)->first());
-        \UspTheme::activeUrl('programas');
 
+        \UspTheme::activeUrl('programas');
         if ($request->ajax())
             return Programa::find((int) $id);    // preenche os dados do form de edição de um programa
     }
@@ -65,6 +65,7 @@ class ProgramaController extends Controller
         $programa = Programa::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
+        \UspTheme::activeUrl('programas');
         return view('programas.tree', $this->monta_compact_index());
     }
 
@@ -88,6 +89,7 @@ class ProgramaController extends Controller
         $programa->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
+        \UspTheme::activeUrl('programas');
         return view('programas.tree', $this->monta_compact_index());
     }
 
@@ -114,6 +116,7 @@ class ProgramaController extends Controller
         $programa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
+        \UspTheme::activeUrl('programas');
         return view('programas.tree', $this->monta_compact_index());
     }
 

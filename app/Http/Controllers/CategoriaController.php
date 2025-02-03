@@ -26,8 +26,8 @@ class CategoriaController extends Controller
     public function index(Request $request)
     {
         $this->authorize('categorias.viewAny');
-        \UspTheme::activeUrl('categorias');
 
+        \UspTheme::activeUrl('categorias');
         if (!$request->ajax())
             return view('categorias.tree', $this->monta_compact_index());
     }
@@ -42,8 +42,8 @@ class CategoriaController extends Controller
     public function show(Request $request, string $id)
     {
         $this->authorize('categorias.viewAny');
-        \UspTheme::activeUrl('categorias');
 
+        \UspTheme::activeUrl('categorias');
         if ($request->ajax())
             return Categoria::find((int) $id);    // preenche os dados do form de edição de uma categoria
     }
@@ -65,6 +65,7 @@ class CategoriaController extends Controller
         $categoria = Categoria::create($request->all());
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
+        \UspTheme::activeUrl('categorias');
         return view('categorias.tree', $this->monta_compact_index());
     }
 
@@ -88,6 +89,7 @@ class CategoriaController extends Controller
         $categoria->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
+        \UspTheme::activeUrl('categorias');
         return view('categorias.tree', $this->monta_compact_index());
     }
 
@@ -110,6 +112,7 @@ class CategoriaController extends Controller
         $categoria->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
+        \UspTheme::activeUrl('categorias');
         return view('categorias.tree', $this->monta_compact_index());
     }
 

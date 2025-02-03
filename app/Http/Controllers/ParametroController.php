@@ -25,8 +25,8 @@ class ParametroController extends Controller
     public function edit()
     {
         $this->authorize('parametros.update');
-        \UspTheme::activeUrl('parametros');
 
+        \UspTheme::activeUrl('parametros');
         return view('parametros.edit', $this->monta_compact());
     }
 
@@ -50,6 +50,7 @@ class ParametroController extends Controller
         $parametro->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
+        \UspTheme::activeUrl('parametros');
         return view('parametros.edit', $this->monta_compact());
     }
 

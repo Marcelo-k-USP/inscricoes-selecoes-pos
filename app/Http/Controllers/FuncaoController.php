@@ -26,8 +26,8 @@ class FuncaoController extends Controller
     public function edit()
     {
         $this->authorize('funcoes.update');
-        \UspTheme::activeUrl('funcoes');
 
+        \UspTheme::activeUrl('funcoes');
         return view('funcoes.edit', $this->monta_compact());
     }
 
@@ -54,6 +54,7 @@ class FuncaoController extends Controller
         }
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
+        \UspTheme::activeUrl('funcoes');
         return view('funcoes.edit', $this->monta_compact());
     }
 

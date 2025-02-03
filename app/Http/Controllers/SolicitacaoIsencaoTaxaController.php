@@ -158,8 +158,6 @@ class SolicitacaoIsencaoTaxaController extends Controller
      */
     public function update(Request $request, SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
     {
-        \UspTheme::activeUrl('solicitacoesisencaotaxa');
-
         if ($request->input('acao', null) == 'envio') {
             if ($solicitacaoisencaotaxa->todosArquivosRequeridosPresentes()) {
 
@@ -214,6 +212,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
             $request->session()->flash('alert-success', 'Solicitação de isenção de taxa alterada com sucesso');
         }
 
+        \UspTheme::activeUrl('solicitacoesisencaotaxa');
         return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
     }
 

@@ -40,8 +40,8 @@ class LinhaPesquisaController extends Controller
     public function index(Request $request)
     {
         $this->authorize('linhaspesquisa.viewAny');
-        \UspTheme::activeUrl('linhaspesquisa');
 
+        \UspTheme::activeUrl('linhaspesquisa');
         if (!$request->ajax())
             return view('linhaspesquisa.tree', $this->monta_compact_index());
     }
@@ -81,7 +81,6 @@ class LinhaPesquisaController extends Controller
             $linhapesquisa->niveis()->attach($nivel);
 
         $request->session()->flash('alert-success', 'Linha de pesquisa/tema cadastrado com sucesso');
-
         \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
@@ -123,7 +122,6 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa->save();
 
         $request->session()->flash('alert-success', 'Linha de pesquisa/tema alterado com sucesso');
-
         \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
@@ -147,6 +145,7 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa->delete();
 
         $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
+        \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.tree', $this->monta_compact_index());
     }
 
