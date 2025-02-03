@@ -105,13 +105,12 @@ class MotivoIsencaoTaxaController extends Controller
         $this->authorize('motivosisencaotaxa.delete');
 
         $motivoisencaotaxa = MotivoIsencaoTaxa::find((int) $id);
-        if ($motivoisencaotaxa->selecoes()->exists()) {
+        if ($motivoisencaotaxa->selecoes()->exists())
             $request->session()->flash('alert-danger', 'Há seleções que fazem uso deste motivo de isenção de taxa!');
-            return view('motivosisencaotaxa.tree', $this->monta_compact_index());
+        else {
+            $motivoisencaotaxa->delete();
+            $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         }
-        $motivoisencaotaxa->delete();
-
-        $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         \UspTheme::activeUrl('motivosisencaotaxa');
         return view('motivosisencaotaxa.tree', $this->monta_compact_index());
     }

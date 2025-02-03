@@ -107,13 +107,12 @@ class DisciplinaController extends Controller
         $this->authorize('disciplinas.delete');
 
         $disciplina = Disciplina::find((int) $id);
-        if ($disciplina->selecoes()->exists()) {
+        if ($disciplina->selecoes()->exists())
             $request->session()->flash('alert-danger', 'Há seleções para esta disciplina!');
-            return view('disciplinas.tree', $this->monta_compact_index());
+        else {
+            $disciplina->delete();
+            $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         }
-        $disciplina->delete();
-
-        $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         \UspTheme::activeUrl('disciplinas');
         return view('disciplinas.tree', $this->monta_compact_index());
     }

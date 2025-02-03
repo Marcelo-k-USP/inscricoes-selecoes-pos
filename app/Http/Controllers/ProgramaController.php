@@ -105,17 +105,14 @@ class ProgramaController extends Controller
         $this->authorize('programas.delete');
 
         $programa = Programa::find((int) $id);
-        if ($programa->selecoes()->exists()) {
+        if ($programa->selecoes()->exists())
             $request->session()->flash('alert-danger', 'Há seleções para este programa!');
-            return view('programas.tree', $this->monta_compact_index());
-        }
-        if ($programa->linhaspesquisa()->exists()) {
+        elseif ($programa->linhaspesquisa()->exists())
             $request->session()->flash('alert-danger', 'Há linhas de pesquisa/temas para este programa!');
-            return view('programas.tree', $this->monta_compact_index());
+        else {
+            $programa->delete();
+            $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         }
-        $programa->delete();
-
-        $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         \UspTheme::activeUrl('programas');
         return view('programas.tree', $this->monta_compact_index());
     }

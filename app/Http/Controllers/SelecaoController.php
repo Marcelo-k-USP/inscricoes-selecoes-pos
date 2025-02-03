@@ -165,6 +165,7 @@ class SelecaoController extends Controller
         if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
             if ($selecao->linhaspesquisa->count() > 0) {
                 $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa/temas do programa antigo cadastrados para esta seleção!');
+                \UspTheme::activeUrl('selecoes');
                 return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
             }
             Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Programa antigo: ' . $selecao->programa_id . ' - Novo programa: ' . $request->programa_id);

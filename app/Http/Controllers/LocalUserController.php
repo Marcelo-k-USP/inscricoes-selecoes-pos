@@ -368,6 +368,7 @@ class LocalUserController extends Controller
 
         if ($localuser->local == false) {
             request()->session()->flash('alert-danger', 'Usuário senha única não pode ser apagado.');
+            \UspTheme::activeUrl('localusers');
             return redirect('/localusers');
         }
         $localuser->delete();

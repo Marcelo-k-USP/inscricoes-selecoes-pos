@@ -138,13 +138,12 @@ class LinhaPesquisaController extends Controller
         $this->authorize('linhaspesquisa.delete');
 
         $linhapesquisa = LinhaPesquisa::find((int) $id);
-        if ($linhapesquisa->selecoes()->exists()) {
+        if ($linhapesquisa->selecoes()->exists())
             $request->session()->flash('alert-danger', 'Há seleções para esta linha de pesquisa/tema!');
-            return view('linhaspesquisa.tree', $this->monta_compact_index());
+        else {
+            $linhapesquisa->delete();
+            $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         }
-        $linhapesquisa->delete();
-
-        $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.tree', $this->monta_compact_index());
     }

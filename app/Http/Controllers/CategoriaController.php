@@ -105,13 +105,12 @@ class CategoriaController extends Controller
         $this->authorize('categorias.delete');
 
         $categoria = Categoria::find((int) $id);
-        if ($categoria->selecoes()->exists()) {
+        if ($categoria->selecoes()->exists())
             $request->session()->flash('alert-danger', 'Há seleções para esta categoria!');
-            return view('categorias.tree', $this->monta_compact_index());
+        else {
+            $categoria->delete();
+            $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         }
-        $categoria->delete();
-
-        $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         \UspTheme::activeUrl('categorias');
         return view('categorias.tree', $this->monta_compact_index());
     }
