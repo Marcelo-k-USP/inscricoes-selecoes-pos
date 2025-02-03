@@ -180,6 +180,7 @@ class LinhaPesquisaController extends Controller
             $request->session()->flash('alert-success', 'O nível ' . $db_transaction['nivel']->nome . ' foi adicionado à essa linha de pesquisa/tema');
         else
             $request->session()->flash('alert-info', 'O nível ' . $db_transaction['nivel']->nome . ' já estava vinculado à essa linha de pesquisa/tema');
+        \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
 
@@ -194,6 +195,7 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa->niveis()->detach($nivel);
 
         $request->session()->flash('alert-success', 'O nível ' . $nivel->nome . ' foi removido dessa linha de pesquisa/tema');
+        \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
 
@@ -254,6 +256,7 @@ class LinhaPesquisaController extends Controller
             $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' foi adicionado à essa linha de pesquisa/tema');
         else
             $request->session()->flash('alert-info', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' já estava vinculado à essa linha de pesquisa/tema');
+        \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
 
@@ -268,6 +271,7 @@ class LinhaPesquisaController extends Controller
         $linhapesquisa->orientadores()->detach($orientador);
 
         $request->session()->flash('alert-success', 'O orientador ' . Orientador::obterNome($orientador->codpes) . ' foi removido dessa linha de pesquisa/tema');
+        \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
 

@@ -356,6 +356,7 @@ class InscricaoController extends Controller
             $request->session()->flash('alert-success', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' foi adicionada à essa inscrição.' . $db_transaction['info_adicional']);
         else
             $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa inscrição.');
+        \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
     }
 
@@ -378,6 +379,7 @@ class InscricaoController extends Controller
         }
 
         $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa inscrição.');
+        \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
     }
 

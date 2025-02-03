@@ -203,6 +203,7 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.update', $selecao);
 
+        \UspTheme::activeUrl('selecoes');
         $newjson = $request->template;
         $selecao->template = $newjson;
         $selecao->save();
@@ -259,6 +260,7 @@ class SelecaoController extends Controller
         $selecao->save();
 
         $request->session()->flash('alert-success', 'Formulário salvo com sucesso');
+        \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'formulario'));
     }
 
@@ -306,6 +308,7 @@ class SelecaoController extends Controller
         $selecao->save();
 
         $request->session()->flash('alert-success', 'Lista salva com sucesso');
+        \UspTheme::activeUrl('selecoes');
         return view('selecoes.templatevalue', compact('selecao', 'template', 'field'));
     }
 
@@ -341,6 +344,7 @@ class SelecaoController extends Controller
             $request->session()->flash('alert-success', 'A linha de pesquisa/tema ' . $db_transaction['linhapesquisa']->nome . ' foi adicionado à essa seleção.');
         else
             $request->session()->flash('alert-info', 'A linha de pesquisa/tema ' . $db_transaction['linhapesquisa']->nome . ' já estava vinculado à essa seleção.');
+        \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'linhaspesquisa'));
     }
 
@@ -355,6 +359,7 @@ class SelecaoController extends Controller
         $selecao->linhaspesquisa()->detach($linhapesquisa);
 
         $request->session()->flash('alert-success', 'A linha de pesquisa/tema ' . $linhapesquisa->nome . ' foi removido dessa seleção.');
+        \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'linhaspesquisa'));
     }
 
@@ -390,8 +395,9 @@ class SelecaoController extends Controller
             $request->session()->flash('alert-success', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' foi adicionada à essa seleção.');
         else
             $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa seleção.');
+        \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'disciplinas'));
-        }
+    }
 
     /**
      * Remove disciplinas relacionadas à seleção
@@ -404,6 +410,7 @@ class SelecaoController extends Controller
         $selecao->disciplinas()->detach($disciplina);
 
         $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa seleção.');
+        \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'disciplinas'));
     }
 
@@ -439,6 +446,7 @@ class SelecaoController extends Controller
             $request->session()->flash('alert-success', 'O motivo de isenção de taxa ' . $db_transaction['motivoisencaotaxa']->nome . ' foi adicionado à essa seleção');
         else
             $request->session()->flash('alert-info', 'O motivo de isenção de taxa ' . $db_transaction['motivoisencaotaxa']->nome . ' já estava vinculado à essa seleção');
+        \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'motivosisencaotaxa'));
     }
 
@@ -453,6 +461,7 @@ class SelecaoController extends Controller
         $selecao->motivosisencaotaxa()->detach($motivoisencaotaxa);
 
         $request->session()->flash('alert-success', 'O motivo de isenção de taxa ' . $motivoisencaotaxa->nome . ' foi removido dessa seleção');
+        \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'motivosisencaotaxa'));
     }
 
