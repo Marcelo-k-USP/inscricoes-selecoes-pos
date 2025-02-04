@@ -50,13 +50,15 @@
             </div>
             <div class="col-md-5">
               @php
-                $selecao = $solicitacaoisencaotaxa->selecao;    // para o include abaixo
+                $selecao = $solicitacaoisencaotaxa->selecao;             // para o include abaixo
               @endphp
               @include('inscricoes.show.card-responsaveis')              {{-- Responsáveis --}}
               @include('inscricoes.show.card-informativos')              {{-- Informativos --}}
               @if ($modo == 'edit')
                 @include('common.card-arquivos')                         {{-- Arquivos --}}
-                @include('inscricoes.show.card-envio')                   {{-- Envio --}}
+                @if (session('perfil') == 'usuario')
+                  @include('inscricoes.show.card-envio')                 {{-- Envio --}}
+                @endif
               @endif
             </div>
           </div>

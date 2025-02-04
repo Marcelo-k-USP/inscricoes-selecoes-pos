@@ -70,7 +70,9 @@
                 @if ($condicao_disponivel)
                   @include('common.card-arquivos')              {{-- Arquivos --}}
                 @endif
-                @include('inscricoes.show.card-envio')          {{-- Envio --}}
+                @if (session('perfil') == 'usuario')
+                  @include('inscricoes.show.card-envio')        {{-- Envio --}}
+                @endif
               @endif
             </div>
           </div>
