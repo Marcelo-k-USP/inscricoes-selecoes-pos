@@ -34,6 +34,10 @@ Cada linha de pesquisa/tema possui uma relação de orientadores, restritos a pr
 As linhas de pesquisa/temas são relacionadas aos níveis da pós-graduação (mestrado, doutorado, doutorado direto).
 Se um aluno regular se inscreve, por exemplo, para o nível de mestrado, só lhe serão permitidas as linhas de pesquisa/temas desse programa dessa seleção que estejam relacionadas ao nível escolhido.
 
+Cada seleção contém informativos (edital, etc.), que são documentos que o candidato pode consultar.
+Além disso, em cada seleção o gerente também define quais documentos o candidato pode (ou deve) subir quando da solicitação de isenção de taxa e quando da inscrição.
+O tipo de documento de boletos não é removível nem renomeável. O candidato não sobe documento desse tipo, pois ele é gerado quando do envio da inscrição.
+
 Para completar a inscrição, o candidato deve clicar em Enviar.
 Então é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição.
 No caso de aluno regular, é gerado um único boleto.

@@ -32,4 +32,12 @@ class Arquivo extends Model
     {
         return $this->belongsToMany('App\Models\Inscricao', 'arquivo_inscricao')->withPivot('tipo')->withTimestamps();
     }
+
+    /**
+     * Relacionamento: arquivo tem um tipo de arquivo
+     */
+    public function tipoarquivo()
+    {
+        return $this->belongsTo('App\Models\TipoArquivo', 'tipoarquivo_id');
+    }
 }

@@ -78,6 +78,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::resource('solicitacoesisencaotaxa', 'App\Policies\SolicitacaoIsencaoTaxaPolicy');
         Gate::define('solicitacoesisencaotaxa.viewTheir', 'App\Policies\SolicitacaoIsencaoTaxaPolicy@viewTheir');
         Gate::define('solicitacoesisencaotaxa.updateStatus', 'App\Policies\SolicitacaoIsencaoTaxaPolicy@updateStatus');
+        Gate::resource('tiposarquivo', 'App\Policies\TipoArquivoPolicy');
         Gate::resource('users', 'App\Policies\UserPolicy');
     }
 }

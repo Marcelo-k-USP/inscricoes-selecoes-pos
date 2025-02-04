@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             DisciplinaSeeder::class,        // adiciona disciplinas
             ParametroSeeder::class,         // adiciona parâmetros
             MotivoIsencaoTaxaSeeder::class, // adiciona motivos de isenção de taxa
+            TipoArquivoSeeder::class,       // adiciona tipos de arquivo
         ]);
     }
 }

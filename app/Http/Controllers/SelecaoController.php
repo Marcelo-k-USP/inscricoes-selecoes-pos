@@ -11,6 +11,7 @@ use App\Models\MotivoIsencaoTaxa;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
+use App\Models\TipoArquivo;
 use App\Models\User;
 use App\Utils\JSONForms;
 use Carbon\Carbon;
@@ -109,12 +110,15 @@ class SelecaoController extends Controller
                 foreach (Disciplina::listarDisciplinas() as $disciplina)
                     $selecao->disciplinas()->attach($disciplina);
 
+            foreach (TipoArquivo::whereIn('classe_nome', ['Solicitações de Isenção de Taxa', 'Inscrições'])->get() as $tipoarquivo)    // cadastra automaticamente todos os tipos de arquivo para solicitações de isenção de taxa e inscrição como possíveis para este processo seletivo
+                $selecao->tiposarquivo()->attach($tipoarquivo);
+
             return ['selecao' => $selecao, 'is_aluno_especial' => $is_aluno_especial];
         });
         $selecao = $db_transaction['selecao'];
 
         $request->session()->flash('alert-success', 'Seleção cadastrada com sucesso<br />' .
-            'Agora ' . (!$db_transaction['is_aluno_especial'] ? 'informe quais são as linhas de pesquisa e ' : '') . 'adicione os documentos relacionados ao processo');
+            'Agora ' . (!$db_transaction['is_aluno_especial'] ? 'informe quais são as linhas de pesquisa e ' : '') . 'adicione os informativos relacionados ao processo');
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
@@ -466,6 +470,108 @@ class SelecaoController extends Controller
     }
 
     /**
+     * Adicionar tipos de arquivo para solicitações de isenção de taxa da seleção
+     * autorizado a qualquer um que tenha acesso à seleção
+     * request->codpes = required, int
+     */
+    public function storeTipoArquivoSolicitacaoIsencaoTaxa(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $request->validate([
+            'id' => 'required',
+        ],
+        [
+            'id.required' => 'Tipo de documento obrigatório',
+        ]);
+
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $selecao) {
+
+            $tipoarquivo = TipoArquivo::where('id', $request->id)->first();
+
+            $existia = $selecao->tiposarquivo()->detach($tipoarquivo);
+
+            $selecao->tiposarquivo()->attach($tipoarquivo);
+
+            return ['tipoarquivo' => $tipoarquivo, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'O tipo de documento ' . $db_transaction['tipoarquivo']->nome . ' foi adicionado à essa seleção');
+        else
+            $request->session()->flash('alert-info', 'O tipo de documento ' . $db_transaction['tipoarquivo']->nome . ' já estava vinculado à essa seleção');
+        \UspTheme::activeUrl('selecoes');
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'tiposarquivosolicitacaoisencaotaxa'));
+    }
+
+    /**
+     * Remove tipos de arquivo para solicitações de isenção de taxa da seleção
+     * $user = required
+     */
+    public function destroyTipoArquivoSolicitacaoIsencaoTaxa(Request $request, Selecao $selecao, TipoArquivo $tipoarquivo)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $selecao->tiposarquivo()->detach($tipoarquivo);
+
+        $request->session()->flash('alert-success', 'O tipo de documento ' . $tipoarquivo->nome . ' foi removido dessa seleção');
+        \UspTheme::activeUrl('selecoes');
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'tiposarquivosolicitacaoisencaotaxa'));
+    }
+
+    /**
+     * Adicionar tipos de arquivo para inscrições da seleção
+     * autorizado a qualquer um que tenha acesso à seleção
+     * request->codpes = required, int
+     */
+    public function storeTipoArquivoInscricao(Request $request, Selecao $selecao)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $request->validate([
+            'id' => 'required',
+        ],
+        [
+            'id.required' => 'Tipo de documento obrigatório',
+        ]);
+
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $selecao) {
+
+            $tipoarquivo = TipoArquivo::where('id', $request->id)->first();
+
+            $existia = $selecao->tiposarquivo()->detach($tipoarquivo);
+
+            $selecao->tiposarquivo()->attach($tipoarquivo);
+
+            return ['tipoarquivo' => $tipoarquivo, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'O tipo de documento ' . $db_transaction['tipoarquivo']->nome . ' foi adicionado à essa seleção');
+        else
+            $request->session()->flash('alert-info', 'O tipo de documento ' . $db_transaction['tipoarquivo']->nome . ' já estava vinculado à essa seleção');
+        \UspTheme::activeUrl('selecoes');
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'tiposarquivoinscricao'));
+    }
+
+    /**
+     * Remove tipos de arquivo para inscrições da seleção
+     * $user = required
+     */
+    public function destroyTipoArquivoInscricao(Request $request, Selecao $selecao, TipoArquivo $tipoarquivo)
+    {
+        $this->authorize('selecoes.update', $selecao);
+
+        $selecao->tiposarquivo()->detach($tipoarquivo);
+
+        $request->session()->flash('alert-success', 'O tipo de documento ' . $tipoarquivo->nome . ' foi removido dessa seleção');
+        \UspTheme::activeUrl('selecoes');
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'tiposarquivoinscricao'));
+    }
+
+    /**
      * Baixa as solicitações de isenção de taxa especificadas
      *
      * @param $request->ano
@@ -563,8 +669,11 @@ class SelecaoController extends Controller
         $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($objeto->programa) ? (new Programa) : $objeto->programa);
         $disciplinas = Disciplina::listarDisciplinas();
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
+        $objeto->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();                                         // todos os tipos de arquivo possíveis para seleções
+        $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa
+        $tiposarquivo_inscricao = TipoArquivo::where('classe_nome', 'Inscrições')->get();                                      // todos os tipos de arquivo possíveis para inscrições
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'max_upload_size', 'rules', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'rules', 'scroll');
     }
 }

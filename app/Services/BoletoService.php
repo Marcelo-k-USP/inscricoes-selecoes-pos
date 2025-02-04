@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Arquivo;
 use App\Models\Inscricao;
 use App\Models\Parametro;
+use App\Models\TipoArquivo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
@@ -59,6 +60,7 @@ class BoletoService
                 $arquivo->nome_original = 'boleto_' . $inscricao->id . '_' . Carbon::now()->format('Ymd_His') . '.pdf';
                 $arquivo->caminho = $arquivo_caminho;
                 $arquivo->mimeType = 'application/pdf';
+                $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', 'Inscrições')->where('nome', 'Boleto(s) de Pagamento da Inscrição')->first()->id;
                 $arquivo->save();
                 $arquivo->inscricoes()->attach($inscricao->id, ['tipo' => 'Boleto(s) de Pagamento da Inscrição']);
 

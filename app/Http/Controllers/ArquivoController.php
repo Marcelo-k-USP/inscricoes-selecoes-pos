@@ -11,6 +11,7 @@ use App\Models\Nivel;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
+use App\Models\TipoArquivo;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,16 +24,6 @@ class ArquivoController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->except('show');
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
     }
 
     /**
@@ -66,6 +57,7 @@ class ArquivoController extends Controller
     {
         $classe_nome = fixJson($request->classe_nome);
         $classe_nome_plural = $this->obterClasseNomePlural($classe_nome);
+        $classe_nome_plural_acentuado = $this->obterClasseNomePluralAcentuado($classe_nome);
         $classe = $this->obterClasse($classe_nome);
         $objeto = $classe::find($request->objeto_id);
         $form = $this->obterForm($classe_nome, $objeto);
@@ -77,7 +69,7 @@ class ArquivoController extends Controller
         $this->authorize('arquivos.create', [$objeto, $classe_nome]);
 
         // transaction para não ter problema de inconsistência do DB
-        $db_transaction = DB::transaction(function () use ($request, $classe_nome, $classe_nome_plural, $objeto) {
+        $db_transaction = DB::transaction(function () use ($request, $classe_nome, $classe_nome_plural, $classe_nome_plural_acentuado, $objeto) {
 
             foreach ($request->arquivo as $arq) {
                 $arquivo = new Arquivo;
@@ -85,6 +77,7 @@ class ArquivoController extends Controller
                 $arquivo->nome_original = $arq->getClientOriginalName();
                 $arquivo->caminho = $arq->store('./arquivos/' . $objeto->created_at->year);
                 $arquivo->mimeType = $arq->getClientMimeType();
+                $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipo_arquivo)->first()->id;
                 $arquivo->save();
 
                 $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipo_arquivo]);
@@ -101,14 +94,6 @@ class ArquivoController extends Controller
         $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso');
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit()
-    {
-        //
     }
 
     /**
@@ -198,6 +183,17 @@ class ArquivoController extends Controller
         }
     }
 
+    private function obterClasseNomePluralAcentuado(string $classe_nome) {
+        switch ($classe_nome) {
+            case 'Selecao':
+                return 'Seleções';
+            case 'SolicitacaoIsencaoTaxa':
+                return 'Solicitações de Isenção de Taxa';
+            case 'Inscricao':
+                return 'Inscrições';
+        }
+    }
+
     private function obterClasse(string $classe_nome) {
         switch ($classe_nome) {
             case 'Selecao':
@@ -232,9 +228,27 @@ class ArquivoController extends Controller
         $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
+        switch ($classe_nome) {
+            case 'Selecao':
+                $objeto->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
+                break;
+            case 'SolicitacaoIsencaoTaxa':
+                $objeto->selecao->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
+                $objeto->tipos_arquivo = $objeto->selecao->tiposarquivo->filter(function ($registro) {
+                    return $registro->classe_nome === 'Solicitações de Isenção de Taxa';
+                });    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa desta seleção
+                break;
+            case 'Inscricao':
+                $objeto->selecao->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
+                $objeto->tipos_arquivo = $objeto->selecao->tiposarquivo->filter(function ($registro) {
+                    return $registro->classe_nome === 'Inscrições';
+                });    // todos os tipos de arquivo possíveis para inscrições desta seleção
+        }
+        $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa
+        $tiposarquivo_inscricao = TipoArquivo::where('classe_nome', 'Inscrições')->get();                                      // todos os tipos de arquivo possíveis para inscrições
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
         $scroll = 'arquivos';
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'scroll');
     }
 }

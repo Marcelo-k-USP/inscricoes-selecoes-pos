@@ -675,29 +675,6 @@ class Selecao extends Model
     }
 
     /**
-     * Retorna os tipos de arquivo possíveis na seleção.
-     */
-    public static function tiposArquivo()
-    {
-        return [
-            [
-                'nome' => 'Edital',
-                'validate' => 'required'
-            ],
-            [
-                'nome' => 'Normas para Isenção de Taxa',
-                'validate' => 'required'
-            ],
-            [
-                'nome' => 'Errata'
-            ],
-            [
-                'nome' => 'Lista de Inscritos'
-            ],
-        ];
-    }
-
-    /**
      * lista de estados padrão
      */
     public static function estados()
@@ -833,7 +810,7 @@ class Selecao extends Model
      */
     public function atualizarStatus()
     {
-        $tipos_arquivo_required = collect(self::tiposArquivo())->where('validate', 'required')->pluck('nome')->toArray();
+        $tipos_arquivo_required = TipoArquivo::where('classe_nome', 'Seleções')->where('obrigatorio', true)->pluck('nome')->toArray();
         $possui_todos_os_arquivos_required = true;
         foreach ($tipos_arquivo_required as $tipo_arquivo_required)
             if (!$this->arquivos->contains('pivot.tipo', $tipo_arquivo_required)) {
@@ -911,6 +888,14 @@ class Selecao extends Model
     public function motivosisencaotaxa()
     {
         return $this->belongsToMany('App\Models\MotivoIsencaoTaxa', 'selecao_motivoisencaotaxa', 'selecao_id', 'motivoisencaotaxa_id')->withTimestamps();
+    }
+
+    /**
+     * relacionamento com tipos de arquivo
+     */
+    public function tiposarquivo()
+    {
+        return $this->belongsToMany('App\Models\TipoArquivo', 'selecao_tipoarquivo', 'selecao_id', 'tipoarquivo_id')->withTimestamps();
     }
 
     /**

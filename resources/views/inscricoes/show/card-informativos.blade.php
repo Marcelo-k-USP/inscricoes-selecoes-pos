@@ -16,7 +16,7 @@
     Informativos
   </div>
   <div class="card-body">
-    @foreach ($selecao->tiposArquivo() as $tipo_arquivo)
+    @foreach ($selecao->tipos_arquivo as $tipo_arquivo)
       <div class="arquivos-lista">
         {{ $tipo_arquivo['nome'] }}
 

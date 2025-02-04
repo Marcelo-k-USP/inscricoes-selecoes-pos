@@ -20,7 +20,11 @@
   <a name="card_arquivos"></a>
   <div class="card bg-light mb-3 w-100" id="card-arquivos">
     <div class="card-header form-inline">
-      Documentos
+      @if ($classe_nome == 'Selecao')
+        Informativos
+      @else
+        Documentos
+      @endif
       <span data-toggle="tooltip" data-html="true" title="Tamanho máximo de cada arquivo: {{ $max_upload_size }}KB ">
         <i class="fas fa-question-circle text-secondary ml-2"></i>
       </span>
@@ -33,13 +37,13 @@
       @php
         $i = 0;
       @endphp
-      @foreach ($objeto->tiposArquivo() as $tipo_arquivo)
+      @foreach ($objeto->tipos_arquivo as $tipo_arquivo)
         <div class="arquivos-lista">
-          {{ $tipo_arquivo['nome'] }} {!! ((isset($tipo_arquivo['validate']) && $tipo_arquivo['validate']) ? '<small class="text-required">(*)</small>' : '') !!}
+          {{ $tipo_arquivo['nome'] }} {!! ((isset($tipo_arquivo['obrigatorio']) && $tipo_arquivo['obrigatorio']) ? '<small class="text-required">(*)</small>' : '') !!}
           @php
-            $editable = !(isset($tipo_arquivo['editable']) && ($tipo_arquivo['editable'] == 'none'));
+            $editavel = (isset($tipo_arquivo['editavel']) && $tipo_arquivo['editavel']);
           @endphp
-          @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $editable)
+          @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $editavel)
             <label for="input_arquivo_{{ $i }}">
               <span class="btn btn-sm btn-light text-primary ml-2"> <i class="fas fa-plus"></i> Adicionar</span>
             </label>
@@ -52,7 +56,7 @@
               @foreach ($objeto->arquivos->where('pivot.tipo', $tipo_arquivo['nome']) as $arquivo)
                 @if (preg_match('/pdf/i', $arquivo->mimeType))
                   <li class="modo-visualizacao">
-                    @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $editable)
+                    @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $editavel)
                       <div class="arquivo-acoes d-inline-block">
                         <a onclick="excluir_arquivo({{ $arquivo->id }}, '{{ $arquivo->nome_original }}'); return false;" class="btn btn-outline-danger btn-sm btn-deletar btn-arquivo-acao">
                           <i class="far fa-trash-alt"></i>
@@ -100,7 +104,7 @@
   <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
   <script type="text/javascript">
     var max_upload_size = {{ $max_upload_size }};
-    var count_tipos_arquivo = {{ count($objeto->tiposArquivo()) }};
+    var count_tipos_arquivo = {{ $objeto->tipos_arquivo->count() }};
   </script>
   <script src="js/arquivos.js"></script>
 @endsection

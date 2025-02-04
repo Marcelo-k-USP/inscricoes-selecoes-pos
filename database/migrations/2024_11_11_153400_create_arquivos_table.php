@@ -19,6 +19,7 @@ class CreateArquivosTable extends Migration
             $table->string('caminho');
             $table->string('mimeType');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('tipoarquivo_id')->constrained('tiposarquivo');
             $table->timestamps();
         });
     }

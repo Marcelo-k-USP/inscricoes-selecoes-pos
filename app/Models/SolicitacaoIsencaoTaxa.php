@@ -54,19 +54,6 @@ class SolicitacaoIsencaoTaxa extends Model
     }
 
     /**
-     * Retorna os tipos de arquivo possíveis na solicitação de isenção de taxa.
-     */
-    public static function tiposArquivo()
-    {
-        return [
-            [
-                'nome' => 'Comprovação',
-                'validate' => 'required'
-            ]
-        ];
-    }
-
-    /**
      * Valores possiveis para pivot do relacionamento com users
      */
     #
@@ -163,9 +150,7 @@ class SolicitacaoIsencaoTaxa extends Model
     public function todosArquivosRequeridosPresentes()
     {
         // obtém os tipos de arquivo requeridos
-        $tipos_arquivo_requeridos = collect(self::tiposArquivo())->filter(function ($tipo) {
-            return (isset($tipo['validate']) && ($tipo['validate'] == 'required'));
-        });
+        $tipos_arquivo_requeridos = $this->selecao->tiposarquivo()->where('classe_nome', 'Solicitações de Isenção de Taxa')->where('obrigatorio', true)->get();
 
         // obtém os tipos de arquivo da solicitação de isenção de taxa
         $arquivos_solicitacaoisencaotaxa = $this->arquivos->pluck('pivot.tipo')->countBy()->all();

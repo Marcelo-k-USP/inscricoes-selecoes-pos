@@ -38,22 +38,34 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @include('selecoes.show.card-principal')                    {{-- Principal --}}
+              @include('selecoes.show.card-principal')                               {{-- Principal --}}
               @if ($modo == 'edit')
-                @include('selecoes.show.card-formulario')                 {{-- Formulario --}}
+                @include('selecoes.show.card-formulario')                            {{-- Formulario --}}
               @endif
             </div>
             <div class="col-md-5">
               @if ($modo == 'edit')
                 @if ($selecao->categoria->nome !== 'Aluno Especial')
-                  @include('selecoes.show.card-linhaspesquisa')           {{-- Linhas de Pesquisa/Temas --}}
+                  @include('selecoes.show.card-linhaspesquisa')                      {{-- Linhas de Pesquisa/Temas --}}
                 @else
-                  @include('selecoes.show.card-disciplinas')              {{-- Disciplinas --}}
+                  @include('selecoes.show.card-disciplinas')                         {{-- Disciplinas --}}
                 @endif
-                @include('selecoes.show.card-motivosisencaotaxa')         {{-- Motivos de Isenção de Taxa --}}
-                @include('common.card-arquivos')                          {{-- Arquivos --}}
-                @include('selecoes.show.card-solicitacoesisencaotaxa')    {{-- Solicitações de Isenção de Taxa --}}
-                @include('selecoes.show.card-inscricoes')                 {{-- Inscrições --}}
+                @include('selecoes.show.card-motivosisencaotaxa')                    {{-- Motivos de Isenção de Taxa --}}
+                @include('common.card-arquivos')                                     {{-- Arquivos --}}
+                @php
+                  $tipoarquivo_classe_nome_plural_acentuado = 'Solicitações de Isenção de Taxa';    // para o include abaixo
+                  $tipoarquivo_classe_nome = 'SolicitacaoIsencaoTaxa';
+                  $tiposarquivo = $tiposarquivo_solicitacaoisencaotaxa;
+                @endphp
+                @include('selecoes.show.card-tiposarquivo')                          {{-- Tipos de Arquivo nas Solicitações de Isenção de Taxa --}}
+                @php
+                  $tipoarquivo_classe_nome_plural_acentuado = 'Inscrições';          // para o include abaixo
+                  $tipoarquivo_classe_nome = 'Inscricao';
+                  $tiposarquivo = $tiposarquivo_inscricao;
+                @endphp
+                @include('selecoes.show.card-tiposarquivo')                          {{-- Tipos de Arquivo nas Inscrições --}}
+                @include('selecoes.show.card-solicitacoesisencaotaxa')               {{-- Solicitações de Isenção de Taxa --}}
+                @include('selecoes.show.card-inscricoes')                            {{-- Inscrições --}}
               @endif
             </div>
           </div>

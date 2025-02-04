@@ -11,5 +11,7 @@
     @include('common.list-table-form-number')
   @elseif ($col['type'] == 'select')
     @include('common.list-table-form-select')
+  @elseif ($col['type'] == 'checkbox')
+    @include('common.list-table-form-checkbox')
   @endif
 @endforeach

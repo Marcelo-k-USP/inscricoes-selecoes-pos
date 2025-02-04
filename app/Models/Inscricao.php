@@ -62,36 +62,6 @@ class Inscricao extends Model
     }
 
     /**
-     * Retorna os tipos de arquivo possíveis na inscrição.
-     */
-    public static function tiposArquivo()
-    {
-        return [
-            [
-                'nome' => 'Documento com Foto',
-                'validate' => 'required'
-            ],
-            [
-                'nome' => 'Comprovação de Proficiência em Língua Estrangeira',
-                'validate' => 'required'
-            ],
-            [
-                'nome' => 'Histórico Escolar e Diploma de Gradução',
-                'validate' => 'required'
-            ],
-            [
-                'nome' => 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica',
-                'validate' => 'required',
-                'minimum_required' => 2
-            ],
-            [
-                'nome' => 'Boleto(s) de Pagamento da Inscrição',
-                'editable' => 'none'
-            ]
-        ];
-    }
-
-    /**
      * Valores possiveis para pivot do relacionamento com users
      */
     #
@@ -188,9 +158,7 @@ class Inscricao extends Model
     public function todosArquivosRequeridosPresentes()
     {
         // obtém os tipos de arquivo requeridos
-        $tipos_arquivo_requeridos = collect(self::tiposArquivo())->filter(function ($tipo) {
-            return (isset($tipo['validate']) && ($tipo['validate'] == 'required'));
-        });
+        $tipos_arquivo_requeridos = $this->selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where('obrigatorio', true)->get();
 
         // obtém os tipos de arquivo da inscrição
         $arquivos_inscricao = $this->arquivos->pluck('pivot.tipo')->countBy()->all();

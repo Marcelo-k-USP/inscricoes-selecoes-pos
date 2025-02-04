@@ -17,6 +17,7 @@ use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\ResponsavelController;
 use App\Http\Controllers\SelecaoController;
 use App\Http\Controllers\SolicitacaoIsencaoTaxaController;
+use App\Http\Controllers\TipoArquivoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
 
@@ -77,6 +78,9 @@ Route::resource('disciplinas', DisciplinaController::class);
 // MOTIVOS DE ISENÇÃO DE TAXA
 Route::resource('motivosisencaotaxa', MotivoIsencaoTaxaController::class);
 
+// TIPOS DE ARQUIVO
+Route::resource('tiposarquivo', TipoArquivoController::class);
+
 // SELEÇÕES
 Route::get('selecoes', [SelecaoController::class, 'index'])->name('selecoes.index');
 Route::get('selecoes/create', [SelecaoController::class, 'create'])->name('selecoes.create');
@@ -98,6 +102,12 @@ Route::delete('selecoes/{selecao}/disciplinas/{disciplina}', [SelecaoController:
 // SELEÇÕES > MOTIVOS DE ISENÇÂO DE TAXA
 Route::post('selecoes/{selecao}/motivosisencaotaxa', [SelecaoController::class, 'storeMotivoIsencaoTaxa']);
 Route::delete('selecoes/{selecao}/motivosisencaotaxa/{motivoisencaotaxa}', [SelecaoController::class, 'destroyMotivoIsencaoTaxa']);
+
+// SELEÇÕES > TIPOS DE ARQUIVO
+Route::post('selecoes/{selecao}/tiposarquivosolicitacaoisencaotaxa', [SelecaoController::class, 'storeTipoArquivoSolicitacaoIsencaoTaxa']);
+Route::delete('selecoes/{selecao}/tiposarquivosolicitacaoisencaotaxa/{tipoarquivo}', [SelecaoController::class, 'destroyTipoArquivoSolicitacaoIsencaoTaxa']);
+Route::post('selecoes/{selecao}/tiposarquivoinscricao', [SelecaoController::class, 'storeTipoArquivoInscricao']);
+Route::delete('selecoes/{selecao}/tiposarquivoinscricao/{tipoarquivo}', [SelecaoController::class, 'destroyTipoArquivoInscricao']);
 
 // SELEÇÕES > FORMULÁRIO
 Route::post('selecoes/{selecao}/template_json', [SelecaoController::class, 'storeTemplateJson']);
