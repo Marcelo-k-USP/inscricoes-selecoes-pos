@@ -54,4 +54,12 @@ class Nivel extends Model
     {
         return $this->belongsToMany('App\Models\LinhaPesquisa', 'linhapesquisa_nivel', 'nivel_id', 'linhapesquisa_id')->withTimestamps();
     }
+
+    /**
+     * relacionamento com tipos de arquivo
+     */
+    public function tiposarquivo()
+    {
+        return $this->belongsToMany('App\Models\TipoArquivo', 'tipoarquivo_nivel', 'nivel_id', 'tipoarquivo_id')->withTimestamps();
+    }
 }

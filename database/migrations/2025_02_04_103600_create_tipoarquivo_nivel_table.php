@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTiposArquivoTable extends Migration
+class CreateTipoArquivoNivelTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateTiposArquivoTable extends Migration
      */
     public function up()
     {
-        Schema::create('tiposarquivo', function (Blueprint $table) {
+        Schema::create('tipoarquivo_nivel', function (Blueprint $table) {
             $table->id();
-            $table->string('classe_nome', 40);
-            $table->string('nome', 100);
-            $table->boolean('editavel')->default(true);
-            $table->boolean('obrigatorio');
-            $table->integer('minimo')->nullable();
+            $table->foreignId('tipoarquivo_id')->constrained('tiposarquivo')->onDelete('cascade');
+            $table->foreignId('nivel_id')->constrained('niveis')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreateTiposArquivoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tiposarquivo');
+        Schema::dropIfExists('tipoarquivo_nivel');
     }
 }

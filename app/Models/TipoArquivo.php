@@ -79,6 +79,14 @@ class TipoArquivo extends Model
     }
 
     /**
+     * relacionamento com níveis
+     */
+    public function niveis()
+    {
+        return $this->belongsToMany('App\Models\Nivel', 'tipoarquivo_nivel', 'tipoarquivo_id', 'nivel_id')->withTimestamps();
+    }
+
+    /**
      * relacionamento com arquivos
      */
     public function arquivos()

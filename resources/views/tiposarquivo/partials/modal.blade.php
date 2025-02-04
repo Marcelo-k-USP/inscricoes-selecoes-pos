@@ -29,6 +29,16 @@
                 @include('common.list-table-form-integer')
               @endif
             @endforeach
+            <div class="form-group row" id="niveis">
+              <label class="col-form-label col-sm-3">Níveis</label>
+              <div class="col-sm-9 d-flex align-items-center" style="gap: 10px;">
+                @foreach ($niveis as $nivel)
+                  <input class="form-control" type="checkbox" name="niveis[{{ $nivel->id }}]" id="niveis[{{ $nivel->id }}]" style="width: auto; margin: 0;">
+                  <label for="niveis[{{ $nivel->id }}]" style="margin: 0;">{{ $nivel->nome }}</label>
+                  &nbsp; &nbsp; &nbsp;
+                @endforeach
+              </div>
+            </div>
             <div class="text-right">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
               <button type="submit" class="btn btn-primary">Salvar</button>
@@ -78,6 +88,13 @@
               console.log(this.name);
             });
             updateMinimo();
+            updateNiveis();
+            var niveis = row['niveis'].map(function (nivel) {
+              return nivel.nome;
+            });
+            $("#modalForm [id^='niveis']").filter("input[type='checkbox']").each(function() {
+              $(this).prop('checked', niveis.includes($(this).next('label').text()));
+            });
 
             // Ajustando action
             $('#modalForm').find('form').attr('action', 'tiposarquivo/' + id);
@@ -99,6 +116,7 @@
 
       add_form = function(id) {
           $("#modalForm :input").filter("input[type='text']").val('');
+          $("#modalForm :input").filter("input[type='checkbox']").prop('checked', false);
 
           // preenchendo o form com os valores a serem editados
           $("#modalForm select").val(id);
@@ -110,15 +128,27 @@
           $('#modalForm :input').filter("input[name='_method']").val('POST');
 
           updateMinimo();
+          updateNiveis();
 
           $('#classe_nome').attr('disabled', false);
 
           $("#modalForm").modal();
       };
 
+      $('#classe_nome').on('change', function () {
+        updateNiveis();
+      });
+
       $('#obrigatorio').on('click', function () {
         updateMinimo();
       });
+
+      function updateNiveis() {
+        if ($('#classe_nome').val() != 'Inscrições')
+          $('#niveis').hide();
+        else
+          $('#niveis').show();
+      }
 
       function updateMinimo() {
         if (!$('#obrigatorio').prop('checked')) {

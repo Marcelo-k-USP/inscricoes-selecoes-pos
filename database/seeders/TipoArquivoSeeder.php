@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Nivel;
 use App\Models\Selecao;
 use App\Models\TipoArquivo;
 
@@ -19,55 +20,46 @@ class TipoArquivoSeeder extends Seeder
             [
                 'classe_nome' => 'Seleções',
                 'nome' => 'Edital',
-                'editavel' => true,
                 'obrigatorio' => true,
             ],
             [
                 'classe_nome' => 'Seleções',
                 'nome' => 'Normas para Isenção de Taxa',
-                'editavel' => true,
                 'obrigatorio' => true,
             ],
             [
                 'classe_nome' => 'Seleções',
                 'nome' => 'Errata',
-                'editavel' => true,
                 'obrigatorio' => false,
             ],
             [
                 'classe_nome' => 'Seleções',
                 'nome' => 'Lista de Inscritos',
-                'editavel' => true,
                 'obrigatorio' => false,
             ],
             [
                 'classe_nome' => 'Solicitações de Isenção de Taxa',
                 'nome' => 'Comprovação',
-                'editavel' => true,
                 'obrigatorio' => true,
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Documento com Foto',
-                'editavel' => true,
                 'obrigatorio' => true,
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Comprovação de Proficiência em Língua Estrangeira',
-                'editavel' => true,
                 'obrigatorio' => true,
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Histórico Escolar e Diploma de Gradução',
-                'editavel' => true,
                 'obrigatorio' => true,
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica',
-                'editavel' => true,
                 'obrigatorio' => true,
                 'minimo' => 2,
             ],
@@ -89,6 +81,16 @@ class TipoArquivoSeeder extends Seeder
         foreach (TipoArquivo::all() as $tipoarquivo) {
             $tipoarquivo->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULAR);
             $tipoarquivo->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        }
+
+        // adiciona registros na tabela tipoarquivo_nivel
+        $nivel_id_MESTRADO = Nivel::where('nome', 'Mestrado')->first()->id;
+        $nivel_id_DOUTORADO = Nivel::where('nome', 'Doutorado')->first()->id;
+        $nivel_id_DOUTORADODIRETO = Nivel::where('nome', 'Doutorado Direto')->first()->id;
+        foreach (TipoArquivo::where('classe_nome', 'Inscrições')->get() as $tipoarquivo) {
+            $tipoarquivo->niveis()->attach($nivel_id_MESTRADO);
+            $tipoarquivo->niveis()->attach($nivel_id_DOUTORADO);
+            $tipoarquivo->niveis()->attach($nivel_id_DOUTORADODIRETO);
         }
     }
 }

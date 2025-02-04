@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TipoArquivoRequest;
+use App\Models\Nivel;
 use App\Models\TipoArquivo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
@@ -45,7 +47,7 @@ class TipoArquivoController extends Controller
 
         \UspTheme::activeUrl('tiposarquivo');
         if ($request->ajax())
-            return TipoArquivo::find((int) $id);    // preenche os dados do form de edição de um tipo de arquivo
+            return TipoArquivo::with('niveis')->find((int) $id);    // preenche os dados do form de edição de um tipo de arquivo com seus níveis
     }
 
     /**
@@ -63,7 +65,22 @@ class TipoArquivoController extends Controller
             return back()->withErrors($validator)->withInput();
 
         $request->merge(['obrigatorio' => $request->has('obrigatorio')]);    // acerta o valor do campo "obrigatorio" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
-        $tipoarquivo = TipoArquivo::create($request->all());
+
+        // transaction para não ter problema de inconsistência do DB
+        DB::transaction(function () use ($request) {
+
+            $tipoarquivo = TipoArquivo::create($request->all());
+
+            if ($tipoarquivo->classe_nome == 'Inscrições')
+                foreach (Nivel::all() as $nivel)
+                    if (array_key_exists($nivel->id, $request->niveis)) {
+                        if (!$tipoarquivo->niveis()->where('nivel_id', $nivel->id)->exists())
+                            $tipoarquivo->niveis()->attach($nivel->id);    // adiciona o relacionamento
+                    } else {
+                        if ($tipoarquivo->niveis()->where('nivel_id', $nivel->id)->exists())
+                            $tipoarquivo->niveis()->detach($nivel->id);    // exclui o relacionamento
+                    }
+        });
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
         \UspTheme::activeUrl('tiposarquivo');
@@ -86,9 +103,24 @@ class TipoArquivoController extends Controller
             return back()->withErrors($validator)->withInput();
 
         $request->merge(['obrigatorio' => $request->has('obrigatorio')]);    // acerta o valor do campo "obrigatorio" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
-        $tipoarquivo = TipoArquivo::find((int) $id);
-        $tipoarquivo->fill($request->all());
-        $tipoarquivo->save();
+
+        // transaction para não ter problema de inconsistência do DB
+        DB::transaction(function () use ($request, $id) {
+
+            $tipoarquivo = TipoArquivo::find((int) $id);
+            $tipoarquivo->fill($request->all());
+            $tipoarquivo->save();
+
+            if ($tipoarquivo->classe_nome == 'Inscrições')
+                foreach (Nivel::all() as $nivel)
+                    if (array_key_exists($nivel->id, $request->niveis)) {
+                        if (!$tipoarquivo->niveis()->where('nivel_id', $nivel->id)->exists())
+                            $tipoarquivo->niveis()->attach($nivel->id);    // adiciona o relacionamento
+                    } else {
+                        if ($tipoarquivo->niveis()->where('nivel_id', $nivel->id)->exists())
+                            $tipoarquivo->niveis()->detach($nivel->id);    // exclui o relacionamento
+                    }
+        });
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
         \UspTheme::activeUrl('tiposarquivo');
@@ -133,7 +165,8 @@ class TipoArquivoController extends Controller
         $modal['url'] = 'tiposarquivo';
         $modal['title'] = 'Editar Tipo de Arquivo';
         $rules = TipoArquivoRequest::rules;
+        $niveis = Nivel::all();
 
-        return compact('tiposarquivo', 'fields', 'modal', 'rules');
+        return compact('tiposarquivo', 'fields', 'modal', 'rules', 'niveis');
     }
 }
