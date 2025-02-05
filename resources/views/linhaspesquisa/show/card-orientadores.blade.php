@@ -14,6 +14,10 @@
     Orientadores
     <span class="badge badge-pill badge-primary">{{ is_null($linhapesquisa->orientadores) ? 0 : $linhapesquisa->orientadores->count() }}</span>
     @can('linhaspesquisa.update')
+      @php
+        $inclusor_url = 'linhaspesquisa';    // para o include abaixo
+        $inclusor_objeto = $linhapesquisa;
+      @endphp
       @include('orientadores.partials.modal-add')
     @endcan
   </div>

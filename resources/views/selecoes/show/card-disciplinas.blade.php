@@ -15,7 +15,11 @@
     <span class="badge badge-pill badge-primary">{{ is_null($selecao->disciplinas) ? 0 : $selecao->disciplinas->count() }}</span>
     @can('selecoes.update', $selecao)
       @if ($condicao_ativa)
-        @include('disciplinas.partials.modal-add-selecoes')
+        @php
+          $inclusor_url = 'selecoes';    // para o include abaixo
+          $inclusor_objeto = $selecao;
+        @endphp
+        @include('disciplinas.partials.modal-add')
       @endif
     @endcan
   </div>

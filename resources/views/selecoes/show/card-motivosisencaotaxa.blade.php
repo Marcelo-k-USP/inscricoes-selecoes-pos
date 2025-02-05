@@ -15,6 +15,10 @@
     <span class="badge badge-pill badge-primary">{{ is_null($selecao->motivosisencaotaxa) ? 0 : $selecao->motivosisencaotaxa->count() }}</span>
     @can('selecoes.update', $selecao)
       @if ($condicao_ativa)
+        @php
+          $inclusor_url = 'selecoes';    // para o include abaixo
+          $inclusor_objeto = $selecao;
+        @endphp
         @include('motivosisencaotaxa.partials.modal-add')
       @endif
     @endcan

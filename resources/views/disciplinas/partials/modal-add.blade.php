@@ -14,7 +14,7 @@
       </div>
       <div class="modal-body">
         <div class="list_table_div_form">
-          {{ html()->form('post', 'inscricoes/' . $inscricao->id . '/disciplinas')->open() }}
+          {{ html()->form('post', $inclusor_url . '/' . $inclusor_objeto->id . '/disciplinas')->open() }}
             @csrf
             @method('post')
             {{ html()->hidden('id') }}
