@@ -9,6 +9,8 @@
     @include('common.list-table-form-datetime')
   @elseif ($col['type'] == 'number')
     @include('common.list-table-form-number')
+  @elseif ($col['type'] == 'integer')
+    @include('common.list-table-form-integer')
   @elseif ($col['type'] == 'select')
     @include('common.list-table-form-select')
   @elseif ($col['type'] == 'checkbox')

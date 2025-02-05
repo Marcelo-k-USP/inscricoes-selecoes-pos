@@ -44,12 +44,12 @@
   <script type="text/javascript">
     $(document).ready(function() {
 
-      $('#TipoArquivoModal').on('shown.bs.modal', function() {
+      $('#TipoArquivo{{ $tipoarquivo_classe_nome }}Modal').on('shown.bs.modal', function() {
         $('#id_campo1').focus();
       });
 
       add_modal_form = function() {
-        $('#TipoArquivoModal').modal();
+        $('#TipoArquivo{{ $tipoarquivo_classe_nome }}Modal').modal();
       };
     });
   </script>

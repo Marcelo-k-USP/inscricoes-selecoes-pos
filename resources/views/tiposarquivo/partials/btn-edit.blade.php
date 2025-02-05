@@ -1,3 +1,3 @@
-<button type="button" class="btn btn-sm btn-light text-primary" onclick="edit_form({{ $tipoarquivo->id }})" data-toggle="tooltip" title="Editar">
+<a class="btn btn-sm btn-light text-primary" href="tiposarquivo/edit/{{ $tipoarquivo->id }}">
   <i class="fas fa-edit"></i>
-</button>
+</a>

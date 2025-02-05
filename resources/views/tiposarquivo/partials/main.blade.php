@@ -1,11 +1,11 @@
 <div class="row">
   <div class="col-md-12 form-inline">
-    <span class="h4 mt-2">Tipos de Arquivo</span>
+    <span class="h4 mt-2">Tipos de Documento</span>
     @can('tiposarquivo.create')
       &nbsp; &nbsp;
-      <button type="button" class="btn btn-sm btn-success" onclick="add_form()">
+      <a href="{{ route('tiposarquivo.create') }}" class="btn btn-sm btn-success">
         <i class="fas fa-plus"></i> Novo
-      </button>
+      </a>
     @endcan
   </div>
 </div>

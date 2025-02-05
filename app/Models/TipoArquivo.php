@@ -66,7 +66,8 @@ class TipoArquivo extends Model
         $tiposarquivo = self::get();
         $ret = [];
         foreach ($tiposarquivo as $tipoarquivo)
-            $ret[$tipoarquivo->id] = $tipoarquivo->nome;
+            if (Gate::allows('tiposarquivo.view', $linhapesquisa))
+                $ret[$tipoarquivo->id] = $tipoarquivo->nome;
         return $ret;
     }
 

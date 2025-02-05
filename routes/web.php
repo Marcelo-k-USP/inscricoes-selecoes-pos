@@ -80,6 +80,13 @@ Route::resource('motivosisencaotaxa', MotivoIsencaoTaxaController::class);
 
 // TIPOS DE ARQUIVO
 Route::resource('tiposarquivo', TipoArquivoController::class);
+Route::post('tiposarquivo/create', [TipoArquivoController::class, 'store'])->name('tiposarquivo.store');
+Route::get('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'edit'])->name('tiposarquivo.edit');
+Route::put('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'update'])->name('tiposarquivo.update');
+
+// TIPOS DE ARQUIVO > NÍVEIS
+Route::post('tiposarquivo/{tipoarquivo}/niveis', [TipoArquivoController::class, 'storeNivel']);
+Route::delete('tiposarquivo/{tipoarquivo}/niveis/{nivel}', [TipoArquivoController::class, 'destroyNivel']);
 
 // SELEÇÕES
 Route::get('selecoes', [SelecaoController::class, 'index'])->name('selecoes.index');

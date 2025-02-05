@@ -4,9 +4,8 @@
 @parent
   @if ($tiposarquivo != null)
     @include('tiposarquivo.partials.main')
-    @include('tiposarquivo.partials.modal')
   @else
-    Sem tipos de arquivo
+    Sem tipos de documento
   @endif
 @endsection
 
