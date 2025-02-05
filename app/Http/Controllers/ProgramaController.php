@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProgramaRequest;
+use App\Models\Nivel;
 use App\Models\Programa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
@@ -62,7 +64,12 @@ class ProgramaController extends Controller
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
 
-        $programa = Programa::create($request->all());
+        // transaction para não ter problema de inconsistência do DB
+        DB::transaction(function () use ($request) {
+            $programa = Programa::create($request->all());
+            foreach (Nivel::all() as $nivel)    // adiciona relações deste programa com todos os níveis
+                $programa->niveis()->attach($nivel);
+        });
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
         \UspTheme::activeUrl('programas');
@@ -110,7 +117,13 @@ class ProgramaController extends Controller
         elseif ($programa->linhaspesquisa()->exists())
             $request->session()->flash('alert-danger', 'Há linhas de pesquisa/temas para este programa!');
         else {
-            $programa->delete();
+            // transaction para não ter problema de inconsistência do DB
+            DB::transaction(function () use ($programa) {
+                if ($programa->niveis()->exists())
+                    $programa->niveis()->detach();    // remove todas as relações com níveis deste programa
+                $programa->delete();
+            });
+
             $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         }
         \UspTheme::activeUrl('programas');

@@ -84,9 +84,9 @@ Route::post('tiposarquivo/create', [TipoArquivoController::class, 'store'])->nam
 Route::get('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'edit'])->name('tiposarquivo.edit');
 Route::put('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'update'])->name('tiposarquivo.update');
 
-// TIPOS DE ARQUIVO > NÍVEIS
-Route::post('tiposarquivo/{tipoarquivo}/niveis', [TipoArquivoController::class, 'storeNivel']);
-Route::delete('tiposarquivo/{tipoarquivo}/niveis/{nivel}', [TipoArquivoController::class, 'destroyNivel']);
+// TIPOS DE ARQUIVO > NÍVEIS + PROGRAMAS
+Route::post('tiposarquivo/{tipoarquivo}/niveisprogramas', [TipoArquivoController::class, 'storeNivelPrograma']);
+Route::delete('tiposarquivo/{tipoarquivo}/niveisprogramas/{nivelprograma}', [TipoArquivoController::class, 'destroyNivelPrograma']);
 
 // SELEÇÕES
 Route::get('selecoes', [SelecaoController::class, 'index'])->name('selecoes.index');

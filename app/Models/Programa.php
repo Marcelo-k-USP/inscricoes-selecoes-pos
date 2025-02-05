@@ -88,7 +88,15 @@ class Programa extends Model
     }
 
     /**
-     * Programa possui users
+     * relacionamento com níveis
+     */
+    public function niveis()
+    {
+        return $this->belongsToMany('App\Models\Nivel', 'nivel_programa', 'programa_id', 'nivel_id')->withTimestamps();
+    }
+
+    /**
+     * relacionamento com users
      */
     public function users()
     {

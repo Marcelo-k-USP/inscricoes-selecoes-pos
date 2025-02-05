@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Nivel;
+use App\Models\Programa;
 use Illuminate\Database\Seeder;
 
 class NivelSeeder extends Seeder
@@ -29,5 +30,10 @@ class NivelSeeder extends Seeder
         // adiciona registros na tabela niveis
         foreach ($niveis as $nivel)
             Nivel::create($nivel);
+
+        // adiciona registros na tabela nivel_programa
+        foreach (Nivel::all() as $nivel)
+            foreach (Programa::all() as $programa)
+                $nivel->programas()->attach($programa->id);
     }
 }

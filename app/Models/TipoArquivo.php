@@ -80,11 +80,11 @@ class TipoArquivo extends Model
     }
 
     /**
-     * relacionamento com níveis
+     * relacionamento com combinações de níveis com programas
      */
-    public function niveis()
+    public function niveisprogramas()
     {
-        return $this->belongsToMany('App\Models\Nivel', 'tipoarquivo_nivel', 'tipoarquivo_id', 'nivel_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\NivelPrograma', 'tipoarquivo_nivelprograma', 'tipoarquivo_id', 'nivelprograma_id')->withTimestamps();
     }
 
     /**

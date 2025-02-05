@@ -240,8 +240,12 @@ class ArquivoController extends Controller
                 break;
             case 'Inscricao':
                 $objeto->selecao->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
-                $objeto->tipos_arquivo = $objeto->selecao->tiposarquivo->filter(function ($registro) use ($nivel) {
-                    return (($registro->classe_nome === 'Inscrições') && (empty($nivel) || $registro->niveis->contains('nome', $nivel)));    // se houver nível, se restringe a ele
+                $objeto->tipos_arquivo = $objeto->selecao->tiposarquivo->filter(function ($registro) use ($nivel, $objeto) {
+                    return (($registro->classe_nome === 'Inscrições') &&
+                            (empty($nivel) || ($registro->niveisprogramas->contains(function ($nivelprograma) use ($nivel, $objeto) {
+                                return ($nivelprograma->nivel->nome === $nivel) && ($nivelprograma->programa->nome === $objeto->selecao->programa->nome);
+                            })))
+                           );    // se houver combinação de nível com programa, se restringe a ela
                 });    // todos os tipos de arquivo possíveis para inscrições desta seleção
         }
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa

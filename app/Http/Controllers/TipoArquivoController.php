@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TipoArquivoRequest;
-use App\Models\Nivel;
+use App\Models\NivelPrograma;
 use App\Models\TipoArquivo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -82,8 +82,8 @@ class TipoArquivoController extends Controller
             $tipoarquivo = TipoArquivo::create($request->all());
 
             if ($tipoarquivo->classe_nome == 'Inscrições')
-                foreach (Nivel::all() as $nivel)    // cadastra automaticamente todos os níveis como possíveis para este tipo de arquivo
-                    $tipoarquivo->niveis()->attach($nivel->id);
+                foreach (NivelPrograma::all() as $nivelprograma)    // cadastra automaticamente todas as combinações de níveis com programas como possíveis para este tipo de arquivo
+                    $tipoarquivo->niveisprogramas()->attach($nivelprograma->id);
 
             return $tipoarquivo;
         });
@@ -153,6 +153,8 @@ class TipoArquivoController extends Controller
             $request->session()->flash('alert-danger', 'Há seleções que usam este tipo de documento!');
         elseif ($tipoarquivo->arquivos()->exists())
             $request->session()->flash('alert-danger', 'Há arquivos armazenados deste tipo!');
+        elseif ($tipoarquivo->niveisprogramas()->exists())
+            $request->session()->flash('alert-danger', 'Há combinações de níveis com programas que usam este tipo de documento!');
         else {
             $tipoarquivo->delete();
             $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
@@ -162,11 +164,11 @@ class TipoArquivoController extends Controller
     }
 
     /**
-     * Adicionar níveis relacionados ao tipo de arquivo
+     * Adicionar combinações de níveis com programas relacionadas ao tipo de arquivo
      * autorizado a qualquer um que tenha acesso ao tipo de arquivo
      * request->codpes = required, int
      */
-    public function storeNivel(Request $request, TipoArquivo $tipoarquivo)
+    public function storeNivelPrograma(Request $request, TipoArquivo $tipoarquivo)
     {
         $this->authorize('tiposarquivo.update', $tipoarquivo);
 
@@ -180,34 +182,34 @@ class TipoArquivoController extends Controller
         // transaction para não ter problema de inconsistência do DB
         $db_transaction = DB::transaction(function () use ($request, $tipoarquivo) {
 
-            $nivel = Nivel::where('id', $request->id)->first();
+            $nivelprograma = NivelPrograma::where('id', $request->id)->first();
 
-            $existia = $tipoarquivo->niveis()->detach($nivel);
+            $existia = $tipoarquivo->niveisprogramas()->detach($nivelprograma);
 
-            $tipoarquivo->niveis()->attach($nivel);
+            $tipoarquivo->niveisprogramas()->attach($nivelprograma);
 
-            return ['nivel' => $nivel, 'existia' => $existia];
+            return ['nivelprograma' => $nivelprograma, 'existia' => $existia];
         });
 
         if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'O nível ' . $db_transaction['nivel']->nome . ' foi adicionado a esse tipo de documento');
+            $request->session()->flash('alert-success', 'A combinação nível ' . $db_transaction['nivelprograma']->nivel->nome . ' com programa ' . $db_transaction['nivelprograma']->programa->nome . ' foi adicionada a esse tipo de documento');
         else
-            $request->session()->flash('alert-info', 'O nível ' . $db_transaction['nivel']->nome . ' já estava vinculado a esse tipo de documento');
+            $request->session()->flash('alert-info', 'A combinação nível ' . $db_transaction['nivelprograma']->nivel->nome . ' com programa ' . $db_transaction['nivelprograma']->programa->nome . ' já estava vinculada a esse tipo de documento');
         \UspTheme::activeUrl('tiposarquivo');
         return view('tiposarquivo.edit', $this->monta_compact($tipoarquivo, 'edit'));
     }
 
     /**
-     * Remove níveis relacionados ao tipo de arquivo
+     * Remove combinações de níveis com programas relacionadas ao tipo de arquivo
      * $user = required
      */
-    public function destroyNivel(Request $request, TipoArquivo $tipoarquivo, Nivel $nivel)
+    public function destroyNivelPrograma(Request $request, TipoArquivo $tipoarquivo, NivelPrograma $nivelprograma)
     {
         $this->authorize('tiposarquivo.update', $tipoarquivo);
 
-        $tipoarquivo->niveis()->detach($nivel);
+        $tipoarquivo->niveisprogramas()->detach($nivelprograma);
 
-        $request->session()->flash('alert-success', 'O nível ' . $nivel->nome . ' foi removido desse tipo de documento');
+        $request->session()->flash('alert-success', 'A combinação nível ' . $nivelprograma->nivel->nome . '  com programa ' . $nivelprograma->programa->nome . ' foi removida desse tipo de documento');
         \UspTheme::activeUrl('tiposarquivo');
         return view('tiposarquivo.edit', $this->monta_compact($tipoarquivo, 'edit'));
     }
@@ -234,9 +236,9 @@ class TipoArquivoController extends Controller
     {
         $data = (object) self::$data;
         $objeto = $tipoarquivo;
-        $niveis = Nivel::all();
+        $niveisprogramas = NivelPrograma::all();
         $rules = TipoArquivoRequest::rules;
 
-        return compact('data', 'objeto', 'niveis', 'rules', 'modo');
+        return compact('data', 'objeto', 'niveisprogramas', 'rules', 'modo');
     }
 }

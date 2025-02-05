@@ -38,9 +38,8 @@
             <div class="col-md-5">
               @if ($modo == 'edit')
                 @if ($objeto->classe_nome == 'Inscrições')
-                  @include('tiposarquivo.show.card-niveis')             {{-- Níveis --}}
+                  @include('tiposarquivo.show.card-niveisprogramas')    {{-- Níveis + Programas --}}
                 @endif
-                {{--@include('tiposarquivo.show.card-programas')--}}    {{-- Programas --}}
               @endif
             </div>
           </div>

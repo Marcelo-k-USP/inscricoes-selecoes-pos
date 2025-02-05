@@ -48,18 +48,18 @@ class Nivel extends Model
     }
 
     /**
+     * relacionamento com programas
+     */
+    public function programas()
+    {
+        return $this->belongsToMany('App\Models\Programa', 'nivel_programa', 'nivel_id', 'programa_id')->withTimestamps();
+    }
+
+    /**
      * relacionamento com linhas de pesquisa
      */
     public function linhaspesquisa()
     {
         return $this->belongsToMany('App\Models\LinhaPesquisa', 'linhapesquisa_nivel', 'nivel_id', 'linhapesquisa_id')->withTimestamps();
-    }
-
-    /**
-     * relacionamento com tipos de arquivo
-     */
-    public function tiposarquivo()
-    {
-        return $this->belongsToMany('App\Models\TipoArquivo', 'tipoarquivo_nivel', 'nivel_id', 'tipoarquivo_id')->withTimestamps();
     }
 }
