@@ -14,11 +14,7 @@
     Disciplinas
     <span class="badge badge-pill badge-primary">{{ is_null($inscricao_disciplinas) ? 0 : count($inscricao_disciplinas) }}</span>
     @if ($condicao_ativa)
-      @php
-        $inclusor_url = 'inscricoes';    // para o include abaixo
-        $inclusor_objeto = $inscricao;
-      @endphp
-      @include('disciplinas.partials.modal-add')
+      @include('disciplinas.partials.modal-add', ['inclusor_url' => 'inscricoes', 'inclusor_objeto' => $inscricao])
     @endif
   </div>
   <div class="card-body">

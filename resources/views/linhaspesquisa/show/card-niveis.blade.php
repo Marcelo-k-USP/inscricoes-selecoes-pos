@@ -14,11 +14,7 @@
     Níveis
     <span class="badge badge-pill badge-primary">{{ is_null($linhapesquisa->niveis) ? 0 : $linhapesquisa->niveis->count() }}</span>
     @can('linhaspesquisa.update')
-      @php
-        $inclusor_url = 'linhaspesquisa';    // para o include abaixo
-        $inclusor_objeto = $linhapesquisa;
-      @endphp
-      @include('niveis.partials.modal-add')
+      @include('niveis.partials.modal-add', ['inclusor_url' => 'linhaspesquisa', 'inclusor_objeto' => $linhapesquisa])
     @endcan
   </div>
   <div class="card-body">

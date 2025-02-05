@@ -14,11 +14,7 @@
     Combinações Níveis com Programas
     <span class="badge badge-pill badge-primary">{{ is_null($tipoarquivo->niveisprogramas) ? 0 : $tipoarquivo->niveisprogramas->count() }}</span>
     @can('tiposarquivo.update')
-      @php
-        $inclusor_url = 'tiposarquivo';    // para o include abaixo
-        $inclusor_objeto = $tipoarquivo;
-      @endphp
-      @include('niveisprogramas.partials.modal-add')
+      @include('niveisprogramas.partials.modal-add', ['inclusor_url' => 'tiposarquivo', 'inclusor_objeto' => $tipoarquivo])
     @endcan
   </div>
   <div class="card-body">

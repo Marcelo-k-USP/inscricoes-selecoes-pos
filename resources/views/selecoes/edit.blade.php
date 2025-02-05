@@ -52,18 +52,16 @@
                 @endif
                 @include('selecoes.show.card-motivosisencaotaxa')                    {{-- Motivos de Isenção de Taxa --}}
                 @include('common.card-arquivos')                                     {{-- Arquivos --}}
-                @php
-                  $tipoarquivo_classe_nome_plural_acentuado = 'Solicitações de Isenção de Taxa';    // para o include abaixo
-                  $tipoarquivo_classe_nome = 'SolicitacaoIsencaoTaxa';
-                  $tiposarquivo = $tiposarquivo_solicitacaoisencaotaxa;
-                @endphp
-                @include('selecoes.show.card-tiposarquivo')                          {{-- Tipos de Arquivo nas Solicitações de Isenção de Taxa --}}
-                @php
-                  $tipoarquivo_classe_nome_plural_acentuado = 'Inscrições';          // para o include abaixo
-                  $tipoarquivo_classe_nome = 'Inscricao';
-                  $tiposarquivo = $tiposarquivo_inscricao;
-                @endphp
-                @include('selecoes.show.card-tiposarquivo')                          {{-- Tipos de Arquivo nas Inscrições --}}
+                @include('selecoes.show.card-tiposarquivo', [                        {{-- Tipos de Arquivo nas Solicitações de Isenção de Taxa --}}
+                  'tipoarquivo_classe_nome_plural_acentuado' => 'Solicitações de Isenção de Taxa',
+                  'tipoarquivo_classe_nome' => 'SolicitacaoIsencaoTaxa',
+                  'tiposarquivo' => $tiposarquivo_solicitacaoisencaotaxa
+                ])
+                @include('selecoes.show.card-tiposarquivo', [                        {{-- Tipos de Arquivo nas Inscrições --}}
+                  'tipoarquivo_classe_nome_plural_acentuado' => 'Inscrições',
+                  'tipoarquivo_classe_nome' => 'Inscricao',
+                  'tiposarquivo' => $tiposarquivo_inscricao
+                ])
                 @include('selecoes.show.card-solicitacoesisencaotaxa')               {{-- Solicitações de Isenção de Taxa --}}
                 @include('selecoes.show.card-inscricoes')                            {{-- Inscrições --}}
               @endif

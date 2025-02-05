@@ -61,11 +61,12 @@
               @if (($inscricao->selecao->categoria->nome == 'Aluno Especial') && ($modo == 'edit'))
                 @include('inscricoes.show.card-disciplinas')    {{-- Disciplinas --}}
               @endif
-              @php
-                $selecao = $inscricao->selecao;                 // para o include abaixo
-              @endphp
-              @include('inscricoes.show.card-responsaveis')     {{-- Responsáveis --}}
-              @include('inscricoes.show.card-informativos')     {{-- Informativos --}}
+              @include('inscricoes.show.card-responsaveis', [   {{-- Responsáveis --}}
+                'selecao' => $inscricao->selecao
+              ])
+              @include('inscricoes.show.card-informativos', [   {{-- Informativos --}}
+                'selecao' => $inscricao->selecao
+              ])
               @if ($modo == 'edit')
                 @if ($condicao_disponivel)
                   @include('common.card-arquivos')              {{-- Arquivos --}}

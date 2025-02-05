@@ -49,11 +49,12 @@
               @include('solicitacoesisencaotaxa.show.card-principal')    {{-- Principal --}}
             </div>
             <div class="col-md-5">
-              @php
-                $selecao = $solicitacaoisencaotaxa->selecao;             // para o include abaixo
-              @endphp
-              @include('inscricoes.show.card-responsaveis')              {{-- Responsáveis --}}
-              @include('inscricoes.show.card-informativos')              {{-- Informativos --}}
+              @include('inscricoes.show.card-responsaveis', [            {{-- Responsáveis --}}
+                'selecao' => $solicitacaoisencaotaxa->selecao
+              ])
+              @include('inscricoes.show.card-informativos', [            {{-- Informativos --}}
+                'selecao' => $solicitacaoisencaotaxa->selecao
+              ])
               @if ($modo == 'edit')
                 @include('common.card-arquivos')                         {{-- Arquivos --}}
                 @if (session('perfil') == 'usuario')

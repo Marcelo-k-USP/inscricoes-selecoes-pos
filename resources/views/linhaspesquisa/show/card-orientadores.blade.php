@@ -14,11 +14,7 @@
     Orientadores
     <span class="badge badge-pill badge-primary">{{ is_null($linhapesquisa->orientadores) ? 0 : $linhapesquisa->orientadores->count() }}</span>
     @can('linhaspesquisa.update')
-      @php
-        $inclusor_url = 'linhaspesquisa';    // para o include abaixo
-        $inclusor_objeto = $linhapesquisa;
-      @endphp
-      @include('orientadores.partials.modal-add')
+      @include('orientadores.partials.modal-add', ['inclusor_url' => 'linhaspesquisa', 'inclusor_objeto' => $linhapesquisa])
     @endcan
   </div>
   <div class="card-body">
