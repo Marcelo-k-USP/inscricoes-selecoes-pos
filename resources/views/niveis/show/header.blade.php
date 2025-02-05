@@ -3,8 +3,8 @@
     {{ $nivel->nome }}
   </b>
   <div class="hidden-btn d-none ml-auto">
-    @can('linhaspesquisa.update', $linhapesquisa)
-      @include('common.btn-delete-sm', ['action' => "linhaspesquisa/{$linhapesquisa->id}/niveis/{$nivel->id}"])
+    @can($chamador_nome_plural . '.update', $chamador)
+      @include('common.btn-delete-sm', ['action' => "{$chamador_nome_plural}/{$chamador->id}/niveis/{$nivel->id}"])
     @endcan
   </div>
 </div>

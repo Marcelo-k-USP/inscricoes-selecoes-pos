@@ -13,6 +13,10 @@
   <div class="card-header">
     Níveis
     <span class="badge badge-pill badge-primary">{{ is_null($linhapesquisa->niveis) ? 0 : $linhapesquisa->niveis->count() }}</span>
+    @php
+      $chamador = $linhapesquisa;             // para os includes abaixo
+      $chamador_nome_plural = 'linhaspesquisa';
+    @endphp
     @can('linhaspesquisa.update')
       @include('niveis.partials.modal-add')
     @endcan
