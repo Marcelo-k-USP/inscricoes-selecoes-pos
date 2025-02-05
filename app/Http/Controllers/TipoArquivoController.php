@@ -235,7 +235,8 @@ class TipoArquivoController extends Controller
         $data = (object) self::$data;
         $objeto = $tipoarquivo;
         $niveis = Nivel::all();
+        $rules = TipoArquivoRequest::rules;
 
-        return compact('data', 'objeto', 'niveis', 'modo');
+        return compact('data', 'objeto', 'niveis', 'rules', 'modo');
     }
 }

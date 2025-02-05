@@ -297,7 +297,8 @@ class LinhaPesquisaController extends Controller
         $objeto = $linhapesquisa;
         $fields_orientador = Orientador::getFields();
         $niveis = Nivel::all();
+        $rules = LinhaPesquisaRequest::rules;
 
-        return compact('data', 'objeto', 'fields_orientador', 'niveis', 'modo');
+        return compact('data', 'objeto', 'fields_orientador', 'niveis', 'rules', 'modo');
     }
 }
