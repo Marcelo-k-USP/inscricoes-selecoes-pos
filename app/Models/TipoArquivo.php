@@ -81,22 +81,26 @@ class TipoArquivo extends Model
     {
         switch ($classe_nome) {
             case 'Selecao':
-                return self::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
+                // todos os tipos de arquivo possíveis para seleções
+                return self::where('classe_nome', 'Seleções')->get();
 
             case 'SolicitacaoIsencaoTaxa':
-                return self::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa
+                // todos os tipos de arquivo possíveis para solicitações de isenção de taxa
+                return self::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();
 
             case 'Inscricao':
+                // todos os tipos de arquivo possíveis para inscrições
                 return self::where('classe_nome', 'Inscrições')->where(function ($query) use ($niveis, $programa_id) {
                     if ($niveis->isEmpty())
                         $query->where('aluno_especial', true);
                     else
-                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {{    // se houver combinação de nível com programa, se restringe a ela
+                        // se houver combinação de nível com programa, se restringe a ela
+                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {{
                             $query->whereIn('nivel_id', function ($query) use ($niveis) {
                                 $query->select('id')->from('niveis')->whereIn('nome', $niveis->pluck('nome'));
                             })->where('programa_id', $programa_id);
                         }});
-                })->get();    // todos os tipos de arquivo possíveis para inscrições
+                })->get();
         }
     }
 
@@ -105,19 +109,22 @@ class TipoArquivo extends Model
         $programa_id = $selecao->programa_id;
         switch ($classe_nome) {
             case 'SolicitacaoIsencaoTaxa':
-                return $selecao->tiposarquivo()->where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa desta seleção
+                // todos os tipos de arquivo possíveis para solicitações de isenção de taxa nesta seleção
+                return $selecao->tiposarquivo()->where('classe_nome', 'Solicitações de Isenção de Taxa')->get();
 
             case 'Inscricao':
+                // todos os tipos de arquivo possíveis para inscrições nesta seleção
                 return $selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where(function ($query) use ($niveis, $programa_id) {
                     if ($niveis->isEmpty())
                         $query->where('aluno_especial', true);
                     else
-                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {{    // se houver combinação de nível com programa, se restringe a ela
+                        // se houver combinação de nível com programa, se restringe a ela
+                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {{
                             $query->whereIn('nivel_id', function ($query) use ($niveis) {
                                 $query->select('id')->from('niveis')->whereIn('nome', $niveis->pluck('nome'));
                             })->where('programa_id', $programa_id);
                         }});
-                })->get();    // todos os tipos de arquivo possíveis para inscrições desta seleção
+                })->get();
         }
     }
 
