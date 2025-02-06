@@ -230,6 +230,7 @@ class ArquivoController extends Controller
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
         switch ($classe_nome) {
             case 'Selecao':
+                $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
                 $objeto->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
                 break;
             case 'SolicitacaoIsencaoTaxa':

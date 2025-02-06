@@ -668,6 +668,7 @@ class SelecaoController extends Controller
         $rules = (new SelecaoRequest())->rules();
         $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($objeto->programa) ? (new Programa) : $objeto->programa);
         $disciplinas = Disciplina::listarDisciplinas();
+        $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $objeto->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();                                         // todos os tipos de arquivo possíveis para seleções
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa

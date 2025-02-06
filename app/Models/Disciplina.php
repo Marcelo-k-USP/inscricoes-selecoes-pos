@@ -57,11 +57,11 @@ class Disciplina extends Model
     public static function listarDisciplinas(?Selecao $selecao = null)
     {
         if (is_null($selecao))
-            return self::get();
+            return self::orderBy('sigla')->get();
         else
             return self::whereHas('selecoes', function ($query) use ($selecao) {
                 $query->where('selecoes.id', $selecao->id);
-            })->get();
+            })->orderBy('sigla')->get();
     }
 
     /**

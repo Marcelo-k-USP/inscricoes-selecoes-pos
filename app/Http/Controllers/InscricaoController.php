@@ -404,7 +404,7 @@ class InscricaoController extends Controller
         foreach ($objetos as $objeto) {
             $extras = json_decode($objeto->extras, true);
             $objeto->linha_pesquisa = (isset($extras['linha_pesquisa']) ? (LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome ?? null) : null);
-            $objeto->disciplinas = (isset($extras['disciplinas']) ? (Disciplina::whereIn('id', $extras['disciplinas'])->get()->map(function ($disciplina) {
+            $objeto->disciplinas = (isset($extras['disciplinas']) ? (Disciplina::whereIn('id', $extras['disciplinas'])->orderBy('sigla')->get()->map(function ($disciplina) {
                 return $disciplina->sigla . ' - ' . $disciplina->nome;
             })->implode(',<br />')) : null);
         }
@@ -424,7 +424,7 @@ class InscricaoController extends Controller
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $responsaveis = $objeto->selecao->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
         $extras = json_decode($objeto->extras, true);
-        $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
+        $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->orderBy('sigla')->get() : collect());
         $disciplinas = Disciplina::listarDisciplinas($objeto->selecao);
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
