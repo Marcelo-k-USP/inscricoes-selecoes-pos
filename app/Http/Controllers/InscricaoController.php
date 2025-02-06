@@ -429,7 +429,7 @@ class InscricaoController extends Controller
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $objeto->selecao->tipos_arquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', new Collection(), $objeto->selecao->programa_id);
-        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($objeto->selecao->categoria->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), $objeto->selecao->programa_id);
+        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivoPelaSelecao('Inscricao', ($objeto->selecao->categoria->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), $objeto->selecao);
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size', 'scroll');

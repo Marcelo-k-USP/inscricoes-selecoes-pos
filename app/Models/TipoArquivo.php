@@ -84,10 +84,31 @@ class TipoArquivo extends Model
                 return self::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
 
             case 'SolicitacaoIsencaoTaxa':
-                return self::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa desta seleção
+                return self::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa
 
             case 'Inscricao':
                 return self::where('classe_nome', 'Inscrições')->where(function ($query) use ($niveis, $programa_id) {
+                    if ($niveis->isEmpty())
+                        $query->where('aluno_especial', true);
+                    else
+                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {{    // se houver combinação de nível com programa, se restringe a ela
+                            $query->whereIn('nivel_id', function ($query) use ($niveis) {
+                                $query->select('id')->from('niveis')->whereIn('nome', $niveis->pluck('nome'));
+                            })->where('programa_id', $programa_id);
+                        }});
+                })->get();    // todos os tipos de arquivo possíveis para inscrições
+        }
+    }
+
+    public static function obterTiposArquivoPelaSelecao(string $classe_nome, $niveis, Selecao $selecao)
+    {
+        $programa_id = $selecao->programa_id;
+        switch ($classe_nome) {
+            case 'SolicitacaoIsencaoTaxa':
+                return $selecao->tiposarquivo()->where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa desta seleção
+
+            case 'Inscricao':
+                return $selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where(function ($query) use ($niveis, $programa_id) {
                     if ($niveis->isEmpty())
                         $query->where('aluno_especial', true);
                     else
