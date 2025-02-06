@@ -125,11 +125,14 @@ class TipoArquivoController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $request->merge(['obrigatorio' => $request->has('obrigatorio')]);    // acerta o valor do campo "obrigatorio" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
+        // acerta os valores dos campos tipo checkbox (pois, se o usuário deixou false, os campos não vêm no $request e, se o usuário deixou true, ele vêm mas com valor null)
+        $request->merge(['obrigatorio' => $request->has('obrigatorio')]);
+        $request->merge(['aluno_especial' => $request->has('aluno_especial')]);
 
         $tipoarquivo->nome = $request->nome;
         $tipoarquivo->obrigatorio = $request->obrigatorio;
         $tipoarquivo->minimo = $request->minimo;
+        $tipoarquivo->aluno_especial = $request->aluno_especial;
         $tipoarquivo->save();
 
         $request->session()->flash('alert-success', 'Tipo de documento alterado com sucesso');

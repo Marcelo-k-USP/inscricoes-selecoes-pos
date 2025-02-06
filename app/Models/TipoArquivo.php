@@ -18,6 +18,7 @@ class TipoArquivo extends Model
         'nome',
         'obrigatorio',
         'minimo',
+        'aluno_especial',
     ];
 
     // uso no crud generico
@@ -41,6 +42,11 @@ class TipoArquivo extends Model
             'name' => 'minimo',
             'label' => 'Mínimo',
             'type' => 'integer',
+        ],
+        [
+            'name' => 'aluno_especial',
+            'label' => 'Aluno Especial',
+            'type' => 'checkbox',
         ],
     ];
 
@@ -69,6 +75,32 @@ class TipoArquivo extends Model
             if (Gate::allows('tiposarquivo.view', $linhapesquisa))
                 $ret[$tipoarquivo->id] = $tipoarquivo->nome;
         return $ret;
+    }
+
+    public static function obterTiposArquivo(string $classe_nome, $niveis, $selecao)
+    {
+        switch ($classe_nome) {
+            case 'Selecao':
+                return self::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
+
+            case 'SolicitacaoIsencaoTaxa':
+                return $selecao->tiposarquivo->filter(function ($registro) {
+                    return $registro->classe_nome === 'Solicitações de Isenção de Taxa';
+                });    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa desta seleção
+
+            case 'Inscricao':
+                return $selecao->tiposarquivo->filter(function ($registro) use ($niveis, $selecao) {
+                    \Illuminate\Support\Facades\Log::info('$niveis: ' . json_encode($niveis));
+                    return (($registro->classe_nome === 'Inscrições') &&
+                            (
+                                ($niveis->isEmpty() && $registro->aluno_especial) ||
+                                (!$niveis->isEmpty() && $registro->niveisprogramas->contains(function ($nivelprograma) use ($niveis, $selecao) {
+                                    return ($niveis->pluck('nome')->contains($nivelprograma->nivel->nome) && ($nivelprograma->programa->nome === $selecao->programa->nome));
+                                }))
+                            )
+                           );    // se houver combinação de nível com programa, se restringe a ela
+                });    // todos os tipos de arquivo possíveis para inscrições desta seleção
+        }
     }
 
     /**

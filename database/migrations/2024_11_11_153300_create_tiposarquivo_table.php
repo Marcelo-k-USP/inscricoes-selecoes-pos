@@ -20,6 +20,7 @@ class CreateTiposArquivoTable extends Migration
             $table->boolean('editavel')->default(true);
             $table->boolean('obrigatorio');
             $table->integer('minimo')->nullable();
+            $table->boolean('aluno_especial')->default(true);    // indica se o tipo de arquivo fica disponível para alunos especiais
             $table->timestamps();
         });
     }

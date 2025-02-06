@@ -27,7 +27,7 @@ class SelecaoSeeder extends Seeder
 
         $selecoes = [
             [
-                'nome' => 'Seleção 2025 Aluno Regular',
+                'nome' => 'Seleção 2025 Aluno Regular NEC',
                 'estado' => 'Aguardando Documentação',
                 'descricao' => 'Processo Seletivo 2025 Aluno Regular',
                 'datahora_inicio' => Carbon::createFromFormat('d/m/Y H:i', '01/11/2024 08:00')->format('Y-m-d H:i'),

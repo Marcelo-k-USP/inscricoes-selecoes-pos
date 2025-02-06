@@ -14,6 +14,7 @@ use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\TipoArquivo;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
@@ -228,27 +229,11 @@ class ArquivoController extends Controller
         $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
-        switch ($classe_nome) {
-            case 'Selecao':
-                $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
-                $objeto->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
-                break;
-            case 'SolicitacaoIsencaoTaxa':
-                $objeto->selecao->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
-                $objeto->tipos_arquivo = $objeto->selecao->tiposarquivo->filter(function ($registro) {
-                    return $registro->classe_nome === 'Solicitações de Isenção de Taxa';
-                });    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa desta seleção
-                break;
-            case 'Inscricao':
-                $objeto->selecao->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
-                $objeto->tipos_arquivo = $objeto->selecao->tiposarquivo->filter(function ($registro) use ($nivel, $objeto) {
-                    return (($registro->classe_nome === 'Inscrições') &&
-                            (empty($nivel) || ($registro->niveisprogramas->contains(function ($nivelprograma) use ($nivel, $objeto) {
-                                return ($nivelprograma->nivel->nome === $nivel) && ($nivelprograma->programa->nome === $objeto->selecao->programa->nome);
-                            })))
-                           );    // se houver combinação de nível com programa, se restringe a ela
-                });    // todos os tipos de arquivo possíveis para inscrições desta seleção
-        }
+        if ($classe_nome == 'Selecao')
+            $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
+        else
+            $objeto->selecao->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
+        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivo($classe_nome, ($objeto->selecao->categoria->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), ($classe_nome == 'Selecao' ? $objeto : $objeto->selecao));
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa
         $tiposarquivo_inscricao = TipoArquivo::where('classe_nome', 'Inscrições')->get();                                      // todos os tipos de arquivo possíveis para inscrições
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');

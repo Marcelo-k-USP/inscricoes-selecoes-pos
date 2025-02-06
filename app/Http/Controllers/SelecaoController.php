@@ -8,6 +8,7 @@ use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\MotivoIsencaoTaxa;
+use App\Models\Nivel;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
@@ -16,6 +17,7 @@ use App\Models\User;
 use App\Utils\JSONForms;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -110,8 +112,15 @@ class SelecaoController extends Controller
                 foreach (Disciplina::listarDisciplinas() as $disciplina)
                     $selecao->disciplinas()->attach($disciplina);
 
-            foreach (TipoArquivo::whereIn('classe_nome', ['Solicitações de Isenção de Taxa', 'Inscrições'])->get() as $tipoarquivo)    // cadastra automaticamente todos os tipos de arquivo para solicitações de isenção de taxa e inscrição como possíveis para este processo seletivo
+            foreach (TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get() as $tipoarquivo)    // cadastra automaticamente todos os tipos de arquivo para solicitações de isenção de taxa como possíveis para este processo seletivo
                 $selecao->tiposarquivo()->attach($tipoarquivo);
+
+            if ($is_aluno_especial)    // cadastra automaticamente tipos de arquivo para inscrições como possíveis para este processo seletivo
+                foreach (TipoArquivo::where('classe_nome', 'Inscrições')->where('aluno_especial', true)->get() as $tipoarquivo)
+                    $selecao->tiposarquivo()->attach($tipoarquivo);
+            else
+                foreach (TipoArquivo::where('classe_nome', 'Inscrições')->whereRelation('niveisprogramas', 'programa_id', $selecao->programa_id)->get() as $tipoarquivo)
+                    $selecao->tiposarquivo()->attach($tipoarquivo);
 
             return ['selecao' => $selecao, 'is_aluno_especial' => $is_aluno_especial];
         });
@@ -672,7 +681,7 @@ class SelecaoController extends Controller
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $objeto->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();                                         // todos os tipos de arquivo possíveis para seleções
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa
-        $tiposarquivo_inscricao = TipoArquivo::where('classe_nome', 'Inscrições')->get();                                      // todos os tipos de arquivo possíveis para inscrições
+        $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivo('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao);    // todos os tipos de arquivo possíveis para inscrições
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'rules', 'scroll');

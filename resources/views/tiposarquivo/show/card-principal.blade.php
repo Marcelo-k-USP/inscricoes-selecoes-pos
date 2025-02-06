@@ -42,6 +42,7 @@
 
       $('#form_principal').find('input, select').filter(':visible').not(':disabled').first().focus();
       updateMinimo();
+      updateAlunoEspecial();
     });
 
     $('#form_principal').on('submit', function(event) {
@@ -56,12 +57,25 @@
       updateMinimo();
     });
 
+    $('#classe_nome').on('change', function () {
+      updateAlunoEspecial();
+    });
+
     function updateMinimo() {
       if (!$('#obrigatorio').prop('checked')) {
         $('#minimo').val('');
         $('#minimo').parents('div').eq(1).hide();
       } else
         $('#minimo').parents('div').eq(1).show();
+    }
+
+    function updateAlunoEspecial() {
+      if ($('#classe_nome').val() != 'Inscrições') {
+        $('#aluno_especial').prop('checked', true);
+        $('#aluno_especial').closest('div.form-group').hide();
+      }
+      else
+        $('#aluno_especial').closest('div.form-group').show();
     }
   </script>
 @endsection

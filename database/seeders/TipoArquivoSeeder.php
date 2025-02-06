@@ -58,6 +58,7 @@ class TipoArquivoSeeder extends Seeder
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Histórico Escolar do Mestrado',
                 'obrigatorio' => true,
+                'aluno_especial' => false,
             ],
             [
                 'classe_nome' => 'Inscrições',
@@ -68,27 +69,32 @@ class TipoArquivoSeeder extends Seeder
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Diploma do Mestrado',
                 'obrigatorio' => true,
+                'aluno_especial' => false,
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Dissertação do Mestrado',
                 'obrigatorio' => true,
+                'aluno_especial' => false,
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Comprovação de Proficiência em uma Língua Estrangeira',
                 'obrigatorio' => true,
+                'aluno_especial' => false,
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Comprovação de Publicação de um Artigo em Revista Científica',
                 'obrigatorio' => true,
+                'aluno_especial' => false,
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica',
                 'obrigatorio' => true,
                 'minimo' => 2,
+                'aluno_especial' => false,
             ],
             [
                 'classe_nome' => 'Inscrições',
@@ -102,15 +108,11 @@ class TipoArquivoSeeder extends Seeder
         foreach ($tiposarquivo as $tipoarquivo)
             TipoArquivo::create($tipoarquivo);
 
-        // adiciona registros na tabela selecao_tipoarquivo
-        $selecao_id_SELECAO2025ALUNOREGULAR= Selecao::where('nome', 'Seleção 2025 Aluno Regular')->first()->id;
-        $selecao_id_SELECAO2025ALUNOESPECIAL= Selecao::where('nome', 'Seleção 2025 Aluno Especial')->first()->id;
-        foreach (TipoArquivo::all() as $tipoarquivo) {
-            $tipoarquivo->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULAR);
-            $tipoarquivo->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
-        }
-
-        // adiciona registros na tabela tipoarquivo_nivelprograma
+        $tipoarquivo_EDITAL = TipoArquivo::where('nome', 'Edital')->first();
+        $tipoarquivo_NORMASPARAISENCAODETAXA = TipoArquivo::where('nome', 'Normas para Isenção de Taxa')->first();
+        $tipoarquivo_ERRATA = TipoArquivo::where('nome', 'Errata')->first();
+        $tipoarquivo_LISTADEINSCRITOS = TipoArquivo::where('nome', 'Lista de Inscritos')->first();
+        $tipoarquivo_COMPROVACAO = TipoArquivo::where('nome', 'Comprovação')->first();
         $tipoarquivo_DOCUMENTOCOMFOTO = TipoArquivo::where('nome', 'Documento com Foto')->first();
         $tipoarquivo_HISTORICOESCOLARDAGRADUACAO = TipoArquivo::where('nome', 'Histórico Escolar da Graduação')->first();
         $tipoarquivo_HISTORICOESCOLARDOMESTRADO = TipoArquivo::where('nome', 'Histórico Escolar do Mestrado')->first();
@@ -121,6 +123,8 @@ class TipoArquivoSeeder extends Seeder
         $tipoarquivo_COMPROVACAODEPUBLICACAODEUMARTIGOEMREVISTACIENTIFICA = TipoArquivo::where('nome', 'Comprovação de Publicação de um Artigo em Revista Científica')->first();
         $tipoarquivo_COMPROVACAODEPUBLICACAODENOMINIMODOISARTIGOSEMREVISTACIENTIFICA = TipoArquivo::where('nome', 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica')->first();
         $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO = TipoArquivo::where('nome', 'Boleto(s) de Pagamento da Inscrição')->first();
+
+        // adiciona registros na tabela tipoarquivo_nivelprograma
         $nivelprograma_id_MESTRADONEUROCIENCIASECOMPORTAMENTONEC = NivelPrograma::whereHas('nivel', function ($query) { $query->where('nome', 'Mestrado'); })->whereHas('programa', function ($query) { $query->where('nome', 'Neurociências e Comportamento (NEC)'); })->first()->id;
         $nivelprograma_id_MESTRADOPSICOLOGIAESCOLAREDODESENVOLVIMENTOHUMANOPSA = NivelPrograma::whereHas('nivel', function ($query) { $query->where('nome', 'Mestrado'); })->whereHas('programa', function ($query) { $query->where('nome', 'Psicologia Escolar e do Desenvolvimento Humano (PSA)'); })->first()->id;
         $nivelprograma_id_MESTRADOPSICOLOGIACLINICAPSC = NivelPrograma::whereHas('nivel', function ($query) { $query->where('nome', 'Mestrado'); })->whereHas('programa', function ($query) { $query->where('nome', 'Psicologia Clínica (PSC)'); })->first()->id;
@@ -251,5 +255,32 @@ class TipoArquivoSeeder extends Seeder
         $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIACLINICAPSC);
         $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIAEXPERIMENTALPSE);
         $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIASOCIALPST);
+
+        // adiciona registros na tabela selecao_tipoarquivo
+        $selecao_id_SELECAO2025ALUNOREGULARNEC = Selecao::where('nome', 'Seleção 2025 Aluno Regular NEC')->first()->id;
+        $selecao_id_SELECAO2025ALUNOESPECIAL = Selecao::where('nome', 'Seleção 2025 Aluno Especial')->first()->id;
+        $tipoarquivo_EDITAL->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_EDITAL->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_NORMASPARAISENCAODETAXA->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_NORMASPARAISENCAODETAXA->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_ERRATA->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_ERRATA->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_LISTADEINSCRITOS->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_LISTADEINSCRITOS->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_COMPROVACAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_COMPROVACAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_DOCUMENTOCOMFOTO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_DOCUMENTOCOMFOTO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_HISTORICOESCOLARDAGRADUACAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_HISTORICOESCOLARDAGRADUACAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_HISTORICOESCOLARDOMESTRADO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_DIPLOMADAGRADUACAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_DIPLOMADAGRADUACAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_DIPLOMADOMESTRADO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_DISSERTACAODOMESTRADO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_COMPROVACAODEPROFICIENCIAEMUMALINGUAESTRANGEIRA->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_COMPROVACAODEPUBLICACAODEUMARTIGOEMREVISTACIENTIFICA->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
     }
 }

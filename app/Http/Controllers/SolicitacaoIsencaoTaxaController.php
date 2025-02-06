@@ -6,6 +6,7 @@ use App\Http\Requests\SolicitacaoIsencaoTaxaRequest;
 use App\Mail\SolicitacaoIsencaoTaxaMail;
 use App\Models\LocalUser;
 use App\Models\MotivoIsencaoTaxa;
+use App\Models\Nivel;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
@@ -250,9 +251,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $responsaveis = $objeto->selecao->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
         $objeto->selecao->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
-        $objeto->tipos_arquivo = $objeto->selecao->tiposarquivo->filter(function ($registro) {
-            return $registro->classe_nome === 'Solicitações de Isenção de Taxa';
-        });    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa desta seleção
+        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivo($classe_nome, ($objeto->selecao->categoria->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $objeto->selecao);
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'max_upload_size');

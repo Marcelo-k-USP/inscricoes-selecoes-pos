@@ -25,6 +25,7 @@ class TipoArquivoRequest extends FormRequest
         'classe_nome' => ['required'],
         'nome' => ['required', 'max:100'],
         'obrigatorio' => [],
+        'aluno_especial' => [],
     ];
 
     public const messages = [
