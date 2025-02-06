@@ -90,7 +90,6 @@ class TipoArquivo extends Model
 
             case 'Inscricao':
                 return $selecao->tiposarquivo->filter(function ($registro) use ($niveis, $selecao) {
-                    \Illuminate\Support\Facades\Log::info('$niveis: ' . json_encode($niveis));
                     return (($registro->classe_nome === 'Inscrições') &&
                             (
                                 ($niveis->isEmpty() && $registro->aluno_especial) ||

@@ -221,10 +221,11 @@ class ArquivoController extends Controller
     private function monta_compact(object $objeto, string $classe_nome, string $classe_nome_plural, $form, string $modo)
     {
         $data = (object) ('App\\Http\\Controllers\\' . $classe_nome . 'Controller')::$data;
+        $selecao = ($classe_nome == 'Selecao' ? $objeto : $objeto->selecao);
         $linhaspesquisa = LinhaPesquisa::all();
         $disciplinas = Disciplina::all();
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
-        $responsaveis = (($classe_nome == 'Selecao') ? $objeto : $objeto->selecao)->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
+        $responsaveis = $selecao->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
         $extras = json_decode($objeto->extras, true);
         $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
@@ -233,9 +234,9 @@ class ArquivoController extends Controller
             $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
         else
             $objeto->selecao->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
-        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivo($classe_nome, ($objeto->selecao->categoria->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), ($classe_nome == 'Selecao' ? $objeto : $objeto->selecao));
+        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivo($classe_nome, ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), $selecao);
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get();    // todos os tipos de arquivo possíveis para solicitações de isenção de taxa
-        $tiposarquivo_inscricao = TipoArquivo::where('classe_nome', 'Inscrições')->get();                                      // todos os tipos de arquivo possíveis para inscrições
+        $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivo('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao);    // todos os tipos de arquivo possíveis para inscrições
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
         $scroll = 'arquivos';
 
