@@ -250,8 +250,8 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $classe_nome_plural = 'solicitacoesisencaotaxa';
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $responsaveis = $objeto->selecao->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
-        $objeto->selecao->tipos_arquivo = TipoArquivo::where('classe_nome', 'Seleções')->get();    // todos os tipos de arquivo possíveis para seleções
-        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivo($classe_nome, ($objeto->selecao->categoria->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $objeto->selecao);
+        $objeto->selecao->tipos_arquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', new Collection(), $objeto->selecao->programa_id);
+        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', new Collection(), $objeto->selecao->programa_id);
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'max_upload_size');
