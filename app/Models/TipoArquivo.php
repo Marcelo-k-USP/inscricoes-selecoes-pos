@@ -144,9 +144,11 @@ class TipoArquivo extends Model
                 ->exists())
             return self::query();
 
-        return self::whereHas('niveisprogramas', function ($query) {
-            $query->whereIn('programa_id', Auth::user()->listarProgramasGerenciados()->pluck('id'));
-        });
+        return self::where('classe_nome', 'Seleções')
+                 ->orWhere('classe_nome', 'Solicitações de Isenção de Taxa')
+                 ->orWhereHas('niveisprogramas', function ($query) {
+                    $query->whereIn('programa_id', Auth::user()->listarProgramasGerenciados()->pluck('id'));
+                 });
     }
 
     /**
