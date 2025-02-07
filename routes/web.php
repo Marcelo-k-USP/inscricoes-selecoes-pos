@@ -28,6 +28,14 @@ Route::get('login', [LoginController::class, 'redirectToProvider'])->name('login
 Route::get('callback', [LoginController::class, 'handleProviderCallback']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
+// LOCAL USERS > LOGIN
+Route::get('localusers/login', [LocalUserController::class, 'showLogin'])->name('localusers.showlogin');
+Route::post('localusers/login', [LocalUserController::class, 'login'])->name('localusers.login');
+Route::post('localusers/esqueceusenha', [LocalUserController::class, 'esqueceuSenha'])->name('localusers.esqueceusenha');
+Route::get('localusers/redefinesenha/{token}', [LocalUserController::class, 'iniciaRedefinicaoSenha'])->name('localusers.iniciaredefinicaosenha');
+Route::post('localusers/redefinesenha', [LocalUserController::class, 'redefineSenha'])->name('localusers.redefinesenha');
+Route::get('localusers/confirmaemail/{token}', [LocalUserController::class, 'confirmaEmail'])->name('localusers.confirmaemail');
+
 // SOLICITAÇÕES DE ISENÇÃO DE TAXA
 Route::get('solicitacoesisencaotaxa', [SolicitacaoIsencaoTaxaController::class, 'index'])->name('solicitacoesisencaotaxa.index');
 Route::get('solicitacoesisencaotaxa/create', [SolicitacaoIsencaoTaxaController::class, 'listaSelecoesParaSolicitacaoIsencaoTaxa'])->name('solicitacoesisencaotaxa.create');
@@ -51,6 +59,44 @@ Route::delete('inscricoes/{inscricao}/disciplinas/{disciplina}', [InscricaoContr
 
 // CONSULTA DE CEP
 Route::get('consulta-cep', [EnderecoController::class, 'consultarCep'])->name('consulta.cep');
+
+// ARQUIVOS
+Route::resource('arquivos', ArquivoController::class);
+
+// SELEÇÕES
+Route::get('selecoes', [SelecaoController::class, 'index'])->name('selecoes.index');
+Route::get('selecoes/create', [SelecaoController::class, 'create'])->name('selecoes.create');
+Route::post('selecoes/create', [SelecaoController::class, 'store'])->name('selecoes.store');
+Route::get('selecoes/edit/{selecao}', [SelecaoController::class, 'edit'])->name('selecoes.edit');
+Route::put('selecoes/edit/{selecao}', [SelecaoController::class, 'update'])->name('selecoes.update');
+Route::put('selecoes/edit-status/{selecao}', [SelecaoController::class, 'updateStatus'])->name('selecoes.update-status');
+Route::get('selecoes/{selecao}/downloadsolicitacoesisencaotaxa', [SelecaoController::class, 'downloadSolicitacoesIsencaoTaxa'])->name('selecoes.downloadsolicitacoesisencaotaxa');
+Route::get('selecoes/{selecao}/downloadinscricoes', [SelecaoController::class, 'downloadInscricoes'])->name('selecoes.downloadinscricoes');
+
+// SELEÇÕES > LINHAS DE PESQUISA/TEMAS
+Route::post('selecoes/{selecao}/linhaspesquisa', [SelecaoController::class, 'storeLinhaPesquisa']);
+Route::delete('selecoes/{selecao}/linhaspesquisa/{linhapesquisa}', [SelecaoController::class, 'destroyLinhaPesquisa']);
+
+// SELEÇÕES > DISCIPLINAS
+Route::post('selecoes/{selecao}/disciplinas', [SelecaoController::class, 'storeDisciplina']);
+Route::delete('selecoes/{selecao}/disciplinas/{disciplina}', [SelecaoController::class, 'destroyDisciplina']);
+
+// SELEÇÕES > MOTIVOS DE ISENÇÂO DE TAXA
+Route::post('selecoes/{selecao}/motivosisencaotaxa', [SelecaoController::class, 'storeMotivoIsencaoTaxa']);
+Route::delete('selecoes/{selecao}/motivosisencaotaxa/{motivoisencaotaxa}', [SelecaoController::class, 'destroyMotivoIsencaoTaxa']);
+
+// SELEÇÕES > TIPOS DE ARQUIVO
+Route::post('selecoes/{selecao}/tiposarquivosolicitacaoisencaotaxa', [SelecaoController::class, 'storeTipoArquivoSolicitacaoIsencaoTaxa']);
+Route::delete('selecoes/{selecao}/tiposarquivosolicitacaoisencaotaxa/{tipoarquivo}', [SelecaoController::class, 'destroyTipoArquivoSolicitacaoIsencaoTaxa']);
+Route::post('selecoes/{selecao}/tiposarquivoinscricao', [SelecaoController::class, 'storeTipoArquivoInscricao']);
+Route::delete('selecoes/{selecao}/tiposarquivoinscricao/{tipoarquivo}', [SelecaoController::class, 'destroyTipoArquivoInscricao']);
+
+// SELEÇÕES > FORMULÁRIO
+Route::post('selecoes/{selecao}/template_json', [SelecaoController::class, 'storeTemplateJson']);
+Route::get('selecoes/{selecao}/template', [SelecaoController::class, 'createTemplate'])->name('selecoes.createtemplate');
+Route::post('selecoes/{selecao}/template', [SelecaoController::class, 'storeTemplate'])->name('selecoes.storetemplate');
+Route::get('selecoes/{selecao}/templatevalue/{campo}', [SelecaoController::class, 'createTemplateValue'])->name('selecoes.createtemplatevalue')->where('campo', '[a-zA-Z0-9_]+');
+Route::post('selecoes/{selecao}/templatevalue/{campo}', [SelecaoController::class, 'storeTemplateValue'])->name('selecoes.storetemplatevalue')->where('campo', '[a-zA-Z0-9_]+');
 
 // CATEGORIAS
 Route::resource('categorias', CategoriaController::class);
@@ -88,61 +134,6 @@ Route::put('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'up
 Route::post('tiposarquivo/{tipoarquivo}/niveisprogramas', [TipoArquivoController::class, 'storeNivelPrograma']);
 Route::delete('tiposarquivo/{tipoarquivo}/niveisprogramas/{nivelprograma}', [TipoArquivoController::class, 'destroyNivelPrograma']);
 
-// SELEÇÕES
-Route::get('selecoes', [SelecaoController::class, 'index'])->name('selecoes.index');
-Route::get('selecoes/create', [SelecaoController::class, 'create'])->name('selecoes.create');
-Route::post('selecoes/create', [SelecaoController::class, 'store'])->name('selecoes.store');
-Route::get('selecoes/edit/{selecao}', [SelecaoController::class, 'edit'])->name('selecoes.edit');
-Route::put('selecoes/edit/{selecao}', [SelecaoController::class, 'update'])->name('selecoes.update');
-Route::put('selecoes/edit-status/{selecao}', [SelecaoController::class, 'updateStatus'])->name('selecoes.update-status');
-Route::get('selecoes/{selecao}/downloadsolicitacoesisencaotaxa', [SelecaoController::class, 'downloadSolicitacoesIsencaoTaxa'])->name('selecoes.downloadsolicitacoesisencaotaxa');
-Route::get('selecoes/{selecao}/downloadinscricoes', [SelecaoController::class, 'downloadInscricoes'])->name('selecoes.downloadinscricoes');
-
-// SELEÇÕES > LINHAS DE PESQUISA/TEMAS
-Route::post('selecoes/{selecao}/linhaspesquisa', [SelecaoController::class, 'storeLinhaPesquisa']);
-Route::delete('selecoes/{selecao}/linhaspesquisa/{linhapesquisa}', [SelecaoController::class, 'destroyLinhaPesquisa']);
-
-// SELEÇÕES > DISCIPLINAS
-Route::post('selecoes/{selecao}/disciplinas', [SelecaoController::class, 'storeDisciplina']);
-Route::delete('selecoes/{selecao}/disciplinas/{disciplina}', [SelecaoController::class, 'destroyDisciplina']);
-
-// SELEÇÕES > MOTIVOS DE ISENÇÂO DE TAXA
-Route::post('selecoes/{selecao}/motivosisencaotaxa', [SelecaoController::class, 'storeMotivoIsencaoTaxa']);
-Route::delete('selecoes/{selecao}/motivosisencaotaxa/{motivoisencaotaxa}', [SelecaoController::class, 'destroyMotivoIsencaoTaxa']);
-
-// SELEÇÕES > TIPOS DE ARQUIVO
-Route::post('selecoes/{selecao}/tiposarquivosolicitacaoisencaotaxa', [SelecaoController::class, 'storeTipoArquivoSolicitacaoIsencaoTaxa']);
-Route::delete('selecoes/{selecao}/tiposarquivosolicitacaoisencaotaxa/{tipoarquivo}', [SelecaoController::class, 'destroyTipoArquivoSolicitacaoIsencaoTaxa']);
-Route::post('selecoes/{selecao}/tiposarquivoinscricao', [SelecaoController::class, 'storeTipoArquivoInscricao']);
-Route::delete('selecoes/{selecao}/tiposarquivoinscricao/{tipoarquivo}', [SelecaoController::class, 'destroyTipoArquivoInscricao']);
-
-// SELEÇÕES > FORMULÁRIO
-Route::post('selecoes/{selecao}/template_json', [SelecaoController::class, 'storeTemplateJson']);
-Route::get('selecoes/{selecao}/template', [SelecaoController::class, 'createTemplate'])->name('selecoes.createtemplate');
-Route::post('selecoes/{selecao}/template', [SelecaoController::class, 'storeTemplate'])->name('selecoes.storetemplate');
-Route::get('selecoes/{selecao}/templatevalue/{campo}', [SelecaoController::class, 'createTemplateValue'])->name('selecoes.createtemplatevalue')->where('campo', '[a-zA-Z0-9_]+');
-Route::post('selecoes/{selecao}/templatevalue/{campo}', [SelecaoController::class, 'storeTemplateValue'])->name('selecoes.storetemplatevalue')->where('campo', '[a-zA-Z0-9_]+');
-
-// USERS
-Route::get('search/partenome', [UserController::class, 'partenome']);
-Route::get('search/codpes', [UserController::class, 'codpes']);
-Route::get('users/perfil/{perfil}', [UserController::class, 'trocarPerfil']);
-// Route::get('users/desassumir', [UserController::class, 'desassumir']);
-// Route::get('users/{user}/assumir', [UserController::class, 'assumir']);
-Route::get('users/meuperfil', [UserController::class, 'meuperfil']);
-Route::resource('users', UserController::class);
-
-// LOCAL USERS > LOGIN
-Route::get('localusers/login', [LocalUserController::class, 'showLogin'])->name('localusers.showlogin');
-Route::post('localusers/login', [LocalUserController::class, 'login'])->name('localusers.login');
-Route::post('localusers/esqueceusenha', [LocalUserController::class, 'esqueceuSenha'])->name('localusers.esqueceusenha');
-Route::get('localusers/redefinesenha/{token}', [LocalUserController::class, 'iniciaRedefinicaoSenha'])->name('localusers.iniciaredefinicaosenha');
-Route::post('localusers/redefinesenha', [LocalUserController::class, 'redefineSenha'])->name('localusers.redefinesenha');
-Route::get('localusers/confirmaemail/{token}', [LocalUserController::class, 'confirmaEmail'])->name('localusers.confirmaemail');
-
-// LOCAL USERS
-Route::resource('localusers', LocalUserController::class);
-
 // PARÂMETROS
 Route::get('parametros', [ParametroController::class, 'edit'])->name('parametros.edit');
 Route::put('parametros', [ParametroController::class, 'update'])->name('parametros.update');
@@ -154,8 +145,17 @@ Route::put('funcoes', [FuncaoController::class, 'update'])->name('funcoes.update
 // RESPONSÁVEIS
 Route::get('responsaveis/{id}/{funcao}/{programa_id?}', [ResponsavelController::class, 'show']);
 
-// ARQUIVOS
-Route::resource('arquivos', ArquivoController::class);
+// LOCAL USERS
+Route::resource('localusers', LocalUserController::class);
+
+// USERS
+Route::get('search/partenome', [UserController::class, 'partenome']);
+Route::get('search/codpes', [UserController::class, 'codpes']);
+Route::get('users/perfil/{perfil}', [UserController::class, 'trocarPerfil']);
+// Route::get('users/desassumir', [UserController::class, 'desassumir']);
+// Route::get('users/{user}/assumir', [UserController::class, 'assumir']);
+Route::get('users/meuperfil', [UserController::class, 'meuperfil']);
+Route::resource('users', UserController::class);
 
 // ADMIN
 Route::get('admin', [AdminController::class, 'index']);
