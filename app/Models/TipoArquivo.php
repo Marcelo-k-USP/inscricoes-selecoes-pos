@@ -104,16 +104,16 @@ class TipoArquivo extends Model
         }
     }
 
-    public static function obterTiposArquivoPelaSelecao(string $classe_nome, $niveis, Selecao $selecao)
+    public static function obterTiposArquivoDaSelecao(string $classe_nome, $niveis, Selecao $selecao)
     {
         $programa_id = $selecao->programa_id;
         switch ($classe_nome) {
             case 'SolicitacaoIsencaoTaxa':
-                // todos os tipos de arquivo possíveis para solicitações de isenção de taxa nesta seleção
+                // todos os tipos de arquivo para solicitações de isenção de taxa nesta seleção
                 return $selecao->tiposarquivo()->where('classe_nome', 'Solicitações de Isenção de Taxa')->get();
 
             case 'Inscricao':
-                // todos os tipos de arquivo possíveis para inscrições nesta seleção
+                // todos os tipos de arquivo para inscrições nesta seleção
                 return $selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where(function ($query) use ($niveis, $programa_id) {
                     if ($niveis->isEmpty())
                         $query->where('aluno_especial', true);
