@@ -219,7 +219,7 @@ class TipoArquivoController extends Controller
 
     private function monta_compact_index()
     {
-        $tiposarquivo = TipoArquivo::orderByRaw("
+        $tiposarquivo = TipoArquivo::listarTiposArquivo()->orderByRaw("
             CASE
                 WHEN classe_nome = 'Seleções'                        THEN 1
                 WHEN classe_nome = 'Solicitações de Isenção de Taxa' THEN 2
@@ -239,7 +239,8 @@ class TipoArquivoController extends Controller
     {
         $data = (object) self::$data;
         $objeto = $tipoarquivo;
-        $niveisprogramas = NivelPrograma::all();
+        $objeto->niveisprogramas = NivelPrograma::obterNiveisProgramasDoTipoArquivo($objeto);
+        $niveisprogramas = NivelPrograma::obterNiveisProgramasPossiveis();
         $rules = TipoArquivoRequest::rules;
 
         return compact('data', 'objeto', 'niveisprogramas', 'rules', 'modo');

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class TipoArquivo extends Model
@@ -126,6 +128,25 @@ class TipoArquivo extends Model
                         }});
                 })->get();
         }
+    }
+
+    /**
+     * Lista os tipos de arquivo autorizados para o usuário
+     */
+    public static function listarTiposArquivo()
+    {
+        if (session('perfil') != 'gerente')
+                return self::query();
+
+        if (DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
+                ->where('user_id', Auth::id())
+                ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenador de Pós-Graduação'])
+                ->exists())
+            return self::query();
+
+        return self::whereHas('niveisprogramas', function ($query) {
+            $query->whereIn('programa_id', Auth::user()->listarProgramasGerenciados()->pluck('id'));
+        });
     }
 
     /**
