@@ -810,10 +810,10 @@ class Selecao extends Model
      */
     public function atualizarStatus()
     {
-        $tipos_arquivo_required = TipoArquivo::where('classe_nome', 'Seleções')->where('obrigatorio', true)->pluck('nome')->toArray();
+        $tiposarquivo_required = TipoArquivo::where('classe_nome', 'Seleções')->where('obrigatorio', true)->pluck('nome')->toArray();
         $possui_todos_os_arquivos_required = true;
-        foreach ($tipos_arquivo_required as $tipo_arquivo_required)
-            if (!$this->arquivos->contains('pivot.tipo', $tipo_arquivo_required)) {
+        foreach ($tiposarquivo_required as $tipoarquivo_required)
+            if (!$this->arquivos->contains('pivot.tipo', $tipoarquivo_required)) {
                 $possui_todos_os_arquivos_required = false;
                 break;
             }

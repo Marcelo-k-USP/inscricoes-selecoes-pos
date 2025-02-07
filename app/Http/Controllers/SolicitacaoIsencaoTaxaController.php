@@ -15,7 +15,6 @@ use App\Models\User;
 use App\Utils\JSONForms;
 use Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -250,10 +249,10 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $classe_nome_plural = 'solicitacoesisencaotaxa';
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $responsaveis = $objeto->selecao->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
-        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', new Collection(), $objeto->selecao);
-        $objeto->selecao->tipos_arquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', new Collection(), $objeto->selecao->programa_id);
+        $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $objeto->selecao);
+        $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id);
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'tiposarquivo_selecao', 'max_upload_size');
     }
 }

@@ -32,28 +32,28 @@
     <div class="card-body">
       <input type="hidden" name="classe_nome" value="{{ $classe_nome }}">
       <input type="hidden" name="objeto_id" value="{{ $objeto->id }}">
-      <input type="hidden" name="tipo_arquivo" id="tipo_arquivo">
+      <input type="hidden" name="tipoarquivo" id="tipoarquivo">
       <input type="hidden" name="nome_arquivo" id="nome_arquivo">
       @php
         $i = 0;
       @endphp
-      @foreach ($objeto->tipos_arquivo as $tipo_arquivo)
+      @foreach ($objeto->tiposarquivo->where('classe_nome', $tipoarquivo_classe_nome_plural_acentuado) as $tipoarquivo)
         <div class="arquivos-lista">
-          {{ $tipo_arquivo['nome'] }} {!! ((isset($tipo_arquivo['obrigatorio']) && $tipo_arquivo['obrigatorio']) ? '<small class="text-required">(*)</small>' : '') !!}
+          {{ $tipoarquivo['nome'] }} {!! ((isset($tipoarquivo['obrigatorio']) && $tipoarquivo['obrigatorio']) ? '<small class="text-required">(*)</small>' : '') !!}
           @php
-            $editavel = (isset($tipo_arquivo['editavel']) && $tipo_arquivo['editavel']);
+            $editavel = (isset($tipoarquivo['editavel']) && $tipoarquivo['editavel']);
           @endphp
           @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $editavel)
             <label for="input_arquivo_{{ $i }}">
               <span class="btn btn-sm btn-light text-primary ml-2"> <i class="fas fa-plus"></i> Adicionar</span>
             </label>
           @endcan
-          <input type="hidden" id="tipo_arquivo_{{ $i }}" value="{{ $tipo_arquivo['nome'] }}">
+          <input type="hidden" id="tipoarquivo_{{ $i }}" value="{{ $tipoarquivo['nome'] }}">
           <input type="file" name="arquivo[]" id="input_arquivo_{{ $i }}" accept="image/jpeg,image/png,application/pdf" class="d-none" multiple capture="environment">
 
-          @if ($objeto->arquivos->where('pivot.tipo', $tipo_arquivo['nome'])->count() > 0)
+          @if ($objeto->arquivos->where('pivot.tipo', $tipoarquivo['nome'])->count() > 0)
             <ul class="list-unstyled">
-              @foreach ($objeto->arquivos->where('pivot.tipo', $tipo_arquivo['nome']) as $arquivo)
+              @foreach ($objeto->arquivos->where('pivot.tipo', $tipoarquivo['nome']) as $arquivo)
                 @if (preg_match('/pdf/i', $arquivo->mimeType))
                   <li class="modo-visualizacao">
                     @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $editavel)
@@ -104,7 +104,7 @@
   <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
   <script type="text/javascript">
     var max_upload_size = {{ $max_upload_size }};
-    var count_tipos_arquivo = {{ $objeto->tipos_arquivo->count() }};
+    var count_tiposarquivo = {{ $objeto->tiposarquivo->count() }};
   </script>
   <script src="js/arquivos.js"></script>
 @endsection

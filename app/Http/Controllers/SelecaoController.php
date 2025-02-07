@@ -679,11 +679,14 @@ class SelecaoController extends Controller
         $disciplinas = Disciplina::listarDisciplinas();
         $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
-        $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', new Collection(), $selecao->programa_id);
-        $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', new Collection(), $selecao->programa_id);
+        $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id)
+                        ->merge(TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $selecao))
+                        ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao));
+        $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id);
+        $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'rules', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'rules', 'scroll');
     }
 }

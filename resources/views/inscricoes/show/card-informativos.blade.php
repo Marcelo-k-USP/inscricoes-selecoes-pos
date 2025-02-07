@@ -16,13 +16,13 @@
     Informativos
   </div>
   <div class="card-body">
-    @foreach ($selecao->tipos_arquivo as $tipo_arquivo)
+    @foreach ($tiposarquivo_selecao as $tipoarquivo)
       <div class="arquivos-lista">
-        {{ $tipo_arquivo['nome'] }}
+        {{ $tipoarquivo['nome'] }}
 
-        @if ($selecao->arquivos->where('pivot.tipo', $tipo_arquivo['nome'])->count() > 0)
+        @if ($selecao->arquivos->where('pivot.tipo', $tipoarquivo['nome'])->count() > 0)
           <ul class="list-unstyled">
-            @foreach ($selecao->arquivos->where('pivot.tipo', $tipo_arquivo['nome']) as $arquivo)
+            @foreach ($selecao->arquivos->where('pivot.tipo', $tipoarquivo['nome']) as $arquivo)
               @if (preg_match('/pdf/i', $arquivo->mimeType))
                 <li class="modo-visualizacao">
                   <a href="arquivos/{{ $arquivo->id }}" title="{{ $arquivo->nome_original }}" class="nome-arquivo-display"><i class="fas fa-file-pdf"></i>

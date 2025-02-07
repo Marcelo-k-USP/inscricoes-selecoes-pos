@@ -69,7 +69,9 @@
               ])
               @if ($modo == 'edit')
                 @if ($condicao_disponivel)
-                  @include('common.card-arquivos')              {{-- Arquivos --}}
+                  @include('common.card-arquivos', [            {{-- Arquivos --}}
+                    'tipoarquivo_classe_nome_plural_acentuado' => 'Inscrições',
+                  ])
                 @endif
                 @if (session('perfil') == 'usuario')
                   @include('inscricoes.show.card-envio')        {{-- Envio --}}

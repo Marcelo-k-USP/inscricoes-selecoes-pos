@@ -51,7 +51,9 @@
                   @include('selecoes.show.card-disciplinas')                         {{-- Disciplinas --}}
                 @endif
                 @include('selecoes.show.card-motivosisencaotaxa')                    {{-- Motivos de Isenção de Taxa --}}
-                @include('common.card-arquivos')                                     {{-- Arquivos --}}
+                @include('common.card-arquivos', [                                   {{-- Arquivos --}}
+                  'tipoarquivo_classe_nome_plural_acentuado' => 'Seleções',
+                ])
                 @include('selecoes.show.card-tiposarquivo', [                        {{-- Tipos de Arquivo nas Solicitações de Isenção de Taxa --}}
                   'tipoarquivo_classe_nome_plural_acentuado' => 'Solicitações de Isenção de Taxa',
                   'tipoarquivo_classe_nome' => 'SolicitacaoIsencaoTaxa',

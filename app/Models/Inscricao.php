@@ -158,16 +158,16 @@ class Inscricao extends Model
     public function todosArquivosRequeridosPresentes()
     {
         // obtém os tipos de arquivo requeridos
-        $tipos_arquivo_requeridos = $this->selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where('obrigatorio', true)->get();
+        $tiposarquivo_requeridos = $this->selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where('obrigatorio', true)->get();
 
         // obtém os tipos de arquivo da inscrição
         $arquivos_inscricao = $this->arquivos->pluck('pivot.tipo')->countBy()->all();
 
         // verifica se todos os tipos requeridos estão presentes nos arquivos da inscrição
-        $todos_requeridos_presentes = function() use ($tipos_arquivo_requeridos, $arquivos_inscricao) {
-            foreach ($tipos_arquivo_requeridos as $tipo_arquivo_requerido) {
-                $tipo_nome = $tipo_arquivo_requerido['nome'];
-                $minimo_requerido = ($tipo_arquivo_requerido['minimum_required'] ?? 1);
+        $todos_requeridos_presentes = function() use ($tiposarquivo_requeridos, $arquivos_inscricao) {
+            foreach ($tiposarquivo_requeridos as $tipoarquivo_requerido) {
+                $tipo_nome = $tipoarquivo_requerido['nome'];
+                $minimo_requerido = ($tipoarquivo_requerido['minimum_required'] ?? 1);
                 if (!isset($arquivos_inscricao[$tipo_nome]) || ($arquivos_inscricao[$tipo_nome] < $minimo_requerido))
                     return false;
             }

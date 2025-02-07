@@ -78,10 +78,10 @@ class ArquivoController extends Controller
                 $arquivo->nome_original = $arq->getClientOriginalName();
                 $arquivo->caminho = $arq->store('./arquivos/' . $objeto->created_at->year);
                 $arquivo->mimeType = $arq->getClientMimeType();
-                $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipo_arquivo)->first()->id;
+                $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipoarquivo)->first()->id;
                 $arquivo->save();
 
-                $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipo_arquivo]);
+                $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipoarquivo]);
             }
 
             if ($classe_nome == 'Selecao') {
@@ -151,7 +151,7 @@ class ArquivoController extends Controller
         // transaction para não ter problema de inconsistência do DB
         $objeto = DB::transaction(function () use ($request, $arquivo, $classe_nome, $classe_nome_plural, $objeto) {
 
-            $arquivo->{$classe_nome_plural}()->detach($objeto->id, ['tipo' => $request->tipo_arquivo]);
+            $arquivo->{$classe_nome_plural}()->detach($objeto->id, ['tipo' => $request->tipoarquivo]);
             $arquivo->delete();
 
             if ($classe_nome == 'Selecao') {
@@ -224,18 +224,19 @@ class ArquivoController extends Controller
         $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
+        $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao($classe_nome, ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao);
         if ($classe_nome == 'Selecao') {
             $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
-            $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', new Collection(), $selecao->programa_id);
-        } else {
-            $objeto->tipos_arquivo = TipoArquivo::obterTiposArquivoDaSelecao($classe_nome, ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao);
-            $objeto->selecao->tipos_arquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', new Collection(), $selecao->programa_id);
+            $objeto->tiposarquivo = $objeto->tiposarquivo
+                            ->merge(TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $selecao))
+                            ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao));
         }
-        $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', new Collection(), $selecao->programa_id);
+        $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id);
+        $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
         $scroll = 'arquivos';
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'scroll');
     }
 }

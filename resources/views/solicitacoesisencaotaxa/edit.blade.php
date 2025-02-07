@@ -56,7 +56,9 @@
                 'selecao' => $solicitacaoisencaotaxa->selecao
               ])
               @if ($modo == 'edit')
-                @include('common.card-arquivos')                         {{-- Arquivos --}}
+                @include('common.card-arquivos', [                       {{-- Arquivos --}}
+                  'tipoarquivo_classe_nome_plural_acentuado' => 'Solicitações de ISenção de Taxa',
+                ])
                 @if (session('perfil') == 'usuario')
                   @include('inscricoes.show.card-envio')                 {{-- Envio --}}
                 @endif
