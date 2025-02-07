@@ -227,7 +227,7 @@ class ArquivoController extends Controller
         $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao($classe_nome, ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao);
         if ($classe_nome == 'Selecao') {
             $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
-            $objeto->tiposarquivo = $objeto->tiposarquivo
+            $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id)
                             ->merge(TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $selecao))
                             ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao));
         }
