@@ -13,3 +13,8 @@ CHANGELOG.md export-ignore
 *.js linguist-language=JavaScript
 *.php linguist-language=PHP
 *.blade.php linguist-language=Blade
+
+# ignorar bibliotecas JavaScript na contagem do código
+node_modules/* linguist-vendored
+vendor/* linguist-vendored
+*.min.js linguist-vendored
