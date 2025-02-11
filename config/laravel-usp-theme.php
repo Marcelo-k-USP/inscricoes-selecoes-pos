@@ -53,7 +53,7 @@ $admin = [
         'can' => 'motivosisencaotaxa.viewAny',
     ],
     [
-        'text' => '<i class="fa fa-file"></i> Tipos de Arquivos',
+        'text' => '<i class="fa fa-file"></i> Tipos de Documento',
         'url' => 'tiposarquivo',
         'can' => 'tiposarquivo.viewAny',
     ],
