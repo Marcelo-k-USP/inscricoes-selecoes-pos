@@ -34,6 +34,7 @@
                       <option value='number'>Número</option>
                       <option value='radio'>Botão de Opção</option>
                       <option value='checkbox'>Caixa de Verificação</option>
+                      <option value='label'>Informativo</option>
                     </select>
                     @break
                   @case('validate')

@@ -116,6 +116,12 @@ class JSONForms
                                           '</div>' . PHP_EOL;
                         break;
 
+                    case 'label':
+                        $html_string  =   '<div class="col-sm-12">' . PHP_EOL .
+                                            '<label class="col-form-label va-middle" for="extras[' . $key . ']">' . $label_formatted . '</label> ' . PHP_EOL .
+                                          '</div>' . PHP_EOL;
+                        break;
+
                     default:              // contempla os tipos text, number e email
                         $largura = 9;
                         $html_string_adicional = '';

@@ -61,6 +61,7 @@
                                       <option value='email' {{ $tvalue[$field] == 'email' ? 'selected' : '' }}>E-mail</option>
                                       <option value='radio' {{ $tvalue[$field] == 'radio' ? 'selected' : '' }}>Botão de Opção</option>
                                       <option value='checkbox' {{ $tvalue[$field] == 'checkbox' ? 'selected' : '' }}>Caixa de Verificação</option>
+                                      <option value='label' {{ $tvalue[$field] == 'label' ? 'selected' : '' }}>Informativo</option>
                                     </select>
                                     @break
                                   @case('validate')

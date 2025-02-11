@@ -274,7 +274,8 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'Formulário salvo com sucesso');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'formulario'));
+        $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
+        return view('selecoes.template', compact('selecao', 'template'));
     }
 
     public function createTemplateValue(Selecao $selecao, string $field)
