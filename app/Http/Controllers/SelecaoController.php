@@ -317,7 +317,8 @@ class SelecaoController extends Controller
             $value[] = $new;
         }
         $template->$field->value = $value;
-        $selecao->template = JSONForms::fixJson($template);
+        $template = json_decode(json_encode($template), true);
+        $selecao->template = JSONForms::fixJson($template, true);
         $selecao->save();
 
         $request->session()->flash('alert-success', 'Lista salva com sucesso');
