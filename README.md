@@ -274,3 +274,4 @@ passou a ser assim:
     {{ html()->form('post', 'inscricoes')->open() }}
 
 -   Em sua versão inicial, os seeders contêm dados específicos para o IP-USP. Para migrar para outras unidades, pode-se desconsiderar esses seeders, ou modificá-los com os dados da unidade em questão (seeders funcoes, programas, linhas de pesquisa/temas, disciplinas, etc.).
+
