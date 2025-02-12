@@ -11,7 +11,7 @@
 <a name="card_tiposarquivo{{ strtolower($tipoarquivo_classe_nome) }}"></a>
 <div class="card bg-light mb-3" id="card-tiposarquivo{{ strtolower($tipoarquivo_classe_nome) }}">
   <div class="card-header">
-    Tipos de Documentos nas {{ $tipoarquivo_classe_nome_plural_acentuado }}
+    Tipos de Documento nas {{ $tipoarquivo_classe_nome_plural_acentuado }}
     @php
       $selecao_tiposarquivo = $selecao->tiposarquivo->where('classe_nome', $tipoarquivo_classe_nome_plural_acentuado)
     @endphp
