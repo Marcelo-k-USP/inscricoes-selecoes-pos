@@ -189,9 +189,9 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes');
 
         if ($request->input('acao', null) == 'envio') {
-            if ($inscricao->todosArquivosRequeridosPresentes()) {
+            $extras = json_decode(stripslashes($inscricao->extras), true);
+            if ($inscricao->todosArquivosRequeridosPresentes($extras['nivel'] ?? null)) {
 
-                $extras = json_decode(stripslashes($inscricao->extras), true);
                 $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
                 if (($inscricao->selecao->categoria->nome != 'Aluno Especial') || (count($disciplinas_id) > 0)) {
 

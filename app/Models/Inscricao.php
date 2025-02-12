@@ -155,10 +155,15 @@ class Inscricao extends Model
      * Verifica se todos os arquivos requeridos da inscrição estão presentes
      * Conforme for o caso, altera o estado da inscrição
      */
-    public function todosArquivosRequeridosPresentes()
+    public function todosArquivosRequeridosPresentes(?int $nivel_id = null)
     {
         // obtém os tipos de arquivo requeridos
-        $tiposarquivo_requeridos = $this->selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where('obrigatorio', true)->get();
+        $tiposarquivo_requeridos = $this->selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where('obrigatorio', true);
+        if (!is_null($nivel_id))
+            $tiposarquivo_requeridos->whereHas('niveisprogramas', function ($query) use ($nivel_id) {
+                $query->where('nivel_id', $nivel_id)->where('programa_id', $this->selecao->programa_id);
+            });
+        $tiposarquivo_requeridos = $tiposarquivo_requeridos->get();
 
         // obtém os tipos de arquivo da inscrição
         $arquivos_inscricao = $this->arquivos->pluck('pivot.tipo')->countBy()->all();
