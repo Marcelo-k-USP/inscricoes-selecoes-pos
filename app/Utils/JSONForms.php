@@ -52,7 +52,7 @@ class JSONForms
                 $required_string = '';
                 if (isset($json->validate) && $json->validate) {
                     $required_attrib = ' required';
-                    $required_string = ' <small class="text-required"' . (($key == 'cpf') ? ' id="cpf_required"' : '') . '>(*)</small>';
+                    $required_string = ' <small class="text-required"' . (in_array($key, ['cpf', 'uf_de_nascimento']) ? ' id="' . $key . '_required"' : '') . '>(*)</small>';
                 }
 
                 $label = $template->$key->label;

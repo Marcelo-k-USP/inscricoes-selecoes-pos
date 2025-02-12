@@ -539,6 +539,7 @@ class Selecao extends Model
                         "order": 26
                     }
                 ],
+                "validate": "required",
                 "order": 25
             },
             "celular": {

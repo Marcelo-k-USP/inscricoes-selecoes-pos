@@ -73,12 +73,16 @@
       });
 
       $('select[id="extras\[tipo_de_documento\]"]').change(function () {
-        if ($(this).val() == 'passaporte') {
+        if (($(this).val() == 'passaporte') || ($(this).val() == 'rne')) {
           $('#cpf_required').hide();
           $('input[id="extras\[cpf\]"]').removeAttr('required');
+          $('#uf_de_nascimento_required').hide();
+          $('select[id="extras\[uf_de_nascimento\]"]').removeAttr('required');
         } else {
           $('#cpf_required').show();
           $('input[id="extras\[cpf\]"]').attr('required', true);
+          $('#uf_de_nascimento_required').show();
+          $('select[id="extras\[uf_de_nascimento\]"]').attr('required', true);
         }
       });
 

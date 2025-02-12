@@ -548,6 +548,7 @@ class SelecaoSeeder extends Seeder
                                 "order": 26
                             }
                         ],
+                        "validate": "required",
                         "order": 25
                     },
                     "celular": {
@@ -1109,6 +1110,7 @@ class SelecaoSeeder extends Seeder
                                 "order": 26
                             }
                         ],
+                        "validate": "required",
                         "order": 25
                     },
                     "celular": {
