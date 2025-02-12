@@ -176,6 +176,8 @@ class SelecaoController extends Controller
         $this->updateField($request, $selecao, 'boleto_valor', 'valor do boleto', 'o');
         $this->updateField($request, $selecao, 'boleto_texto', 'texto do boleto', 'o');
         $this->updateField($request, $selecao, 'boleto_data_vencimento', 'data de vencimento do boleto', 'a');
+        $this->updateField($request, $selecao, 'email_inscricaoaprovacao_texto', 'texto do e-mail de aprovação da inscrição', 'o');
+        $this->updateField($request, $selecao, 'email_inscricaorejeicao_texto', 'texto do e-mail de rejeição da inscrição', 'o');
         if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
             if ($selecao->linhaspesquisa->count() > 0) {
                 $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa/temas do programa antigo cadastrados para esta seleção!');

@@ -23,6 +23,8 @@ class CreateSelecoesTable extends Migration
             $table->decimal('boleto_valor', 8, 2);
             $table->string('boleto_texto')->nullable();
             $table->date('boleto_data_vencimento');
+            $table->string('email_inscricaoaprovacao_texto')->nullable();
+            $table->string('email_inscricaorejeicao_texto')->nullable();
             $table->json('template')->nullable();
             $table->json('settings')->nullable();
             $table->foreignId('categoria_id')->constrained('categorias');

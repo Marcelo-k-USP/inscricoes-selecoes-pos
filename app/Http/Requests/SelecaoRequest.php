@@ -35,6 +35,8 @@ class SelecaoRequest extends FormRequest
             'boleto_data_vencimento' => ['required'],
             'boleto_valor' => ['required', 'numeric'],
             'boleto_texto' => ['max:255'],
+            'email_inscricaoaprovacao_texto' => ['max:255'],
+            'email_inscricaorejeicao_texto' => ['max:255'],
         ];
     }
 
@@ -54,6 +56,8 @@ class SelecaoRequest extends FormRequest
             'boleto_valor.required' => 'O valor do boleto é obrigatório!',
             'boleto_valor.numeric' => 'O valor do boleto é inválido!',
             'boleto_texto.max' => 'O texto do boleto não pode exceder 255 caracteres!',
+            'email_inscricaoaprovacao_texto.max' => 'O texto do e-mail de aprovação da inscrição não pode exceder 255 caracteres!',
+            'email_inscricaorejeicao_texto.max' => 'O texto do e-mail de rejeição da inscrição não pode exceder 255 caracteres!',
         ];
     }
 

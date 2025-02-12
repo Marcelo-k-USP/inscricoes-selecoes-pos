@@ -583,6 +583,8 @@ class Selecao extends Model
         'boleto_valor',
         'boleto_texto',
         'boleto_data_vencimento',
+        'email_inscricaoaprovacao_texto',
+        'email_inscricaorejeicao_texto',
         'categoria_id',
         'programa_id',
         'estado',
@@ -636,6 +638,14 @@ class Selecao extends Model
         [
             'name' => 'boleto_texto',
             'label' => 'Texto do Boleto',
+        ],
+        [
+            'name' => 'email_inscricaoaprovacao_texto',
+            'label' => 'Texto do E-mail de Aprovação da Inscrição',
+        ],
+        [
+            'name' => 'email_inscricaorejeicao_texto',
+            'label' => 'Texto do E-mail de Rejeição da Inscrição',
         ],
     ];
 
