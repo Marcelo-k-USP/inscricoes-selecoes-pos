@@ -73,9 +73,9 @@ Route::put('selecoes/edit-status/{selecao}', [SelecaoController::class, 'updateS
 Route::get('selecoes/{selecao}/downloadsolicitacoesisencaotaxa', [SelecaoController::class, 'downloadSolicitacoesIsencaoTaxa'])->name('selecoes.downloadsolicitacoesisencaotaxa');
 Route::get('selecoes/{selecao}/downloadinscricoes', [SelecaoController::class, 'downloadInscricoes'])->name('selecoes.downloadinscricoes');
 
-// SELEÇÕES > LINHAS DE PESQUISA/TEMAS
-Route::post('selecoes/{selecao}/linhaspesquisa', [SelecaoController::class, 'storeLinhaPesquisa']);
-Route::delete('selecoes/{selecao}/linhaspesquisa/{linhapesquisa}', [SelecaoController::class, 'destroyLinhaPesquisa']);
+// SELEÇÕES > NÍVEIS + LINHAS DE PESQUISA/TEMAS
+Route::post('selecoes/{selecao}/niveislinhaspesquisa', [SelecaoController::class, 'storeNivelLinhaPesquisa']);
+Route::delete('selecoes/{selecao}/niveislinhaspesquisa/{nivellinhapesquisa}', [SelecaoController::class, 'destroyNivelLinhaPesquisa']);
 
 // SELEÇÕES > DISCIPLINAS
 Route::post('selecoes/{selecao}/disciplinas', [SelecaoController::class, 'storeDisciplina']);

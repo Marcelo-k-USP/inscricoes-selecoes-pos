@@ -912,4 +912,12 @@ class Selecao extends Model
     {
         return $this->belongsTo('App\Models\Programa');
     }
+
+    /**
+     * relacionamento com combinações de níveis com linhas de pesquisa/temas
+     */
+    public function niveislinhaspesquisa()
+    {
+        return $this->belongsToMany('App\Models\NivelLinhaPesquisa', 'selecao_nivellinhapesquisa', 'selecao_id', 'nivellinhapesquisa_id')->withTimestamps();
+    }
 }

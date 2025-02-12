@@ -179,7 +179,7 @@ class TipoArquivoController extends Controller
             'id' => 'required',
         ],
         [
-            'id.required' => 'Nível obrigatório',
+            'id.required' => 'Combinação de nível com programa obrigatória',
         ]);
 
         // transaction para não ter problema de inconsistência do DB
@@ -195,9 +195,9 @@ class TipoArquivoController extends Controller
         });
 
         if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'A combinação nível ' . $db_transaction['nivelprograma']->nivel->nome . ' com programa ' . $db_transaction['nivelprograma']->programa->nome . ' foi adicionada a esse tipo de documento');
+            $request->session()->flash('alert-success', 'A combinação nível ' . $db_transaction['nivelprograma']->nivel->nome . ' com o programa ' . $db_transaction['nivelprograma']->programa->nome . ' foi adicionada a esse tipo de documento');
         else
-            $request->session()->flash('alert-info', 'A combinação nível ' . $db_transaction['nivelprograma']->nivel->nome . ' com programa ' . $db_transaction['nivelprograma']->programa->nome . ' já estava vinculada a esse tipo de documento');
+            $request->session()->flash('alert-info', 'A combinação nível ' . $db_transaction['nivelprograma']->nivel->nome . ' com o programa ' . $db_transaction['nivelprograma']->programa->nome . ' já estava vinculada a esse tipo de documento');
         \UspTheme::activeUrl('tiposarquivo');
         return view('tiposarquivo.edit', $this->monta_compact($tipoarquivo, 'edit'));
     }
@@ -212,7 +212,7 @@ class TipoArquivoController extends Controller
 
         $tipoarquivo->niveisprogramas()->detach($nivelprograma);
 
-        $request->session()->flash('alert-success', 'A combinação nível ' . $nivelprograma->nivel->nome . '  com programa ' . $nivelprograma->programa->nome . ' foi removida desse tipo de documento');
+        $request->session()->flash('alert-success', 'A combinação nível ' . $nivelprograma->nivel->nome . '  com o programa ' . $nivelprograma->programa->nome . ' foi removida desse tipo de documento');
         \UspTheme::activeUrl('tiposarquivo');
         return view('tiposarquivo.edit', $this->monta_compact($tipoarquivo, 'edit'));
     }

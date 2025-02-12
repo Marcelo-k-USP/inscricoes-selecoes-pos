@@ -9,6 +9,7 @@ use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\MotivoIsencaoTaxa;
 use App\Models\Nivel;
+use App\Models\NivelLinhaPesquisa;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
@@ -328,11 +329,11 @@ class SelecaoController extends Controller
     }
 
     /**
-     * Adicionar linhas de pesquisa/temas relacionados à seleção
+     * Adicionar combinações de linhas de pesquisa/temas com níveis relacionados à seleção
      * autorizado a qualquer um que tenha acesso à seleção
      * request->codpes = required, int
      */
-    public function storeLinhaPesquisa(Request $request, Selecao $selecao)
+    public function storeNivelLinhaPesquisa(Request $request, Selecao $selecao)
     {
         $this->authorize('selecoes.update', $selecao);
 
@@ -340,42 +341,42 @@ class SelecaoController extends Controller
             'id' => 'required',
         ],
         [
-            'id.required' => 'Linha de pesquisa/tema obrigatório',
+            'id.required' => 'Combinação de nível com linha de pesquisa/tema obrigatória',
         ]);
 
         // transaction para não ter problema de inconsistência do DB
         $db_transaction = DB::transaction(function () use ($request, $selecao) {
 
-            $linhapesquisa = LinhaPesquisa::where('id', $request->id)->first();
+            $nivellinhapesquisa = NivelLinhaPesquisa::where('id', $request->id)->first();
 
-            $existia = $selecao->linhaspesquisa()->detach($linhapesquisa);
+            $existia = $selecao->niveislinhaspesquisa()->detach($nivellinhapesquisa);
 
-            $selecao->linhaspesquisa()->attach($linhapesquisa);
+            $selecao->niveislinhaspesquisa()->attach($nivellinhapesquisa);
 
-            return ['linhapesquisa' => $linhapesquisa, 'existia' => $existia];
+            return ['nivellinhapesquisa' => $nivellinhapesquisa, 'existia' => $existia];
         });
 
         if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'A linha de pesquisa/tema ' . $db_transaction['linhapesquisa']->nome . ' foi adicionado à essa seleção.');
+            $request->session()->flash('alert-success', 'A combinação nível ' . $db_transaction['nivellinhapesquisa']->nivel->nome . ' com linha de pesquisa/tema ' . $db_transaction['nivellinhapesquisa']->linhapesquisa->nome . ' foi adicionada à essa seleção.');
         else
-            $request->session()->flash('alert-info', 'A linha de pesquisa/tema ' . $db_transaction['linhapesquisa']->nome . ' já estava vinculado à essa seleção.');
+            $request->session()->flash('alert-info', 'A combinação nível ' . $db_transaction['nivellinhapesquisa']->nivel->nome . ' com linha de pesquisa/tema ' . $db_transaction['nivellinhapesquisa']->linhapesquisa->nome . ' já estava vinculada à essa seleção.');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'linhaspesquisa'));
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
 
     /**
-     * Remove linhas de pesquisa/temas relacionados à seleção
+     * Remove combinações de níveis com linhas de pesquisa/temas relacionadas à seleção
      * $user = required
      */
-    public function destroyLinhaPesquisa(Request $request, Selecao $selecao, LinhaPesquisa $linhapesquisa)
+    public function destroyNivelLinhaPesquisa(Request $request, Selecao $selecao, NivelLinhaPesquisa $nivellinhapesquisa)
     {
         $this->authorize('selecoes.update', $selecao);
 
-        $selecao->linhaspesquisa()->detach($linhapesquisa);
+        $selecao->niveislinhaspesquisa()->detach($nivellinhapesquisa);
 
-        $request->session()->flash('alert-success', 'A linha de pesquisa/tema ' . $linhapesquisa->nome . ' foi removido dessa seleção.');
+        $request->session()->flash('alert-success', 'A combinação nível ' . $nivellinhapesquisa->nivel->nome . ' com a linha de pesquisa/tema ' . $nivellinhapesquisa->linhapesquisa->nome . ' foi removida dessa seleção.');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'linhaspesquisa'));
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
 
     /**
@@ -677,7 +678,8 @@ class SelecaoController extends Controller
         $classe_nome = 'Selecao';
         $classe_nome_plural = 'selecoes';
         $rules = (new SelecaoRequest())->rules();
-        $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa(is_null($objeto->programa) ? (new Programa) : $objeto->programa);
+        $objeto->niveislinhaspesquisa = NivelLinhaPesquisa::obterNiveisLinhasPesquisaDaSelecao($objeto);
+        $niveislinhaspesquisa = NivelLinhaPesquisa::obterNiveisLinhasPesquisaPossiveis($selecao->programa_id);
         $disciplinas = Disciplina::listarDisciplinas();
         $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
@@ -689,6 +691,6 @@ class SelecaoController extends Controller
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'rules', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'niveislinhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'rules', 'scroll');
     }
 }

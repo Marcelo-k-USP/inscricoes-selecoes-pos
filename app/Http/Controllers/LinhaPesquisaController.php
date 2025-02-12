@@ -75,10 +75,13 @@ class LinhaPesquisaController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $linhapesquisa = LinhaPesquisa::create($request->all());
-
-        foreach (Nivel::all() as $nivel)    // cadastra automaticamente todos os níveis como possíveis para esta linha de pesquisa/tema
-            $linhapesquisa->niveis()->attach($nivel);
+        // transaction para não ter problema de inconsistência do DB
+        $linhapesquisa = DB::transaction(function () use ($request) {
+            $linhapesquisa = LinhaPesquisa::create($request->all());
+            foreach (Nivel::all() as $nivel)    // adiciona relações desta linha de pesquisa/tema com todos os níveis
+                $linhapesquisa->niveis()->attach($nivel);
+            return $linhapesquisa;
+        });
 
         $request->session()->flash('alert-success', 'Linha de pesquisa/tema cadastrado com sucesso');
         \UspTheme::activeUrl('linhaspesquisa');
@@ -141,62 +144,17 @@ class LinhaPesquisaController extends Controller
         if ($linhapesquisa->selecoes()->exists())
             $request->session()->flash('alert-danger', 'Há seleções para esta linha de pesquisa/tema!');
         else {
-            $linhapesquisa->delete();
+            // transaction para não ter problema de inconsistência do DB
+            DB::transaction(function () use ($linhapesquisa) {
+                if ($linhapesquisa->niveis()->exists())
+                    $linhapesquisa->niveis()->detach();    // remove todas as relações com níveis desta linha de pesquisa/tema
+                $linhapesquisa->delete();
+            });
+
             $request->session()->flash('alert-success', 'Dados removidos com sucesso!');
         }
         \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.tree', $this->monta_compact_index());
-    }
-
-    /**
-     * Adicionar níveis relacionados à linha de pesquisa/tema
-     * autorizado a qualquer um que tenha acesso à linha de pesquisa/tema
-     * request->codpes = required, int
-     */
-    public function storeNivel(Request $request, LinhaPesquisa $linhapesquisa)
-    {
-        $this->authorize('linhaspesquisa.update', $linhapesquisa);
-
-        $request->validate([
-            'id' => 'required',
-        ],
-        [
-            'id.required' => 'Nível obrigatório',
-        ]);
-
-        // transaction para não ter problema de inconsistência do DB
-        $db_transaction = DB::transaction(function () use ($request, $linhapesquisa) {
-
-            $nivel = Nivel::where('id', $request->id)->first();
-
-            $existia = $linhapesquisa->niveis()->detach($nivel);
-
-            $linhapesquisa->niveis()->attach($nivel);
-
-            return ['nivel' => $nivel, 'existia' => $existia];
-        });
-
-        if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'O nível ' . $db_transaction['nivel']->nome . ' foi adicionado à essa linha de pesquisa/tema');
-        else
-            $request->session()->flash('alert-info', 'O nível ' . $db_transaction['nivel']->nome . ' já estava vinculado à essa linha de pesquisa/tema');
-        \UspTheme::activeUrl('linhaspesquisa');
-        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
-    }
-
-    /**
-     * Remove níveis relacionados à linha de pesquisa/tema
-     * $user = required
-     */
-    public function destroyNivel(Request $request, LinhaPesquisa $linhapesquisa, Nivel $nivel)
-    {
-        $this->authorize('linhaspesquisa.update', $linhapesquisa);
-
-        $linhapesquisa->niveis()->detach($nivel);
-
-        $request->session()->flash('alert-success', 'O nível ' . $nivel->nome . ' foi removido dessa linha de pesquisa/tema');
-        \UspTheme::activeUrl('linhaspesquisa');
-        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
     }
 
     /**
@@ -296,9 +254,8 @@ class LinhaPesquisaController extends Controller
                 $orientador->nome = Orientador::obterNome($orientador->codpes);
         $objeto = $linhapesquisa;
         $fields_orientador = Orientador::getFields();
-        $niveis = Nivel::all();
         $rules = LinhaPesquisaRequest::rules;
 
-        return compact('data', 'objeto', 'fields_orientador', 'niveis', 'rules', 'modo');
+        return compact('data', 'objeto', 'fields_orientador', 'rules', 'modo');
     }
 }

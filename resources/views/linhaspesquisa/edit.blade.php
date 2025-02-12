@@ -37,7 +37,6 @@
             </div>
             <div class="col-md-5">
               @if ($modo == 'edit')
-                @include('linhaspesquisa.show.card-niveis')               {{-- Níveis --}}
                 @include('linhaspesquisa.show.card-orientadores')         {{-- Orientadores --}}
               @endif
             </div>

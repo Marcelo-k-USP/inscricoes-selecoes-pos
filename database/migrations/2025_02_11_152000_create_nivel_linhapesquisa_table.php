@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLinhaPesquisaNivelTable extends Migration
+class CreateNivelLinhaPesquisaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateLinhaPesquisaNivelTable extends Migration
      */
     public function up()
     {
-        Schema::create('linhapesquisa_nivel', function (Blueprint $table) {
+        Schema::create('nivel_linhapesquisa', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('linhapesquisa_id')->constrained('linhaspesquisa')->onDelete('cascade');
             $table->foreignId('nivel_id')->constrained('niveis')->onDelete('cascade');
+            $table->foreignId('linhapesquisa_id')->constrained('linhaspesquisa')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateLinhaPesquisaNivelTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('linhapesquisa_nivel');
+        Schema::dropIfExists('nivel_linhapesquisa');
     }
 }

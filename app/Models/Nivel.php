@@ -60,6 +60,6 @@ class Nivel extends Model
      */
     public function linhaspesquisa()
     {
-        return $this->belongsToMany('App\Models\LinhaPesquisa', 'linhapesquisa_nivel', 'nivel_id', 'linhapesquisa_id')->withTimestamps();
+        return $this->belongsToMany('App\Models\LinhaPesquisa', 'nivel_linhapesquisa', 'nivel_id', 'linhapesquisa_id')->withTimestamps();
     }
 }

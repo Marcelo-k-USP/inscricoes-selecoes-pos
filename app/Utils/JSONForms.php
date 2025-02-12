@@ -156,10 +156,10 @@ class JSONForms
                                           '<div class="col-sm-9">' . PHP_EOL .
                                             '<select class="form-control w-100" name="extras[linha_pesquisa]" id="extras[linha_pesquisa]" required>' . PHP_EOL .
                                               '<option value="" disabled selected>Selecione...</option>' . PHP_EOL;
-                            foreach ($selecao->linhaspesquisa as $linhapesquisa)
-                                if ($linhapesquisa->niveis()->where('nivel_id', $data->nivel)->exists())
+                            foreach ($selecao->niveislinhaspesquisa as $nivellinhapesquisa)
+                                if ($nivellinhapesquisa->nivel_id == $data->nivel)
                                     $html_string_linhapesquisa .=
-                                              '<option value="' . $linhapesquisa->id . '"' . ((isset($data->linha_pesquisa) && ($linhapesquisa->id == $data->linha_pesquisa)) ? ' selected' : '') . '>' . $linhapesquisa->nome . '</option>' . PHP_EOL;
+                                              '<option value="' . $nivellinhapesquisa->linhapesquisa_id . '"' . ((isset($data->linha_pesquisa) && ($nivellinhapesquisa->linhapesquisa_id == $data->linha_pesquisa)) ? ' selected' : '') . '>' . $nivellinhapesquisa->linhapesquisa->nome . '</option>' . PHP_EOL;
                             $html_string_linhapesquisa .=
                                             '</select>' . PHP_EOL .
                                           '</div>' . PHP_EOL;

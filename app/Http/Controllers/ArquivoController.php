@@ -8,6 +8,7 @@ use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\MotivoIsencaoTaxa;
 use App\Models\Nivel;
+use App\Models\NivelLinhaPesquisa;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
@@ -216,11 +217,12 @@ class ArquivoController extends Controller
     {
         $data = (object) ('App\\Http\\Controllers\\' . $classe_nome . 'Controller')::$data;
         $selecao = ($classe_nome == 'Selecao' ? $objeto : $objeto->selecao);
-        $linhaspesquisa = LinhaPesquisa::all();
         $disciplinas = Disciplina::all();
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $responsaveis = $selecao->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
         $extras = json_decode($objeto->extras, true);
+        $objeto->niveislinhaspesquisa = NivelLinhaPesquisa::obterNiveisLinhasPesquisaDaSelecao($selecao);
+        $niveislinhaspesquisa = NivelLinhaPesquisa::obterNiveisLinhasPesquisaPossiveis($selecao->programa_id);
         $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $solicitacaoisencaotaxa_aprovada = \Auth::user()->solicitacoesIsencaoTaxa()->where('selecao_id', ($classe_nome == 'Inscricao') ? $objeto->selecao_id : 0)->where('estado', 'Isenção de Taxa Aprovada')->first();
@@ -237,6 +239,6 @@ class ArquivoController extends Controller
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
         $scroll = 'arquivos';
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'linhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'niveislinhaspesquisa', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'scroll');
     }
 }

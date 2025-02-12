@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\LinhaPesquisa;
 use App\Models\Nivel;
+use App\Models\NivelLinhaPesquisa;
 use App\Models\Programa;
 use App\Models\Selecao;
 
@@ -102,13 +103,15 @@ class LinhaPesquisaSeeder extends Seeder
         foreach ($linhaspesquisa as $linhapesquisa)
             LinhaPesquisa::create($linhapesquisa);
 
-        // adiciona registros na tabela linhapesquisa_nivel
+        // adiciona registros na tabela nivel_linhapesquisa
         foreach (LinhaPesquisa::all() as $linhapesquisa)
             foreach (Nivel::all() as $nivel)
                 $linhapesquisa->niveis()->attach($nivel->id);
 
-        // adiciona registros na tabela selecao_linhapesquisa
         $selecao_SELECAO2025ALUNOREGULARNEC = Selecao::where('nome', 'Seleção 2025 Aluno Regular NEC')->first();
-        $selecao_SELECAO2025ALUNOREGULARNEC->linhaspesquisa()->attach(LinhaPesquisa::where('nome', 'Sensação, Percepção e Movimento')->first()->id);
+
+        // adiciona registros na tabela selecao_nivellinhapesquisa
+        $nivellinhapesquisa_id_MESTRADOSENSACAOPERCEPCAOEMOVIMENTO = NivelLinhaPesquisa::whereHas('nivel', function ($query) { $query->where('nome', 'Mestrado'); })->whereHas('linhapesquisa', function ($query) { $query->where('nome', 'Sensação, Percepção e Movimento'); })->first()->id;
+        $selecao_SELECAO2025ALUNOREGULARNEC->niveislinhaspesquisa()->attach($nivellinhapesquisa_id_MESTRADOSENSACAOPERCEPCAOEMOVIMENTO);
     }
 }

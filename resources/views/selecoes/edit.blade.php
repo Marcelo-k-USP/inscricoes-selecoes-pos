@@ -46,7 +46,7 @@
             <div class="col-md-5">
               @if ($modo == 'edit')
                 @if ($selecao->categoria->nome !== 'Aluno Especial')
-                  @include('selecoes.show.card-linhaspesquisa')                      {{-- Linhas de Pesquisa/Temas --}}
+                  @include('selecoes.show.card-niveislinhaspesquisa')                {{-- Níveis + Linhas de Pesquisa/Temas --}}
                 @else
                   @include('selecoes.show.card-disciplinas')                         {{-- Disciplinas --}}
                 @endif
