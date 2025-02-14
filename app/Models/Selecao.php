@@ -555,13 +555,13 @@ class Selecao extends Model
                 "order": 27
             },
             "declaro_concordo_termos": {
-                "label": "Declaro estar ciente e concordo com os <a href=\"http://143.107.146.13/pt-br/form/pos-psa-2024-2025-dout-direito#terms\">termos de inscrição no Programa de Pós-Graduação do Instituto de Psicologia da USP</a>",
+                "label": "Declaro estar ciente e concordo com os <a href=\"https://www.ip.usp.br/site/pos_graduacao/regimentos-da-comissao-de-pos-graduacao-e-regulamentos-dos-programas/\">termos de inscrição no Programa de Pós-Graduação do Instituto de Psicologia da USP</a>",
                 "type": "checkbox",
                 "validate": "required",
                 "order": 28
             },
             "declaro_revisei_inscricao": {
-                "label": "Declaro que revisei todas as informações inseridas neste formulário e que elas estão corretas, e venho requerer minha inscrição como candidato(a) à vaga no Programa de Pós-Graduação em Psicologia Escolar e do Desenvolvimento Humano para o Curso de Doutorado Direto",
+                "label": "Declaro que revisei todas as informações inseridas neste formulário e que elas estão corretas, e venho requerer minha inscrição como candidato(a) à vaga no Programa de Pós-Graduação no Instituto de Psicologia da USP",
                 "type": "checkbox",
                 "validate": "required",
                 "order": 29
