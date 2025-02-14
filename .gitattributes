@@ -10,9 +10,8 @@
 CHANGELOG.md export-ignore
 
 # define linguagens principais
-*.php linguist-language=PHP
-*.blade.php linguist-language=Blade
-*.js linguist-language=JavaScript
+*.php linguist-detectable=true
+*.js linguist-detectable=true
 
 # ignorar bibliotecas JavaScript na contagem do código
 node_modules/* linguist-vendored
