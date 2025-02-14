@@ -92,9 +92,9 @@ Também deve observar no [changelog](docs/changelog.md) se tem alguma outra cois
 Criar user e banco de dados (em mysql):
 
     sudo mysql
-    create database inscricoes-selecoes-pos;
-    create user 'inscricoes-selecoes-pos'@'%' identified by '<<password here>>';
-    grant all privileges on inscricoes-selecoes-pos.* to 'inscricoes-selecoes-pos'@'%';
+    create database inscricoesselecoespos;
+    create user 'inscricoesselecoespos'@'%' identified by '<<password here>>';
+    grant all privileges on inscricoesselecoespos.* to 'inscricoesselecoespos'@'%';
     flush privileges;
 
 #### ################################ ####
