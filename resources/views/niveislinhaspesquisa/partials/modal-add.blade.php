@@ -21,7 +21,7 @@
             <div class="form-group row">
               <div class="col-form-label col-sm-3">Combinação Nível com Linha de Pesquisa/Tema</div>
               <div class="col-sm-8">
-                <select class="form-control" name="id" id="id_campo1">
+                <select class="form-control" name="id[]" id="id_campo1" multiple>
                   @foreach ($niveislinhaspesquisa as $nivellinhapesquisa)
                     <option value='{{ $nivellinhapesquisa->id }}'>{{ $nivellinhapesquisa->nivel->nome }} em {{ $nivellinhapesquisa->linhapesquisa->nome }}</option>
                   @endforeach

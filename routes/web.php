@@ -74,7 +74,7 @@ Route::get('selecoes/{selecao}/downloadsolicitacoesisencaotaxa', [SelecaoControl
 Route::get('selecoes/{selecao}/downloadinscricoes', [SelecaoController::class, 'downloadInscricoes'])->name('selecoes.downloadinscricoes');
 
 // SELEÇÕES > NÍVEIS + LINHAS DE PESQUISA/TEMAS
-Route::post('selecoes/{selecao}/niveislinhaspesquisa', [SelecaoController::class, 'storeNivelLinhaPesquisa']);
+Route::post('selecoes/{selecao}/niveislinhaspesquisa', [SelecaoController::class, 'storeNiveisLinhasPesquisa']);
 Route::delete('selecoes/{selecao}/niveislinhaspesquisa/{nivellinhapesquisa}', [SelecaoController::class, 'destroyNivelLinhaPesquisa']);
 
 // SELEÇÕES > DISCIPLINAS

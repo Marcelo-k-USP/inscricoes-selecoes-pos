@@ -335,33 +335,30 @@ class SelecaoController extends Controller
      * autorizado a qualquer um que tenha acesso à seleção
      * request->codpes = required, int
      */
-    public function storeNivelLinhaPesquisa(Request $request, Selecao $selecao)
+    public function storeNiveisLinhasPesquisa(Request $request, Selecao $selecao)
     {
         $this->authorize('selecoes.update', $selecao);
 
         $request->validate([
-            'id' => 'required',
+            'id' => 'required|array',
         ],
         [
-            'id.required' => 'Combinação de nível com linha de pesquisa/tema obrigatória',
+            'id.required' => 'Combinações de nível com linha de pesquisa/tema obrigatórias',
         ]);
 
         // transaction para não ter problema de inconsistência do DB
         $db_transaction = DB::transaction(function () use ($request, $selecao) {
 
-            $nivellinhapesquisa = NivelLinhaPesquisa::where('id', $request->id)->first();
+            $niveislinhaspesquisa = NivelLinhaPesquisa::whereIn('id', $request->id)->get();
 
-            $existia = $selecao->niveislinhaspesquisa()->detach($nivellinhapesquisa);
+            foreach ($niveislinhaspesquisa as $nivellinhapesquisa) {
+                $existia = $selecao->niveislinhaspesquisa()->detach($nivellinhapesquisa);
 
-            $selecao->niveislinhaspesquisa()->attach($nivellinhapesquisa);
-
-            return ['nivellinhapesquisa' => $nivellinhapesquisa, 'existia' => $existia];
+                $selecao->niveislinhaspesquisa()->attach($nivellinhapesquisa);
+            }
         });
 
-        if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'A combinação nível ' . $db_transaction['nivellinhapesquisa']->nivel->nome . ' com linha de pesquisa/tema ' . $db_transaction['nivellinhapesquisa']->linhapesquisa->nome . ' foi adicionada à essa seleção.');
-        else
-            $request->session()->flash('alert-info', 'A combinação nível ' . $db_transaction['nivellinhapesquisa']->nivel->nome . ' com linha de pesquisa/tema ' . $db_transaction['nivellinhapesquisa']->linhapesquisa->nome . ' já estava vinculada à essa seleção.');
+        $request->session()->flash('alert-info', 'As combinações níveis com linhas de pesquisa/temas foram alteradas nessa seleção.');
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
