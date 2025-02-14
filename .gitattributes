@@ -1,6 +1,6 @@
 # define linguagens principais
-*.php linguist-language=PHP
 *.blade.php linguist-language=Blade
+*.php linguist-language=PHP
 *.js linguist-language=JavaScript
 
 * text=auto
