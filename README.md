@@ -93,7 +93,7 @@ Criar user e banco de dados (em mysql):
 
     sudo mysql
     create database inscricoesselecoespos;
-    create user 'inscricoesselecoespos'@'%' identified by '<<password here>>';
+    create user 'inscricoesselecoespos'@'%' identified by '<<password here>>';    # nunca utilizar @ dentro da senha, pois dá erro no servidor de produção ao acessar o banco
     grant all privileges on inscricoesselecoespos.* to 'inscricoesselecoespos'@'%';
     flush privileges;
 
