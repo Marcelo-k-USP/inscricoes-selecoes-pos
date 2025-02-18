@@ -268,10 +268,9 @@ Foram utilizados vários recursos do laravel que podem não ser muito trivial pa
 
 -   O gerenciamento de usuários locais por admins foi inspirado no impressoras.
 
--   Como este sistema utiliza Laravel 11, alguns comandos tiveram que ser reescritos (em relação ao sistema de chamados em Laravel 8). A biblioteca laravelcollective\html foi deprecada, e passamos a utilizar a biblioteca spatie\laravel-html. Com isso, por exemplo, a antiga sintaxe que era assim:
+-   Como este sistema utiliza Laravel 11, alguns comandos tiveram que ser reescritos em relação ao sistema de chamados em Laravel 8. A biblioteca laravelcollective\html foi deprecada, e passamos a utilizar a biblioteca spatie\laravel-html. Com isso, por exemplo, a antiga sintaxe que era assim:
     {!! Form::open(['url' => 'chamados']) !!}
 passou a ser assim:
     {{ html()->form('post', 'inscricoes')->open() }}
 
--   Em sua versão inicial, os seeders contêm dados específicos para o IP-USP. Para migrar para outras unidades, pode-se desconsiderar esses seeders, ou modificá-los com os dados da unidade em questão (seeders funcoes, programas, linhas de pesquisa/temas, disciplinas, etc.).
-
+-   Em sua versão inicial, os seeders contêm dados específicos para o IP-USP. Para migrar para outras unidades, pode-se desconsiderar esses seeders, ou modificá-los com os dados da unidade em questão (seeders funções, programas, linhas de pesquisa/temas, disciplinas, etc.).
