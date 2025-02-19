@@ -64,7 +64,6 @@ class JSONForms
                                           '</div>' . PHP_EOL;
                 $html_string_linhapesquisa = '';
                 $html_string_motivoisencaotaxa = '';
-                $html_string_senha = '';
 
                 switch ($type) {
                     case 'select':
@@ -133,21 +132,6 @@ class JSONForms
                                             '<input class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']" type="' . $type . '" value="' . $value . '"' . $required_attrib . '>' . PHP_EOL .
                                           '</div>' . PHP_EOL .
                                           $html_string_adicional;
-                        if (($key == 'e_mail') && !Auth::check())
-                            $html_string_senha .=
-                                          '<div class="col-sm-3" style="margin-top: -20px;">' . PHP_EOL .
-                                            '<label class="col-form-label va-middle" for="password">Senha <small class="text-required">(*)</small></label> ' . PHP_EOL .
-                                          '</div>' . PHP_EOL .
-                                          '<div class="col-sm-3" style="margin-top: -20px;">' . PHP_EOL .
-                                            '<input class="form-control" style="width: 100%; padding-right: 30px" name="password" id="password" type="password" required>' . PHP_EOL .
-                                            '<a href="javascript:void(0);" onclick="toggle_password(\'password\')" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">' . PHP_EOL .
-                                              '<img src="' . url('/icons/view.png') . '" id="toggle_icon_password" style="width: 20px; height: 20px;">' . PHP_EOL .
-                                            '</a>' . PHP_EOL .
-                                          '</div>' . PHP_EOL .
-                                          '<div id="strength-wrapper">' . PHP_EOL .
-                                            '<div id="barra_forca_password" style="height: 10px; width: 0px;">&nbsp;</div>' . PHP_EOL .
-                                            '<p id="texto_forca_password" style="margin-top: 5px;">&nbsp;</p>' . PHP_EOL .
-                                          '</div>' . PHP_EOL;
                         if (($key == 'nome') && ($classe_nome == 'Inscricao') && ($selecao->categoria->nome !== 'Aluno Especial')) {
                             $html_string_linhapesquisa .=
                                           '<div class="col-sm-3">' . PHP_EOL .
@@ -206,11 +190,6 @@ class JSONForms
                 // fluxo normal: inclui o campo propriamente dito, desde que "can for igual ao perfil" ou "se não houver can"
                 if (($perfil && isset($json->can) && $json->can == $perfil) || (!$perfil && !isset($json->can)))
                     $form[] = $input;
-
-                // fora do fluxo normal: inclui campo de senha, pois ele não fica no $template
-                // este campo é inserido depois do e-mail
-                if ($html_string_senha != '')
-                    $form[] = [new HtmlString($html_string_senha)];
             }
         }
 

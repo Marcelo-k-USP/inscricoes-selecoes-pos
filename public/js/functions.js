@@ -124,6 +124,6 @@ function toggle_password(field_id)
   var input_password = $('#' + field_id);
   if (input_password.length === 0)
     input_password = $('#password');
-  toggle_icon.attr('src', '/icons/' + (input_password.attr('type') === 'password' ? 'hide' : 'view') + '.png');
+  toggle_icon.attr('src', '/images/' + (input_password.attr('type') === 'password' ? 'hide' : 'view') + '.png');
   input_password.attr('type', (input_password.attr('type') === 'password' ? 'text' : 'password'));
 }

@@ -17,7 +17,7 @@
           <div style="position: relative; margin-top: -20px;">
             <input class="form-control" style="width: 240px; padding-right: 30px;" type="password" name="password" id="password" placeholder="Nova Senha" autofocus>
             <a href="javascript:void(0);" onclick="toggle_password('password')">
-              <img src="/icons/view.png" id="toggle_icon_password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 20px; height: 20px;">
+              <img src="/images/view.png" id="toggle_icon_password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 20px; height: 20px;">
             </a>
           </div>
           <div id="strength-wrapper" style="margin-left: 10px;">
@@ -31,7 +31,7 @@
         <div style="position: relative; margin-top: -10px;">
           <input class="form-control mb-4" style="width: 240px; padding-right: 30px;" type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirmar Nova Senha">
           <a href="javascript:void(0);" onclick="toggle_password('password_confirmation')">
-            <img src="/icons/view.png" id="toggle_icon_password_confirmation" style="position: absolute; right: 120px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 20px; height: 20px;">
+            <img src="/images/view.png" id="toggle_icon_password_confirmation" style="position: absolute; right: 120px; top: 50%; transform: translateY(-50%); cursor: pointer; width: 20px; height: 20px;">
           </a>
         </div>
 

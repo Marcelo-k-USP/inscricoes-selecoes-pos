@@ -11,7 +11,7 @@
     @endphp
     {{ $input }}
     <a href="javascript:void(0);" onclick="toggle_password('{{ $col['name'] }}')" style="position: absolute; right: 24px; top: 20%; text-decoration: none;">
-      <img src="/icons/view.png" id="toggle_icon_{{ $col['name'] }}" style="width: 20px; height: 20px;">
+      <img src="/images/view.png" id="toggle_icon_{{ $col['name'] }}" style="width: 20px; height: 20px;">
     </a>
   </div>
   <div id="strength-wrapper">
