@@ -4,7 +4,7 @@
   </b>
   <div class="hidden-btn d-none ml-auto">
     @can('selecoes.update', $selecao)
-      @if ($condicao_ativa && ($tipoarquivo->nome != 'Boleto(s) de Pagamento da Inscrição'))
+      @if ($condicao_ativa)
         @include('common.btn-delete-sm', ['action' => "selecoes/{$selecao->id}/tiposarquivo" . strtolower($tipoarquivo_classe_nome) . "/{$tipoarquivo->id}"])
       @endif
     @endcan
