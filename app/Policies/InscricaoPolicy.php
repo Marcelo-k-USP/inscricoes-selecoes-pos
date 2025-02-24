@@ -89,4 +89,21 @@ class InscricaoPolicy
         else
             return false;
     }
+
+    /**
+     * Determine whether the user can update the inscrição arquivos.
+     *
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Inscricao  $inscricao
+     * @return mixed
+     */
+    public function updateArquivos(User $user, Inscricao $inscricao)
+    {
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($inscricao->selecao->programa_id);
+        elseif (Gate::allows('perfilusuario'))
+            return ($inscricao->pessoas('Autor')->id == $user->id);
+    }
 }

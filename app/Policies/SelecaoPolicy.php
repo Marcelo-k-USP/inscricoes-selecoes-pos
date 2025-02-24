@@ -66,4 +66,21 @@ class SelecaoPolicy
         else
             return false;
     }
+
+    /**
+     * Determine whether the user can update the seleção arquivos.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Selecao  $selecao
+     * @return mixed
+     */
+    public function updateArquivos(User $user, Selecao $selecao)
+    {
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($selecao->programa_id);
+        else
+            return false;
+    }
 }

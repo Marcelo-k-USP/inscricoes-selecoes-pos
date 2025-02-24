@@ -70,6 +70,11 @@ class ArquivoPolicy
             if ($autor_inscricao && ($autor_inscricao->id == $user->id))
                 return true;                                       // permite que usuários subam arquivos em suas solicitações de isenção de taxa e inscrições
         }
+
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($objeto->selecao->programa_id);
     }
 
     /**
@@ -122,7 +127,7 @@ class ArquivoPolicy
         //
     }
 
-    private function authorize_update_delete(User $user, Arquivo $arquivo, object  $objeto, string $classe_nome)
+    private function authorize_update_delete(User $user, Arquivo $arquivo, object $objeto, string $classe_nome)
     {
         if ($classe_nome == 'Selecao')
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes renomeiem/apaguem arquivos de seleção
@@ -138,5 +143,10 @@ class ArquivoPolicy
             if (($autor_arquivo_id == $user->id) && $autor_inscricao && ($autor_inscricao->id == $user->id))
                 return true;                                       // permite que usuários renomeiem/apaguem arquivos em suas inscrições
         }
+
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($objeto->selecao->programa_id);
     }
 }

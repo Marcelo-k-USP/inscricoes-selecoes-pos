@@ -43,7 +43,7 @@
           @php
             $editavel = (isset($tipoarquivo['editavel']) && $tipoarquivo['editavel']);
           @endphp
-          @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $editavel)
+          @if (Gate::allows($classe_nome_plural . '.updateArquivos', $objeto) && $editavel)
             <label for="input_arquivo_{{ $i }}">
               <span class="btn btn-sm btn-light text-primary ml-2"> <i class="fas fa-plus"></i> Adicionar</span>
             </label>
@@ -56,7 +56,7 @@
               @foreach ($objeto->arquivos->where('pivot.tipo', $tipoarquivo['nome']) as $arquivo)
                 @if (preg_match('/pdf/i', $arquivo->mimeType))
                   <li class="modo-visualizacao">
-                    @if (Gate::allows($classe_nome_plural . '.update', $objeto) && $editavel)
+                    @if (Gate::allows($classe_nome_plural . '.updateArquivos', $objeto) && $editavel)
                       <div class="arquivo-acoes d-inline-block">
                         <a onclick="excluir_arquivo({{ $arquivo->id }}, '{{ $arquivo->nome_original }}'); return false;" class="btn btn-outline-danger btn-sm btn-deletar btn-arquivo-acao">
                           <i class="far fa-trash-alt"></i>

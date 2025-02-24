@@ -89,4 +89,21 @@ class SolicitacaoIsencaoTaxaPolicy
         else
             return false;
     }
+
+    /**
+     * Determine whether the user can update the solicitação de isenção de taxa arquivos.
+     *
+     * @param  \App\Models\User                    $user
+     * @param  \App\Models\SolicitacaoIsencaoTaxa  $solicitacaoisencaotaxa
+     * @return mixed
+     */
+    public function updateArquivos(User $user, SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
+    {
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($solicitacaoisencaotaxa->selecao->programa_id);
+        elseif (Gate::allows('perfilusuario'))
+            return ($solicitacaoisencaotaxa->pessoas('Autor')->id == $user->id);
+    }
 }
