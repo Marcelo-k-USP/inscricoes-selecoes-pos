@@ -25,7 +25,7 @@ class Selecao extends Model
 
     # valores default na criação de nova seleção
     protected $attributes = [
-        'estado' => 'Aguardando Documentação',
+        'estado' => 'Em Elaboração',
         'template' => '{
             "nome": {
                 "label": "Nome",
@@ -684,7 +684,7 @@ class Selecao extends Model
      */
     public static function estados()
     {
-        return ['Aguardando Documentação', 'Aguardando Início', 'Em Andamento', 'Encerrada'];
+        return ['Em Elaboração', 'Aguardando Início', 'Em Andamento', 'Encerrada'];
     }
 
     /**
@@ -823,11 +823,13 @@ class Selecao extends Model
                 break;
             }
 
+        $outras_condicoes_satisfeitas = (($this->categoria->nome !== 'Aluno Especial') ? !$this->niveislinhaspesquisa->isEmpty() : !$this->disciplinas->isEmpty());
+
         $agora = Carbon::now();
         if ($this->datahora_inicio > $agora)
-            $this->update(['estado' => $possui_todos_os_arquivos_required ? 'Aguardando Início' : 'Aguardando Documentação']);
+            $this->update(['estado' => ($possui_todos_os_arquivos_required && $outras_condicoes_satisfeitas) ? 'Aguardando Início' : 'Em Elaboração']);
         elseif ($this->datahora_inicio <= $agora && $this->datahora_fim >= $agora)
-            $this->update(['estado' => $possui_todos_os_arquivos_required ? 'Em Andamento' : 'Aguardando Documentação']);
+            $this->update(['estado' => ($possui_todos_os_arquivos_required && $outras_condicoes_satisfeitas) ? 'Em Andamento' : 'Em Elaboração']);
         elseif ($this->datahora_fim < $agora)
             $this->update(['estado' => 'Encerrada']);
     }

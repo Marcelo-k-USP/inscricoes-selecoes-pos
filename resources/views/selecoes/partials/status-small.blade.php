@@ -1,4 +1,4 @@
-@if (in_array($selecao->estado, ['Aguardando Documentação', 'Aguardando Início']))
+@if (in_array($selecao->estado, ['Em Elaboração', 'Aguardando Início']))
   <span class="text-warning" data-toggle="tooltip" title="{{ $selecao->estado }}"> <i class="fas fa-circle"></i> </span>
 @elseif ($selecao->estado == 'Em Andamento')
   <span class="text-success" data-toggle="tooltip" title="{{ $selecao->estado }}"> <i class="fas fa-circle"></i> </span>

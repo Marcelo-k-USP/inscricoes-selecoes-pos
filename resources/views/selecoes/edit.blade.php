@@ -14,7 +14,7 @@
   @php
     $selecao = $objeto;
     $classe_nome = 'Selecao';
-    $condicao_nao_iniciada = (in_array($selecao->estado, ['Aguardando Documentação', 'Aguardando Início']));
+    $condicao_nao_iniciada = (in_array($selecao->estado, ['Em Elaboração', 'Aguardando Início']));
     $condicao_ativa = ($selecao->estado != 'Encerrada');
   @endphp
   <div class="row">

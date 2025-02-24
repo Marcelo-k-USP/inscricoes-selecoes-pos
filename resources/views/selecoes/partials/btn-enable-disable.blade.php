@@ -10,8 +10,8 @@
 @endsection
 
 <div class="btn-group btn-enable-disable">
-  <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Documentação') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Documentação">
-    Aguardando Documentação
+  <button class="btn btn-sm {{ ($selecao->estado == 'Em Elaboração') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Em Elaboração">
+    Em Elaboração
   </button>
   <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início">
     Aguardando Início

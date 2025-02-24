@@ -352,10 +352,11 @@ class SelecaoController extends Controller
             $niveislinhaspesquisa = NivelLinhaPesquisa::whereIn('id', $request->id)->get();
 
             foreach ($niveislinhaspesquisa as $nivellinhapesquisa) {
-                $existia = $selecao->niveislinhaspesquisa()->detach($nivellinhapesquisa);
-
+                $selecao->niveislinhaspesquisa()->detach($nivellinhapesquisa);
                 $selecao->niveislinhaspesquisa()->attach($nivellinhapesquisa);
             }
+
+            $selecao->atualizarStatus();
         });
 
         $request->session()->flash('alert-info', 'As combinações níveis com linhas de pesquisa/temas foram alteradas nessa seleção.');
@@ -371,7 +372,12 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.update', $selecao);
 
-        $selecao->niveislinhaspesquisa()->detach($nivellinhapesquisa);
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($selecao, $nivellinhapesquisa) {
+
+            $selecao->niveislinhaspesquisa()->detach($nivellinhapesquisa);
+            $selecao->atualizarStatus();
+        });
 
         $request->session()->flash('alert-success', 'A combinação nível ' . $nivellinhapesquisa->nivel->nome . ' com a linha de pesquisa/tema ' . $nivellinhapesquisa->linhapesquisa->nome . ' foi removida dessa seleção.');
         \UspTheme::activeUrl('selecoes');
@@ -400,8 +406,8 @@ class SelecaoController extends Controller
             $disciplina = Disciplina::where('id', $request->id)->first();
 
             $existia = $selecao->disciplinas()->detach($disciplina);
-
             $selecao->disciplinas()->attach($disciplina);
+            $selecao->atualizarStatus();
 
             return ['disciplina' => $disciplina, 'existia' => $existia];
         });
@@ -422,7 +428,12 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.update', $selecao);
 
-        $selecao->disciplinas()->detach($disciplina);
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($selecao, $disciplina) {
+
+            $selecao->disciplinas()->detach($disciplina);
+            $selecao->atualizarStatus();
+        });
 
         $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa seleção.');
         \UspTheme::activeUrl('selecoes');
