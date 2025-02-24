@@ -230,9 +230,12 @@ class ArquivoController extends Controller
         if ($classe_nome == 'Selecao') {
             $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
             $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id)
+                                ->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $selecao->tem_taxa; })
                             ->merge(TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $selecao))
-                            ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao));
-        }
+                            ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao)
+                                ->filter(function ($tipoarquivo) { return $tipoarquivo->nome !== 'Boleto(s) de Pagamento da Inscrição'; }));
+        } elseif ($classe_nome == 'Inscricao')
+            $objeto->tiposarquivo = $objeto->tiposarquivo->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Boleto(s) de Pagamento da Inscrição') || $selecao->tem_taxa; });
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id);
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);

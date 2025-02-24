@@ -20,9 +20,10 @@ class CreateSelecoesTable extends Migration
             $table->string('descricao', 255)->nullable();
             $table->datetime('datahora_inicio');
             $table->datetime('datahora_fim');
-            $table->decimal('boleto_valor', 8, 2);
+            $table->boolean('tem_taxa')->default(true);
+            $table->decimal('boleto_valor', 8, 2)->nullable();
             $table->string('boleto_texto')->nullable();
-            $table->date('boleto_data_vencimento');
+            $table->date('boleto_data_vencimento')->nullable();
             $table->string('email_inscricaoaprovacao_texto')->nullable();
             $table->string('email_inscricaorejeicao_texto')->nullable();
             $table->json('template')->nullable();

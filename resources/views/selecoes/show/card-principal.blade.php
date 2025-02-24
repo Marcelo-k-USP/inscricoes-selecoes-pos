@@ -39,15 +39,36 @@
 
       $('#categoria_id').change(function () {
         var programa_div = $('#programa_id').closest('.form-group');
-        if ($('#categoria_id option:selected').text() !== 'Aluno Especial') {
+        if ($('#categoria_id option:selected').text() !== 'Aluno Especial')
           programa_div.show();
-        } else {
+        else {
           $('#programa_id option:first').prop('selected', true);
           programa_div.hide();
         }
       });
 
       $('#categoria_id').trigger('change');
+
+      updateCamposBoleto();
+
+      $('#tem_taxa').on('click', function () {
+        updateCamposBoleto();
+      });
     });
+
+    function updateCamposBoleto() {
+      if (!$('#tem_taxa').prop('checked')) {
+        $('#boleto_data_vencimento').val('');
+        $('#boleto_data_vencimento').parents('div').eq(1).hide();
+        $('#boleto_valor').val('');
+        $('#boleto_valor').parents('div').eq(1).hide();
+        $('#boleto_texto').val('');
+        $('#boleto_texto').parents('div').eq(1).hide();
+      } else {
+        $('#boleto_data_vencimento').parents('div').eq(1).show();
+        $('#boleto_valor').parents('div').eq(1).show();
+        $('#boleto_texto').parents('div').eq(1).show();
+      }
+    }
   </script>
 @endsection

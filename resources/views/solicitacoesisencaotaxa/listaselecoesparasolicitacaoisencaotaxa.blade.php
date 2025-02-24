@@ -51,7 +51,7 @@
     </table>
   @else
     <br />
-    Não há processos seletivos ocorrendo no momento.
+    No momento, não há processos seletivos para os quais solicitar isenção de taxa.
   @endif
 @endsection
 

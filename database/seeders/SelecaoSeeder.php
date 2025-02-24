@@ -589,9 +589,7 @@ class SelecaoSeeder extends Seeder
                 'descricao' => 'Processo Seletivo 2025 Aluno Especial',
                 'datahora_inicio' => Carbon::createFromFormat('d/m/Y H:i', '01/11/2024 08:00')->format('Y-m-d H:i'),
                 'datahora_fim' => Carbon::createFromFormat('d/m/Y H:i', '01/03/2025 23:59')->format('Y-m-d H:i'),
-                'boleto_valor' => 50.0,
-                'boleto_texto' => 'Boleto de Inscrição do Processo Seletivo da Pós-Graduação',
-                'boleto_data_vencimento' => Carbon::createFromFormat('d/m/Y', '02/03/2025')->format('Y-m-d'),
+                'tem_taxa' => false,
                 'template' => '{
                     "nome": {
                         "label": "Nome",

@@ -575,6 +575,7 @@ class Selecao extends Model
         'descricao',
         'datahora_inicio',
         'datahora_fim',
+        'tem_taxa',
         'boleto_valor',
         'boleto_texto',
         'boleto_data_vencimento',
@@ -619,6 +620,11 @@ class Selecao extends Model
             'name' => 'datahora_fim',
             'label' => 'Fim',
             'type' => 'datetime',
+        ],
+        [
+            'name' => 'tem_taxa',
+            'label' => 'Taxa de Inscrição para a Seleção',
+            'type' => 'checkbox',
         ],
         [
             'name' => 'boleto_data_vencimento',
@@ -782,7 +788,8 @@ class Selecao extends Model
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
             $selecoes = $selecoes->filter(function ($selecao, $key) {    // agora vamos remover as seleções onde não se pode inscrever... a ordem de liberação é relevante!
-                return ($selecao->estado != 'Encerrada');                // descarta as seleções encerradas
+                return ($selecao->estado != 'Encerrada')                 // descarta as seleções encerradas
+                    && ($selecao->tem_taxa);                             // descarta as seleções sem taxa
             });
             $categoria->selecoes = $selecoes;
         }
@@ -815,7 +822,9 @@ class Selecao extends Model
      */
     public function atualizarStatus()
     {
-        $tiposarquivo_required = TipoArquivo::where('classe_nome', 'Seleções')->where('obrigatorio', true)->pluck('nome')->toArray();
+        $tiposarquivo_required = TipoArquivo::where('classe_nome', 'Seleções')->where('obrigatorio', true)->pluck('nome')->filter(function ($nome) {
+            return ($nome !== 'Normas para Isenção de Taxa') || $this->tem_taxa;
+        })->toArray();
         $possui_todos_os_arquivos_required = true;
         foreach ($tiposarquivo_required as $tipoarquivo_required)
             if (!$this->arquivos->contains('pivot.tipo', $tipoarquivo_required)) {

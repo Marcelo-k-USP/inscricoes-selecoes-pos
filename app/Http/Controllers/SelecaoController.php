@@ -92,6 +92,9 @@ class SelecaoController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        $request->merge(['tem_taxa' => $request->has('tem_taxa')]);    // acerta o valor do campo "tem_taxa" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
+        $request->merge(['boleto_valor' => ($request->input('boleto_valor') !== '' ? $request->input('boleto_valor') : null)]);
+
         $requestData = $request->all();
         $requestData['datahora_inicio'] = (is_null($requestData['data_inicio'] || is_null($requestData['hora_inicio'])) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['data_inicio'] . ' ' . $requestData['hora_inicio']));
         $requestData['datahora_fim'] = (is_null($requestData['data_fim'] || is_null($requestData['hora_fim'])) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['data_fim'] . ' ' . $requestData['hora_fim']));
@@ -168,11 +171,15 @@ class SelecaoController extends Controller
             return view('selecoes.edit', $this->monta_compact($selecao, 'edit'))->withErrors($validator);    // preciso especificar 'edit'... se eu fizesse um return back(), e o usuário estivesse vindo de um update após um create, a variável $modo voltaria a ser 'create', e a página ficaria errada
         }
 
+        $request->merge(['tem_taxa' => $request->has('tem_taxa')]);    // acerta o valor do campo "tem_taxa" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
+        $request->merge(['boleto_valor' => ($request->input('boleto_valor') !== '' ? $request->input('boleto_valor') : null)]);
+
         $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
         $this->updateField($request, $selecao, 'nome', 'nome', 'o');
         $this->updateField($request, $selecao, 'descricao', 'descrição', 'a');
         $this->updateField($request, $selecao, 'datahora_inicio', 'data/hora início', 'a');
         $this->updateField($request, $selecao, 'datahora_fim', 'data/hora fim', 'a');
+        $this->updateField($request, $selecao, 'tem_taxa', 'taxa de inscrição', 'a');
         $this->updateField($request, $selecao, 'boleto_valor', 'valor do boleto', 'o');
         $this->updateField($request, $selecao, 'boleto_texto', 'texto do boleto', 'o');
         $this->updateField($request, $selecao, 'boleto_data_vencimento', 'data de vencimento do boleto', 'a');
@@ -694,6 +701,7 @@ class SelecaoController extends Controller
         $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id)
+                            ->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $selecao->tem_taxa; })
                         ->merge(TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $selecao))
                         ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao)
                             ->filter(function ($tipoarquivo) { return $tipoarquivo->nome !== 'Boleto(s) de Pagamento da Inscrição'; }));

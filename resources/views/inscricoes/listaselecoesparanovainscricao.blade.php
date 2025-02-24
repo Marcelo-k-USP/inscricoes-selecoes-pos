@@ -66,7 +66,7 @@
     </table>
   @else
     <br />
-    Não há processos seletivos ocorrendo no momento.
+    No momento, não há processos seletivos ocorrendo.
   @endif
 @endsection
 

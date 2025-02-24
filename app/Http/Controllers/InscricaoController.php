@@ -200,7 +200,7 @@ class InscricaoController extends Controller
 
                     $info_adicional = '';
                     $user = \Auth::user();
-                    if (!$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
+                    if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
 
                         $passo = 'boleto(s)';
                         $papel = 'Candidato';
@@ -434,7 +434,8 @@ class InscricaoController extends Controller
         $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->orderBy('sigla')->get() : collect());
         $disciplinas = Disciplina::listarDisciplinas($objeto->selecao);
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
-        $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($objeto->selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), $objeto->selecao);
+        $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($objeto->selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), $objeto->selecao)
+            ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Boleto(s) de Pagamento da Inscrição') || $inscricao->selecao->tem_taxa; });
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id);
         $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
