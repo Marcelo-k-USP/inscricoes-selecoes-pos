@@ -7,43 +7,40 @@ Não trata do fluxo que segue após isso: avaliação, inscrição na pós-gradu
 
 Permite que candidatos solicitem isenção de taxa de inscrição e realizem inscrição.
 Ambas as "entidades" (isenção de taxa de solicitação e inscrição) possuem fluxo de estados.
-Para que um candidato solicite isenção de taxa ou se inscreva, ele precisa estar logado.
-Usuários externos à USP devem realizar um cadastro local antes dessas ações.
+Para que um candidato solicite isenção de taxa ou se inscreva, ele precisa estar logado, ou seja, ele deve antes realizar um cadastro local.
 Os usuários locais são gravados também na tabela users, embora possuam modelo próprio no projeto.
 
 Os gerentes devem cadastrar as seleções nas quais os candidatos se inscreverão/solicitarão isenção de taxa.
 Cada seleção tem um formulário próprio, gerado a partir de um template, e editável pelo gerente (excetos por campos utilizados pelo sistema, que não podem ser removidos, como CPF, e-mail, etc.).
 O estado da seleção é modificado quando o gerente altera a data início/fim e também quando as seleções são consultadas (neste momento, o sistema verifica se alguma seleção passou da data início/fim, e muda o estado de acordo).
 O estado também é modificado quando o gerente sobe/remove os documentos da seleção (edital, etc.), pois não podemos abrir uma seleção sem que ela tenha esses documentos.
-Ao cadastrar uma nova seleção, o gerente deve informar a quais linhas de pesquisa/temas ela está atrelada (se a categoria da seleção for aluno regular, pois na categoria de aluno especial não temos linhas de pesquisa/temas, o aluno especial se inscreve para disciplina(s)).
-Ao cadastrar uma nova seleção, todos motivos de isenção de taxa são automaticamente associados à ela; cabe ao gerente verificar se é isso mesmo o desejado para a nova seleção.
-Ao cadastrar uma nova seleção na categoria aluno especial, todas as disciplinas são automaticamente associados à ela; cabe ao ferente verificar se é isso mesmo o desejado para a nova seleção.
+Ao cadastrar uma nova seleção, o gerente deve informar a quais combinações níveis com linhas de pesquisa/temas ela está atrelada (se a categoria da seleção for aluno regular, pois na categoria de aluno especial não temos combinações níveis com linhas de pesquisa/temas, o aluno especial se inscreve para disciplina(s)).
+Ao cadastrar uma nova seleção, todos os motivos de isenção de taxa são automaticamente associados à ela; cabe ao gerente verificar se é isso mesmo o desejado para a nova seleção.
+Ao cadastrar uma nova seleção na categoria aluno especial, todas as disciplinas são automaticamente associados à ela; cabe ao gerente verificar se é isso mesmo o desejado para a nova seleção.
 
-Os gerentes são atrelados aos programas.
-Cada gerente pode acessar seleções, solicitações de taxa de inscrição e inscrições somente de seus programas associados.
 Há quatro funções para gerentes: secretários(as) dos programas, coordenadores dos programas, serviço de pós-graduação e coordenadores de pós-graduação.
-Gerentes com função serviço de pós-graduação e coordenadores de pós-graduação podem acessar todas as seleções, solicitações de taxa de inscrição e inscrições.
+Gerentes das duas primeiras funções são atrelados aos programas. Eles podem acessar seleções, solicitações de taxa de inscrição e inscrições somente de seus programas associados.
+Gerentes das duas últimas funções podem acessar todas as seleções, solicitações de taxa de inscrição e inscrições.
 
 Há duas categorias de processos seletivos: aluno regular e aluno especial.
 No caso de aluno regular, as seleções/inscrições/solicitações de isenção de taxa dizem respeito a um programa específico.
-O aluno regular, ao se inscrever, deve especificar a linha de pesquisa/tema no qual está se inscrevendo.
+O aluno regular, ao se inscrever, deve especificar a combinação nível com linha de pesquisa/tema na qual está se inscrevendo.
 No caso de aluno especial, as seleções/inscrições/solicitações de isenção de taxa não são atreladas a um programa.
 O aluno especial, ao se inscrever, deve especificar a(s) disciplina(s) na(s) qual(is) está se inscrevendo.
 
-Cada linha de pesquisa/tema possui uma relação de orientadores, restritos a professores da unidade.
 As linhas de pesquisa/temas são relacionadas aos níveis da pós-graduação (mestrado, doutorado, doutorado direto).
 Se um aluno regular se inscreve, por exemplo, para o nível de mestrado, só lhe serão permitidas as linhas de pesquisa/temas desse programa dessa seleção que estejam relacionadas ao nível escolhido.
 
 Cada seleção contém informativos (edital, etc.), que são documentos que o candidato pode consultar.
 Além disso, em cada seleção o gerente também define quais documentos o candidato pode (ou deve) subir quando da solicitação de isenção de taxa e quando da inscrição.
 O tipo de documento de boletos não é removível nem renomeável. O candidato não sobe documento desse tipo, pois ele é gerado quando do envio da inscrição.
-Inscrições para programas podem ser de três níveis diferentes (Mestrado, Doutorado ou Doutorado Direto) e os tipos de documento dessas inscrições podem variar conforme o nível e o programa. Tipos de documento com diferenciação por níveis e programas é algo que só faz sentido nas inscrições.
+Inscrições para programas podem ser de três níveis diferentes (mestrado, doutorado ou doutorado direto) e os tipos de documento dessas inscrições podem variar conforme o nível e o programa. Tipos de documento com diferenciação por níveis e programas é algo que só faz sentido nas inscrições.
 
 Para completar a inscrição, o candidato deve clicar em Enviar.
 Então é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição.
 No caso de aluno regular, é gerado um único boleto.
 No caso de aluno especial, é gerado um boleto para cada disciplina na qual ele se inscreveu, e enviado para o candidato um único e-mail com todos esses boletos anexados.
-Algumas informações necessárias para a geração de boletos se encontra na tabela parametros, que é editável pelos admins em tela.
+Algumas informações necessárias para a geração de boletos se encontram na tabela parametros, que é editável pelos admins em tela.
 
 E-mails são disparados quando do envio de solicitações de isenção de taxa e inscrições, bem como de mudança de seus estados por parte dos gerentes (por exemplo, colocando em análise, aprovando, ou rejeitando).
 Para verificar todos os envios de e-mail que o sistema realiza, basta verificar o método update dos controllers de solicitação de isenção de taxa e de inscrição. Além disso, há também os envios de e-mail para controle de usuário (esqueceu sua senha e cadastro de novo usuário externo).
@@ -258,6 +255,7 @@ Para limpar e recriar todo o DB, rode sempre que necessário:
 Foram utilizados vários recursos do laravel que podem não ser muito trivial para todos.
 
 -   O monitoramento de novos chamados ou novas mensagens nos chamados é feito usando _observers_ (https://laravel.com/docs/8.x/eloquent#observers)
+
 -   Os e-mails enviados são colocados em filas (jobs) para liberar a execução do php (https://laravel.com/docs/8.x/mail#queueing-mail)
 
 -   O sistema faz uso dos seguintes serviços externos: WSBoleto da USP, Recaptcha v2 do Google e Viacep (que é gratuito, diferente do webservice dos Correios, que exige convênio específico).
@@ -273,4 +271,4 @@ Foram utilizados vários recursos do laravel que podem não ser muito trivial pa
 passou a ser assim:
     {{ html()->form('post', 'inscricoes')->open() }}
 
--   Em sua versão inicial, os seeders contêm dados específicos para o IP-USP. Para migrar para outras unidades, pode-se desconsiderar esses seeders, ou modificá-los com os dados da unidade em questão (seeders funções, programas, linhas de pesquisa/temas, disciplinas, etc.).
+-   Em sua versão inicial, os seeders contêm dados específicos para o IP-USP. Para migrar para outras unidades, pode-se desconsiderar esses seeders, ou modificá-los com os dados da unidade em questão (são os seguintes seeders: funções, programas, linhas de pesquisa/temas, disciplinas, etc.).
