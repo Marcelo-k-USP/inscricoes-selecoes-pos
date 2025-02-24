@@ -237,14 +237,21 @@ class InscricaoController extends Controller
                     }
 
                     $passo = 'realização';
-                    if ($inscricao->selecao->categoria->nome !== 'Aluno Especial')
+                    if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
                         // envia e-mails avisando os secretários do programa da seleção da inscrição sobre a realização da inscrição
                         foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Secretários(as) do Programa')['users'] as $secretario) {
                             $responsavel_nome = Pessoa::obterNome($secretario->codpes);
                             \Mail::to($secretario->email)
                                 ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
                         }
-                    else
+
+                        // envia e-mails avisando os coordenadores do programa da seleção da inscrição sobre a realização da inscrição
+                        foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Coordenadores do Programa')['users'] as $coordenador) {
+                            $responsavel_nome = Pessoa::obterNome($coordenador->codpes);
+                            \Mail::to($coordenador->email)
+                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
+                        }
+                    } else
                         // envia e-mails avisando o serviço de pós-graduação sobre a realização da inscrição
                         foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
                             $responsavel_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
