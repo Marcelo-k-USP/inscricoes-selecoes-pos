@@ -65,16 +65,15 @@ class ArquivoPolicy
         if ($classe_nome == 'Selecao')
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes subam arquivos de seleção
 
-        if (Gate::allows('perfilusuario')) {
-            $autor_inscricao = $objeto->pessoas('Autor');
-            if ($autor_inscricao && ($autor_inscricao->id == $user->id))
-                return true;                                       // permite que usuários subam arquivos em suas solicitações de isenção de taxa e inscrições
-        }
-
         if (Gate::allows('perfiladmin'))
             return true;
         elseif (Gate::allows('perfilgerente'))
             return $user->gerenciaPrograma($objeto->selecao->programa_id);
+        elseif (Gate::allows('perfilusuario')) {
+            $autor_inscricao = $objeto->pessoas('Autor');
+            if ($autor_inscricao && ($autor_inscricao->id == $user->id))
+                return true;                                       // permite que usuários subam arquivos em suas solicitações de isenção de taxa e inscrições
+        }
     }
 
     /**
@@ -132,7 +131,11 @@ class ArquivoPolicy
         if ($classe_nome == 'Selecao')
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes renomeiem/apaguem arquivos de seleção
 
-        if (Gate::allows('perfilusuario')) {
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($objeto->selecao->programa_id);
+        elseif (Gate::allows('perfilusuario')) {
             $autor_arquivo_id = $arquivo->user_id;
 
             $autor_solicitacaoisencaotaxa = $objeto->pessoas('Autor');
@@ -143,10 +146,5 @@ class ArquivoPolicy
             if (($autor_arquivo_id == $user->id) && $autor_inscricao && ($autor_inscricao->id == $user->id))
                 return true;                                       // permite que usuários renomeiem/apaguem arquivos em suas inscrições
         }
-
-        if (Gate::allows('perfiladmin'))
-            return true;
-        elseif (Gate::allows('perfilgerente'))
-            return $user->gerenciaPrograma($objeto->selecao->programa_id);
     }
 }
