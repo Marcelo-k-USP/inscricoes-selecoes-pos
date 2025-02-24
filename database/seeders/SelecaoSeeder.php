@@ -279,11 +279,6 @@ class SelecaoSeeder extends Seeder
                                 "label": "Feminino",
                                 "value": "feminino",
                                 "order": 1
-                            },
-                            {
-                                "label": "Não Binário",
-                                "value": "nao_binario",
-                                "order": 2
                             }
                         ],
                         "validate": "required",
@@ -841,11 +836,6 @@ class SelecaoSeeder extends Seeder
                                 "label": "Feminino",
                                 "value": "feminino",
                                 "order": 1
-                            },
-                            {
-                                "label": "Não Binário",
-                                "value": "nao_binario",
-                                "order": 2
                             }
                         ],
                         "validate": "required",

@@ -270,11 +270,6 @@ class Selecao extends Model
                         "label": "Feminino",
                         "value": "feminino",
                         "order": 1
-                    },
-                    {
-                        "label": "Não Binário",
-                        "value": "nao_binario",
-                        "order": 2
                     }
                 ],
                 "validate": "required",
