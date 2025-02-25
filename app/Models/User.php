@@ -235,7 +235,7 @@ class User extends Authenticatable
             return $this->programas;
     }
 
-    public function gerenciaPrograma(int $programa_id)
+    public function gerenciaPrograma(?int $programa_id = null)
     {
         if ($this->programas()->where('programa_id', $programa_id)->exists())
             return true;

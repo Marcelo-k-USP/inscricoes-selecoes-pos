@@ -35,7 +35,18 @@ class ArquivoPolicy
         if ($classe_nome == 'Selecao')
             return true;                                           // permite que todos baixem arquivos de seleções
 
-        if (Gate::allows('perfilusuario')) {
+        if (Gate::allows('perfiladmin'))
+            return true;                                           // permite que admins baixem todos os arquivos
+        elseif (Gate::allows('perfilgerente')) {
+            foreach ($arquivo->solicitacoesisencaotaxa as $solicitacaoisencaotaxa)
+                if ($user->gerenciaPrograma($solicitacaoisencaotaxa->selecao->programa_id))
+                    return true;
+
+                foreach ($arquivo->inscricoes as $inscricao)
+                    if ($user->gerenciaPrograma($inscricao->selecao->programa_id))
+                        return true;
+        }
+        elseif (Gate::allows('perfilusuario')) {
             foreach ($arquivo->solicitacoesisencaotaxa as $solicitacaoisencaotaxa) {
                 $autor_solicitacaoisencaotaxa = $solicitacaoisencaotaxa->pessoas('Autor');
                 if ($autor_solicitacaoisencaotaxa && ($autor_solicitacaoisencaotaxa->id == $user->id))
@@ -48,8 +59,6 @@ class ArquivoPolicy
                     return true;                                   // permite que usuários baixem arquivos de suas inscrições
             }
         }
-
-        return Gate::any(['perfiladmin', 'perfilgerente']);        // permite que admins e gerentes baixem todos os arquivos
     }
 
     /**
