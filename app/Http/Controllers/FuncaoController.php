@@ -60,6 +60,11 @@ class FuncaoController extends Controller
 
     private function monta_compact()
     {
+        $programas_docentes = Programa::with(['users' => function ($query) {
+            $query->where('funcao', 'Docentes do Programa')
+                  ->orderBy('user_programa.programa_id')
+                  ->orderBy('user_programa.user_id');
+        }])->get();
         $programas_secretarios = Programa::with(['users' => function ($query) {
             $query->where('funcao', 'Secretários(as) do Programa')
                   ->orderBy('user_programa.programa_id')
@@ -95,6 +100,6 @@ class FuncaoController extends Controller
                 ];
             })->values()->toArray();
 
-        return compact('programas_secretarios', 'programas_coordenadores', 'posgraduacao_servico_users', 'posgraduacao_coordenadores_users');
+        return compact('programas_docentes', 'programas_secretarios', 'programas_coordenadores', 'posgraduacao_servico_users', 'posgraduacao_coordenadores_users');
     }
 }

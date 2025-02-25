@@ -53,6 +53,10 @@ class Programa extends Model
     {
         return [
             [
+                'funcao' => 'Docentes do Programa',
+                'users' => $this->users()->wherePivot('funcao', 'Docentes do Programa')->orderBy('id')->get(),
+            ],
+            [
                 'funcao' => 'Secretários(as) do Programa',
                 'users' => $this->users()->wherePivot('funcao', 'Secretários(as) do Programa')->orderBy('id')->get(),
             ],
