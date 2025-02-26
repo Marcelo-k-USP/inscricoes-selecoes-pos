@@ -61,7 +61,7 @@ class InscricaoController extends Controller
      */
     public function index(Request $request)
     {
-        if ((session('perfil') == 'admin') || (session('perfil') == 'gerente'))
+        if (in_array(session('perfil'), ['admin', 'gerente', 'docente']))
             $this->authorize('inscricoes.viewAny');
         else
             $this->authorize('inscricoes.viewTheir');

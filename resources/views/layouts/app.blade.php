@@ -4,6 +4,12 @@
 @parent
   <link rel="stylesheet" href="css/selecoes-pos.css">
   <style>
+    .docente-menubar {
+      border-bottom-style: solid !important;
+      border-bottom-width: medium !important;
+      border-bottom-color: yellow !important;
+    }
+
     .gerente-menubar {
       border-bottom-style: solid !important;
       border-bottom-width: medium !important;
@@ -59,6 +65,9 @@
       });
 
       // vamos aplicar o estilo de perfil no menubar
+      @if (session('perfil') == 'docente')
+        $('#menu').find('.navbar').addClass('docente-menubar');
+      @endif
       @if (session('perfil') == 'gerente')
         $('#menu').find('.navbar').addClass('gerente-menubar');
       @endif

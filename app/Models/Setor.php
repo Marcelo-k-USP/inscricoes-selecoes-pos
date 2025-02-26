@@ -31,7 +31,7 @@ class Setor extends Model
     ];
 
     # funcoes é pivot do relacionamento com users
-    public const funcoes = ['Gerente', 'Colaborador'];
+    public const funcoes = ['Gerente', 'Docente'];
 
     protected const fields = [
         [

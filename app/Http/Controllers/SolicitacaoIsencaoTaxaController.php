@@ -53,8 +53,8 @@ class SolicitacaoIsencaoTaxaController extends Controller
      */
     public function index(Request $request)
     {
-        $perfil_admin_ou_gerente = ((session('perfil') == 'admin') || (session('perfil') == 'gerente'));
-        $this->authorize('solicitacoesisencaotaxa.view' . ($perfil_admin_ou_gerente ? 'Any' : 'Their'));
+        $perfil_admin_ou_gerente_ou_docente =  in_array(session('perfil'), ['admin', 'gerente', 'docente']);
+        $this->authorize('solicitacoesisencaotaxa.view' . ($perfil_admin_ou_gerente_ou_docente ? 'Any' : 'Their'));
 
         \UspTheme::activeUrl('solicitacoesisencaotaxa');
         return view('solicitacoesisencaotaxa.index', $this->monta_compact_index());

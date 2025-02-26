@@ -32,6 +32,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->is_admin;
         });
 
+        Gate::define('docente', function ($user)  {
+            return $user->is_admin;
+        });
+
         Gate::define('usuario', function ($user) {
             return $user;
         });
@@ -45,6 +49,10 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('perfilgerente', function ($user) {
             return (session('perfil') == 'gerente');
+        });
+
+        Gate::define('perfildocente', function ($user) {
+            return (session('perfil') == 'docente');
         });
 
         Gate::define('perfilusuario', function ($user) {

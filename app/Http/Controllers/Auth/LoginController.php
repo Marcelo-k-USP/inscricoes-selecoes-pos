@@ -61,7 +61,7 @@ class LoginController extends Controller
         if (config('senhaunica.permission')) {
 
             // garantindo que as permissions existam
-            $permissions = ['admin', 'gerente', 'user'];
+            $permissions = ['admin', 'gerente', 'docente', 'user'];
             foreach ($permissions as $permission)
                 Permission::findOrCreate($permission);
 
@@ -72,6 +72,10 @@ class LoginController extends Controller
             // vamos verificar no config se o usuário é gerente
             if (in_array($userSenhaUnica->codpes, config('senhaunica.gerentes')))
                 $user->givePermissionTo('gerente');
+
+            // vamos verificar na base local se o usuário é docente
+            if (!$user->listarProgramasGerenciadosFuncao('Docentes do Programa')->isEmpty())
+                $user->givePermissionTo('docente');
 
             // default
             $user->givePermissionTo('user');
@@ -88,8 +92,8 @@ class LoginController extends Controller
 
         // vincula a pessoa ao setor
         foreach ($userSenhaUnica->vinculo as $vinculo) {
-            if ((!in_array($vinculo['nomeVinculo'], ['Admin', 'Gerente'])) && ($user->programas()->exists()))    // se o vínculo do usuário não for nem de admin nem de gerente, e ele tiver alguma relação com algum programa...
-                $vinculo['nomeVinculo'] = 'Gerente';    // iremos vinculá-lo ao seu setor como gerente, subindo seu grau de autorizações para que ele tenha acesso gerencial aos seus programas
+            if ((!in_array($vinculo['nomeVinculo'], ['Admin', 'Gerente', 'Docente'])) && ($user->programas()->exists()))    // se o vínculo do usuário não for nem de admin nem de gerente nem de docente, e ele tiver alguma relação com algum programa...
+                $vinculo['nomeVinculo'] = ($user->listarProgramasGerenciadosFuncao('Docentes do Programa')->isEmpty() ? 'Gerente' : 'Docente');    // iremos vinculá-lo ao seu setor como gerente, subindo seu grau de autorizações para que ele tenha acesso gerencial/de docente aos seus programas
             if ($setor = Setor::where('cod_set_replicado', $vinculo['codigoSetor'])->first())
                 Setor::vincularPessoa($setor, $user, $vinculo['nomeVinculo']);
         }
@@ -99,6 +103,8 @@ class LoginController extends Controller
             session(['perfil' => 'admin']);
         elseif (Gate::allows('gerente'))
             session(['perfil' => 'gerente']);
+        elseif (Gate::allows('docente'))
+            session(['perfil' => 'docente']);
         else
             session(['perfil' => 'usuario']);
         return redirect('/inscricoes');

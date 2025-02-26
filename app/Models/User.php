@@ -152,7 +152,7 @@ class User extends Authenticatable
     /**
      * Troca o perfil do usuário
      *
-     * @param String $perfil [usuario, gerente ou admin]
+     * @param String $perfil [usuario, docente, gerente ou admin]
      * @return Array [success=>[true||false], msg=>mensagem de sucesso]
      */
     public function trocarPerfil($perfil)
@@ -166,6 +166,14 @@ class User extends Authenticatable
                 session(['perfil' => 'usuario']);
                 $ret['success'] = true;
                 $ret['msg'] = 'Perfil mudado para Usuário com sucesso.';
+                break;
+
+            case 'docente':
+                if (Gate::allows('docente')) {
+                    session(['perfil' => 'docente']);
+                    $ret['success'] = true;
+                    $ret['msg'] = 'Perfil mudado para Docente com sucesso.';
+                }
                 break;
 
             case 'gerente':
@@ -233,6 +241,21 @@ class User extends Authenticatable
             return Programa::all();
         else
             return $this->programas;
+    }
+
+    public function listarProgramasGerenciadosFuncao(string $funcao)
+    {
+        if ((session('perfil') == 'admin') ||
+            (DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
+                 ->where('user_id', $this->id)
+                 ->where(function ($query) use ($funcao) {
+                     $query->where('funcao', $funcao);
+                 })->exists()))
+            return Programa::whereHas('users', function ($query) use ($funcao) {
+                $query->where('user_programa.funcao', $funcao);
+            })->get();
+        else
+            return $this->programas()->where('funcao', $funcao)->get();
     }
 
     public function gerenciaPrograma(?int $programa_id = null)

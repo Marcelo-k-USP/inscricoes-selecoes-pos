@@ -134,6 +134,11 @@ class SolicitacaoIsencaoTaxa extends Model
                         $query->whereIn('programa_id', Auth::user()->listarProgramasGerenciados()->pluck('id'));
                     })->get();
 
+            case 'docente':
+                return self::with('selecao')->whereHas('selecao', function ($query) {
+                    $query->whereIn('programa_id', Auth::user()->listarProgramasGerenciadosFuncao('Docentes do Programa')->pluck('id'));
+                })->get();
+
             default:
                 return Auth::user()->solicitacoesisencaotaxa()->wherePivotIn('papel', ['Autor'])->get();
         }

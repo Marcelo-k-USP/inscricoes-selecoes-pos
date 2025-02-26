@@ -30,7 +30,7 @@ class InscricaoPolicy
      */
     public function viewAny(User $user)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        return Gate::any(['perfiladmin', 'perfilgerente', 'perfildocente']);
     }
 
     /**
@@ -46,6 +46,8 @@ class InscricaoPolicy
             return true;
         elseif (Gate::allows('perfilgerente'))
             return $user->gerenciaPrograma($inscricao->selecao->programa_id);
+        elseif (Gate::allows('perfildocente'))
+            return $user->gerenciaProgramaFuncao('Docentes do Programa', $inscricao->selecao->programa_id);
         else
             return ($inscricao->pessoas('Autor')->id == $user->id);    // permite que o usuário autor da inscrição a visualize
     }
@@ -86,6 +88,8 @@ class InscricaoPolicy
             return true;
         elseif (Gate::allows('perfilgerente'))
             return $user->gerenciaPrograma($inscricao->selecao->programa_id);
+        elseif (Gate::allows('perfildocente'))
+            return false;
         else
             return false;
     }
@@ -103,6 +107,8 @@ class InscricaoPolicy
             return true;
         elseif (Gate::allows('perfilgerente'))
             return $user->gerenciaPrograma($inscricao->selecao->programa_id);
+        elseif (Gate::allows('perfildocente'))
+            return false;
         elseif (Gate::allows('perfilusuario'))
             return ($inscricao->pessoas('Autor')->id == $user->id);
     }

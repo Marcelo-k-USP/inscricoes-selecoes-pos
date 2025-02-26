@@ -22,6 +22,11 @@ Há quatro funções para gerentes: secretários(as) dos programas, coordenadore
 Gerentes das duas primeiras funções são atrelados aos programas. Eles podem acessar seleções, solicitações de taxa de inscrição e inscrições somente de seus programas associados.
 Gerentes das duas últimas funções podem acessar todas as seleções, solicitações de taxa de inscrição e inscrições.
 
+Em adição aos perfis existentes (admin, gerente e usuário), foi criado o perfil de docente.
+A razão disso é que os docentes terão acesso às inscrições, mas somente leitura.
+Os docentes são definidos na mesma tabela que os gerentes, mas com a função docentes dos programas.
+No caso de inscrições de seleções para alunos especiais, os docentes não terão acesso.
+
 Há duas categorias de processos seletivos: aluno regular e aluno especial.
 No caso de aluno regular, as seleções/inscrições/solicitações de isenção de taxa dizem respeito a um programa específico.
 O aluno regular, ao se inscrever, deve especificar a combinação nível com linha de pesquisa/tema na qual está se inscrevendo.

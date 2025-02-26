@@ -42,11 +42,18 @@ class ArquivoPolicy
                 if ($user->gerenciaPrograma($solicitacaoisencaotaxa->selecao->programa_id))
                     return true;
 
-                foreach ($arquivo->inscricoes as $inscricao)
-                    if ($user->gerenciaPrograma($inscricao->selecao->programa_id))
-                        return true;
-        }
-        elseif (Gate::allows('perfilusuario')) {
+            foreach ($arquivo->inscricoes as $inscricao)
+                if ($user->gerenciaPrograma($inscricao->selecao->programa_id))
+                    return true;
+        } elseif (Gate::allows('perfildocente')) {
+            foreach ($arquivo->solicitacoesisencaotaxa as $solicitacaoisencaotaxa)
+                if ($user->gerenciaProgramaFuncao('Docentes do Programa', $solicitacaoisencaotaxa->selecao->programa_id))
+                    return true;
+
+            foreach ($arquivo->inscricoes as $inscricao)
+                if ($user->gerenciaProgramaFuncao('Docentes do Programa', $inscricao->selecao->programa_id))
+                    return true;
+        } elseif (Gate::allows('perfilusuario')) {
             foreach ($arquivo->solicitacoesisencaotaxa as $solicitacaoisencaotaxa) {
                 $autor_solicitacaoisencaotaxa = $solicitacaoisencaotaxa->pessoas('Autor');
                 if ($autor_solicitacaoisencaotaxa && ($autor_solicitacaoisencaotaxa->id == $user->id))
@@ -78,6 +85,8 @@ class ArquivoPolicy
             return true;
         elseif (Gate::allows('perfilgerente'))
             return $user->gerenciaPrograma($objeto->selecao->programa_id);
+        elseif (Gate::allows('perfildocente'))
+            return false;
         elseif (Gate::allows('perfilusuario')) {
             $autor_inscricao = $objeto->pessoas('Autor');
             if ($autor_inscricao && ($autor_inscricao->id == $user->id))
@@ -144,6 +153,8 @@ class ArquivoPolicy
             return true;
         elseif (Gate::allows('perfilgerente'))
             return $user->gerenciaPrograma($objeto->selecao->programa_id);
+        elseif (Gate::allows('perfildocente'))
+            return false;
         elseif (Gate::allows('perfilusuario')) {
             $autor_arquivo_id = $arquivo->user_id;
 

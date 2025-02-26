@@ -137,6 +137,11 @@ $trocarPerfil = [
         'can' => 'gerente',
     ],
     [
+        'text' => '&nbsp; Docente',
+        'url' => 'users/perfil/docente',
+        'can' => 'docente',
+    ],
+    [
         'text' => '&nbsp; Usuário',
         'url' => 'users/perfil/usuario',
         'can' => 'trocarPerfil',
