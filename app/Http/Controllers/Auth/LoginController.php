@@ -91,23 +91,22 @@ class LoginController extends Controller
         $user->save();
 
         // vincula a pessoa ao setor
+        $possui_vinculo_docente = false;
         foreach ($userSenhaUnica->vinculo as $vinculo) {
             if ((!in_array($vinculo['nomeVinculo'], ['Admin', 'Gerente', 'Docente'])) && ($user->programas()->exists()))    // se o vínculo do usuário não for nem de admin nem de gerente nem de docente, e ele tiver alguma relação com algum programa...
-                $vinculo['nomeVinculo'] = ($user->listarProgramasGerenciadosFuncao('Docentes do Programa')->isEmpty() ? 'Gerente' : 'Docente');    // iremos vinculá-lo ao seu setor como gerente, subindo seu grau de autorizações para que ele tenha acesso gerencial/de docente aos seus programas
+                if ($user->listarProgramasGerenciadosFuncao('Docentes do Programa')->isEmpty())
+                    $vinculo['nomeVinculo'] = 'Gerente';    // iremos vinculá-lo ao seu setor como gerente, subindo seu grau de autorizações para que ele tenha acesso gerencial aos seus programas
+                else {
+                    $vinculo['nomeVinculo'] = 'Docente';    // iremos vinculá-lo ao seu setor como docente, subindo seu grau de autorizações para que ele tenha acesso de docente aos seus programas
+                    $possui_vinculo_docente = true;
+                }
             if ($setor = Setor::where('cod_set_replicado', $vinculo['codigoSetor'])->first())
                 Setor::vincularPessoa($setor, $user, $vinculo['nomeVinculo']);
         }
 
         Auth::login($user, true);
-        if (Gate::allows('admin'))
-            session(['perfil' => 'admin']);
-        elseif (Gate::allows('gerente'))
-            session(['perfil' => 'gerente']);
-        elseif (Gate::allows('docente'))
-            session(['perfil' => 'docente']);
-        else
-            session(['perfil' => 'usuario']);
-        return redirect('/inscricoes');
+        session(['perfil' => ($user->is_admin ? 'admin' : (!$possui_vinculo_docente ? 'gerente' : 'docente'))]);    // o login de candidato só ocorre no LocalUserController
+        return redirect('/');
     }
 
     public function logout(Request $request)
