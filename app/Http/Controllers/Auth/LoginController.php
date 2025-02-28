@@ -105,7 +105,12 @@ class LoginController extends Controller
         }
 
         Auth::login($user, true);
-        session(['perfil' => ($user->is_admin ? 'admin' : (!$possui_vinculo_docente ? 'gerente' : 'docente'))]);    // o login de candidato só ocorre no LocalUserController
+        if ($user->is_admin)
+            session(['perfil' => 'admin']);
+        elseif (!$user->listarProgramasGerenciados()->isEmpty())
+            session(['perfil' => (!$possui_vinculo_docente ? 'gerente' : 'docente')]);
+        else
+            session(['perfil' => 'usuario']);
         return redirect('/');
     }
 
