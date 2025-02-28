@@ -104,14 +104,13 @@ class LoginController extends Controller
                 Setor::vincularPessoa($setor, $user, $vinculo['nomeVinculo']);
         }
 
-        Auth::login($user, true);
-        if ($user->is_admin)
-            session(['perfil' => 'admin']);
-        elseif (!$user->listarProgramasGerenciados()->isEmpty())
-            session(['perfil' => (!$possui_vinculo_docente ? 'gerente' : 'docente')]);
-        else
-            session(['perfil' => 'usuario']);
-        return redirect('/');
+        $possui_funcao = !$user->listarProgramasGerenciados()->isEmpty();
+        if ($user->is_admin || $possui_funcao) {
+            Auth::login($user, true);
+            session(['perfil' => ($user->is_admin ? 'admin' : (!$possui_vinculo_docente ? 'gerente' : 'docente'))]);
+            return redirect('/');
+        } else    // o login de candidato só ocorre no LocalUserController, então não preciso me preocupar com ele aqui
+            return response()->view('errors.nao_gestor');
     }
 
     public function logout(Request $request)
