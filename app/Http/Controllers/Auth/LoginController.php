@@ -91,12 +91,16 @@ class LoginController extends Controller
         $user->save();
 
         // vincula a pessoa ao setor
+        $possui_vinculo_gerente_acima_docente = false;
         $possui_vinculo_docente = false;
         foreach ($userSenhaUnica->vinculo as $vinculo) {
             if ((!in_array($vinculo['nomeVinculo'], ['Admin', 'Gerente', 'Docente'])) && ($user->programas()->exists()))    // se o vínculo do usuário não for nem de admin nem de gerente nem de docente, e ele tiver alguma relação com algum programa...
-                if ($user->listarProgramasGerenciadosFuncao('Docentes do Programa')->isEmpty())
+                if (!($user->listarProgramasGerenciados()->filter(function ($programa) {
+                    return $programa->pivot->funcao !== 'Docentes do Programa';
+                }))->isEmpty()) {
                     $vinculo['nomeVinculo'] = 'Gerente';    // iremos vinculá-lo ao seu setor como gerente, subindo seu grau de autorizações para que ele tenha acesso gerencial aos seus programas
-                else {
+                    $possui_vinculo_gerente_acima_docente = true;
+                } elseif (!$user->listarProgramasGerenciadosFuncao('Docentes do Programa')->isEmpty()) {
                     $vinculo['nomeVinculo'] = 'Docente';    // iremos vinculá-lo ao seu setor como docente, subindo seu grau de autorizações para que ele tenha acesso de docente aos seus programas
                     $possui_vinculo_docente = true;
                 }
@@ -107,7 +111,7 @@ class LoginController extends Controller
         $possui_funcao = !$user->listarProgramasGerenciados()->isEmpty();
         if ($user->is_admin || $possui_funcao) {
             Auth::login($user, true);
-            session(['perfil' => ($user->is_admin ? 'admin' : (!$possui_vinculo_docente ? 'gerente' : 'docente'))]);
+            session(['perfil' => ($user->is_admin ? 'admin' : ($possui_vinculo_gerente_acima_docente ? 'gerente' : ($possui_vinculo_docente ? 'docente' : 'usuario')))]);
             return redirect('/');
         } else    // o login de candidato só ocorre no LocalUserController, então não preciso me preocupar com ele aqui
             return response()->view('errors.nao_gestor');
