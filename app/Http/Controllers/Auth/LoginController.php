@@ -91,12 +91,13 @@ class LoginController extends Controller
         $user->save();
 
         // vincula a pessoa ao setor
+        session(['perfil' => '']);    // limpa para não errar dentro do listarProgramasGerenciados
         $possui_vinculo_gerente_acima_docente = false;
         $possui_vinculo_docente = false;
         foreach ($userSenhaUnica->vinculo as $vinculo) {
-            if ((!in_array($vinculo['nomeVinculo'], ['Admin', 'Gerente', 'Docente'])) && ($user->programas()->exists()))    // se o vínculo do usuário não for nem de admin nem de gerente nem de docente, e ele tiver alguma relação com algum programa...
+            if ((!in_array($vinculo['nomeVinculo'], ['Admin', 'Gerente', 'Docente'])) && !$user->listarProgramasGerenciados()->isEmpty())    // se o vínculo do usuário não for nem de admin nem de gerente nem de docente, e ele tiver alguma relação com algum programa...
                 if (!($user->listarProgramasGerenciados()->filter(function ($programa) {
-                    return $programa->pivot->funcao !== 'Docentes do Programa';
+                    return (!isset($programa->pivot) || ($programa->pivot->funcao !== 'Docentes do Programa'));
                 }))->isEmpty()) {
                     $vinculo['nomeVinculo'] = 'Gerente';    // iremos vinculá-lo ao seu setor como gerente, subindo seu grau de autorizações para que ele tenha acesso gerencial aos seus programas
                     $possui_vinculo_gerente_acima_docente = true;
@@ -108,8 +109,7 @@ class LoginController extends Controller
                 Setor::vincularPessoa($setor, $user, $vinculo['nomeVinculo']);
         }
 
-        $possui_funcao = !$user->listarProgramasGerenciados()->isEmpty();
-        if ($user->is_admin || $possui_funcao) {
+        if ($user->is_admin || !$user->listarProgramasGerenciados()->isEmpty()) {
             Auth::login($user, true);
             session(['perfil' => ($user->is_admin ? 'admin' : ($possui_vinculo_gerente_acima_docente ? 'gerente' : ($possui_vinculo_docente ? 'docente' : 'usuario')))]);
             return redirect('/');
