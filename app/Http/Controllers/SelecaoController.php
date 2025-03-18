@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SelecaoRequest;
+use App\Jobs\AtualizaStatusSelecoes;
 use App\Models\Categoria;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
@@ -55,6 +56,7 @@ class SelecaoController extends Controller
         $this->authorize('selecoes.viewAny');
 
         \UspTheme::activeUrl('selecoes');
+        AtualizaStatusSelecoes::dispatch();
         $data = self::$data;
         $objetos = Selecao::listarSelecoes();
         $classe_nome = 'Selecao';
@@ -147,7 +149,7 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.update', $selecao);
 
-        Selecao::atualizarStatusSelecoes();
+        AtualizaStatusSelecoes::dispatch();
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));

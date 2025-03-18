@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SolicitacaoIsencaoTaxaRequest;
+use App\Jobs\AtualizaStatusSelecoes;
 use App\Mail\SolicitacaoIsencaoTaxaMail;
 use App\Models\LocalUser;
 use App\Models\MotivoIsencaoTaxa;
@@ -74,6 +75,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $request->validate(['filtro' => 'nullable|string']);
 
         \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
+        AtualizaStatusSelecoes::dispatch();
         $categorias = Selecao::listarSelecoesParaSolicitacaoIsencaoTaxa();          // obtém as seleções dentro das categorias
         return view('solicitacoesisencaotaxa.listaselecoesparasolicitacaoisencaotaxa', compact('categorias'));
     }

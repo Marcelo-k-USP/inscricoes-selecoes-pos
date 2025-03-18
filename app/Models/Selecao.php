@@ -756,7 +756,6 @@ class Selecao extends Model
      */
     public static function listarSelecoes()
     {
-        self::atualizarStatusSelecoes();
         return self::whereIn('programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'))              // seleções de programas que o usuário gerencia, e também...
                     ->orWhere(function ($query) {
                         $query->where('categoria_id', Categoria::where('nome', 'Aluno Especial')->value('id'));    // seleções para alunos especiais (sem programa), desde que, neste segundo caso...
@@ -782,8 +781,6 @@ class Selecao extends Model
      */
     public static function listarSelecoesParaSolicitacaoIsencaoTaxa()
     {
-        self::atualizarStatusSelecoes();
-
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
@@ -804,8 +801,6 @@ class Selecao extends Model
      */
     public static function listarSelecoesParaNovaInscricao()
     {
-        self::atualizarStatusSelecoes();
-
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
@@ -841,17 +836,6 @@ class Selecao extends Model
             $this->update(['estado' => ($possui_todos_os_arquivos_required && $outras_condicoes_satisfeitas) ? 'Em Andamento' : 'Em Elaboração']);
         elseif ($this->datahora_fim < $agora)
             $this->update(['estado' => 'Encerrada']);
-    }
-
-    /**
-     * Atualiza os status de todas as seleções dos últimos 5 anos
-     */
-    public static function atualizarStatusSelecoes()
-    {
-        $data_limite = Carbon::today()->subYears(2);
-        $selecoes = self::where('created_at', '>=', $data_limite)->get();
-        foreach ($selecoes as $selecao)
-            $selecao->atualizarStatus();
     }
 
     public function contarSolicitacoesIsencaoTaxaPorAno()

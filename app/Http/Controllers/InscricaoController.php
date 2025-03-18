@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\InscricaoRequest;
+use App\Jobs\AtualizaStatusSelecoes;
 use App\Mail\InscricaoMail;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
@@ -84,6 +85,7 @@ class InscricaoController extends Controller
         $request->validate(['filtro' => 'nullable|string']);
 
         \UspTheme::activeUrl('inscricoes/create');
+        AtualizaStatusSelecoes::dispatch();
         $categorias = Selecao::listarSelecoesParaNovaInscricao();          // obtém as seleções dentro das categorias
         $niveis = Nivel::all();                                            // obtém todos os níveis cadastrados
         return view('inscricoes.listaselecoesparanovainscricao', compact('categorias', 'niveis'));
