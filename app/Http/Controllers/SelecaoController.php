@@ -94,7 +94,6 @@ class SelecaoController extends Controller
 
         $request->merge(['tem_taxa' => $request->has('tem_taxa')]);    // acerta o valor do campo "tem_taxa" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
         $request->merge(['boleto_valor' => ($request->input('boleto_valor') !== '' ? $request->input('boleto_valor') : null)]);
-        \Illuminate\Support\Facades\Log::info('$request->all(): ' . json_encode($request->all()));
 
         $requestData = $request->all();
         $requestData['datahora_inicio'] = (is_null($requestData['data_inicio'] || is_null($requestData['hora_inicio'])) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['data_inicio'] . ' ' . $requestData['hora_inicio']));

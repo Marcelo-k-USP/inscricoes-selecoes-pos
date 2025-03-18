@@ -34,7 +34,6 @@ class LimpezaDadosController extends Controller
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
 
-        \Illuminate\Support\Facades\Log::info('$request->data_limite: ' . $request->data_limite);
         LimpaDados::dispatch(Carbon::createFromFormat('d/m/Y', $request->data_limite));
 
         $request->session()->flash('alert-success', 'Operação realizada com sucesso');
