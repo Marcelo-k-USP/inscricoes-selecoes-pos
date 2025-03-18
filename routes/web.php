@@ -9,6 +9,7 @@ use App\Http\Controllers\EnderecoController;
 use App\Http\Controllers\FuncaoController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InscricaoController;
+use App\Http\Controllers\LimpezaDadosController;
 use App\Http\Controllers\LinhaPesquisaController;
 use App\Http\Controllers\LocalUserController;
 use App\Http\Controllers\MotivoIsencaoTaxaController;
@@ -154,6 +155,10 @@ Route::get('search/codpes', [UserController::class, 'codpes']);
 Route::get('users/perfil/{perfil}', [UserController::class, 'trocarPerfil']);
 Route::get('users/meuperfil', [UserController::class, 'meuperfil']);
 Route::resource('users', UserController::class);
+
+// LIMPEZA DE DADOS
+Route::get('limpezadados', [LimpezaDadosController::class, 'showForm'])->name('limpezadados.showForm');
+Route::post('limpezadados', [LimpezaDadosController::class, 'run'])->name('limpezadados.run');
 
 // ADMIN
 Route::get('admin', [AdminController::class, 'index']);

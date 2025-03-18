@@ -76,6 +76,11 @@ $admin = [
         'url' => 'localusers',
         'can' => 'localusers.viewAny',
     ],
+    [
+        'text' => '<i class="fa fa-trash-alt"></i> Limpeza de Dados',
+        'url' => 'limpezadados',
+        'can' => 'limpezadados.showForm',
+    ],
 ];
 
 $menu = [
