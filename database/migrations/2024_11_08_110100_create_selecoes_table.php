@@ -18,9 +18,11 @@ class CreateSelecoesTable extends Migration
             $table->string('nome', 100);
             $table->string('estado', 90);
             $table->string('descricao', 255)->nullable();
-            $table->datetime('datahora_inicio');
-            $table->datetime('datahora_fim');
             $table->boolean('tem_taxa')->default(true);
+            $table->datetime('solicitacoesisencaotaxa_datahora_inicio')->nullable();
+            $table->datetime('solicitacoesisencaotaxa_datahora_fim')->nullable();
+            $table->datetime('inscricoes_datahora_inicio');
+            $table->datetime('inscricoes_datahora_fim');
             $table->decimal('boleto_valor', 8, 2)->nullable();
             $table->string('boleto_texto')->nullable();
             $table->date('boleto_data_vencimento')->nullable();

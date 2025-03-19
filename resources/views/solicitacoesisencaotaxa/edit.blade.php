@@ -21,6 +21,7 @@
   @php
     $solicitacaoisencaotaxa = $objeto;
     $classe_nome = 'SolicitacaoIsencaoTaxa';
+    $condicao_disponivel = ($solicitacaoisencaotaxa->selecao->estado == 'Período de Solicitações de Isenção');
     $condicao_ativa = true;
   @endphp
   <div class="row">

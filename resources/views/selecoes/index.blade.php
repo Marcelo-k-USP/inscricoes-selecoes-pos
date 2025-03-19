@@ -20,7 +20,9 @@
         <th>Categoria</th>
         <th>Programa</th>
         <th>Nome</th>
-        <th>Início</th>
+        <th>Solicitações de Isenção<br />Início</th>
+        <th>Fim</th>
+        <th>Inscrições<br />Início</th>
         <th>Fim</th>
       </tr>
     </thead>
@@ -34,8 +36,10 @@
             <a class="mr-2" href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->nome }}</a>
             @include('selecoes.partials.status-muted')
           </td>
-          <td>{{ formatarDataHora($selecao->datahora_inicio) }}</td>
-          <td>{{ formatarDataHora($selecao->datahora_fim) }}</td>
+          <td>{{ formatarDataHora($selecao->solicitacoesisencaotaxa_datahora_inicio) }}</td>
+          <td>{{ formatarDataHora($selecao->solicitacoesisencaotaxa_datahora_fim) }}</td>
+          <td>{{ formatarDataHora($selecao->inscricoes_datahora_inicio) }}</td>
+          <td>{{ formatarDataHora($selecao->inscricoes_datahora_fim) }}</td>
         </tr>
       @endforeach
     </tbody>

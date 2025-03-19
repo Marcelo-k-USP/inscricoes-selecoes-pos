@@ -21,7 +21,7 @@
   @php
     $inscricao = $objeto;
     $classe_nome = 'Inscricao';
-    $condicao_disponivel = ($inscricao->selecao->estado == 'Em Andamento');
+    $condicao_disponivel = ($inscricao->selecao->estado == 'Período de Inscrições');
     $condicao_ativa = true;
   @endphp
   <div class="row">

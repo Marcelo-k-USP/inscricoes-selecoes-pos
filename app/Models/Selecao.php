@@ -573,9 +573,11 @@ class Selecao extends Model
     protected $fillable = [
         'nome',
         'descricao',
-        'datahora_inicio',
-        'datahora_fim',
         'tem_taxa',
+        'solicitacoesisencaotaxa_datahora_inicio',
+        'solicitacoesisencaotaxa_datahora_fim',
+        'inscricoes_datahora_inicio',
+        'inscricoes_datahora_fim',
         'boleto_valor',
         'boleto_texto',
         'boleto_data_vencimento',
@@ -612,19 +614,29 @@ class Selecao extends Model
             'label' => 'Descrição',
         ],
         [
-            'name' => 'datahora_inicio',
-            'label' => 'Início',
-            'type' => 'datetime',
-        ],
-        [
-            'name' => 'datahora_fim',
-            'label' => 'Fim',
-            'type' => 'datetime',
-        ],
-        [
             'name' => 'tem_taxa',
             'label' => 'Taxa de Inscrição para a Seleção',
             'type' => 'checkbox',
+        ],
+        [
+            'name' => 'solicitacoesisencaotaxa_datahora_inicio',
+            'label' => 'Início das Solicitações de Isenção',
+            'type' => 'datetime',
+        ],
+        [
+            'name' => 'solicitacoesisencaotaxa_datahora_fim',
+            'label' => 'Fim das Solicitações de Isenção',
+            'type' => 'datetime',
+        ],
+        [
+            'name' => 'inscricoes_datahora_inicio',
+            'label' => 'Início das Inscrições',
+            'type' => 'datetime',
+        ],
+        [
+            'name' => 'inscricoes_datahora_fim',
+            'label' => 'Fim das Inscrições',
+            'type' => 'datetime',
         ],
         [
             'name' => 'boleto_data_vencimento',
@@ -690,24 +702,7 @@ class Selecao extends Model
      */
     public static function estados()
     {
-        return ['Em Elaboração', 'Aguardando Início', 'Em Andamento', 'Encerrada'];
-    }
-
-    /**
-     * config-status
-     * obtém a lista de estados formatado para select
-     */
-    public function getStatusToSelect()
-    {
-        $status = $this->config->status;
-        if ($status) {
-            $out = ['Em Andamento' => 'Em Andamento (sistema)'];
-            foreach ($status as $item)
-                foreach ($item as $key => $value)
-                    if ($key == "label")
-                        $out[strtolower($value)] = $value;
-            return $out;
-        }
+        return ['Em Elaboração', 'Aguardando Início', 'Período de Solicitações de Isenção', 'Periodo de Inscrições', 'Encerrada'];
     }
 
     /**
@@ -784,10 +779,7 @@ class Selecao extends Model
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
-            $selecoes = $selecoes->filter(function ($selecao, $key) {    // agora vamos remover as seleções onde não se pode inscrever... a ordem de liberação é relevante!
-                return ($selecao->estado != 'Encerrada')                 // descarta as seleções encerradas
-                    && ($selecao->tem_taxa);                             // descarta as seleções sem taxa
-            });
+            $selecoes = $selecoes->filter(fn($selecao) => $selecao->estado == 'Período de Solicitações de Isenção');    // só aceita as seleções que estejam em período de solicitações de isenção
             $categoria->selecoes = $selecoes;
         }
         return $categorias;                                              // retorna as seleções dentro de categorias
@@ -804,9 +796,7 @@ class Selecao extends Model
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
-            $selecoes = $selecoes->filter(function ($selecao, $key) {    // agora vamos remover as seleções onde não se pode inscrever... a ordem de liberação é relevante!
-                return ($selecao->estado != 'Encerrada');                // descarta as seleções encerradas
-            });
+            $selecoes = $selecoes->filter(fn($selecao) => $selecao->estado == 'Período de Inscrições');    // só aceita as seleções que estejam em período de inscrições
             $categoria->selecoes = $selecoes;
         }
         return $categorias;                                              // retorna as seleções dentro de categorias
@@ -828,14 +818,26 @@ class Selecao extends Model
             }
 
         $outras_condicoes_satisfeitas = (($this->categoria->nome !== 'Aluno Especial') ? !$this->niveislinhaspesquisa->isEmpty() : !$this->disciplinas->isEmpty());
+        if (!$possui_todos_os_arquivos_required || !$outras_condicoes_satisfeitas)
+            $this->update(['estado' => 'Em Elaboração']);
+        else {
+            $agora = Carbon::now();
+            if ($this->tem_taxa) {
+                if ($agora < $this->solicitacoesisencaotaxa_datahora_inicio)
+                    $this->update(['estado' => 'Aguardando Início']);
+                elseif (($this->solicitacoesisencaotaxa_datahora_inicio <= $agora) && ($agora <= $this->solicitacoesisencaotaxa_datahora_fim))
+                    $this->update(['estado' => 'Período de Solicitações de Isenção']);
+                elseif (($this->solicitacoesisencaotaxa_datahora_fim < $agora) && ($agora < $this->inscricoes_datahora_inicio))
+                    $this->update(['estado' => 'Aguardando Início']);
+            } else
+                if ($agora < $this->inscricoes_datahora_inicio)
+                    $this->update(['estado' => 'Aguardando Início']);
 
-        $agora = Carbon::now();
-        if ($this->datahora_inicio > $agora)
-            $this->update(['estado' => ($possui_todos_os_arquivos_required && $outras_condicoes_satisfeitas) ? 'Aguardando Início' : 'Em Elaboração']);
-        elseif ($this->datahora_inicio <= $agora && $this->datahora_fim >= $agora)
-            $this->update(['estado' => ($possui_todos_os_arquivos_required && $outras_condicoes_satisfeitas) ? 'Em Andamento' : 'Em Elaboração']);
-        elseif ($this->datahora_fim < $agora)
-            $this->update(['estado' => 'Encerrada']);
+            if (($this->inscricoes_datahora_inicio <= $agora) && ($agora <= $this->inscricoes_datahora_fim))
+                $this->update(['estado' => 'Período de Inscrições']);
+            elseif ($this->inscricoes_datahora_fim < $agora)
+                $this->update(['estado' => 'Encerrada']);
+        }
     }
 
     public function contarSolicitacoesIsencaoTaxaPorAno()
