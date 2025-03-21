@@ -8,6 +8,7 @@ use App\Mail\SolicitacaoIsencaoTaxaMail;
 use App\Models\LocalUser;
 use App\Models\MotivoIsencaoTaxa;
 use App\Models\Nivel;
+use App\Models\Parametro;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
@@ -167,14 +168,12 @@ class SolicitacaoIsencaoTaxaController extends Controller
                 $solicitacaoisencaotaxa->estado = 'Isenção de Taxa Solicitada';
                 $solicitacaoisencaotaxa->save();
 
-                // envia e-mails avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
+                // envia e-mail avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
                 $passo = 'realização';
                 $user = \Auth::user();
-                foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
-                    $servicoposgraduacao_nome = Pessoa::obterNome($servicoposgraduacao->codpes);
-                    \Mail::to($servicoposgraduacao->email)
-                        ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user', 'servicoposgraduacao_nome')));
-                }
+                $servicoposgraduacao_nome = 'Prezados(as) Srs(as). do Serviço de Pós-Graduação';
+                \Mail::to(Parametro::first()->email_servicoposgraduacao)
+                    ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user', 'servicoposgraduacao_nome')));
 
                 $request->session()->flash('alert-success', 'Sua solicitação de isenção de taxa foi enviada');
                 return view('solicitacoesisencaotaxa.index', $this->monta_compact_index());

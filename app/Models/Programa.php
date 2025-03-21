@@ -14,6 +14,7 @@ class Programa extends Model
     protected $fillable = [
         'nome',
         'descricao',
+        'email_secretaria',
     ];
 
     // uso no crud generico
@@ -25,6 +26,10 @@ class Programa extends Model
         [
             'name' => 'descricao',
             'label' => 'Descrição',
+        ],
+        [
+            'name' => 'email_secretaria',
+            'label' => 'E-mail da Secretaria',
         ],
     ];
 

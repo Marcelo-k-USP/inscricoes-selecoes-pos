@@ -24,11 +24,14 @@ class ProgramaRequest extends FormRequest
     public const rules = [
         'nome' => ['required', 'max:100'],
         'descricao' => ['max:255'],
+        'email_secretaria' => ['max:255', 'nullable', 'email'],
     ];
 
     public const messages = [
         'nome.required' => 'O nome do programa é obrigatório!',
         'nome.max' => 'O nome do programa não pode exceder 100 caracteres!',
         'descricao.max' => 'A descrição do programa não pode exceder 255 caracteres!',
+        'email_secretaria.max' => 'O e-mail da secretaria não pode exceder 255 caracteres!',
+        'email_secretaria.email' => 'O e-mail da secretaria deve ser válido.',
     ];
 }

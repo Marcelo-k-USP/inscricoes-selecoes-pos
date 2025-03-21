@@ -13,6 +13,7 @@ class Parametro extends Model
     protected $fillable = [
         'boleto_codigo_fonte_recurso',
         'boleto_estrutura_hierarquica',
+        'email_servicoposgraduacao',
     ];
 
     // uso no crud generico
@@ -25,6 +26,10 @@ class Parametro extends Model
         [
             'name' => 'boleto_estrutura_hierarquica',
             'label' => 'Estrutura Hierárquica para Boleto',
+        ],
+        [
+            'name' => 'email_servicoposgraduacao',
+            'label' => 'E-mail do Serviço de Pós-Graduação',
         ],
     ];
 
