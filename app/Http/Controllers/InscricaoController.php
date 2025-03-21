@@ -424,7 +424,8 @@ class InscricaoController extends Controller
         $disciplinas = Disciplina::listarDisciplinas($objeto->selecao);
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($objeto->selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), $objeto->selecao)
-            ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Boleto(s) de Pagamento da Inscrição') || $inscricao->selecao->tem_taxa; });
+            ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Boleto(s) de Pagamento da Inscrição') || $inscricao->selecao->tem_taxa; })
+            ->sortBy(function ($tipoarquivo) { return $tipoarquivo->nome === 'Boleto(s) de Pagamento da Inscrição' ? 1 : 0; });
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id)
             ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $inscricao->selecao->tem_taxa; });
         $solicitacaoisencaotaxa_aprovada = \Auth::user()?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
