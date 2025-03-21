@@ -87,8 +87,7 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes/create');
         AtualizaStatusSelecoes::dispatch();
         $categorias = Selecao::listarSelecoesParaNovaInscricao();          // obtém as seleções dentro das categorias
-        $niveis = Nivel::all();                                            // obtém todos os níveis cadastrados
-        return view('inscricoes.listaselecoesparanovainscricao', compact('categorias', 'niveis'));
+        return view('inscricoes.listaselecoesparanovainscricao', compact('categorias'));
     }
 
     /**

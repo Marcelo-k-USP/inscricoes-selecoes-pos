@@ -797,6 +797,8 @@ class Selecao extends Model
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
             $selecoes = $selecoes->filter(fn($selecao) => $selecao->estado == 'Período de Inscrições');    // só aceita as seleções que estejam em período de inscrições
+            foreach ($selecoes as $selecao)
+                $selecao->niveis = $selecao->niveislinhaspesquisa->sortBy('nivel_id')->pluck('nivel')->unique();
             $categoria->selecoes = $selecoes;
         }
         return $categorias;                                              // retorna as seleções dentro de categorias
