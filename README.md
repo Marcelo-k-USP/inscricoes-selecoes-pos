@@ -12,14 +12,14 @@ Os usuários locais são gravados também na tabela users, embora possuam modelo
 
 Os gerentes devem cadastrar as seleções nas quais os candidatos se inscreverão/solicitarão isenção de taxa.
 Cada seleção tem um formulário próprio, gerado a partir de um template, e editável pelo gerente (excetos por campos utilizados pelo sistema, que não podem ser removidos, como CPF, e-mail, etc.).
-O estado da seleção é modificado quando o gerente altera a data início/fim e também quando as seleções são consultadas (neste momento, o sistema verifica se alguma seleção passou da data início/fim, e muda o estado de acordo).
+O estado da seleção é modificado quando o gerente altera a data início/fim das solicitações de isenção de taxa ou a data início/fim das inscrições, também quando as seleções são consultadas (neste momento, o sistema verifica se alguma seleção passou da data início/fim, e muda o estado de acordo), também quando um usuário vai iniciar uma nova solicitação de isenção de taxa ou inscrição.
 O estado também é modificado quando o gerente sobe/remove os documentos da seleção (edital, etc.), pois não podemos abrir uma seleção sem que ela tenha esses documentos.
 Ao cadastrar uma nova seleção, o gerente deve informar a quais combinações níveis com linhas de pesquisa/temas ela está atrelada (se a categoria da seleção for aluno regular, pois na categoria de aluno especial não temos combinações níveis com linhas de pesquisa/temas, o aluno especial se inscreve para disciplina(s)).
 Ao cadastrar uma nova seleção, todos os motivos de isenção de taxa são automaticamente associados à ela; cabe ao gerente verificar se é isso mesmo o desejado para a nova seleção.
 Ao cadastrar uma nova seleção na categoria aluno especial, todas as disciplinas são automaticamente associados à ela; cabe ao gerente verificar se é isso mesmo o desejado para a nova seleção.
 
-Há quatro funções para gerentes: secretários(as) dos programas, coordenadores dos programas, serviço de pós-graduação e coordenadores de pós-graduação.
-Gerentes das duas primeiras funções são atrelados aos programas. Eles podem acessar seleções, solicitações de taxa de inscrição e inscrições somente de seus programas associados.
+Há cinco funções para gerentes: docentes do programa, secretários(as) dos programas, coordenadores dos programas, serviço de pós-graduação e coordenadores de pós-graduação.
+Gerentes das três primeiras funções são atrelados aos programas. Eles podem acessar seleções, solicitações de taxa de inscrição e inscrições somente de seus programas associados.
 Gerentes das duas últimas funções podem acessar todas as seleções, solicitações de taxa de inscrição e inscrições.
 
 Em adição aos perfis existentes (admin, gerente e usuário), foi criado o perfil de docente.
@@ -42,7 +42,7 @@ O tipo de documento de boletos não é removível nem renomeável. O candidato n
 Inscrições para programas podem ser de três níveis diferentes (mestrado, doutorado ou doutorado direto) e os tipos de documento dessas inscrições podem variar conforme o nível e o programa. Tipos de documento com diferenciação por níveis e programas é algo que só faz sentido nas inscrições.
 
 Para completar a inscrição, o candidato deve clicar em Enviar.
-Então é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição.
+Se houver cobrança de taxa de inscrição para a seleção em questão, então é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição.
 No caso de aluno regular, é gerado um único boleto.
 No caso de aluno especial, é gerado um boleto para cada disciplina na qual ele se inscreveu, e enviado para o candidato um único e-mail com todos esses boletos anexados.
 Algumas informações necessárias para a geração de boletos se encontram na tabela parametros, que é editável pelos admins em tela.
