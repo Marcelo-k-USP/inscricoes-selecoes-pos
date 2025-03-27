@@ -252,7 +252,7 @@ Para limpar e recriar todo o DB, rode sempre que necessário:
 
 ## Histórico
 
--   ??/??/????
+-   27/03/2025
     -   versão 1.0
 
 ## Detalhamento técnico
