@@ -109,6 +109,7 @@ class LocalUserController extends Controller
         \Mail::to($localuser->email)
             ->queue(new LocalUserMail(compact('passo', 'localuser', 'password_reset_url')));
 
+        request()->session()->flash('alert-success', 'Foi enviado um e-mail com instruções para você redefinir sua senha.');
         return view('localusers.login');
     }
 
