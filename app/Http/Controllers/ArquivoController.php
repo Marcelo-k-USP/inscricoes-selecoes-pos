@@ -88,12 +88,18 @@ class ArquivoController extends Controller
             if ($classe_nome == 'Selecao') {
                 $objeto->atualizarStatus();
                 $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
+
+                $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso<br />');
+            } else {
+                $classe_nome_formatada = $this->obterClasseNomeFormatada($classe_nome);
+                $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso<br />' .
+                    'Se não houver mais arquivos a enviar, clique no botão "Enviar ' . ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'Solicitação' : 'Inscrição') . '" abaixo para efetivar sua ' . $classe_nome_formatada . '<br />' .
+                    'Sem isso, sua ' . $classe_nome_formatada . ' não será ' . ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'avaliada' : 'efetivada') . '!');
             }
 
             return $objeto;
         });
 
-        $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso');
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
     }
@@ -166,6 +172,17 @@ class ArquivoController extends Controller
         $request->session()->flash('alert-success', 'Documento removido com sucesso');
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
+    }
+
+    private function obterClasseNomeFormatada(string $classe_nome) {
+        switch ($classe_nome) {
+            case 'Selecao':
+                return 'seleção';
+            case 'SolicitacaoIsencaoTaxa':
+                return 'solicitação de isenção de taxa';
+            case 'Inscricao':
+                return 'inscrição';
+        }
     }
 
     private function obterClasseNomePlural(string $classe_nome) {

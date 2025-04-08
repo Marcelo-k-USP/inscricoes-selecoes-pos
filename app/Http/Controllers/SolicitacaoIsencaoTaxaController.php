@@ -114,9 +114,10 @@ class SolicitacaoIsencaoTaxaController extends Controller
     {
         $this->authorize('solicitacoesisencaotaxa.create');
 
+        $user = \Auth::user();
+
         // transaction para não ter problema de inconsistência do DB
-        $solicitacaoisencaotaxa = DB::transaction(function () use ($request) {
-            $user = \Auth::user();
+        $solicitacaoisencaotaxa = DB::transaction(function () use ($request, $user) {
             $selecao = Selecao::find($request->selecao_id);
 
             // grava a solicitação de isenção de taxa
@@ -131,11 +132,16 @@ class SolicitacaoIsencaoTaxaController extends Controller
             return $solicitacaoisencaotaxa;
         });
 
-        $request->session()->flash('alert-success', 'Solicitação de isenção de taxa iniciada com sucesso<br />' .
-            'Não deixe de subir os documentos necessários para a avaliação da sua solicitação');
+        // envia e-mail avisando o candidato da necessidade de enviar os arquivos e enviar a própria solicitação de isenção de taxa
+        $passo = 'início';
+        \Mail::to($user->email)
+            ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user')));
+
+        $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua solicitação<br />' .
+            'Sem eles, sua solicitação não será avaliada!');
 
         \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
-        return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
+        return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit', 'arquivos'));
     }
 
     /**
@@ -241,7 +247,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
         return compact('data', 'objetos', 'classe_nome', 'max_upload_size');
     }
 
-    public function monta_compact(SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa, string $modo)
+    public function monta_compact(SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa, string $modo, ?string $scroll = null)
     {
         $data = (object) self::$data;
         $solicitacaoisencaotaxa->selecao->template = JSONForms::orderTemplate($solicitacaoisencaotaxa->selecao->template);
@@ -254,6 +260,6 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id);
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'tiposarquivo_selecao', 'max_upload_size');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'tiposarquivo_selecao', 'max_upload_size', 'scroll');
     }
 }

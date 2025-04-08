@@ -32,7 +32,7 @@
       </div>
       @if (session('perfil') == 'usuario')
         <div class="text-right">
-          <button type="submit" class="btn btn-primary">Enviar</button>
+          <button type="submit" class="btn btn-primary">Enviar {{ ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'Solicitação' : 'Inscrição') }}</button>
         </div>
       @endif
     </div>

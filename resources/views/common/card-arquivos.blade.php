@@ -17,7 +17,7 @@
   @csrf
   @method('put')
   {{ html()->hidden('id') }}
-  <a name="card_arquivos"></a>
+  <a id="card_arquivos" name="card_arquivos"></a>
   <div class="card bg-light mb-3 w-100" id="card-arquivos">
     <div class="card-header form-inline">
       @if ($classe_nome == 'Selecao')
