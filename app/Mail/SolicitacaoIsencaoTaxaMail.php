@@ -35,6 +35,9 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
         $this->user = $data['user'];
 
         switch ($this->passo) {
+            case 'início':
+                break;
+
             case 'realização':
                 $this->servicoposgraduacao_nome = $data['servicoposgraduacao_nome'];
                 break;
@@ -54,9 +57,19 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
     public function build()
     {
         switch ($this->passo) {
+            case 'início':
+                return $this
+                    ->subject('[' . config('app.name') . '] Solicitação de Isenção de Taxa Pendente de Envio')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.solicitacaoisencaotaxa_inicio')
+                    ->with([
+                        'solicitacaoisencaotaxa' => $this->solicitacaoisencaotaxa,
+                        'user' => $this->user,
+                    ]);
+
             case 'realização':
                 return $this
-                    ->subject('[' . config('app.name') . '] Solicitação de Isenção de Taxa')
+                    ->subject('[' . config('app.name') . '] Isenção de Taxa Solicitada')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.solicitacaoisencaotaxa_realizacao')
                     ->with([

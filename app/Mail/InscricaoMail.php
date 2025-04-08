@@ -42,6 +42,9 @@ class InscricaoMail extends Mailable
         $this->user = $data['user'];
 
         switch ($this->passo) {
+            case 'início':
+                break;
+
             case 'boleto(s)':
                 $this->papel = $data['papel'];
                 $this->arquivos = [];
@@ -77,12 +80,22 @@ class InscricaoMail extends Mailable
     public function build()
     {
         switch ($this->passo) {
+            case 'início':
+                return $this
+                    ->subject('[' . config('app.name') . '] Inscrição Pendente de Envio')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.inscricao_inicio')
+                    ->with([
+                        'inscricao' => $this->inscricao,
+                        'user' => $this->user,
+                    ]);
+
             case 'boleto(s)':
                 $arquivos_erro = [];
                 foreach ($this->arquivos as $arquivo)
                     $arquivos_erro[] = $arquivo['erro'];
                 $mail = $this
-                    ->subject('[' . config('app.name') . '] Inscrição Enviada com Sucesso')
+                    ->subject('[' . config('app.name') . '] Inscrição Enviada')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_enviodeboletos')
                     ->with([

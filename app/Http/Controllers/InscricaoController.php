@@ -140,9 +140,10 @@ class InscricaoController extends Controller
     {
         $this->authorize('inscricoes.create');
 
+        $user = \Auth::user();
+
         // transaction para não ter problema de inconsistência do DB
-        $inscricao = DB::transaction(function () use ($request) {
-            $user = \Auth::user();
+        $inscricao = DB::transaction(function () use ($request, $user) {
             $selecao = Selecao::find($request->selecao_id);
 
             // grava a inscrição
@@ -157,10 +158,15 @@ class InscricaoController extends Controller
             return $inscricao;
         });
 
-        $request->session()->flash('alert-success', 'Inscrição iniciada com sucesso<br />' .
-            'Não deixe de subir os documentos necessários para a avaliação da sua inscrição');
+        // envia e-mail avisando o candidato da necessidade de enviar os arquivos e enviar a própria inscrição
+        $passo = 'início';
+        \Mail::to($user->email)
+            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
+
+        $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua inscrição<br />' .
+            'Sem eles, sua inscrição não será efetivada!');
         \UspTheme::activeUrl('inscricoes/create');
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'arquivos'));
     }
 
     /**
