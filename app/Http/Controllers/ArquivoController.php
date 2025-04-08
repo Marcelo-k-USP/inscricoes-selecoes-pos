@@ -64,10 +64,14 @@ class ArquivoController extends Controller
         $objeto = $classe::find($request->objeto_id);
         $form = $this->obterForm($classe_nome, $objeto);
 
-        $request->validate([
+        $validator = \Validator::make($request->all(), [
             'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('inscricoes-selecoes-pos.upload_max_filesize'),
             'objeto_id' => 'required|integer|exists:' . $classe_nome_plural . ',id',
         ]);
+        if ($validator->fails()) {
+            \UspTheme::activeUrl($classe_nome_plural);
+            return view($classe_nome_plural . '.edit', array_merge($this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'), ['errors' => $validator->errors()]));
+        }
         $this->authorize('arquivos.create', [$objeto, $classe_nome]);
 
         // transaction para não ter problema de inconsistência do DB
@@ -101,7 +105,7 @@ class ArquivoController extends Controller
         });
 
         \UspTheme::activeUrl($classe_nome_plural);
-        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
+        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
     }
 
     /**
@@ -132,7 +136,7 @@ class ArquivoController extends Controller
 
         $request->session()->flash('alert-success', 'Documento renomeado com sucesso');
         \UspTheme::activeUrl($classe_nome_plural);
-        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
+        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
     }
 
     /**
@@ -171,7 +175,7 @@ class ArquivoController extends Controller
 
         $request->session()->flash('alert-success', 'Documento removido com sucesso');
         \UspTheme::activeUrl($classe_nome_plural);
-        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'));
+        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
     }
 
     private function obterClasseNomeFormatada(string $classe_nome) {
@@ -230,7 +234,7 @@ class ArquivoController extends Controller
         }
     }
 
-    private function monta_compact(object $objeto, string $classe_nome, string $classe_nome_plural, $form, string $modo)
+    private function monta_compact(object $objeto, string $classe_nome, string $classe_nome_plural, $form, string $modo, ?string $scroll = null)
     {
         $data = (object) ('App\\Http\\Controllers\\' . $classe_nome . 'Controller')::$data;
         $selecao = ($classe_nome == 'Selecao' ? $objeto : $objeto->selecao);
@@ -261,7 +265,6 @@ class ArquivoController extends Controller
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
-        $scroll = 'arquivos';
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'niveislinhaspesquisa', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'scroll');
     }
