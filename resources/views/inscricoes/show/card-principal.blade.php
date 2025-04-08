@@ -60,6 +60,10 @@
         }
       });
 
+      $('input[id="extras\[data\]"], input[id^="extras\[data_"]').each(function() {
+        $(this).mask('00/00/0000');
+      });
+
       $('input[id="extras\[cpf\]"], input[id^="extras\[cpf_"]').each(function() {
         $(this).mask('000.000.000-00');
       });

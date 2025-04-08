@@ -37,6 +37,10 @@
     $(document).ready(function() {
       $('#form_principal').find(':input:visible:first').focus();
 
+      $('input[id*="_data_"]').each(function() {
+        $(this).mask('00/00/0000');
+      });
+
       $('#categoria_id').change(function () {
         var programa_div = $('#programa_id').closest('.form-group');
         if ($('#categoria_id option:selected').text() !== 'Aluno Especial')
