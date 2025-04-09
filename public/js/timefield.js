@@ -34,7 +34,7 @@ $(document).on('keydown', '.flatpickr-hour, .flatpickr-minute', function(e) {
   // impede digitação de caracteres não numéricos
   const isControlKey = e.CtrlKey || e.metaKey || e.altKey;
   const isNavigationKey = ['Tab', 'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown', 'Escape', 'Enter'].includes(e.key);
-  if (!e.key.match(/^\d$/) && !isControlKey && !isNavigationKey && !(key === 'Tab' && e.shiftKey))
+  if (!e.key.match(/^\d$/) && !isControlKey && !isNavigationKey && !(e.key === 'Tab' && e.shiftKey))
     e.preventDefault();
 
   // habilita navegação para fora dos campos do flatpickr via <TAB> e <SHIFT> + <TAB>
