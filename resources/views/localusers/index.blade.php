@@ -21,8 +21,8 @@
       <thead>
         <tr>
           <th width="35%">Nome</th>
-          <th width="20%">Celular</th>
           <th width="35%">E-mail</th>
+          <th width="20%">Criado em</th>
           <th width="10%">Ações</th>
         </tr>
       </thead>
@@ -30,8 +30,8 @@
         @foreach ($localusers as $localuser)
           <tr>
             <td>{{ $localuser->name }}</td>
-            <td>{{ $localuser->telefone }}</td>
             <td>{{ $localuser->email }}</td>
+            <td data-order="{{ $localuser->created_at }}">{{ formatarDataHora($localuser->created_at) }}</td>
             <td>
               <div id="actions">
                 @can('localusers.update')
