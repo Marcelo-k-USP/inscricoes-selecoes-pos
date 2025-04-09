@@ -24,7 +24,7 @@
         <tr>
           <th>Inscrito</th>
           <th>Seleção</th>
-          <th>Linha de Pesquisa/Tema ou Disciplina(s)</th>
+          <th>Nível com Linha de Pesquisa/Tema ou Disciplina(s)</th>
           <th class="text-right">Efetuada em</th>
           <th class="text-right">Atualização</th>
         </tr>
@@ -37,6 +37,7 @@
               <a href="inscricoes/edit/{{ $inscricao->id }}">
                 @php
                   $nome = null;
+                  $extras = null;
                   if (!is_null($inscricao->extras)) {
                     $extras = json_decode($inscricao->extras);
                     if ($extras && property_exists($extras, 'nome'))
@@ -50,6 +51,18 @@
               {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})
             </td>
             <td>
+              @php
+                $nivel = null;
+                $nivel_nome = null;
+                if (!empty($extras->nivel)) {
+                  $nivel = json_decode($niveis->firstWhere('id', $extras->nivel));
+                  if ($nivel && property_exists($nivel, 'nome'))
+                    $nivel_nome = $nivel->nome;
+                }
+              @endphp
+              @if (!is_null($nivel_nome))
+                {{ $nivel_nome }} em
+              @endif
               @if (!is_null($inscricao->linha_pesquisa))
                 {{ $inscricao->linha_pesquisa }}
               @else
