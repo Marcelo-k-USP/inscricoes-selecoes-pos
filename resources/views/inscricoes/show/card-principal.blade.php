@@ -54,10 +54,8 @@
 
       $('#form_principal').find(':input:visible:first').focus();
 
-      $('#form_principal').each(function () {
-        this.oninput = function(e) {
-          e.target.setCustomValidity('');
-        }
+      $('#form_principal :input').on('input change changeDate dateChanged', function() {
+        this.setCustomValidity('');
       });
 
       $('input[id="extras\[data\]"], input[id^="extras\[data_"]').each(function() {
@@ -124,6 +122,13 @@
           }
       });
 
+      $('input[id="extras\[data\]"], input[id^="extras\[data_"]').each(function() {
+        if (!validar_data(this.value)) {
+          form_valid = false;
+          return mostrar_validacao(this, 'Data inválida');
+        }
+      });
+
       if (!form_valid)
         event.preventDefault();
     });
@@ -131,13 +136,6 @@
     $('#password').on('input', function () {
       validar_forca_senha($(this).val());
     });
-
-    function mostrar_validacao(obj, msg)
-    {
-      obj.setCustomValidity(msg);
-      obj.reportValidity();
-      return false;
-    }
 
     function consultar_cep(field_name)
     {

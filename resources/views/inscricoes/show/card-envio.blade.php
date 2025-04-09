@@ -45,10 +45,8 @@
   <script type="text/javascript">
     $(document).ready(function() {
 
-      $('#form_envio').each(function () {
-        this.oninput = function(e) {
-          e.target.setCustomValidity('');
-        }
+      $('#form_envio :input').on('input change changeDate dateChanged', function() {
+        this.setCustomValidity('');
       });
     });
 
@@ -69,12 +67,5 @@
       if (!form_valid)
         event.preventDefault();
     });
-
-    function mostrar_validacao(obj, msg)
-    {
-      obj.setCustomValidity(msg);
-      obj.reportValidity();
-      return false;
-    }
   </script>
 @endsection
