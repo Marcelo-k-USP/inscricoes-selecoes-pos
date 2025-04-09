@@ -411,8 +411,9 @@ class InscricaoController extends Controller
         }
         $classe_nome = 'Inscricao';
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+        $niveis = Nivel::all();
 
-        return compact('data', 'objetos', 'classe_nome', 'max_upload_size');
+        return compact('data', 'objetos', 'classe_nome', 'max_upload_size', 'niveis');
     }
 
     public function monta_compact(Inscricao $inscricao, string $modo, ?string $scroll = null)
