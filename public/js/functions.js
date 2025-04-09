@@ -94,6 +94,23 @@ function validar_cpf(cpf)
   return true;
 }
 
+function validar_data(data) {
+  if (!data)
+    return true;    // aceita data vazia
+
+  const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+  const match = data.match(regex);
+  if (!match)
+    return false;
+
+  const day = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10) - 1;
+  const year = parseInt(match[3], 10);
+
+  const date = new Date(year, month, day);
+  return ((date.getFullYear() === year) && (date.getMonth() === month) && (date.getDate() === day));
+}
+
 function validar_forca_senha(senha)
 {
   const barra_forca_password = $('#barra_forca_password');
@@ -126,4 +143,11 @@ function toggle_password(field_id)
     input_password = $('#password');
   toggle_icon.attr('src', '/images/' + (input_password.attr('type') === 'password' ? 'hide' : 'view') + '.png');
   input_password.attr('type', (input_password.attr('type') === 'password' ? 'text' : 'password'));
+}
+
+function mostrar_validacao(obj, msg)
+{
+  obj.setCustomValidity(msg);
+  obj.reportValidity();
+  return false;
 }

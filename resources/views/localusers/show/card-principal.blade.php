@@ -43,10 +43,8 @@
 
       $('#form_principal_localuser').find(':input:visible:first').focus();
 
-      $('#form_principal_localuser').each(function () {
-        this.oninput = function(e) {
-          e.target.setCustomValidity('');
-        }
+      $('#form_principal_localuser :input').on('input change changeDate dateChanged', function() {
+        this.setCustomValidity('');
       });
 
       $('input[id="telefone"]').each(function() {
@@ -84,12 +82,5 @@
     $('#password').on('input', function () {
       validar_forca_senha($(this).val());
     });
-
-    function mostrar_validacao(obj, msg)
-    {
-      obj.setCustomValidity(msg);
-      obj.reportValidity();
-      return false;
-    }
   </script>
 @endsection

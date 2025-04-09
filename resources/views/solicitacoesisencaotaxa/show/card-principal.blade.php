@@ -51,10 +51,8 @@
 
       $('#form_principal_solicitacaoisencaotaxa').find(':input:visible:first').focus();
 
-      $('#form_principal_solicitacaoisencaotaxa').each(function () {
-        this.oninput = function(e) {
-          e.target.setCustomValidity('');
-        }
+      $('#form_principal_solicitacaoisencaotaxa :input').on('input change changeDate dateChanged', function() {
+        this.setCustomValidity('');
       });
 
       $('input[id="extras\[cpf\]"], input[id^="extras\[cpf_"]').each(function() {
@@ -112,12 +110,5 @@
     $('#password').on('input', function () {
       validar_forca_senha($(this).val());
     });
-
-    function mostrar_validacao(obj, msg)
-    {
-      obj.setCustomValidity(msg);
-      obj.reportValidity();
-      return false;
-    }
   </script>
 @endsection

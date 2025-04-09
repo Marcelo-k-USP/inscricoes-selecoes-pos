@@ -33,9 +33,14 @@
 
 @section('javascripts_bottom')
 @parent
+  <script src="js/functions.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
       $('#form_principal').find(':input:visible:first').focus();
+
+      $('#form_principal :input').on('input change changeDate dateChanged', function() {
+        this.setCustomValidity('');
+      });
 
       $('input[id*="_data_"]').each(function() {
         $(this).mask('00/00/0000');
@@ -59,6 +64,20 @@
       $('#tem_taxa').on('click', function () {
         updateCamposSolicitacoesIsencaoTaxaDataHora();
         updateCamposBoleto();
+      });
+
+      $('#form_principal').on('submit', function(event) {
+        var form_valid = true;
+
+        $('#form_principal input[id*="_data_"]').each(function () {
+          if (!validar_data(this.value)) {
+            form_valid = false;
+            return mostrar_validacao(this, 'Data inválida');
+          }
+        });
+
+        if (!form_valid)
+          event.preventDefault();
       });
     });
 
