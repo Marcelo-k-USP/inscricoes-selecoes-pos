@@ -215,7 +215,6 @@ class SelecaoController extends Controller
                 \UspTheme::activeUrl('selecoes');
                 return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
             }
-            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - Programa antigo: ' . $selecao->programa_id . ' - Novo programa: ' . $request->programa_id);
             $selecao->programa_id = $request->programa_id;
         }
         $selecao->save();
@@ -250,10 +249,8 @@ class SelecaoController extends Controller
         if ((strpos($field, 'data_') === 0) || (strpos($field, '_data_') !== false))
             $request->$field = (is_null($request->$field) ? null : Carbon::createFromFormat('d/m/Y', $request->$field)->format('Y-m-d'));
 
-        if ($selecao->$field != $request->$field) {
-            Log::info(' - Edição de seleção - Usuário: ' . \Auth::user()->codpes . ' - ' . \Auth::user()->name . ' - Id Seleção: ' . $selecao->id . ' - ' . ucfirst($field_name) . ' antig' . $genero . ': ' . $selecao->$field . ' - Nov' . $genero . ' ' . $field_name . ': ' . $request->$field);
+        if ($selecao->$field != $request->$field)
             $selecao->$field = $request->$field;
-        }
     }
 
     public function storeTemplateJson(Request $request, Selecao $selecao)

@@ -37,14 +37,14 @@ class BoletoService
         );
 
         try {
-            Log::info('Gerando boleto para o ' . (($extras['tipo_de_documento'] == 'Passaporte') ? 'passaporte ' . $extras['numero_do_documento'] : 'CPF ' . $extras['cpf']) . '...');
+            config('app.debug') && Log::info('Gerando boleto para o ' . (($extras['tipo_de_documento'] == 'Passaporte') ? 'passaporte ' . $extras['numero_do_documento'] : 'CPF ' . $extras['cpf']) . '...');
 
             $gerar = $boleto->gerar($data);
             if ($gerar['status']) {
                 $id = $gerar['value'];
 
                 // loga situação da geração do boleto
-                Log::info('$boleto->situacao(' . $id . '): ' . json_encode($boleto->situacao($id)));
+                config('app.debug') && Log::info('$boleto->situacao(' . $id . '): ' . json_encode($boleto->situacao($id)));
 
                 // recupera o arquivo PDF do boleto (PDF no formato binário codificado para Base64)
                 $obter = $boleto->obter($id);
@@ -67,22 +67,22 @@ class BoletoService
                 if (App::environment('local') || config('inscricoes-selecoes-pos.ws_boleto_cancelar')) {
 
                     // cancela o boleto em ambiente de desenvolvimento, ou também em produção se ligamos a chave WS_BOLETO_CANCELAR
-                    Log::info('Cancelando o boleto...');
+                    config('app.debug') && Log::info('Cancelando o boleto...');
                     $boleto->cancelar($id);
 
                     // loga situação da geração do boleto
-                    Log::info('$boleto->situacao(' . $id . '): ' . json_encode($boleto->situacao($id)));
+                    config('app.debug') && Log::info('$boleto->situacao(' . $id . '): ' . json_encode($boleto->situacao($id)));
                 }
 
                 // retorna o conteúdo do PDF
                 return $obter['value'];
             } else {
-                Log::info('$gerar[\'value\']: ' . $gerar['value']);
+                config('app.debug') && Log::info('$gerar[\'value\']: ' . $gerar['value']);
                 return '';
             }
 
         } catch (Exception $e) {
-            Log::info($e->getMessage());
+            config('app.debug') && Log::info($e->getMessage());
             return '';
         }
     }
