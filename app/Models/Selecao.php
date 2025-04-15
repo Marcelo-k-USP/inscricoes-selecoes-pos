@@ -863,6 +863,22 @@ class Selecao extends Model
     }
 
     /**
+     * Seleção possui Solicitações de Isenção de Taxa
+     */
+    public function solicitacoesisencaotaxa()
+    {
+        return $this->hasMany('App\Models\SolicitacaoIsencaoTaxa');
+    }
+
+    /**
+     * Seleção possui Inscrições
+     */
+    public function inscricoes()
+    {
+        return $this->hasMany('App\Models\Inscricao');
+    }
+
+    /**
      * relacionamento com arquivos
      */
     public function arquivos()

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SelecaoMail;
 use App\Models\Arquivo;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
@@ -13,6 +14,7 @@ use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\TipoArquivo;
+use App\Models\User;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -90,6 +92,20 @@ class ArquivoController extends Controller
             }
 
             if ($classe_nome == 'Selecao') {
+                $tipoarquivo = $request->tipoarquivo;
+                if (in_array($tipoarquivo, ['Errata', 'Lista de Inscritos'])) {
+                    // envia e-mail para os candidatos avisando de novos documentos dos tipos Errata ou Lista de Inscritos na seleção
+                    $passo = 'novo(s) informativo(s)';
+                    $selecao = $objeto;
+                    foreach ($selecao->inscricoes->map(function ($inscricao) { return json_decode($inscricao->extras, true); })
+                        ->merge($selecao->solicitacoesisencaotaxa->map(function ($solicitacao) { return json_decode($solicitacao->extras, true); }))
+                        ->unique('e_mail') as $candidato) {
+                        $candidatonome = $candidato['nome'];
+                        \Mail::to($candidato['e_mail'])
+                            ->queue(new SelecaoMail(compact('passo', 'selecao', 'candidatonome', 'tipoarquivo')));
+                    }
+                }
+
                 $objeto->atualizarStatus();
                 $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
 
