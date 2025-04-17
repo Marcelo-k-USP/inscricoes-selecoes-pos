@@ -237,7 +237,7 @@ Para subir o servidor
 
 **CUIDADO**: você pode enviar e-mails indesejados para as pessoas.
 
-Para enviar e-mails é necessário executar as tarefas na fila. Para isso, em outro terminal rode
+Para enviar e-mails e executar jobs agendadas é necessário executar as tarefas na fila. Para isso, em outro terminal, execute:
 
     php artisan queue:listen
 
@@ -262,7 +262,7 @@ Foram utilizados vários recursos do laravel que podem não ser muito trivial pa
 
 -   O monitoramento de novos chamados ou novas mensagens nos chamados é feito usando _observers_ (https://laravel.com/docs/8.x/eloquent#observers)
 
--   Os e-mails enviados são colocados em filas (jobs) para liberar a execução do php (https://laravel.com/docs/8.x/mail#queueing-mail)
+-   As jobs agendadas e os e-mails a enviar são colocados em filas; para isso, precisamos utilizar em produção o supervisor e em desenvolvimento o comando php artisan queue:listen; no arquivo .env configuramos QUEUE_CONNECTION=database para que todas as jobs agendadas sejam gravados na tabela jobs do banco de dados; por outro lado, as jobs em que usamos dispatch()->onConnection('sync') são executadas imediatamente; em desenvolvimento, ao executar o comando php artisan queue:listen, todas as jobs atrasadas presentes na tabela jobs do banco de dados são executadas imediatamente, e as jobs programadas para o futuro serão executadas na data e hora programadas.
 
 -   O sistema faz uso dos seguintes serviços externos: WSBoleto da USP, Recaptcha v2 do Google e Viacep (que é gratuito, diferente do webservice dos Correios, que exige convênio específico).
 

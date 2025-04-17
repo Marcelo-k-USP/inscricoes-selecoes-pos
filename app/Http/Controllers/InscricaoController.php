@@ -85,7 +85,7 @@ class InscricaoController extends Controller
         $request->validate(['filtro' => 'nullable|string']);
 
         \UspTheme::activeUrl('inscricoes/create');
-        AtualizaStatusSelecoes::dispatch();
+        AtualizaStatusSelecoes::dispatch()->onConnection('sync');
         $categorias = Selecao::listarSelecoesParaNovaInscricao();          // obtém as seleções dentro das categorias
         return view('inscricoes.listaselecoesparanovainscricao', compact('categorias'));
     }

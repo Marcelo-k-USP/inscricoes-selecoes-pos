@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Jobs\AlertaCandidatosIncompletude;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class Selecao extends Model
@@ -840,6 +842,37 @@ class Selecao extends Model
             elseif ($this->inscricoes_datahora_fim < $agora)
                 $this->update(['estado' => 'Encerrada']);
         }
+    }
+
+    public function reagendarTarefas()
+    {
+        // este método é utilizado tanto pela criação quanto alteração de seleção
+        // quando o usuário altera uma seleção, eventualmente ele pode alterar as datas de fim
+        // neste caso, ao invés de alterarmos as datas/horas das jobs da seleção, simplesmente as removemos e as recriamos logo em seguida, considerando as datas de fim eventualmente alteradas
+
+        foreach (DB::table('jobs')->get() as $job) {
+            $payload = json_decode($job->payload, true);
+            if (!empty($payload['data']['command'])) {
+                $command = unserialize($payload['data']['command']);                        // desserializa o comando
+                $property = (new \ReflectionClass($command))->getProperty('selecao_id');    // usa ReflectionClass para acessar propriedades privadas
+                $property->setAccessible(true);                                             // torna a propriedade acessível
+                $selecao_id = $property->getValue($command);
+                if ($selecao_id == $this->id)
+                    DB::table('jobs')->where('id', $job->id)->delete();
+            }
+        }
+
+        // (re)agenda job de alerta de solicitações de isenção de taxa não concluídas
+        if ($this->tem_taxa) {
+            $job_datahora = Carbon::parse($this->solicitacoesisencaotaxa_datahora_fim)->subHours(24);
+            if ($job_datahora > now())
+                AlertaCandidatosIncompletude::dispatch($this->id, 'SolicitacaoIsencaoTaxa')->delay($job_datahora);
+        }
+
+        // (re)agenda job de alerta de inscrições não concluídas
+        $job_datahora = Carbon::parse($this->inscricoes_datahora_fim)->subHours(24);
+        if ($job_datahora > now())
+            AlertaCandidatosIncompletude::dispatch($this->id, 'Inscricao')->delay($job_datahora);
     }
 
     public function contarSolicitacoesIsencaoTaxaPorAno()
