@@ -34,7 +34,7 @@ class LimpezaDadosController extends Controller
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
 
-        LimpaDados::dispatch(Carbon::createFromFormat('d/m/Y', $request->data_limite));
+        LimpaDados::dispatch(Carbon::createFromFormat('d/m/Y', $request->data_limite))->onConnection('sync');
 
         $request->session()->flash('alert-success', 'Operação realizada com sucesso');
         \UspTheme::activeUrl('limpezadados');

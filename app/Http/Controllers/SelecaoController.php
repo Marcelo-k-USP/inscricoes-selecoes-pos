@@ -56,7 +56,7 @@ class SelecaoController extends Controller
         $this->authorize('selecoes.viewAny');
 
         \UspTheme::activeUrl('selecoes');
-        AtualizaStatusSelecoes::dispatch();
+        AtualizaStatusSelecoes::dispatch()->onConnection('sync');
         $data = self::$data;
         $objetos = Selecao::listarSelecoes();
         $classe_nome = 'Selecao';
@@ -136,6 +136,8 @@ class SelecaoController extends Controller
                 foreach (TipoArquivo::where('classe_nome', 'Inscrições')->whereRelation('niveisprogramas', 'programa_id', $selecao->programa_id)->get() as $tipoarquivo)
                     $selecao->tiposarquivo()->attach($tipoarquivo);
 
+            $selecao->reagendarTarefas();
+
             return ['selecao' => $selecao, 'is_aluno_especial' => $is_aluno_especial];
         });
         $selecao = $db_transaction['selecao'];
@@ -157,7 +159,7 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.update', $selecao);
 
-        AtualizaStatusSelecoes::dispatch();
+        AtualizaStatusSelecoes::dispatch()->onConnection('sync');
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
@@ -196,31 +198,39 @@ class SelecaoController extends Controller
         $request->merge(['tem_taxa' => $request->has('tem_taxa')]);    // acerta o valor do campo "tem_taxa" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
         $request->merge(['boleto_valor' => ($request->input('boleto_valor') !== '' ? $request->input('boleto_valor') : null)]);
 
-        $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
-        $this->updateField($request, $selecao, 'nome', 'nome', 'o');
-        $this->updateField($request, $selecao, 'descricao', 'descrição', 'a');
-        $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_inicio', 'data/hora início solicitações de isenção', 'a');
-        $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_fim', 'data/hora fim solicitações de isenção', 'a');
-        $this->updateField($request, $selecao, 'inscricoes_datahora_inicio', 'data/hora início inscrições', 'a');
-        $this->updateField($request, $selecao, 'inscricoes_datahora_fim', 'data/hora fim inscrições', 'a');
-        $this->updateField($request, $selecao, 'tem_taxa', 'taxa de inscrição', 'a');
-        $this->updateField($request, $selecao, 'boleto_valor', 'valor do boleto', 'o');
-        $this->updateField($request, $selecao, 'boleto_texto', 'texto do boleto', 'o');
-        $this->updateField($request, $selecao, 'boleto_data_vencimento', 'data de vencimento do boleto', 'a');
-        $this->updateField($request, $selecao, 'email_inscricaoaprovacao_texto', 'texto do e-mail de aprovação da inscrição', 'o');
-        $this->updateField($request, $selecao, 'email_inscricaorejeicao_texto', 'texto do e-mail de rejeição da inscrição', 'o');
-        if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
-            if ($selecao->linhaspesquisa->count() > 0) {
-                $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa/temas do programa antigo cadastrados para esta seleção!');
-                \UspTheme::activeUrl('selecoes');
-                return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
-            }
-            $selecao->programa_id = $request->programa_id;
-        }
-        $selecao->save();
+        // transaction para não ter problema de inconsistência do DB
+        $selecao = DB::transaction(function () use ($request, $selecao) {
 
-        $selecao->atualizarStatus();
-        $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
+            $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
+            $this->updateField($request, $selecao, 'nome', 'nome', 'o');
+            $this->updateField($request, $selecao, 'descricao', 'descrição', 'a');
+            $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_inicio', 'data/hora início solicitações de isenção', 'a');
+            $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_fim', 'data/hora fim solicitações de isenção', 'a');
+            $this->updateField($request, $selecao, 'inscricoes_datahora_inicio', 'data/hora início inscrições', 'a');
+            $this->updateField($request, $selecao, 'inscricoes_datahora_fim', 'data/hora fim inscrições', 'a');
+            $this->updateField($request, $selecao, 'tem_taxa', 'taxa de inscrição', 'a');
+            $this->updateField($request, $selecao, 'boleto_valor', 'valor do boleto', 'o');
+            $this->updateField($request, $selecao, 'boleto_texto', 'texto do boleto', 'o');
+            $this->updateField($request, $selecao, 'boleto_data_vencimento', 'data de vencimento do boleto', 'a');
+            $this->updateField($request, $selecao, 'email_inscricaoaprovacao_texto', 'texto do e-mail de aprovação da inscrição', 'o');
+            $this->updateField($request, $selecao, 'email_inscricaorejeicao_texto', 'texto do e-mail de rejeição da inscrição', 'o');
+            if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
+                if ($selecao->linhaspesquisa->count() > 0) {
+                    $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa/temas do programa antigo cadastrados para esta seleção!');
+                    \UspTheme::activeUrl('selecoes');
+                    return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
+                }
+                $selecao->programa_id = $request->programa_id;
+            }
+            $selecao->save();
+
+            $selecao->atualizarStatus();
+            $selecao->estado = Selecao::where('id', $selecao->id)->value('estado');
+
+            $selecao->reagendarTarefas();
+
+            return $selecao;
+        });
 
         $request->session()->flash('alert-success', 'Seleção alterada com sucesso');
         \UspTheme::activeUrl('selecoes');

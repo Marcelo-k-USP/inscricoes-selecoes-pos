@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Jobs;
+
+use App\Mail\SelecaoMail;
+use App\Models\Selecao;
+use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+
+class AlertaCandidatosIncompletude implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    private $selecao_id;
+    private $classe_nome;
+
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct($selecao_id, $classe_nome)
+    {
+        $this->selecao_id = $selecao_id;
+        $this->classe_nome = $classe_nome;
+    }
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        $selecao = Selecao::where('id', $this->selecao_id)->first();
+        switch ($this->classe_nome) {
+            case 'SolicitacaoIsencaoTaxa':
+                $passo = 'alerta de proximidade do fim das solicitações de isenção de taxa';
+                foreach ($selecao->solicitacoesisencaotaxa as $solicitacaoisencaotaxa)
+                    if ($solicitacaoisencaotaxa->estado === 'Aguardando Envio') {
+                        $extras = json_decode($solicitacaoisencaotaxa->extras, true);
+                        $candidatonome = $extras['nome'];
+                        \Mail::to($extras['e_mail'])
+                            ->queue(new SelecaoMail(compact('passo', 'selecao', 'candidatonome')));
+                    }
+                break;
+
+            case 'Inscricao':
+                $passo = 'alerta de proximidade do fim das inscrições';
+                foreach ($selecao->inscricoes as $inscricao)
+                    if ($inscricao->estado === 'Aguardando Envio') {
+                        $extras = json_decode($inscricao->extras, true);
+                        $candidatonome = $extras['nome'];
+                        \Mail::to($extras['e_mail'])
+                            ->queue(new SelecaoMail(compact('passo', 'selecao', 'candidatonome')));
+                    }
+        }
+    }
+}
