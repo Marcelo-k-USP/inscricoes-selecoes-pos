@@ -85,11 +85,11 @@
       if (!$('#tem_taxa').prop('checked')) {
         $('#solicitacoesisencaotaxa_data_inicio').val('');
         $('#solicitacoesisencaotaxa_data_inicio').parents('div').eq(1).hide();
-        $('#solicitacoesisencaotaxa_hora_inicio').next('.flatpickr-calendar').find('input[type="number"]').val('');
+        $('#solicitacoesisencaotaxa_hora_inicio').next('.flatpickr-calendar').find('input[type="number"]').val('00');
         $('#solicitacoesisencaotaxa_hora_inicio').parents('div').eq(1).hide();
         $('#solicitacoesisencaotaxa_data_fim').val('');
         $('#solicitacoesisencaotaxa_data_fim').parents('div').eq(1).hide();
-        $('#solicitacoesisencaotaxa_hora_fim').next('.flatpickr-calendar').find('input[type="number"]').val('');
+        $('#solicitacoesisencaotaxa_hora_fim').next('.flatpickr-calendar').find('input[type="number"]').val('00');
         $('#solicitacoesisencaotaxa_hora_fim').parents('div').eq(1).hide();
       } else {
         $('#solicitacoesisencaotaxa_data_inicio').parents('div').eq(1).show();
