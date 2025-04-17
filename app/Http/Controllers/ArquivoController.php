@@ -30,6 +30,11 @@ class ArquivoController extends Controller
         $this->middleware('auth')->except('show');
     }
 
+    public function index()
+    {
+        // pelo fato de eu ter definido as rotas do ArquivoController com Route::resource, o Laravel espera que exista esta action, mesmo que eu nunca a invoque
+    }
+
     /**
      * Display the specified resource.
      *
