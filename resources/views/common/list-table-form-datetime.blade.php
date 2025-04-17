@@ -11,7 +11,7 @@
     }}
     &nbsp; &nbsp;
     {{ html()->input('text', str_replace('datahora_', 'hora_', $col['name']))
-      ->value(old(str_replace('datahora_', 'hora_', $col['name']), $modo == 'edit' ? formatarHora($objeto->{$col['name']}) : ''))
+      ->value(old(str_replace('datahora_', 'hora_', $col['name']), $modo == 'edit' ? formatarHora($objeto->{$col['name']}) : '0'))
       ->class('form-control timefield')
       ->attribute('style', 'display: none;')
     }}
