@@ -91,10 +91,6 @@
             [3, 'desc']    // ordenado por data de atualização descrescente
           ],
           'fixedHeader': true,
-          columnDefs: [{
-            targets: 1,
-            orderable: false
-          }],
           language: {
             url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json'
           }
