@@ -48,8 +48,8 @@ Route::put('solicitacoesisencaotaxa/edit/{solicitacaoisencaotaxa}', [Solicitacao
 // INSCRIÇÕES
 Route::get('inscricoes', [InscricaoController::class, 'index'])->name('inscricoes.index');
 Route::get('inscricoes/create', [InscricaoController::class, 'listaSelecoesParaNovaInscricao'])->name('inscricoes.create');
-Route::get('inscricoes/create/{selecao}/{nivel}', [InscricaoController::class, 'create'])->name('inscricoes.create.selecao');    // define a rota mais específica antes da mais geral (na linha de baixo)
-Route::get('inscricoes/create/{selecao}', [InscricaoController::class, 'create'])->name('inscricoes.create.selecao');
+Route::get('inscricoes/create/{selecao}/{nivel}', [InscricaoController::class, 'create']);    // define a rota mais específica antes da mais geral (na linha de baixo)
+Route::get('inscricoes/create/{selecao}', [InscricaoController::class, 'create']);
 Route::post('inscricoes/create', [InscricaoController::class, 'store'])->name('inscricoes.store');
 Route::get('inscricoes/edit/{inscricao}', [InscricaoController::class, 'edit'])->name('inscricoes.edit');
 Route::put('inscricoes/edit/{inscricao}', [InscricaoController::class, 'update'])->name('inscricoes.update');
@@ -107,9 +107,9 @@ Route::resource('programas', ProgramaController::class);
 
 // LINHAS DE PESQUISA/TEMAS
 Route::resource('linhaspesquisa', LinhaPesquisaController::class);
-Route::post('linhaspesquisa/create', [LinhaPesquisaController::class, 'store'])->name('linhaspesquisa.store');
-Route::get('linhaspesquisa/edit/{linhapesquisa}', [LinhaPesquisaController::class, 'edit'])->name('linhaspesquisa.edit');
-Route::put('linhaspesquisa/edit/{linhapesquisa}', [LinhaPesquisaController::class, 'update'])->name('linhaspesquisa.update');
+Route::post('linhaspesquisa/create', [LinhaPesquisaController::class, 'store']);
+Route::get('linhaspesquisa/edit/{linhapesquisa}', [LinhaPesquisaController::class, 'edit']);
+Route::put('linhaspesquisa/edit/{linhapesquisa}', [LinhaPesquisaController::class, 'update']);
 
 // LINHAS DE PESQUISA/TEMAS > NÍVEIS
 Route::post('linhaspesquisa/{linhapesquisa}/niveis', [LinhaPesquisaController::class, 'storeNivel']);
@@ -127,9 +127,9 @@ Route::resource('motivosisencaotaxa', MotivoIsencaoTaxaController::class);
 
 // TIPOS DE ARQUIVO
 Route::resource('tiposarquivo', TipoArquivoController::class);
-Route::post('tiposarquivo/create', [TipoArquivoController::class, 'store'])->name('tiposarquivo.store');
-Route::get('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'edit'])->name('tiposarquivo.edit');
-Route::put('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'update'])->name('tiposarquivo.update');
+Route::post('tiposarquivo/create', [TipoArquivoController::class, 'store']);
+Route::get('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'edit']);
+Route::put('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'update']);
 
 // TIPOS DE ARQUIVO > NÍVEIS + PROGRAMAS
 Route::post('tiposarquivo/{tipoarquivo}/niveisprogramas', [TipoArquivoController::class, 'storeNivelPrograma']);
