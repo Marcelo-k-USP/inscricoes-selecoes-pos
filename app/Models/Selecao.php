@@ -850,7 +850,7 @@ class Selecao extends Model
         // quando o usuário altera uma seleção, eventualmente ele pode alterar as datas de fim
         // neste caso, ao invés de alterarmos as datas/horas das jobs da seleção, simplesmente as removemos e as recriamos logo em seguida, considerando as datas de fim eventualmente alteradas
 
-        foreach (DB::table('jobs')->get() as $job) {
+        foreach (DB::table('jobs')->where('payload', 'like', '%App\\Jobs\\AlertaCandidatosIncompletude%')->get() as $job) {
             $payload = json_decode($job->payload, true);
             if (!empty($payload['data']['command'])) {
                 $command = unserialize($payload['data']['command']);                        // desserializa o comando
