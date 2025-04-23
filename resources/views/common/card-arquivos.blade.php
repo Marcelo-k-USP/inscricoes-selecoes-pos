@@ -42,12 +42,17 @@
           {{ $tipoarquivo['nome'] }} {!! ((isset($tipoarquivo['obrigatorio']) && $tipoarquivo['obrigatorio']) ? '<small class="text-required">(*)</small>' : '') !!}
           @php
             $editavel = (isset($tipoarquivo['editavel']) && $tipoarquivo['editavel']);
+            if (session('perfil') == 'usuario')
+              if ($classe_nome == 'SolicitacaoIsencaoTaxa')
+                $editavel &= ($selecao->estado == 'Período de Solicitações de Isenção de Taxa');
+              elseif ($classe_nome == 'Inscricao')
+                $editavel &= ($selecao->estado == 'Período de Inscrições');
           @endphp
           @if (Gate::allows($classe_nome_plural . '.updateArquivos', $objeto) && $editavel)
             <label for="input_arquivo_{{ $i }}">
               <span class="btn btn-sm btn-light text-primary ml-2"> <i class="fas fa-plus"></i> Adicionar</span>
             </label>
-          @endcan
+          @endif
           <input type="hidden" id="tipoarquivo_{{ $i }}" value="{{ $tipoarquivo['nome'] }}">
           <input type="file" name="arquivo[]" id="input_arquivo_{{ $i }}" accept="image/jpeg,image/png,application/pdf" class="d-none" multiple capture="environment">
 

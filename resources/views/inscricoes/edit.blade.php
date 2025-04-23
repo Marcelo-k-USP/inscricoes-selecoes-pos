@@ -21,7 +21,6 @@
   @php
     $inscricao = $objeto;
     $classe_nome = 'Inscricao';
-    $condicao_disponivel = (($inscricao->selecao->estado == 'Período de Inscrições') || (session('perfil') !== 'usuario'));
     $condicao_ativa = true;
   @endphp
   <div class="row">
@@ -51,14 +50,17 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @if ($condicao_disponivel)
-                @include('inscricoes.show.card-principal')      {{-- Principal --}}
+              @if (in_array($inscricao->selecao->estado, ['Período de Inscrições', 'Encerrada']))
+                @include('inscricoes.show.card-principal', [    {{-- Principal --}}
+                  'selecao' => $inscricao->selecao
+                ])
               @else
                 @include('inscricoes.show.card-naodisponivel')  {{-- Não Disponível --}}
               @endif
             </div>
             <div class="col-md-5">
-              @if (($inscricao->selecao->categoria->nome == 'Aluno Especial') && ($modo == 'edit'))
+              @if (($inscricao->selecao->categoria->nome == 'Aluno Especial') &&
+                   (($modo == 'edit') || ($inscricao->selecao->estado == 'Encerrada')))
                 @include('inscricoes.show.card-disciplinas')    {{-- Disciplinas --}}
               @endif
               @include('inscricoes.show.card-responsaveis', [   {{-- Responsáveis --}}
@@ -68,13 +70,12 @@
                 'selecao' => $inscricao->selecao
               ])
               @if ($modo == 'edit')
-                @if ($condicao_disponivel)
-                  @include('common.card-arquivos', [            {{-- Arquivos --}}
-                    'tipoarquivo_classe_nome_plural_acentuado' => 'Inscrições',
-                  ])
-                  @if (session('perfil') == 'usuario')
-                    @include('inscricoes.show.card-envio')      {{-- Envio --}}
-                  @endif
+                @include('common.card-arquivos', [              {{-- Arquivos --}}
+                  'selecao' => $inscricao->selecao,
+                  'tipoarquivo_classe_nome_plural_acentuado' => 'Inscrições',
+                ])
+                @if (($inscricao->selecao->estado == 'Período de Inscrições') && (session('perfil') == 'usuario'))
+                  @include('inscricoes.show.card-envio')        {{-- Envio --}}
                 @endif
               @endif
             </div>

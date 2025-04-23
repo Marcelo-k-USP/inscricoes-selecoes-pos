@@ -34,7 +34,7 @@
           @endforeach
         @endif
       </div>
-      @if (session('perfil') == 'usuario')
+      @if (($selecao->estado == 'Período de Solicitações de Isenção de Taxa') && (session('perfil') == 'usuario'))
         <div class="text-right">
           <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
         </div>

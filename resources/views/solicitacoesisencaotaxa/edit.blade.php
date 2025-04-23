@@ -21,7 +21,6 @@
   @php
     $solicitacaoisencaotaxa = $objeto;
     $classe_nome = 'SolicitacaoIsencaoTaxa';
-    $condicao_disponivel = (($solicitacaoisencaotaxa->selecao->estado == 'Período de Solicitações de Isenção') || (session('perfil') !== 'usuario'));
     $condicao_ativa = true;
   @endphp
   <div class="row">
@@ -47,8 +46,10 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @if ($condicao_disponivel)
-                @include('solicitacoesisencaotaxa.show.card-principal')      {{-- Principal --}}
+              @if (in_array($solicitacaoisencaotaxa->selecao->estado, ['Período de Solicitações de Isenção', 'Período de Inscrições', 'Encerrada']))
+                @include('solicitacoesisencaotaxa.show.card-principal', [    {{-- Principal --}}
+                  'selecao' => $solicitacaoisencaotaxa->selecao
+                ])
               @else
                 @include('solicitacoesisencaotaxa.show.card-naodisponivel')  {{-- Não Disponível --}}
               @endif
@@ -61,13 +62,12 @@
                 'selecao' => $solicitacaoisencaotaxa->selecao
               ])
               @if ($modo == 'edit')
-                @if ($condicao_disponivel)
-                  @include('common.card-arquivos', [                         {{-- Arquivos --}}
-                    'tipoarquivo_classe_nome_plural_acentuado' => 'Solicitações de Isenção de Taxa',
-                  ])
-                  @if (session('perfil') == 'usuario')
-                    @include('inscricoes.show.card-envio')                   {{-- Envio --}}
-                  @endif
+                @include('common.card-arquivos', [                           {{-- Arquivos --}}
+                  'selecao' => $solicitacaoisencaotaxa->selecao,
+                  'tipoarquivo_classe_nome_plural_acentuado' => 'Solicitações de Isenção de Taxa',
+                ])
+                @if (($solicitacaoisencaotaxa->selecao->estado == 'Período de Solicitações de Isenção') && (session('perfil') == 'usuario'))
+                  @include('inscricoes.show.card-envio')                     {{-- Envio --}}
                 @endif
               @endif
             </div>
