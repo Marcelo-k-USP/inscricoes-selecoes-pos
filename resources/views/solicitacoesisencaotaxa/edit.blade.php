@@ -21,7 +21,7 @@
   @php
     $solicitacaoisencaotaxa = $objeto;
     $classe_nome = 'SolicitacaoIsencaoTaxa';
-    $condicao_disponivel = ($solicitacaoisencaotaxa->selecao->estado == 'Período de Solicitações de Isenção');
+    $condicao_disponivel = (($solicitacaoisencaotaxa->selecao->estado == 'Período de Solicitações de Isenção') || (session('perfil') !== 'usuario'));
     $condicao_ativa = true;
   @endphp
   <div class="row">
@@ -47,21 +47,27 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @include('solicitacoesisencaotaxa.show.card-principal')    {{-- Principal --}}
+              @if ($condicao_disponivel)
+                @include('solicitacoesisencaotaxa.show.card-principal')      {{-- Principal --}}
+              @else
+                @include('solicitacoesisencaotaxa.show.card-naodisponivel')  {{-- Não Disponível --}}
+              @endif
             </div>
             <div class="col-md-5">
-              @include('inscricoes.show.card-responsaveis', [            {{-- Responsáveis --}}
+              @include('inscricoes.show.card-responsaveis', [                {{-- Responsáveis --}}
                 'selecao' => $solicitacaoisencaotaxa->selecao
               ])
-              @include('inscricoes.show.card-informativos', [            {{-- Informativos --}}
+              @include('inscricoes.show.card-informativos', [                {{-- Informativos --}}
                 'selecao' => $solicitacaoisencaotaxa->selecao
               ])
               @if ($modo == 'edit')
-                @include('common.card-arquivos', [                       {{-- Arquivos --}}
-                  'tipoarquivo_classe_nome_plural_acentuado' => 'Solicitações de Isenção de Taxa',
-                ])
-                @if (session('perfil') == 'usuario')
-                  @include('inscricoes.show.card-envio')                 {{-- Envio --}}
+                @if ($condicao_disponivel)
+                  @include('common.card-arquivos', [                         {{-- Arquivos --}}
+                    'tipoarquivo_classe_nome_plural_acentuado' => 'Solicitações de Isenção de Taxa',
+                  ])
+                  @if (session('perfil') == 'usuario')
+                    @include('inscricoes.show.card-envio')                   {{-- Envio --}}
+                  @endif
                 @endif
               @endif
             </div>
