@@ -21,7 +21,7 @@
   @php
     $inscricao = $objeto;
     $classe_nome = 'Inscricao';
-    $condicao_disponivel = ($inscricao->selecao->estado == 'Período de Inscrições');
+    $condicao_disponivel = (($inscricao->selecao->estado == 'Período de Inscrições') || (session('perfil') !== 'usuario'));
     $condicao_ativa = true;
   @endphp
   <div class="row">
@@ -72,9 +72,9 @@
                   @include('common.card-arquivos', [            {{-- Arquivos --}}
                     'tipoarquivo_classe_nome_plural_acentuado' => 'Inscrições',
                   ])
-                @endif
-                @if (session('perfil') == 'usuario')
-                  @include('inscricoes.show.card-envio')        {{-- Envio --}}
+                  @if (session('perfil') == 'usuario')
+                    @include('inscricoes.show.card-envio')      {{-- Envio --}}
+                  @endif
                 @endif
               @endif
             </div>
