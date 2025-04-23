@@ -23,8 +23,7 @@ class InscricaoMail extends Mailable
     // campos adicionais para inscrição enviada
     protected $responsavel_nome;
 
-    // campos adicionais para inscrição pré-aprovada
-    protected $orientador_nome;
+    // campos adicionais para inscrição pré-rejeitada
 
     // campos adicionais para inscrição aprovada
 
@@ -61,8 +60,7 @@ class InscricaoMail extends Mailable
                 $this->responsavel_nome = $data['responsavel_nome'];
                 break;
 
-            case 'pré-aprovação':
-                $this->orientador_nome = $data['orientador_nome'];
+            case 'pré-rejeição':
                 break;
 
             case 'aprovação':
@@ -120,14 +118,14 @@ class InscricaoMail extends Mailable
                         'responsavel_nome' => $this->responsavel_nome,
                     ]);
 
-            case 'pré-aprovação':
+            case 'pré-rejeição':
                 return $this
-                    ->subject('[' . config('app.name') . '] Pré-Aprovação de Inscrição')
+                    ->subject('[' . config('app.name') . '] Rejeição de Inscrição')
                     ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.inscricao_preaprovacao')
+                    ->view('emails.inscricao_prerejeicao')
                     ->with([
                         'inscricao' => $this->inscricao,
-                        'orientador_nome' => $this->orientador_nome,
+                        'user' => $this->user,
                     ]);
 
             case 'aprovação':
