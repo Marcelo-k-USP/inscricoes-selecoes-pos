@@ -287,6 +287,14 @@ class InscricaoController extends Controller
                 $inscricao->save();
 
                 switch ($inscricao->estado) {
+                    case 'Pré-Rejeitada':
+                        // envia e-mail avisando o candidato da pré-rejeição da inscrição
+                        $passo = 'pré-rejeição';
+                        $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
+                        \Mail::to($user->email)
+                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
+                        break;
+
                     case 'Aprovada':
                     case 'Rejeitada':
                         // envia e-mail avisando o candidato da aprovação/rejeição da inscrição
