@@ -159,7 +159,7 @@ class SelecaoController extends Controller
     {
         $this->authorize('selecoes.update', $selecao);
 
-        AtualizaStatusSelecoes::dispatch()->onConnection('sync');
+        $selecao->atualizarStatus();
 
         \UspTheme::activeUrl('selecoes');
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
