@@ -16,8 +16,8 @@
   <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início">
     Aguardando Início
   </button>
-  <button class="btn btn-sm {{ ($selecao->estado == 'Período de Solicitações de Isenção') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Solicitações de Isenção">
-    Período de Solicitações de Isenção
+  <button class="btn btn-sm {{ ($selecao->estado == 'Período de Solicitações de Isenção de Taxa') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Solicitações de Isenção de Taxa">
+    Período de Solicitações de Isenção de Taxa
   </button>
   <button class="btn btn-sm {{ ($selecao->estado == 'Período de Inscrições') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Inscrições">
     Período de Inscrições

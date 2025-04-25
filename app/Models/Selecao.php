@@ -704,7 +704,7 @@ class Selecao extends Model
      */
     public static function estados()
     {
-        return ['Em Elaboração', 'Aguardando Início', 'Período de Solicitações de Isenção', 'Periodo de Inscrições', 'Encerrada'];
+        return ['Em Elaboração', 'Aguardando Início', 'Período de Solicitações de Isenção de Taxa', 'Periodo de Inscrições', 'Encerrada'];
     }
 
     /**
@@ -781,7 +781,7 @@ class Selecao extends Model
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
-            $selecoes = $selecoes->filter(fn($selecao) => $selecao->estado == 'Período de Solicitações de Isenção');    // só aceita as seleções que estejam em período de solicitações de isenção
+            $selecoes = $selecoes->filter(fn($selecao) => $selecao->estado == 'Período de Solicitações de Isenção de Taxa');    // só aceita as seleções que estejam em período de solicitações de isenção de taxa
             $categoria->selecoes = $selecoes;
         }
         return $categorias;                                              // retorna as seleções dentro de categorias
@@ -830,7 +830,7 @@ class Selecao extends Model
                 if ($agora < $this->solicitacoesisencaotaxa_datahora_inicio)
                     $this->update(['estado' => 'Aguardando Início']);
                 elseif (($this->solicitacoesisencaotaxa_datahora_inicio <= $agora) && ($agora <= $this->solicitacoesisencaotaxa_datahora_fim))
-                    $this->update(['estado' => 'Período de Solicitações de Isenção']);
+                    $this->update(['estado' => 'Período de Solicitações de Isenção de Taxa']);
                 elseif (($this->solicitacoesisencaotaxa_datahora_fim < $agora) && ($agora < $this->inscricoes_datahora_inicio))
                     $this->update(['estado' => 'Aguardando Início']);
             } else
