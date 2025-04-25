@@ -63,15 +63,17 @@ O fluxo de uma inscrição é o seguinte:
 Se for aluno regular:
 3) um e-mail é enviado à secretaria do programa e aos coordenadores do programa para pré-avaliar a inscrição;
 4) a secretaria do programa ou os coordenadores do programa colocam a inscrição em pré-avaliação e depois a pré-aprovam ou pré-rejeitam;
-5) em caso de pré-rejeição, um e-mail e enviado ao candidato avisando-o da pré-rejeição;
-6) a secretaria do programa coloca a inscrição em avaliação e depois a aprova ou rejeita;
-7) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
+5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o link de acompanhamento no site da unidade, na seção do programa correspondente;
+6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
+7) a secretaria do programa coloca a inscrição em avaliação e depois a aprova ou rejeita;
+8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
 Se for aluno especial:
 3) se for aluno especial, um e-mail é enviado ao serviço de pós-graduação para pré-avaliar a inscrição;
 4) o serviço de pós-graduação coloca a inscrição em pré-avaliação e depois a pré-aprova ou pré-rejeita;
-5) em caso de pré-rejeição, um e-mail e enviado ao candidato avisando-o da pré-rejeição;
-6) o serviço de pós-graduação coloca a inscrição em avaliação e depois a aprova ou rejeita;
-7) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
+5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o link de acompanhamento no site da unidade, na seção de alunos especiais;
+6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
+7) o serviço de pós-graduação coloca a inscrição em avaliação e depois a aprova ou rejeita;
+8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
 
 ## Changelog
 

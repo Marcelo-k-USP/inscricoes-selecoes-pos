@@ -291,11 +291,20 @@ class InscricaoController extends Controller
                 $inscricao->estado = $request->estado;
                 $inscricao->save();
 
+                $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
+
                 switch ($inscricao->estado) {
+                    case 'Pré-Aprovada':
+                        // envia e-mail avisando o candidato da pré-aprovação da inscrição
+                        $passo = 'pré-aprovação';
+                        $link_acompanhamento = (($inscricao->selecao->categoria->nome == 'Aluno Especial') ? Parametro::first()->link_acompanhamento_especiais : $inscricao->selecao->programa->link_acompanhamento);
+                        \Mail::to($user->email)
+                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'link_acompanhamento')));
+                        break;
+
                     case 'Pré-Rejeitada':
                         // envia e-mail avisando o candidato da pré-rejeição da inscrição
                         $passo = 'pré-rejeição';
-                        $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
                         \Mail::to($user->email)
                             ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
                         break;
@@ -304,7 +313,6 @@ class InscricaoController extends Controller
                     case 'Rejeitada':
                         // envia e-mail avisando o candidato da aprovação/rejeição da inscrição
                         $passo = (($inscricao->estado == 'Aprovada') ? 'aprovação' : 'rejeição');
-                        $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
                         \Mail::to($user->email)
                             ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
                 }

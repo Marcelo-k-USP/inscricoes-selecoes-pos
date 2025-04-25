@@ -13,6 +13,7 @@ class Parametro extends Model
     protected $fillable = [
         'boleto_codigo_fonte_recurso',
         'boleto_estrutura_hierarquica',
+        'link_acompanhamento_especiais',
         'email_servicoposgraduacao',
         'email_secaoinformatica',
     ];
@@ -27,6 +28,10 @@ class Parametro extends Model
         [
             'name' => 'boleto_estrutura_hierarquica',
             'label' => 'Estrutura Hierárquica para Boleto',
+        ],
+        [
+            'name' => 'link_acompanhamento_especiais',
+            'label' => 'Link de Acompanhamento para Alunos Especiais',
         ],
         [
             'name' => 'email_servicoposgraduacao',

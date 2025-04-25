@@ -15,6 +15,7 @@ class Programa extends Model
         'nome',
         'descricao',
         'email_secretaria',
+        'link_acompanhamento',
     ];
 
     // uso no crud generico
@@ -30,6 +31,10 @@ class Programa extends Model
         [
             'name' => 'email_secretaria',
             'label' => 'E-mail da Secretaria',
+        ],
+        [
+            'name' => 'link_acompanhamento',
+            'label' => 'Link de Acompanhamento',
         ],
     ];
 
