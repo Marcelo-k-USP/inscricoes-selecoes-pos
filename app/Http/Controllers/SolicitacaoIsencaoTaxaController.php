@@ -89,7 +89,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
      */
     public function create(Selecao $selecao)
     {
-        $this->authorize('solicitacoesisencaotaxa.create');
+        $this->authorize('solicitacoesisencaotaxa.create', $selecao);
 
         $solicitacaoisencaotaxa = new SolicitacaoIsencaoTaxa;
         $solicitacaoisencaotaxa->selecao = $selecao;
@@ -112,13 +112,13 @@ class SolicitacaoIsencaoTaxaController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('solicitacoesisencaotaxa.create');
+        $selecao = Selecao::find($request->selecao_id);
+        $this->authorize('solicitacoesisencaotaxa.create', $selecao);
 
         $user = \Auth::user();
 
         // transaction para não ter problema de inconsistência do DB
-        $solicitacaoisencaotaxa = DB::transaction(function () use ($request, $user) {
-            $selecao = Selecao::find($request->selecao_id);
+        $solicitacaoisencaotaxa = DB::transaction(function () use ($request, $user, $selecao) {
 
             // grava a solicitação de isenção de taxa
             $solicitacaoisencaotaxa = new SolicitacaoIsencaoTaxa;
@@ -170,6 +170,8 @@ class SolicitacaoIsencaoTaxaController extends Controller
     public function update(Request $request, SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
     {
         if ($request->input('acao', null) == 'envio') {
+            $this->authorize('solicitacoesisencaotaxa.update', $solicitacaoisencaotaxa);
+
             if ($solicitacaoisencaotaxa->todosArquivosRequeridosPresentes()) {
 
                 $solicitacaoisencaotaxa->estado = 'Isenção de Taxa Solicitada';

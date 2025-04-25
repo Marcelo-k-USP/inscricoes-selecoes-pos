@@ -99,7 +99,7 @@ class InscricaoController extends Controller
      */
     public function create(Selecao $selecao, ?Nivel $nivel = null)
     {
-        $this->authorize('inscricoes.create');
+        $this->authorize('inscricoes.create', $selecao);
 
         $inscricao = new Inscricao;
         $inscricao->selecao = $selecao;
@@ -138,13 +138,13 @@ class InscricaoController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('inscricoes.create');
+        $selecao = Selecao::find($request->selecao_id);
+        $this->authorize('inscricoes.create', $selecao);
 
         $user = \Auth::user();
 
         // transaction para não ter problema de inconsistência do DB
-        $inscricao = DB::transaction(function () use ($request, $user) {
-            $selecao = Selecao::find($request->selecao_id);
+        $inscricao = DB::transaction(function () use ($request, $user, $selecao) {
 
             // grava a inscrição
             $inscricao = new Inscricao;
@@ -197,6 +197,8 @@ class InscricaoController extends Controller
         \UspTheme::activeUrl('inscricoes');
 
         if ($request->input('acao', null) == 'envio') {
+            $this->authorize('inscricoes.update', $inscricao);
+
             $extras = json_decode(stripslashes($inscricao->extras), true);
             if ($inscricao->todosArquivosRequeridosPresentes($extras['nivel'] ?? null)) {
 

@@ -88,6 +88,12 @@ class ArquivoPolicy
         elseif (Gate::allows('perfildocente'))
             return false;
         elseif (Gate::allows('perfilusuario')) {
+            $selecao = $objeto->selecao;
+            $selecao->atualizarStatus();
+            if ((($classe_nome == 'SolicitacaoIsencaoTaxa') && ($selecao->estado !== 'Período de Solicitações de Isenção de Taxa')) ||
+                (($classe_nome == 'Inscricao') && ($selecao->estado !== 'Período de Inscrições')))
+                return false;
+
             $autor_inscricao = $objeto->pessoas('Autor');
             if ($autor_inscricao && ($autor_inscricao->id == $user->id))
                 return true;                                       // permite que usuários subam arquivos em suas solicitações de isenção de taxa e inscrições
@@ -156,6 +162,12 @@ class ArquivoPolicy
         elseif (Gate::allows('perfildocente'))
             return false;
         elseif (Gate::allows('perfilusuario')) {
+            $selecao = $objeto->selecao;
+            $selecao->atualizarStatus();
+            if ((($classe_nome == 'SolicitacaoIsencaoTaxa') && ($selecao->estado !== 'Período de Solicitações de Isenção de Taxa')) ||
+                (($classe_nome == 'Inscricao') && ($selecao->estado !== 'Período de Inscrições')))
+                return false;
+
             $autor_arquivo_id = $arquivo->user_id;
 
             $autor_solicitacaoisencaotaxa = $objeto->pessoas('Autor');

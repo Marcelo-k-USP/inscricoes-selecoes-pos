@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Inscricao;
+use App\Models\Selecao;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
@@ -25,7 +26,7 @@ class InscricaoPolicy
     /**
      * Determine whether the user can view all inscrições.
      *
-     * @param  \App\User              $user
+     * @param  \App\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -55,11 +56,18 @@ class InscricaoPolicy
     /**
      * Determine whether the user can create inscrições.
      *
-     * @param  \App\User  $user
+     * @param  \App\User             $user
+     * @param  ?\App\Models\Selecao  $selecao
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, ?Selecao $selecao = null)
     {
+        if (!is_null($selecao)) {
+            $selecao->atualizarStatus();
+            if ($selecao->estado !== 'Período de Inscrições')
+                return false;
+        }
+
         return Gate::allows('perfilusuario');
     }
 
@@ -72,6 +80,11 @@ class InscricaoPolicy
      */
     public function update(User $user, Inscricao $inscricao)
     {
+        $selecao = $inscricao->selecao;
+        $selecao->atualizarStatus();
+        if ($selecao->estado !== 'Período de Inscrições')
+            return false;
+
         return (Gate::allows('perfilusuario') && ($inscricao->pessoas('Autor')->id == $user->id));    // permite que apenas o usuário autor da inscrição a edite
     }
 

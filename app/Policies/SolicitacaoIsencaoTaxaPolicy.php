@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -53,11 +54,18 @@ class SolicitacaoIsencaoTaxaPolicy
     /**
      * Determine whether the user can create solicitações de isenção de taxa.
      *
-     * @param  \App\User  $user
+     * @param  \App\User             $user
+     * @param  ?\App\Models\Selecao  $selecao
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, ?Selecao $selecao = null)
     {
+        if (!is_null($selecao)) {
+            $selecao->atualizarStatus();
+            if ($selecao->estado !== 'Período de Solicitações de Isenção de Taxa')
+                return false;
+        }
+
         return Gate::allows('perfilusuario');
     }
 
@@ -70,6 +78,11 @@ class SolicitacaoIsencaoTaxaPolicy
      */
     public function update(User $user, SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
     {
+        $selecao = $solicitacaoisencaotaxa->selecao;
+        $selecao->atualizarStatus();
+        if ($selecao->estado !== 'Período de Solicitações de Isenção de Taxa')
+            return false;
+
         return (Gate::allows('perfilusuario') && ($solicitacaoisencaotaxa->pessoas('Autor')->id == $user->id));    // permite que apenas o usuário autor da solicitação de isenção de taxa a edite
     }
 
