@@ -204,8 +204,8 @@ class SelecaoController extends Controller
             $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
             $this->updateField($request, $selecao, 'nome', 'nome', 'o');
             $this->updateField($request, $selecao, 'descricao', 'descrição', 'a');
-            $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_inicio', 'data/hora início solicitações de isenção', 'a');
-            $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_fim', 'data/hora fim solicitações de isenção', 'a');
+            $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_inicio', 'data/hora início solicitações de isenção de taxa', 'a');
+            $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_fim', 'data/hora fim solicitações de isenção de taxa', 'a');
             $this->updateField($request, $selecao, 'inscricoes_datahora_inicio', 'data/hora início inscrições', 'a');
             $this->updateField($request, $selecao, 'inscricoes_datahora_fim', 'data/hora fim inscrições', 'a');
             $this->updateField($request, $selecao, 'tem_taxa', 'taxa de inscrição', 'a');
