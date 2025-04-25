@@ -25,6 +25,7 @@ class ParametroRequest extends FormRequest
         'boleto_codigo_fonte_recurso' => ['required', 'integer'],
         'boleto_estrutura_hierarquica' => ['required', 'max:100'],
         'email_servicoposgraduacao' => ['max:255', 'nullable', 'email'],
+        'email_secaoinformatica' => ['max:255', 'nullable', 'email'],
     ];
 
     public const messages = [
@@ -34,5 +35,7 @@ class ParametroRequest extends FormRequest
         'boleto_estrutura_hierarquica.max' => 'A estrutura hierárquica do boleto não pode exceder 100 caracteres!',
         'email_servicoposgraduacao.max' => 'O e-mail do serviço de pós-graduação não pode exceder 255 caracteres!',
         'email_servicoposgraduacao.email' => 'O e-mail do serviço de pós-graduação deve ser válido.',
+        'email_secaoinformatica.max' => 'O e-mail da seção de informática não pode exceder 255 caracteres!',
+        'email_secaoinformatica.email' => 'O e-mail da seção de informática deve ser válido.',
     ];
 }

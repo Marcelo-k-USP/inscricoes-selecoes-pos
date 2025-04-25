@@ -48,6 +48,7 @@ class ParametroController extends Controller
         $parametro->boleto_codigo_fonte_recurso = $request->boleto_codigo_fonte_recurso;
         $parametro->boleto_estrutura_hierarquica = $request->boleto_estrutura_hierarquica;
         $parametro->email_servicoposgraduacao = $request->email_servicoposgraduacao;
+        $parametro->email_secaoinformatica = $request->email_secaoinformatica;
         $parametro->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
