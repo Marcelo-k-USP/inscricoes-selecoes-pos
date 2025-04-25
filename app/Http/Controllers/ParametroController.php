@@ -47,6 +47,7 @@ class ParametroController extends Controller
         $parametro = Parametro::first();
         $parametro->boleto_codigo_fonte_recurso = $request->boleto_codigo_fonte_recurso;
         $parametro->boleto_estrutura_hierarquica = $request->boleto_estrutura_hierarquica;
+        $parametro->link_acompanhamento_especiais = $request->link_acompanhamento_especiais;
         $parametro->email_servicoposgraduacao = $request->email_servicoposgraduacao;
         $parametro->email_secaoinformatica = $request->email_secaoinformatica;
         $parametro->save();
