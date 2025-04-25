@@ -50,7 +50,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @if (in_array($inscricao->selecao->estado, ['Período de Inscrições', 'Encerrada']))
+              @if ($inscricao->selecao->estado != 'Aguardando Início das Inscrições')
                 @include('inscricoes.show.card-principal', [    {{-- Principal --}}
                   'selecao' => $inscricao->selecao
                 ])

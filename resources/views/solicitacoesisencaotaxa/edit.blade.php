@@ -46,7 +46,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @if (in_array($solicitacaoisencaotaxa->selecao->estado, ['Período de Solicitações de Isenção de Taxa', 'Período de Inscrições', 'Encerrada']))
+              @if ($solicitacaoisencaotaxa->selecao->estado != 'Aguardando Início das Solicitações de Isenção de Taxa')
                 @include('solicitacoesisencaotaxa.show.card-principal', [    {{-- Principal --}}
                   'selecao' => $solicitacaoisencaotaxa->selecao
                 ])

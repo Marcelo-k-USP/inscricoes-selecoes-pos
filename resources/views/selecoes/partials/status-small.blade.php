@@ -1,4 +1,4 @@
-@if (in_array($selecao->estado, ['Em Elaboração', 'Aguardando Início']))
+@if (in_array($selecao->estado, ['Em Elaboração', 'Aguardando Início das Solicitações de Isenção de Taxa', 'Aguardando Início das Inscrições']))
   <span class="text-warning" data-toggle="tooltip" title="{{ $selecao->estado }}"> <i class="fas fa-circle"></i> </span>
 @elseif ($selecao->estado == 'Período de Solicitações de Isenção de Taxa')
   <span class="text-success" data-toggle="tooltip" title="{{ $selecao->estado }}"> <i class="fas fa-circle"></i> </span>
