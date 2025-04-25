@@ -77,12 +77,12 @@ class BoletoService
                 // retorna o conteúdo do PDF
                 return $obter['value'];
             } else {
-                config('app.debug') && Log::info('$gerar[\'value\']: ' . $gerar['value']);
+                Log::info('$gerar[\'value\']: ' . $gerar['value']);
                 return '';
             }
 
         } catch (Exception $e) {
-            config('app.debug') && Log::info($e->getMessage());
+            Log::info($e->getMessage());
             return '';
         }
     }

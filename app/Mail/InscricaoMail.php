@@ -52,7 +52,7 @@ class InscricaoMail extends Mailable
                         'nome' => $data_arquivo['nome'],
                         'conteudo' => $data_arquivo['conteudo'],
                         'erro' => (!empty($data_arquivo['conteudo']) ? '' : 'Ocorreu um erro na geração do boleto "' . $data_arquivo['nome'] . '".<br />' . PHP_EOL .
-                            'Por favor, entre em contato conosco em infor@ip.usp.br, informando-nos sobre esse problema.<br />' . PHP_EOL),
+                            'Por favor, entre em contato conosco em inforip@usp.br, informando-nos sobre esse problema.<br />' . PHP_EOL),
                     ];
                 break;
 
