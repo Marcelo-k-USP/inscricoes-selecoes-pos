@@ -103,10 +103,10 @@ class SelecaoController extends Controller
         $requestData['inscricoes_datahora_inicio'] = (is_null($requestData['inscricoes_data_inicio']) || is_null($requestData['inscricoes_hora_inicio']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoes_data_inicio'] . ' ' . $requestData['inscricoes_hora_inicio']));
         $requestData['inscricoes_datahora_fim'] = (is_null($requestData['inscricoes_data_fim']) || is_null($requestData['inscricoes_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoes_data_fim'] . ' ' . $requestData['inscricoes_hora_fim']));
         $requestData['boleto_valor'] = (is_null($requestData['boleto_valor']) ? null : str_replace(',', '.', $requestData['boleto_valor']));
-        $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento']));
+        $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento'])->endOfDay());
 
-        if (!$this->validateDates($requestData['solicitacoesisencaotaxa_datahora_inicio']?->toDateTime(), $requestData['solicitacoesisencaotaxa_datahora_fim']?->toDateTime(), $requestData['inscricoes_datahora_inicio']?->toDateTime(), $requestData['inscricoes_datahora_fim']?->toDateTime())) {
-            $request->session()->flash('alert-danger', 'Datas/horas de início e fim dos períodos estão inconsistentes');
+        if (!$this->validateDates($requestData['solicitacoesisencaotaxa_datahora_inicio']?->toDateTime(), $requestData['solicitacoesisencaotaxa_datahora_fim']?->toDateTime(), $requestData['inscricoes_datahora_inicio']?->toDateTime(), $requestData['inscricoes_datahora_fim']?->toDateTime(), $requestData['boleto_data_vencimento']?->toDateTime())) {
+            $request->session()->flash('alert-danger', 'Datas/horas de início e fim dos períodos e data de vencimento do boleto estão inconsistentes');
             \UspTheme::activeUrl('selecoes');
             return back()->withInput();
         }
@@ -188,9 +188,10 @@ class SelecaoController extends Controller
         $requestData['solicitacoesisencaotaxa_datahora_fim'] = (is_null($requestData['solicitacoesisencaotaxa_data_fim']) || is_null($requestData['solicitacoesisencaotaxa_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['solicitacoesisencaotaxa_data_fim'] . ' ' . $requestData['solicitacoesisencaotaxa_hora_fim']));
         $requestData['inscricoes_datahora_inicio'] = (is_null($requestData['inscricoes_data_inicio']) || is_null($requestData['inscricoes_hora_inicio']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoes_data_inicio'] . ' ' . $requestData['inscricoes_hora_inicio']));
         $requestData['inscricoes_datahora_fim'] = (is_null($requestData['inscricoes_data_fim']) || is_null($requestData['inscricoes_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoes_data_fim'] . ' ' . $requestData['inscricoes_hora_fim']));
+        $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento'])->endOfDay());
 
-        if (!$this->validateDates($requestData['solicitacoesisencaotaxa_datahora_inicio']?->toDateTime(), $requestData['solicitacoesisencaotaxa_datahora_fim']?->toDateTime(), $requestData['inscricoes_datahora_inicio']?->toDateTime(), $requestData['inscricoes_datahora_fim']?->toDateTime())) {
-            $request->session()->flash('alert-danger', 'Datas/horas de início e fim dos períodos estão inconsistentes');
+        if (!$this->validateDates($requestData['solicitacoesisencaotaxa_datahora_inicio']?->toDateTime(), $requestData['solicitacoesisencaotaxa_datahora_fim']?->toDateTime(), $requestData['inscricoes_datahora_inicio']?->toDateTime(), $requestData['inscricoes_datahora_fim']?->toDateTime(), $requestData['boleto_data_vencimento']?->toDateTime())) {
+            $request->session()->flash('alert-danger', 'Datas/horas de início e fim dos períodos e data de vencimento do boleto estão inconsistentes');
             \UspTheme::activeUrl('selecoes');
             return back()->withInput();
         }
@@ -237,14 +238,16 @@ class SelecaoController extends Controller
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
 
-    private function validateDates(?\DateTime $solicitacoesisencaotaxa_datahora_inicio, ?\DateTime $solicitacoesisencaotaxa_datahora_fim, \DateTime $inscricoes_datahora_inicio, \DateTime $inscricoes_datahora_fim)
+    private function validateDates(?\DateTime $solicitacoesisencaotaxa_datahora_inicio, ?\DateTime $solicitacoesisencaotaxa_datahora_fim, \DateTime $inscricoes_datahora_inicio, \DateTime $inscricoes_datahora_fim, \DateTime $boleto_data_vencimento)
     {
         if (!is_null($solicitacoesisencaotaxa_datahora_inicio) && !is_null($solicitacoesisencaotaxa_datahora_fim))
             return ($solicitacoesisencaotaxa_datahora_inicio < $solicitacoesisencaotaxa_datahora_fim) &&
                    ($solicitacoesisencaotaxa_datahora_fim < $inscricoes_datahora_inicio) &&
-                   ($inscricoes_datahora_inicio < $inscricoes_datahora_fim);
+                   ($inscricoes_datahora_inicio < $inscricoes_datahora_fim) &&
+                   ($inscricoes_datahora_fim < $boleto_data_vencimento);
         else
-            return ($inscricoes_datahora_inicio < $inscricoes_datahora_fim);
+            return ($inscricoes_datahora_inicio < $inscricoes_datahora_fim) &&
+                   ($inscricoes_datahora_fim < $boleto_data_vencimento);
     }
 
     private function updateField(SelecaoRequest $request, Selecao $selecao, string $field, string $field_name, string $genero)
