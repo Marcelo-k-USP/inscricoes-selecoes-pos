@@ -19,7 +19,7 @@
       </a>
     @endif
     @can('perfiladmin')
-      @if ($condicao_nao_iniciada)
+      @if (!in_array($selecao->estado, ['Período de Inscrições', 'Encerrada']))
         @include('selecoes.partials.btn-template-show-json-modal')
       @endif
     @endcan

@@ -704,7 +704,7 @@ class Selecao extends Model
      */
     public static function estados()
     {
-        return ['Em Elaboração', 'Aguardando Início', 'Período de Solicitações de Isenção de Taxa', 'Periodo de Inscrições', 'Encerrada'];
+        return ['Em Elaboração', 'Aguardando Início das Solicitações de Isenção de Taxa', 'Período de Solicitações de Isenção de Taxa', 'Aguardando Início das Inscrições', 'Periodo de Inscrições', 'Encerrada'];
     }
 
     /**
@@ -828,14 +828,14 @@ class Selecao extends Model
             $agora = Carbon::now();
             if ($this->tem_taxa) {
                 if ($agora < $this->solicitacoesisencaotaxa_datahora_inicio)
-                    $this->update(['estado' => 'Aguardando Início']);
+                    $this->update(['estado' => 'Aguardando Início das Solicitações de Isenção de Taxa']);
                 elseif (($this->solicitacoesisencaotaxa_datahora_inicio <= $agora) && ($agora <= $this->solicitacoesisencaotaxa_datahora_fim))
                     $this->update(['estado' => 'Período de Solicitações de Isenção de Taxa']);
                 elseif (($this->solicitacoesisencaotaxa_datahora_fim < $agora) && ($agora < $this->inscricoes_datahora_inicio))
-                    $this->update(['estado' => 'Aguardando Início']);
+                    $this->update(['estado' => 'Aguardando Início das Inscrições']);
             } else
                 if ($agora < $this->inscricoes_datahora_inicio)
-                    $this->update(['estado' => 'Aguardando Início']);
+                    $this->update(['estado' => 'Aguardando Início das Inscrições']);
 
             if (($this->inscricoes_datahora_inicio <= $agora) && ($agora <= $this->inscricoes_datahora_fim))
                 $this->update(['estado' => 'Período de Inscrições']);

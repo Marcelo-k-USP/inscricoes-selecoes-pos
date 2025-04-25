@@ -13,11 +13,14 @@
   <button class="btn btn-sm {{ ($selecao->estado == 'Em Elaboração') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Em Elaboração">
     Em Elaboração
   </button>
-  <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início">
-    Aguardando Início
+  <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Solicitações de Isenção de Taxa') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Solicitações de Isenção de Taxa">
+    Aguardando Início das Solicitações de Isenção de Taxa
   </button>
   <button class="btn btn-sm {{ ($selecao->estado == 'Período de Solicitações de Isenção de Taxa') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Solicitações de Isenção de Taxa">
     Período de Solicitações de Isenção de Taxa
+  </button>
+  <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Inscrições') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Inscrições">
+    Aguardando Início das Inscrições
   </button>
   <button class="btn btn-sm {{ ($selecao->estado == 'Período de Inscrições') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Inscrições">
     Período de Inscrições
