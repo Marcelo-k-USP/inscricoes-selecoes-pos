@@ -20,7 +20,7 @@
         <th>Categoria</th>
         <th>Programa</th>
         <th>Nome</th>
-        <th>Solicitações de Isenção<br />Início</th>
+        <th>Solicitações de Isenção de Taxa<br />Início</th>
         <th>Fim</th>
         <th>Inscrições<br />Início</th>
         <th>Fim</th>

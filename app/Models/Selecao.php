@@ -622,12 +622,12 @@ class Selecao extends Model
         ],
         [
             'name' => 'solicitacoesisencaotaxa_datahora_inicio',
-            'label' => 'Início das Solicitações de Isenção',
+            'label' => 'Início das Solicitações de Isenção de Taxa',
             'type' => 'datetime',
         ],
         [
             'name' => 'solicitacoesisencaotaxa_datahora_fim',
-            'label' => 'Fim das Solicitações de Isenção',
+            'label' => 'Fim das Solicitações de Isenção de Taxa',
             'type' => 'datetime',
         ],
         [

@@ -3,7 +3,7 @@
     {!! nl2br(linkify($solicitacaoisencaotaxa->selecao->settings()->get('instrucoes'))) !!}
     <br />
   @endif
-  As solicitações de isenção para este processo seletivo vão de {{ formatarDataHora($solicitacaoisencaotaxa->selecao->solicitacoesisencaotaxa_datahora_inicio) }} até {{ formatarDataHora($solicitacaoisencaotaxa->selecao->solicitacoesisencaotaxa_datahora_fim) }}
+  As solicitações de isenção de taxa para este processo seletivo vão de {{ formatarDataHora($solicitacaoisencaotaxa->selecao->solicitacoesisencaotaxa_datahora_inicio) }} até {{ formatarDataHora($solicitacaoisencaotaxa->selecao->solicitacoesisencaotaxa_datahora_fim) }}
   <button type="button" class="close" data-toggle="collapse" data-target="#instrucoes">
     <span aria-hidden="true">&times;</span>
   </button>
