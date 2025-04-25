@@ -11,6 +11,7 @@ use App\Models\LinhaPesquisa;
 use App\Models\LocalUser;
 use App\Models\Nivel;
 use App\Models\Orientador;
+use App\Models\Parametro;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
@@ -196,6 +197,8 @@ class InscricaoController extends Controller
     {
         \UspTheme::activeUrl('inscricoes');
 
+        $email_secaoinformatica = Parametro::first()->email_secaoinformatica;
+
         if ($request->input('acao', null) == 'envio') {
             $this->authorize('inscricoes.update', $inscricao);
 
@@ -221,7 +224,7 @@ class InscricaoController extends Controller
                                 'conteudo' => $this->boletoService->gerarBoleto($inscricao),
                             ]];
                             \Mail::to($user->email)
-                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
+                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos', 'email_secaoinformatica')));
 
                             $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
                             $inscricao->save();
@@ -237,7 +240,7 @@ class InscricaoController extends Controller
                                     'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
                                 ];
                             \Mail::to($user->email)
-                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos')));
+                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos', 'email_secaoinformatica')));
 
                             $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foram gerados mais arquivos (boletos) para ela
                             $inscricao->save();

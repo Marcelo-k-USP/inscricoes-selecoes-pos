@@ -14,6 +14,7 @@ class Parametro extends Model
         'boleto_codigo_fonte_recurso',
         'boleto_estrutura_hierarquica',
         'email_servicoposgraduacao',
+        'email_secaoinformatica',
     ];
 
     // uso no crud generico
@@ -30,6 +31,10 @@ class Parametro extends Model
         [
             'name' => 'email_servicoposgraduacao',
             'label' => 'E-mail do Serviço de Pós-Graduação',
+        ],
+        [
+            'name' => 'email_secaoinformatica',
+            'label' => 'E-mail da Seção de Informática',
         ],
     ];
 
