@@ -156,7 +156,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $this->authorize('solicitacoesisencaotaxa.view', $solicitacaoisencaotaxa);    // este 1o passo da edição é somente um show, não chega a haver um update
 
         \UspTheme::activeUrl('solicitacoesisencaotaxa');
-        AtualizaStatusSelecoes::dispatch()->onConnection('sync');
+        $solicitacaoisencaotaxa->selecao->atualizarStatus();
         return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
     }
 

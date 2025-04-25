@@ -181,7 +181,7 @@ class InscricaoController extends Controller
         $this->authorize('inscricoes.view', $inscricao);    // este 1o passo da edição é somente um show, não chega a haver um update
 
         \UspTheme::activeUrl('inscricoes');
-        AtualizaStatusSelecoes::dispatch()->onConnection('sync');
+        $inscricao->selecao->atualizarStatus();
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
