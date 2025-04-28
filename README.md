@@ -75,6 +75,9 @@ Se for aluno especial:
 7) o serviço de pós-graduação coloca a inscrição em avaliação e depois a aprova ou rejeita;
 8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
 
+Todo e qualquer e-mail enviado pelo sistema é copiado (em cópia oculta) para o e-mail de envio do sistema, definido no .env.
+Desta forma, temos um histórico de todos os e-mails enviados pelo sistema, embora na caixa de entrada ao invés de na caixa de enviados.
+
 ## Changelog
 
 Veja o [histórico de atualizações](docs/changelog.md).
