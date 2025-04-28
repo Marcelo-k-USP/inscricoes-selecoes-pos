@@ -51,23 +51,23 @@ Caso o candidato reenvie sua inscrição, será(ão) gerado(s) novo(s) boleto(s)
 E-mails são disparados quando do envio de solicitações de isenção de taxa e inscrições, bem como de mudança de seus estados por parte dos gerentes (por exemplo, colocando em análise, aprovando, ou rejeitando).
 Para verificar todos os envios de e-mail que o sistema realiza, basta verificar o método update dos controllers de solicitação de isenção de taxa e de inscrição. Além disso, há também os envios de e-mail para controle de usuário (esqueceu sua senha e cadastro de novo usuário externo).
 
-O fluxo de uma solicitação de isenção de taxa é o seguinte:
+### Fluxo de solicitação de isenção de taxa
 1) o candidato envia a solicitação;
 2) um e-mail é enviado ao serviço de pós-graduação para avaliar a solicitação;
 3) o serviço de pós-graduação coloca a solicitação em avaliação e depois a aprova ou rejeita;
 4) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da solicitação.
 
-O fluxo de uma inscrição é o seguinte:
+### Fluxo de inscrição
 1) o candidato envia a inscrição;
 2) um e-mail é enviado ao candidato com o(s) eventual(is) boleto(s) da taxa de inscrição a pagar;
-Se for aluno regular:
+### Se for aluno regular:
 3) um e-mail é enviado à secretaria do programa e aos coordenadores do programa para pré-avaliar a inscrição;
 4) a secretaria do programa ou os coordenadores do programa colocam a inscrição em pré-avaliação e depois a pré-aprovam ou pré-rejeitam;
 5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o link de acompanhamento no site da unidade, na seção do programa correspondente;
 6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
 7) a secretaria do programa coloca a inscrição em avaliação e depois a aprova ou rejeita;
 8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
-Se for aluno especial:
+### Se for aluno especial:
 3) se for aluno especial, um e-mail é enviado ao serviço de pós-graduação para pré-avaliar a inscrição;
 4) o serviço de pós-graduação coloca a inscrição em pré-avaliação e depois a pré-aprova ou pré-rejeita;
 5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o link de acompanhamento no site da unidade, na seção de alunos especiais;
