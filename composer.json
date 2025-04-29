@@ -1,5 +1,5 @@
 {
-    "name": "ipuspdev/inscricoes-selecoes-pos",
+    "name": "uspdev/inscricoes-selecoes-pos",
     "type": "project",
     "description": "Inscrições para Seleções Pós",
     "authors": [
@@ -10,7 +10,7 @@
         }
     ],
     "keywords": [
-        "ipuspdev",
+        "uspdev",
         "inscricoes-selecoes-pos"
     ],
     "license": "MIT",
