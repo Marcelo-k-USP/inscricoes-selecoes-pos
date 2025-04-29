@@ -208,12 +208,12 @@ Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/super
     autorestart=unexpected
     startretries=3
     stopsignal=QUIT
-    stderr_logfile=/var/www/html/chamados/storage/logs/inscricoes_selecoes_pos_queue_worker_default.log
+    stderr_logfile=/var/www/html/inscricoes-selecoes-pos/storage/logs/inscricoes_selecoes_pos_queue_worker_default.log
 
 Ajustes necessários:
 
     command=<ajuste o caminho da aplicação>
-    username=<nome do usuário do processo do chamados>
+    username=<nome do usuário do processo do inscricoes-selecoes-pos>
     stderr_logfile = <aplicacao>/storage/logs/<seu arquivo de log>
 
 Reinicie o **Supervisor**
@@ -286,8 +286,6 @@ Para limpar e recriar todo o DB, rode sempre que necessário:
 ## Detalhamento técnico
 
 Foram utilizados vários recursos do laravel que podem não ser muito trivial para todos.
-
--   O monitoramento de novos chamados ou novas mensagens nos chamados é feito usando _observers_ (https://laravel.com/docs/8.x/eloquent#observers)
 
 -   As jobs agendadas e os e-mails a enviar são colocados em filas; para isso, precisamos utilizar em produção o supervisor e em desenvolvimento o comando php artisan queue:listen; no arquivo .env configuramos QUEUE_CONNECTION=database para que todas as jobs agendadas sejam gravados na tabela jobs do banco de dados; por outro lado, as jobs em que usamos dispatch()->onConnection('sync') são executadas imediatamente; em desenvolvimento, ao executar o comando php artisan queue:listen, todas as jobs atrasadas presentes na tabela jobs do banco de dados são executadas imediatamente, e as jobs programadas para o futuro serão executadas na data e hora programadas.
 
