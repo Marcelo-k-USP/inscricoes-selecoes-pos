@@ -59,7 +59,7 @@
           @if ($objeto->arquivos->where('pivot.tipo', $tipoarquivo['nome'])->count() > 0)
             <ul class="list-unstyled">
               @foreach ($objeto->arquivos->where('pivot.tipo', $tipoarquivo['nome']) as $arquivo)
-                @if (preg_match('/pdf/i', $arquivo->mimeType))
+                @if (preg_match('/^(application\/pdf|image\/png|image\/jpeg)$/i', $arquivo->mimeType))
                   <li class="modo-visualizacao">
                     @if (Gate::allows($classe_nome_plural . '.updateArquivos', $objeto) && $editavel)
                       <div class="arquivo-acoes d-inline-block">
