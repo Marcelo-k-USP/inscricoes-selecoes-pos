@@ -23,7 +23,7 @@
         @if ($selecao->arquivos->where('pivot.tipo', $tipoarquivo['nome'])->count() > 0)
           <ul class="list-unstyled">
             @foreach ($selecao->arquivos->where('pivot.tipo', $tipoarquivo['nome']) as $arquivo)
-              @if (preg_match('/pdf/i', $arquivo->mimeType))
+              @if (preg_match('/^(application\/pdf|image\/png|image\/jpeg)$/i', $arquivo->mimeType))
                 <li class="modo-visualizacao">
                   <a href="arquivos/{{ $arquivo->id }}" title="{{ $arquivo->nome_original }}" class="nome-arquivo-display"><i class="fas fa-file-pdf"></i>
                     <span>{{ $arquivo->nome_original }}</span>
