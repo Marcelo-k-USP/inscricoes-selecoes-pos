@@ -18,6 +18,7 @@ use App\Models\TipoArquivo;
 use App\Models\User;
 use App\Utils\JSONForms;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -238,8 +239,10 @@ class SelecaoController extends Controller
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
 
-    private function validateDates(?\DateTime $solicitacoesisencaotaxa_datahora_inicio, ?\DateTime $solicitacoesisencaotaxa_datahora_fim, \DateTime $inscricoes_datahora_inicio, \DateTime $inscricoes_datahora_fim, \DateTime $boleto_data_vencimento)
+    private function validateDates(?\DateTime $solicitacoesisencaotaxa_datahora_inicio, ?\DateTime $solicitacoesisencaotaxa_datahora_fim, \DateTime $inscricoes_datahora_inicio, \DateTime $inscricoes_datahora_fim, ?\DateTime $boleto_data_vencimento)
     {
+        $boleto_data_vencimento = $boleto_data_vencimento ?? CarbonImmutable::endOfTime();
+
         if (!is_null($solicitacoesisencaotaxa_datahora_inicio) && !is_null($solicitacoesisencaotaxa_datahora_fim))
             return ($solicitacoesisencaotaxa_datahora_inicio < $solicitacoesisencaotaxa_datahora_fim) &&
                    ($solicitacoesisencaotaxa_datahora_fim < $inscricoes_datahora_inicio) &&
