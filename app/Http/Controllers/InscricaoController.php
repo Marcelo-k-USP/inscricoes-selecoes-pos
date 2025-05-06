@@ -165,7 +165,7 @@ class InscricaoController extends Controller
             ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
 
         $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua inscrição<br />' .
-            'Sem eles, sua inscrição não será efetivada!');
+            'Sem eles, sua inscrição não será avaliada!');
         \UspTheme::activeUrl('inscricoes/create');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'arquivos'));
     }

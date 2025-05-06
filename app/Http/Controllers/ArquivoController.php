@@ -119,7 +119,7 @@ class ArquivoController extends Controller
                 $classe_nome_formatada = $this->obterClasseNomeFormatada($classe_nome);
                 $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso<br />' .
                     'Se não houver mais arquivos a enviar, clique no botão "Enviar ' . ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'Solicitação' : 'Inscrição') . '" abaixo para efetivar sua ' . $classe_nome_formatada . '<br />' .
-                    'Sem isso, sua ' . $classe_nome_formatada . ' não será ' . ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'avaliada' : 'efetivada') . '!');
+                    'Sem isso, sua ' . $classe_nome_formatada . ' não será avaliada!');
             }
 
             return $objeto;
