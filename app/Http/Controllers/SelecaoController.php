@@ -676,7 +676,7 @@ class SelecaoController extends Controller
             $i['programa'] = $solicitacaoisencaotaxa->selecao->programa?->nome ?? 'N/A';
             $i['selecao'] = $solicitacaoisencaotaxa->selecao->nome;
             $i['motivo_isencao_taxa'] = MotivoIsencaoTaxa::where('id', $extras['motivo_isencao_taxa'])->first()->nome;
-            $autor = $solicitacaoisencaotaxa->users()->wherePivot('papel', 'Autor')->first();
+            $autor = $solicitacaoisencaotaxa->pessoas('Autor');
             $i['autor'] = $autor ? $autor->name : '';
             foreach ($keys as $field)
                 if (in_array($field, ['nome', 'tipo_de_documento', 'numero_do_documento', 'cpf', 'e_mail']))    // somente estes campos do formulário da seleção são utilizados na solicitação de isenção de taxa
@@ -719,8 +719,8 @@ class SelecaoController extends Controller
             $extras = json_decode($inscricao->extras, true) ?? [];
             $i['programa'] = $inscricao->selecao->programa?->nome ?? 'N/A';
             $i['selecao'] = $inscricao->selecao->nome;
-            $i['linha_pesquisa'] = LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome;
-            $autor = $inscricao->users()->wherePivot('papel', 'Autor')->first();
+            $i['linha_pesquisa'] = isset($extras['linha_pesquisa']) ? LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome : '';
+            $autor = $inscricao->pessoas('Autor');
             $i['autor'] = $autor ? $autor->name : '';
             foreach ($keys as $field)
                 $i[$field] = isset($extras[$field]) ? $extras[$field] : '';
