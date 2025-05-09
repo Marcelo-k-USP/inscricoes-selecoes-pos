@@ -288,25 +288,31 @@ class LocalUserController extends Controller
         if ($validator->fails())
             return $this->processa_erro_store(json_decode($validator->errors())->password, $request);
 
-        $localuser = User::create([
-            'name' => $request->name,
-            'telefone' => $request->telefone,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'local' => '1',
-        ]);
-        $localuser->givePermissionTo('user');
-
-        // gera um token e o armazena no banco de dados
         $token = Str::random(60);
-        DB::table('email_confirmations')->updateOrInsert(
-            ['email' => $localuser->email],    // procura por registro com este e-mail
-            [                                  // atualiza ou insere com os dados abaixo
-                'email' => $localuser->email,
-                'token' => Hash::make($token),
-                'created_at' => now()
-            ]
-        );
+
+        // transaction para não ter problema de inconsistência do DB
+        $localuser = DB::transaction(function () use ($request, $token) {
+
+            $localuser = User::create([
+                'name' => $request->name,
+                'telefone' => $request->telefone,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'local' => '1',
+            ]);
+            $localuser->givePermissionTo('user');
+
+            DB::table('email_confirmations')->updateOrInsert(
+                ['email' => $localuser->email],    // procura por registro com este e-mail
+                [                                  // atualiza ou insere com os dados abaixo
+                    'email' => $localuser->email,
+                    'token' => Hash::make($token),
+                    'created_at' => now()
+                ]
+            );
+
+            return $localuser;
+        });
 
         // envia e-mail pedindo a confirmação do endereço de e-mail
         $passo = 'confirmação de e-mail';

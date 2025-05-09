@@ -4,20 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InscricaoRequest;
 use App\Jobs\AtualizaStatusSelecoes;
-use App\Mail\InscricaoMail;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\LocalUser;
 use App\Models\Nivel;
 use App\Models\Orientador;
-use App\Models\Parametro;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\TipoArquivo;
 use App\Models\User;
-use App\Services\BoletoService;
 use App\Utils\JSONForms;
 use Hash;
 use Illuminate\Http\Request;
@@ -28,12 +25,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Uspdev\Replicado\Pessoa;
 
 class InscricaoController extends Controller
 {
-    protected $boletoService;
-
     // crud generico
     public static $data = [
         'title' => 'Inscrições',
@@ -45,14 +39,13 @@ class InscricaoController extends Controller
         'model' => 'App\Models\Inscricao',
     ];
 
-    public function __construct(BoletoService $boletoService)
+    public function __construct()
     {
         $this->middleware('auth')->except([
             'listaSelecoesParaNovaInscricao',
             'create',
             'store'
         ]);    // exige que o usuário esteja logado, exceto para estes métodos listados
-        $this->boletoService = $boletoService;
     }
 
     /**
@@ -159,10 +152,8 @@ class InscricaoController extends Controller
             return $inscricao;
         });
 
-        // envia e-mail avisando o candidato da necessidade de enviar os arquivos e enviar a própria inscrição
-        $passo = 'início';
-        \Mail::to($user->email)
-            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
+        // agora sim vamos disparar o evento (necessário porque acima salvamos com saveQuietly)
+        event('eloquent.created: App\Models\Inscricao', $inscricao);
 
         $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua inscrição<br />' .
             'Sem eles, sua inscrição não será avaliada!');
@@ -197,8 +188,6 @@ class InscricaoController extends Controller
     {
         \UspTheme::activeUrl('inscricoes');
 
-        $email_secaoinformatica = Parametro::first()->email_secaoinformatica;
-
         if ($request->input('acao', null) == 'envio') {
             $this->authorize('inscricoes.update', $inscricao);
 
@@ -215,60 +204,11 @@ class InscricaoController extends Controller
                     $user = \Auth::user();
                     if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
 
-                        $passo = 'boleto(s)';
-                        $papel = 'Candidato';
-                        if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
-                            // envia e-mail para o candidato com o boleto
-                            $arquivos = [[
-                                'nome' => 'boleto.pdf',
-                                'conteudo' => $this->boletoService->gerarBoleto($inscricao),
-                            ]];
-                            \Mail::to($user->email)
-                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos', 'email_secaoinformatica')));
+                        $inscricao->load('arquivos');    // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
+                        $inscricao->save();
 
-                            $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
-                            $inscricao->save();
-
-                            $info_adicional = ' e seu boleto foi enviado, não deixe de pagá-lo';
-                        } else {
-                            // envia e-mail para o candidato com o(s) boleto(s)
-                            $arquivos = [];
-                            $disciplinas = Disciplina::whereIn('id', array_values($disciplinas_id))->get();
-                            foreach ($disciplinas as $disciplina)
-                                $arquivos[] = [
-                                    'nome' => 'boleto_' . strtolower($disciplina->sigla) . '.pdf',
-                                    'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
-                                ];
-                            \Mail::to($user->email)
-                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'papel', 'arquivos', 'email_secaoinformatica')));
-
-                            $inscricao->load('arquivos');         // atualiza a relação de arquivos da inscrição, pois foram gerados mais arquivos (boletos) para ela
-                            $inscricao->save();
-
-                            $info_adicional = ((count($disciplinas) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los');
-                        }
+                        $info_adicional = ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ((count($disciplinas_id) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los'));
                     }
-
-                    $passo = 'realização';
-                    if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
-                        // envia e-mail avisando a secretaria do programa da seleção da inscrição sobre a realização da inscrição
-                        $responsavel_nome = 'Prezados(as) Srs(as). da Secretaria do Programa ' . $inscricao->selecao->programa->nome;
-                        \Mail::to($inscricao->selecao->programa->email_secretaria)
-                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
-
-                        // envia e-mails avisando os coordenadores do programa da seleção da inscrição sobre a realização da inscrição
-                        foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Coordenadores do Programa')['users'] as $coordenador) {
-                            $responsavel_nome = 'Prezado(a) Sr(a). ' . Pessoa::obterNome($coordenador->codpes);
-                            \Mail::to($coordenador->email)
-                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
-                        }
-                    } else
-                        // envia e-mails avisando o serviço de pós-graduação sobre a realização da inscrição
-                        foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
-                            $responsavel_nome = 'Prezado(a) Sr.(a) ' . Pessoa::obterNome($servicoposgraduacao->codpes);
-                            \Mail::to($servicoposgraduacao->email)
-                                ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
-                        }
 
                     $request->session()->flash('alert-success', 'Sua inscrição foi enviada' . $info_adicional);
                     return view('inscricoes.index', $this->monta_compact_index());
@@ -285,40 +225,8 @@ class InscricaoController extends Controller
         if ($request->conjunto_alterado == 'estado') {
             $this->authorize('inscricoes.updateStatus', $inscricao);
 
-            // transaction para não ter problema de inconsistência do DB
-            $inscricao = DB::transaction(function () use ($request, $inscricao) {
-
-                $inscricao->estado = $request->estado;
-                $inscricao->save();
-
-                $user = $inscricao->users()->wherePivot('papel', 'Autor')->first();
-
-                switch ($inscricao->estado) {
-                    case 'Pré-Aprovada':
-                        // envia e-mail avisando o candidato da pré-aprovação da inscrição
-                        $passo = 'pré-aprovação';
-                        $link_acompanhamento = (($inscricao->selecao->categoria->nome == 'Aluno Especial') ? Parametro::first()->link_acompanhamento_especiais : $inscricao->selecao->programa->link_acompanhamento);
-                        \Mail::to($user->email)
-                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'link_acompanhamento')));
-                        break;
-
-                    case 'Pré-Rejeitada':
-                        // envia e-mail avisando o candidato da pré-rejeição da inscrição
-                        $passo = 'pré-rejeição';
-                        \Mail::to($user->email)
-                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
-                        break;
-
-                    case 'Aprovada':
-                    case 'Rejeitada':
-                        // envia e-mail avisando o candidato da aprovação/rejeição da inscrição
-                        $passo = (($inscricao->estado == 'Aprovada') ? 'aprovação' : 'rejeição');
-                        \Mail::to($user->email)
-                            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
-                }
-
-                return $inscricao;
-            });
+            $inscricao->estado = $request->estado;
+            $inscricao->save();
 
             $request->session()->flash('alert-success', 'Estado da inscrição alterado com sucesso');
 
