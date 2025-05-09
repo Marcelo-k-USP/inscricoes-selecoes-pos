@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\SolicitacaoIsencaoTaxaObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,16 @@ class SolicitacaoIsencaoTaxa extends Model
             'data' => [],
         ],
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        SolicitacaoIsencaoTaxa::observe(SolicitacaoIsencaoTaxaObserver::class);
+    }
 
     // uso no crud generico
     public static function getFields()

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\SelecaoMail;
 use App\Models\Arquivo;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
@@ -91,26 +90,12 @@ class ArquivoController extends Controller
                 $arquivo->caminho = $arq->store('./arquivos/' . $objeto->created_at->year);
                 $arquivo->mimeType = $arq->getClientMimeType();
                 $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipoarquivo)->first()->id;
-                $arquivo->save();
+                $arquivo->saveQuietly();    // vamos salvar sem evento pois a classe ainda não está cadastrada
 
                 $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipoarquivo]);
             }
 
             if ($classe_nome == 'Selecao') {
-                $tipoarquivo = $request->tipoarquivo;
-                if (in_array($tipoarquivo, ['Errata', 'Lista de Inscritos'])) {
-                    // envia e-mail para os candidatos avisando de novos documentos dos tipos Errata ou Lista de Inscritos na seleção
-                    $passo = 'novo(s) informativo(s)';
-                    $selecao = $objeto;
-                    foreach ($selecao->inscricoes->map(function ($inscricao) { return json_decode($inscricao->extras, true); })
-                        ->merge($selecao->solicitacoesisencaotaxa->map(function ($solicitacao) { return json_decode($solicitacao->extras, true); }))
-                        ->unique('e_mail') as $candidato) {
-                        $candidatonome = $candidato['nome'];
-                        \Mail::to($candidato['e_mail'])
-                            ->queue(new SelecaoMail(compact('passo', 'selecao', 'candidatonome', 'tipoarquivo')));
-                    }
-                }
-
                 $objeto->atualizarStatus();
                 $objeto->estado = Selecao::where('id', $objeto->id)->value('estado');
 
@@ -122,11 +107,14 @@ class ArquivoController extends Controller
                     'Sem isso, sua ' . $classe_nome_formatada . ' não será avaliada!');
             }
 
-            return $objeto;
+            return ['objeto' => $objeto, 'arquivo' => $arquivo];    // basta retornar somente o último arquivo... desta forma, o evento created logo abaixo será disparado apenas uma vez
         });
 
+        // agora sim vamos disparar o evento (necessário porque acima salvamos com saveQuietly)
+        event('eloquent.created: App\Models\Arquivo', $db_transaction['arquivo']);
+
         \UspTheme::activeUrl($classe_nome_plural);
-        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
+        return view($classe_nome_plural . '.edit', $this->monta_compact($db_transaction['objeto'], $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
     }
 
     /**

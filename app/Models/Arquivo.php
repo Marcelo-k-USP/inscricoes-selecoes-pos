@@ -2,12 +2,23 @@
 
 namespace App\Models;
 
+use App\Observers\ArquivoObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Arquivo extends Model
 {
     use HasFactory;
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        Arquivo::observe(ArquivoObserver::class);
+    }
 
     /**
      * relacionamento com seleção

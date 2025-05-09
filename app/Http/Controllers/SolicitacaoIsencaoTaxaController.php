@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SolicitacaoIsencaoTaxaRequest;
 use App\Jobs\AtualizaStatusSelecoes;
-use App\Mail\SolicitacaoIsencaoTaxaMail;
 use App\Models\LocalUser;
 use App\Models\MotivoIsencaoTaxa;
 use App\Models\Nivel;
-use App\Models\Parametro;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
@@ -132,10 +130,8 @@ class SolicitacaoIsencaoTaxaController extends Controller
             return $solicitacaoisencaotaxa;
         });
 
-        // envia e-mail avisando o candidato da necessidade de enviar os arquivos e enviar a própria solicitação de isenção de taxa
-        $passo = 'início';
-        \Mail::to($user->email)
-            ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user')));
+        // agora sim vamos disparar o evento (necessário porque acima salvamos com saveQuietly)
+        event('eloquent.created: App\Models\SolicitacaoIsencaoTaxa', $solicitacaoisencaotaxa);
 
         $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua solicitação<br />' .
             'Sem eles, sua solicitação não será avaliada!');
@@ -177,13 +173,6 @@ class SolicitacaoIsencaoTaxaController extends Controller
                 $solicitacaoisencaotaxa->estado = 'Isenção de Taxa Solicitada';
                 $solicitacaoisencaotaxa->save();
 
-                // envia e-mail avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
-                $passo = 'realização';
-                $user = \Auth::user();
-                $servicoposgraduacao_nome = 'Prezados(as) Srs(as). do Serviço de Pós-Graduação';
-                \Mail::to(Parametro::first()->email_servicoposgraduacao)
-                    ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user', 'servicoposgraduacao_nome')));
-
                 $request->session()->flash('alert-success', 'Sua solicitação de isenção de taxa foi enviada');
                 return view('solicitacoesisencaotaxa.index', $this->monta_compact_index());
 
@@ -202,13 +191,6 @@ class SolicitacaoIsencaoTaxaController extends Controller
                 $solicitacaoisencaotaxa->estado = $request->estado;
                 $solicitacaoisencaotaxa->save();
 
-                // envia e-mail avisando o candidato da aprovação/rejeição da solicitação de isenção de taxa
-                if (in_array($solicitacaoisencaotaxa->estado, ['Isenção de Taxa Aprovada', 'Isenção de Taxa Rejeitada'])) {
-                    $passo = (($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada') ? 'aprovação' : 'rejeição');
-                    $user = $solicitacaoisencaotaxa->users()->wherePivot('papel', 'Autor')->first();
-                    \Mail::to($user->email)
-                        ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user')));
-                }
                 return $solicitacaoisencaotaxa;
             });
 

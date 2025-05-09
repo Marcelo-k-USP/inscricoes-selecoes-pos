@@ -17,7 +17,6 @@ class InscricaoMail extends Mailable
     protected $user;
 
     // campos adicionais para boleto(s)
-    protected $papel;
     protected $arquivos;
 
     // campos adicionais para inscrição enviada
@@ -48,7 +47,6 @@ class InscricaoMail extends Mailable
                 break;
 
             case 'boleto(s)':
-                $this->papel = $data['papel'];
                 $this->arquivos = [];
                 foreach ($data['arquivos'] as $data_arquivo)
                     $this->arquivos[] = [
@@ -106,7 +104,6 @@ class InscricaoMail extends Mailable
                     ->with([
                         'inscricao' => $this->inscricao,
                         'user' => $this->user,
-                        'papel' => $this->papel,
                         'arquivos_count' => count($this->arquivos),
                         'arquivos_erro' => $arquivos_erro,
                     ]);

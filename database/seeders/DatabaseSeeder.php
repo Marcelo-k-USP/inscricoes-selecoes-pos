@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // desativando eventos no seeder
+        Arquivo::flushEventListeners();
         Inscricao::flushEventListeners();
+        SolicitacaoIsencaoTaxa::flushEventListeners();
 
         $this->call([
             PermissionSeeder::class,        // adiciona permissions
