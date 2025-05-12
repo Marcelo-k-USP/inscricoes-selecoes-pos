@@ -158,7 +158,7 @@ class InscricaoController extends Controller
         $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua inscrição<br />' .
             'Sem eles, sua inscrição não será avaliada!');
         \UspTheme::activeUrl('inscricoes/create');
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'arquivos'));
+        return redirect()->to(url('inscricoes/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'arquivos'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -174,7 +174,7 @@ class InscricaoController extends Controller
 
         \UspTheme::activeUrl('inscricoes');
         $inscricao->selecao->atualizarStatus();
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', session('scroll')));    // repassa scroll que eventualmente veio de redirect()->to(url(
     }
 
     /**
@@ -289,7 +289,7 @@ class InscricaoController extends Controller
         else
             $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa inscrição.');
         \UspTheme::activeUrl('inscricoes');
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
+        return redirect()->to(url('inscricoes/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'disciplinas'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**

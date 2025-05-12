@@ -146,7 +146,7 @@ class SelecaoController extends Controller
         $request->session()->flash('alert-success', 'Seleção cadastrada com sucesso<br />' .
             'Agora ' . (!$db_transaction['is_aluno_especial'] ? 'informe quais são as linhas de pesquisa e ' : '') . 'adicione os informativos relacionados ao processo');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -163,7 +163,7 @@ class SelecaoController extends Controller
         $selecao->atualizarStatus();
 
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
+        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', session('scroll')));    // repassa scroll que eventualmente veio de redirect()->to(url(
     }
 
     /**
@@ -278,7 +278,7 @@ class SelecaoController extends Controller
         $selecao->template = $newjson;
         $selecao->save();
         $request->session()->flash('alert-success', 'Template salvo com sucesso');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'formulario'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'formulario'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     public function createTemplate(Selecao $selecao)
@@ -332,7 +332,7 @@ class SelecaoController extends Controller
         $request->session()->flash('alert-success', 'Formulário salvo com sucesso');
         \UspTheme::activeUrl('selecoes');
         $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
-        return view('selecoes.template', compact('selecao', 'template'));
+        return redirect()->to(url('selecoes/' . $selecao->id . '/template'))->with(compact('selecao', 'template'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     public function createTemplateValue(Selecao $selecao, string $field)
@@ -381,7 +381,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'Lista salva com sucesso');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.templatevalue', compact('selecao', 'template', 'field'));
+        return redirect()->to(url('selecoes/' . $selecao->id . '/templatevalue/' . $field))->with(compact('selecao', 'template', 'field'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -415,7 +415,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-info', 'As combinações níveis com linhas de pesquisa/temas foram alteradas nessa seleção.');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -471,7 +471,7 @@ class SelecaoController extends Controller
         else
             $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa seleção.');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'disciplinas'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'disciplinas'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -527,7 +527,7 @@ class SelecaoController extends Controller
         else
             $request->session()->flash('alert-info', 'O motivo de isenção de taxa ' . $db_transaction['motivoisencaotaxa']->nome . ' já estava vinculado à essa seleção');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'motivosisencaotaxa'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'motivosisencaotaxa'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -578,7 +578,7 @@ class SelecaoController extends Controller
         else
             $request->session()->flash('alert-info', 'O tipo de documento ' . $db_transaction['tipoarquivo']->nome . ' já estava vinculado à essa seleção');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'tiposarquivosolicitacaoisencaotaxa'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'tiposarquivosolicitacaoisencaotaxa'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -629,7 +629,7 @@ class SelecaoController extends Controller
         else
             $request->session()->flash('alert-info', 'O tipo de documento ' . $db_transaction['tipoarquivo']->nome . ' já estava vinculado à essa seleção');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'tiposarquivoinscricao'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'tiposarquivoinscricao'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**

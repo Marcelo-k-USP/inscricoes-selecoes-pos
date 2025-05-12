@@ -137,7 +137,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
             'Sem eles, sua solicitação não será avaliada!');
 
         \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
-        return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit', 'arquivos'));
+        return redirect()->to(url('solicitacoesisencaotaxa/edit/' . $solicitacaoisencaotaxa->id))->with($this->monta_compact($solicitacaoisencaotaxa, 'edit', 'arquivos'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -153,7 +153,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
 
         \UspTheme::activeUrl('solicitacoesisencaotaxa');
         $solicitacaoisencaotaxa->selecao->atualizarStatus();
-        return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
+        return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit', session('scroll')));    // repassa scroll que eventualmente veio de redirect()->to(url(
     }
 
     /**

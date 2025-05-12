@@ -66,7 +66,7 @@ class MotivoIsencaoTaxaController extends Controller
 
         $request->session()->flash('alert-success', 'Dados adicionados com sucesso');
         \UspTheme::activeUrl('motivosisencaotaxa');
-        return view('motivosisencaotaxa.tree', $this->monta_compact_index());
+        return redirect()->route('motivosisencaotaxa.index')->with($this->monta_compact_index());    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**

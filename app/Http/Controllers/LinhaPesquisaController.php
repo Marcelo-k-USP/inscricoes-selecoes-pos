@@ -85,7 +85,7 @@ class LinhaPesquisaController extends Controller
 
         $request->session()->flash('alert-success', 'Linha de pesquisa/tema cadastrado com sucesso');
         \UspTheme::activeUrl('linhaspesquisa');
-        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
+        return redirect()->to(url('linhaspesquisa/edit/' . $linhapesquisa->id))->with($this->monta_compact($linhapesquisa, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -215,7 +215,7 @@ class LinhaPesquisaController extends Controller
         else
             $request->session()->flash('alert-info', 'O orientador ' . Orientador::obterNome($db_transaction['orientador']->codpes) . ' já estava vinculado à essa linha de pesquisa/tema');
         \UspTheme::activeUrl('linhaspesquisa');
-        return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
+        return redirect()->to(url('linhaspesquisa/edit/' . $linhapesquisa->id))->with($this->monta_compact($linhapesquisa, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
