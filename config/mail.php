@@ -114,4 +114,6 @@ return [
         ],
     ],
 
+    // se true, todo e-mail enviado será copiado para o endereço remetente do próprio sistema
+    'copiarRemetente' => env('MAIL_COPIAR_REMETENTE', false),
 ];
