@@ -90,7 +90,7 @@ class TipoArquivoController extends Controller
 
         $request->session()->flash('alert-success', 'Tipo de documento cadastrado com sucesso');
         \UspTheme::activeUrl('tiposarquivo');
-        return view('tiposarquivo.edit', $this->monta_compact($tipoarquivo, 'edit'));
+        return redirect()->to(url('tiposarquivo/edit/' . $tipoarquivo->id))->with($this->monta_compact($tipoarquivo, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -199,7 +199,7 @@ class TipoArquivoController extends Controller
         else
             $request->session()->flash('alert-info', 'A combinação nível ' . $db_transaction['nivelprograma']->nivel->nome . ' com o programa ' . $db_transaction['nivelprograma']->programa->nome . ' já estava vinculada a esse tipo de documento');
         \UspTheme::activeUrl('tiposarquivo');
-        return view('tiposarquivo.edit', $this->monta_compact($tipoarquivo, 'edit'));
+        return redirect()->to(url('tiposarquivo/edit/' . $tipoarquivo->id))->with($this->monta_compact($tipoarquivo, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**

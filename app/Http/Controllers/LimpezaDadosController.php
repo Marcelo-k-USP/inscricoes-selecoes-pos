@@ -38,6 +38,6 @@ class LimpezaDadosController extends Controller
 
         $request->session()->flash('alert-success', 'Operação realizada com sucesso');
         \UspTheme::activeUrl('limpezadados');
-        return view('limpezadados.form');
+        return redirect()->route('limpezadados.showForm');    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 }

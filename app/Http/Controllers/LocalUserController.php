@@ -110,7 +110,7 @@ class LocalUserController extends Controller
             ->queue(new LocalUserMail(compact('passo', 'localuser', 'password_reset_url')));
 
         request()->session()->flash('alert-success', 'Foi enviado um e-mail com instruções para você redefinir sua senha.');
-        return view('localusers.login');
+        return redirect()->route('localusers.login');    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     public function iniciaRedefinicaoSenha(string $token)
@@ -171,7 +171,7 @@ class LocalUserController extends Controller
         });
 
         request()->session()->flash('alert-success', 'Senha redefinida com sucesso');
-        return view('localusers.login');
+        return redirect()->route('localusers.login');    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     public function confirmaEmail(string $token)
@@ -322,7 +322,7 @@ class LocalUserController extends Controller
 
         if (session('perfil') == 'admin') {
             \UspTheme::activeUrl('localusers');
-            return view('localusers.index', $this->monta_compact('create'));
+            return redirect()->route('localusers.index')->with($this->monta_compact('create'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
 
         } else {
             $request->session()->flash('alert-success', 'Cadastro realizado com sucesso<br />' .

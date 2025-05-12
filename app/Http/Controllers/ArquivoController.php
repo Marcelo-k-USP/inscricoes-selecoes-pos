@@ -114,7 +114,7 @@ class ArquivoController extends Controller
         event('eloquent.created: App\Models\Arquivo', $db_transaction['arquivo']);
 
         \UspTheme::activeUrl($classe_nome_plural);
-        return view($classe_nome_plural . '.edit', $this->monta_compact($db_transaction['objeto'], $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
+        return redirect()->to(url($classe_nome_plural . '/edit/' . $db_transaction['objeto']->id))->with($this->monta_compact($db_transaction['objeto'], $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
