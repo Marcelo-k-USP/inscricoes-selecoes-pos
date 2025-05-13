@@ -7511,16 +7511,16 @@
         },
         {
             "name": "uspdev/laravel-tools",
-            "version": "1.4.6",
+            "version": "1.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/uspdev/laravel-tools.git",
-                "reference": "7bfbc0d821286187cb2cd94483a08a9e4ac539fe"
+                "reference": "da049e1ca8528c264ef34bc1d014169ce56602c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/uspdev/laravel-tools/zipball/7bfbc0d821286187cb2cd94483a08a9e4ac539fe",
-                "reference": "7bfbc0d821286187cb2cd94483a08a9e4ac539fe",
+                "url": "https://api.github.com/repos/uspdev/laravel-tools/zipball/da049e1ca8528c264ef34bc1d014169ce56602c7",
+                "reference": "da049e1ca8528c264ef34bc1d014169ce56602c7",
                 "shasum": ""
             },
             "require": {
@@ -7558,9 +7558,9 @@
             "description": "Coleção de ferramentas para incrementar o Laravel",
             "support": {
                 "issues": "https://github.com/uspdev/laravel-tools/issues",
-                "source": "https://github.com/uspdev/laravel-tools/tree/1.4.6"
+                "source": "https://github.com/uspdev/laravel-tools/tree/1.4.8"
             },
-            "time": "2024-10-24T20:06:52+00:00"
+            "time": "2025-05-07T16:32:01+00:00"
         },
         {
             "name": "uspdev/laravel-usp-theme",
@@ -10620,12 +10620,12 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }
