@@ -16,7 +16,7 @@ class InscricaoMail extends Mailable
     protected $inscricao;
     protected $user;
 
-    // campos adicionais para boleto(s)
+    // campos adicionais para boleto(s) e boleto(s) - quantidade de disciplinas alterada
     protected $arquivos;
 
     // campos adicionais para inscrição enviada
@@ -47,6 +47,7 @@ class InscricaoMail extends Mailable
                 break;
 
             case 'boleto(s)':
+            case 'boleto(s) - quantidade de disciplinas alterada':
                 $this->arquivos = [];
                 foreach ($data['arquivos'] as $data_arquivo)
                     $this->arquivos[] = [
@@ -94,13 +95,14 @@ class InscricaoMail extends Mailable
                     ]);
 
             case 'boleto(s)':
+            case 'boleto(s) - quantidade de disciplinas alterada':
                 $arquivos_erro = [];
                 foreach ($this->arquivos as $arquivo)
                     $arquivos_erro[] = $arquivo['erro'];
                 $mail = $this
                     ->subject('[' . config('app.name') . '] Inscrição Enviada')
                     ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.inscricao_enviodeboletos')
+                    ->view('emails.inscricao_enviodeboletos' . (($this->passo == 'boleto(s) - quantidade de disciplinas alterada') ? 'quantidadededisciplinasalterada' : ''))
                     ->with([
                         'inscricao' => $this->inscricao,
                         'user' => $this->user,
