@@ -1,0 +1,14 @@
+Olá {{ $user->name }},<br />
+<br />
+Você reenviou sua inscrição no processo seletivo {{ $inscricao->selecao->nome }}.<br />
+Pelo fato de você ter alterado a quantidade de disciplinas, o sistema gerou novo(s) boleto(s) para pagamento.<br />
+@if ($arquivos_count == 1)
+  Não deixe de pagar o boleto que segue em anexo.<br />
+@else
+  Não deixe de pagar o(s) boleto(s) que segue(m) em anexo.<br />
+@endif
+<br />
+@foreach ($arquivos_erro as $arquivo_erro)
+  {!! $arquivo_erro !!}<br />
+@endforeach
+@include('emails.rodape')

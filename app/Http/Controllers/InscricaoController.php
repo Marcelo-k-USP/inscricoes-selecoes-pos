@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InscricaoRequest;
 use App\Jobs\AtualizaStatusSelecoes;
+use App\Mail\InscricaoMail;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\LocalUser;
 use App\Models\Nivel;
 use App\Models\Orientador;
+use App\Models\Parametro;
 use App\Models\Programa;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\TipoArquivo;
 use App\Models\User;
+use App\Services\BoletoService;
 use App\Utils\JSONForms;
 use Hash;
 use Illuminate\Http\Request;
@@ -28,6 +31,8 @@ use Illuminate\Support\Str;
 
 class InscricaoController extends Controller
 {
+    protected $boletoService;
+
     // crud generico
     public static $data = [
         'title' => 'Inscrições',
@@ -39,13 +44,14 @@ class InscricaoController extends Controller
         'model' => 'App\Models\Inscricao',
     ];
 
-    public function __construct()
+    public function __construct(BoletoService $boletoService)
     {
         $this->middleware('auth')->except([
             'listaSelecoesParaNovaInscricao',
             'create',
             'store'
         ]);    // exige que o usuário esteja logado, exceto para estes métodos listados
+        $this->boletoService = $boletoService;
     }
 
     /**
@@ -204,8 +210,10 @@ class InscricaoController extends Controller
                     $user = \Auth::user();
                     if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
 
-                        $inscricao->load('arquivos');    // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela
+                        $inscricao->load('arquivos');    // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela no evento disparado pelo $inscricao->save() acima
                         $inscricao->save();
+
+                        $this->processa_quantidade_disciplinas_alterada($inscricao, $disciplinas_id);
 
                         $info_adicional = ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ((count($disciplinas_id) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los'));
                     }
@@ -243,6 +251,29 @@ class InscricaoController extends Controller
         }
 
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+    }
+
+    private function processa_quantidade_disciplinas_alterada(Inscricao $inscricao, $disciplinas_id)
+    {
+        if ($inscricao->selecao->categoria->nome == 'Aluno Especial') {
+            $quantidade_boletos_anterior = $inscricao->arquivos()->whereHas('tipoarquivo', function ($query) { $query->where('nome', 'Boleto(s) de Pagamento da Inscrição'); })->count();
+            if ($quantidade_boletos_anterior != count($disciplinas_id)) {
+
+                // se o candidato alterou a quantidade de disciplinas, vamos gerar novos boletos
+                foreach (Disciplina::whereIn('id', json_decode($inscricao->extras, true)['disciplinas'])->get() as $disciplina)
+                    $arquivos[] = [
+                        'nome' => 'boleto_' . strtolower($disciplina->sigla) . '.pdf',
+                        'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
+                    ];
+
+                // envia e-mail para o candidato com o(s) boleto(s)
+                $passo = 'boleto(s) - quantidade de disciplinas alterada';
+                $user = \Auth::user();
+                $email_secaoinformatica = Parametro::first()->email_secaoinformatica;
+                \Mail::to($user->email)
+                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'arquivos', 'email_secaoinformatica')));
+            }
+        }
     }
 
     /**
@@ -313,19 +344,6 @@ class InscricaoController extends Controller
         $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa inscrição.');
         \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
-    }
-
-    private function processa_erro_store(string|array $msgs, Selecao $selecao, Request $request)
-    {
-        if (is_array($msgs))
-            $msgs = implode('<br />', $msgs);
-        $request->session()->flash('alert-danger', $msgs);
-
-        \UspTheme::activeUrl('inscricoes/create');
-        $inscricao = new Inscricao;
-        $inscricao->selecao = $selecao;
-        $inscricao->extras = json_encode($request->extras);    // recarrega a mesma página com os dados que o usuário preencheu antes do submit... pois o {{ old }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old }} dentro do {!! $element !!} do inscricoes.show.card-principal
-        return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
     public function monta_compact_index()

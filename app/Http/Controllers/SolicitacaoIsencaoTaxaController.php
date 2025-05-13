@@ -209,19 +209,6 @@ class SolicitacaoIsencaoTaxaController extends Controller
         return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
     }
 
-    private function processa_erro_store(string|array $msgs, Selecao $selecao, Request $request)
-    {
-        if (is_array($msgs))
-            $msgs = implode('<br />', $msgs);
-        $request->session()->flash('alert-danger', $msgs);
-
-        \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
-        $solicitacaoisencaotaxa = new SolicitacaoIsencaoTaxa;
-        $solicitacaoisencaotaxa->selecao = $selecao;
-        $solicitacaoisencaotaxa->extras = json_encode($request->extras);    // recarrega a mesma página com os dados que o usuário preencheu antes do submit... pois o {{ old }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old }} dentro do {!! $element !!} do solicitacoesisencaotaxa.show.card-principal
-        return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'create'));
-    }
-
     public function monta_compact_index()
     {
         $data = self::$data;
