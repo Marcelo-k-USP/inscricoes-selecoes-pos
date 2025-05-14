@@ -23,7 +23,7 @@
               <div class="col-sm-8">
                 <select class="form-control" name="id" id="id_campo1">
                   @foreach ($tiposarquivo as $tipoarquivo)
-                    @if ($tipoarquivo->nome != 'Boleto(s) de Pagamento da Inscrição')
+                    @if (!in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']))
                       <option value='{{ $tipoarquivo->id }}'>{{ $tipoarquivo->nome }}</option>
                     @endif
                   @endforeach

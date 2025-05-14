@@ -15,7 +15,7 @@ use Uspdev\Boleto;
 
 class BoletoService
 {
-    public function gerarBoleto(Inscricao $inscricao, ?string $texto_adicional = null)
+    public function gerarBoleto(Inscricao $inscricao, ?string $disciplina_sigla = null)
     {
         $extras = json_decode($inscricao->extras, true);
         $cpf = ((strtolower($extras['tipo_de_documento']) == 'passaporte') ? '99999999999' : str_replace(['-', '.'], '', $extras['cpf']));
@@ -32,7 +32,7 @@ class BoletoService
             'cpfCnpj' => $cpf,
             'nomeSacado' => $extras['nome'],
             'codigoEmail' => $extras['e_mail'],
-            'informacoesBoletoSacado' => 'Inscrição para Seleção da Pós-Graduação - ' . $inscricao->selecao->nome . $texto_adicional,
+            'informacoesBoletoSacado' => 'Inscrição para Seleção da Pós-Graduação - ' . $inscricao->selecao->nome . (is_null($disciplina_sigla) ? '' : ' - Disciplina ' . $disciplina_sigla),
             'instrucoesObjetoCobranca' => 'Não receber após vencimento!',
         );
 
@@ -57,12 +57,15 @@ class BoletoService
                 // grava informações do arquivo no banco de dados
                 $arquivo = new Arquivo;
                 $arquivo->user_id = \Auth::user()->id;
-                $arquivo->nome_original = 'boleto_' . $inscricao->id . '_' . Carbon::now()->format('Ymd_His') . '.pdf';
+                $arquivo->nome_original = 'boleto_' . $inscricao->id . '_' . (is_null($disciplina_sigla) ? '' : strtolower($disciplina_sigla) . '_') . Carbon::now()->format('Ymd_His') . '.pdf';
                 $arquivo->caminho = $arquivo_caminho;
                 $arquivo->mimeType = 'application/pdf';
                 $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', 'Inscrições')->where('nome', 'Boleto(s) de Pagamento da Inscrição')->first()->id;
                 $arquivo->save();
-                $arquivo->inscricoes()->attach($inscricao->id, ['tipo' => 'Boleto(s) de Pagamento da Inscrição']);
+                $arquivo->inscricoes()->attach($inscricao->id, [
+                    'tipo' => 'Boleto(s) de Pagamento da Inscrição',
+                    'disciplina' => $disciplina_sigla
+                ]);
 
                 if (App::environment('local') || config('inscricoes-selecoes-pos.ws_boleto_cancelar')) {
 
@@ -75,15 +78,15 @@ class BoletoService
                 }
 
                 // retorna o conteúdo do PDF
-                return $obter['value'];
+                return ['nome' => $arquivo->nome_original, 'conteudo' => $obter['value']];
             } else {
                 Log::info('Erro ao gerar boleto... $gerar[\'value\']: ' . $gerar['value']);
-                return '';
+                return ['nome' => '', 'conteudo' => ''];
             }
 
         } catch (Exception $e) {
             Log::info('Erro ao gerar boleto... $e->getMessage(): ' . $e->getMessage());
-            return '';
+            return ['nome' => '', 'conteudo' => ''];
         }
     }
 }

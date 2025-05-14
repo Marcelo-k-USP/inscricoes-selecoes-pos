@@ -213,7 +213,7 @@ class InscricaoController extends Controller
                         $inscricao->load('arquivos');    // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela no evento disparado pelo $inscricao->save() acima
                         $inscricao->save();
 
-                        $this->processa_quantidade_disciplinas_alterada($inscricao, $disciplinas_id);
+                        $this->processa_disciplinas_alteradas($inscricao, $disciplinas_id);
 
                         $info_adicional = ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ((count($disciplinas_id) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los'));
                     }
@@ -253,21 +253,43 @@ class InscricaoController extends Controller
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
-    private function processa_quantidade_disciplinas_alterada(Inscricao $inscricao, $disciplinas_id)
+    private function processa_disciplinas_alteradas(Inscricao $inscricao, $disciplinas_id)
     {
         if ($inscricao->selecao->categoria->nome == 'Aluno Especial') {
-            $quantidade_boletos_anterior = $inscricao->arquivos()->whereHas('tipoarquivo', function ($query) { $query->where('nome', 'Boleto(s) de Pagamento da Inscrição'); })->count();
-            if ($quantidade_boletos_anterior != count($disciplinas_id)) {
 
-                // se o candidato alterou a quantidade de disciplinas, vamos gerar novos boletos
-                foreach (Disciplina::whereIn('id', json_decode($inscricao->extras, true)['disciplinas'])->get() as $disciplina)
-                    $arquivos[] = [
-                        'nome' => 'boleto_' . strtolower($disciplina->sigla) . '.pdf',
-                        'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
-                    ];
+            // transaction para não ter problema de inconsistência do DB
+            $arquivos = DB::transaction(function () use ($inscricao, $disciplinas_id) {
 
+                // obtém o conjunto de disciplinas do envio anterior
+                $disciplinas_sigla_anterior = $inscricao->arquivos()->whereHas('tipoarquivo', function ($query) { $query->where('nome', 'Boleto(s) de Pagamento da Inscrição'); })->pluck('disciplina')->toArray();
+                $disciplinas_id_anterior = Disciplina::whereIn('sigla', $disciplinas_sigla_anterior)->pluck('id')->toArray();
+
+                // marca como desinscritas as disciplinas das quais o candidato se desinscreveu
+                $tipoarquivo_boletodisciplinasdesinscritas = TipoArquivo::where('classe_nome', 'Inscrições')->where('nome', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas')->first();
+                foreach (array_diff($disciplinas_id_anterior, $disciplinas_id) as $disciplina_id_desinscrita) {
+                    $disciplina = Disciplina::find($disciplina_id_desinscrita);
+                    $arquivo = $inscricao->arquivos()->whereHas('tipoarquivo', function ($query) { $query->where('nome', 'Boleto(s) de Pagamento da Inscrição'); })->where('disciplina', $disciplina->sigla)->first();
+                    $inscricao->arquivos()->updateExistingPivot(
+                        $arquivo->id,                                                                   // estranhamente, o Laravel precisa que eu passe o arquivo_id aqui, mesmo que eu tenha começado este comando com $inscricao (ou seja, ele deveria saber qual é a inscrição)
+                        ['tipo' => 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']    // atualiza o tipo do arquivo para "Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas"
+                    );
+                    $arquivo->tipoarquivo_id = $tipoarquivo_boletodisciplinasdesinscritas->id;          // atualiza o tipo do arquivo para "Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas"
+                    $arquivo->save();
+                }
+
+                // gera boletos para as novas disciplinas deste reenvio
+                $arquivos = [];
+                foreach (array_diff($disciplinas_id, $disciplinas_id_anterior) as $disciplina_id_nova) {
+                    $disciplina = Disciplina::find($disciplina_id_nova);
+                    $arquivos[] = $this->boletoService->gerarBoleto($inscricao, $disciplina->sigla);
+                }
+
+                return $arquivos;
+            });
+
+            if (!empty($arquivos)) {
                 // envia e-mail para o candidato com o(s) boleto(s)
-                $passo = 'boleto(s) - quantidade de disciplinas alterada';
+                $passo = 'boleto(s) - disciplinas alteradas';
                 $user = \Auth::user();
                 $email_secaoinformatica = Parametro::first()->email_secaoinformatica;
                 \Mail::to($user->email)
@@ -308,7 +330,7 @@ class InscricaoController extends Controller
                 $inscricao->save();
 
                 // se já havia enviado a inscrição, avisa para reenviá-la
-                if ($inscricao->estado != 'Aguardando Envio')
+                if ($inscricao->estado == 'Enviada')
                     $info_adicional = '<br />Reenvie esta inscrição para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
             }
 
@@ -341,7 +363,12 @@ class InscricaoController extends Controller
             $inscricao->save();
         }
 
-        $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa inscrição.');
+        // se já havia enviado a inscrição, avisa para reenviá-la
+        $info_adicional = '';
+        if ($inscricao->estado == 'Enviada')
+            $info_adicional = '<br />Reenvie esta inscrição para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
+
+        $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa inscrição.' . $info_adicional);
         \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
     }
@@ -378,8 +405,8 @@ class InscricaoController extends Controller
         $disciplinas = Disciplina::listarDisciplinas($objeto->selecao);
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($objeto->selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), $objeto->selecao)
-            ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Boleto(s) de Pagamento da Inscrição') || $inscricao->selecao->tem_taxa; })
-            ->sortBy(function ($tipoarquivo) { return $tipoarquivo->nome === 'Boleto(s) de Pagamento da Inscrição' ? 1 : 0; });
+            ->filter(function ($tipoarquivo) use ($inscricao) { return (!in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas'])) || $inscricao->selecao->tem_taxa; })
+            ->sortBy(function ($tipoarquivo) { return in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']) ? 1 : 0; });
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id)
             ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $inscricao->selecao->tem_taxa; });
         $solicitacaoisencaotaxa_aprovada = $inscricao->pessoas('Autor')?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
