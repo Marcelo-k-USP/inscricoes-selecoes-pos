@@ -27,7 +27,7 @@ class BoletoService
             'codigoFonteRecurso' => $parametros->boleto_codigo_fonte_recurso,
             'estruturaHierarquica' => $parametros->boleto_estrutura_hierarquica,
             'dataVencimentoBoleto' => $inscricao->selecao->boleto_data_vencimento,
-            'valorDocumento' => 50.0,
+            'valorDocumento' => $inscricao->selecao->boleto_valor,
             'tipoSacado' => 'PF',
             'cpfCnpj' => $cpf,
             'nomeSacado' => $extras['nome'],
