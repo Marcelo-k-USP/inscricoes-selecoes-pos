@@ -23,7 +23,7 @@ class BoletoService
 
         $boleto = new Boleto(config('inscricoes-selecoes-pos.ws_boleto_usuario'), config('inscricoes-selecoes-pos.ws_boleto_senha'));
         $data = array(
-            'codigoUnidadeDespesa' => 47,
+            'codigoUnidadeDespesa' => getenv('REPLICADO_CODUNDCLG'),
             'codigoFonteRecurso' => $parametros->boleto_codigo_fonte_recurso,
             'estruturaHierarquica' => $parametros->boleto_estrutura_hierarquica,
             'dataVencimentoBoleto' => $inscricao->selecao->boleto_data_vencimento,
