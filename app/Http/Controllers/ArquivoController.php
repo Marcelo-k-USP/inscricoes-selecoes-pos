@@ -264,11 +264,11 @@ class ArquivoController extends Controller
                                 ->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $selecao->tem_taxa; })
                             ->merge(TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $selecao))
                             ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao)
-                                ->filter(function ($tipoarquivo) { return $tipoarquivo->nome !== 'Boleto(s) de Pagamento da Inscrição'; }))
-                                ->sortBy(function ($tipoarquivo) { return $tipoarquivo->nome === 'Boleto(s) de Pagamento da Inscrição' ? 1 : 0; });
+                                ->filter(function ($tipoarquivo) { return !in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']); }))
+                                ->sortBy(function ($tipoarquivo) { return in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']) ? 1 : 0; });
         } elseif ($classe_nome == 'Inscricao') {
-            $objeto->tiposarquivo = $objeto->tiposarquivo->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Boleto(s) de Pagamento da Inscrição') || $selecao->tem_taxa; })
-                                                         ->sortBy(function ($tipoarquivo) { return $tipoarquivo->nome === 'Boleto(s) de Pagamento da Inscrição' ? 1 : 0; });
+            $objeto->tiposarquivo = $objeto->tiposarquivo->filter(function ($tipoarquivo) use ($selecao) { return (!in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas'])) || $selecao->tem_taxa; })
+                                                         ->sortBy(function ($tipoarquivo) { return in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']) ? 1 : 0; });
             $tiposarquivo_selecao = $tiposarquivo_selecao->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $selecao->tem_taxa; });
         }
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);

@@ -31,7 +31,7 @@
       <td>
         <div>
           <a name="{{ \Str::lower($tipoarquivo->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $tipoarquivo->nome }}</a>
-          @if ($tipoarquivo->nome != 'Boleto(s) de Pagamento da Inscrição')
+          @if (!in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']))
             @can('tiposarquivo.update')
               @include('tiposarquivo.partials.btn-edit')
             @endcan

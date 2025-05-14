@@ -64,16 +64,10 @@ class InscricaoObserver
                     $arquivos = [];
                     $email_secaoinformatica = Parametro::first()->email_secaoinformatica;
                     if ($inscricao->selecao->categoria->nome !== 'Aluno Especial')
-                        $arquivos = [[
-                            'nome' => 'boleto.pdf',
-                            'conteudo' => $this->boletoService->gerarBoleto($inscricao),
-                        ]];
+                        $arquivos = [$this->boletoService->gerarBoleto($inscricao)];
                     else
                         foreach (Disciplina::whereIn('id', json_decode($inscricao->extras, true)['disciplinas'])->get() as $disciplina)
-                            $arquivos[] = [
-                                'nome' => 'boleto_' . strtolower($disciplina->sigla) . '.pdf',
-                                'conteudo' => $this->boletoService->gerarBoleto($inscricao, ' - disciplina ' . $disciplina->sigla),
-                            ];
+                            $arquivos[] = $this->boletoService->gerarBoleto($inscricao, $disciplina->sigla);
 
                     // envia e-mail para o candidato com o(s) boleto(s)
                     \Mail::to($user->email)

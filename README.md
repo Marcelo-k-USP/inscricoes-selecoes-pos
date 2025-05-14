@@ -46,10 +46,10 @@ Se houver cobrança de taxa de inscrição para a seleção em questão, então 
 No caso de aluno regular, é gerado um único boleto.
 No caso de aluno especial, é gerado um boleto para cada disciplina na qual ele se inscreveu, e enviado para o candidato um único e-mail com todos esses boletos anexados.
 Algumas informações necessárias para a geração de boletos se encontram na tabela parametros, que é editável pelos admins em tela.
-Caso um candidato reenvie sua inscrição, e seja para uma seleção de categoria aluno especial, e a quantidade de disciplinas para as quais ele está se inscrevendo foi alterada em relação ao envio anterior, os boletos são gerados novamente e reenviados.
+Caso um candidato reenvie sua inscrição, e seja para uma seleção de categoria aluno especial, e as disciplinas para as quais ele está se inscrevendo tenham sido alteradas em relação ao envio anterior, o sistema irá gerar e enviar boletos para as novas disciplinas, além de marcar como boletos referentes a disciplinas desinscritas aqueles boletos que haviam sido gerados anteriormente e para cujas disciplinas o candidato se desinscreveu nesse reenvio da inscrição.
 
 E-mails são disparados quando do envio de solicitações de isenção de taxa e inscrições, bem como de mudança de seus estados por parte dos gerentes (por exemplo, colocando em análise, aprovando, ou rejeitando).
-Para verificar todos os envios de e-mail que o sistema realiza, basta verificar o método update dos controllers de solicitação de isenção de taxa e de inscrição. Além disso, há também os envios de e-mail para controle de usuário (esqueceu sua senha e cadastro de novo usuário externo).
+Para verificar todos os envios de e-mail que o sistema realiza, basta verificar os observers e as chamadas ao método queue.
 
 ### Fluxo de solicitação de isenção de taxa
 1) o candidato envia a solicitação;
@@ -75,8 +75,8 @@ Para verificar todos os envios de e-mail que o sistema realiza, basta verificar 
 7) o serviço de pós-graduação coloca a inscrição em avaliação e depois a aprova ou rejeita;
 8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
 
-Todo e qualquer e-mail enviado pelo sistema é copiado (em cópia oculta) para o e-mail de envio do sistema, definido no .env.
-Desta forma, temos um histórico de todos os e-mails enviados pelo sistema, embora na caixa de entrada ao invés de na caixa de enviados.
+Todo e qualquer e-mail enviado pelo sistema pode ser copiado (em cópia oculta) para o e-mail de envio do sistema. O endereço de envio de e-mail do sistema está definido no .env, e também está no .env essa configuração de copiar para esse remetente ou não.
+Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema, embora na caixa de entrada ao invés de na caixa de enviados.
 
 ## Changelog
 

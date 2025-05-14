@@ -102,6 +102,12 @@ class TipoArquivoSeeder extends Seeder
                 'editavel' => false,
                 'obrigatorio' => false,
             ],
+            [
+                'classe_nome' => 'Inscrições',
+                'nome' => 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas',
+                'editavel' => false,
+                'obrigatorio' => false,
+            ],
         ];
 
         // adiciona registros na tabela tiposarquivo
@@ -123,6 +129,7 @@ class TipoArquivoSeeder extends Seeder
         $tipoarquivo_COMPROVACAODEPUBLICACAODEUMARTIGOEMREVISTACIENTIFICA = TipoArquivo::where('nome', 'Comprovação de Publicação de um Artigo em Revista Científica')->first();
         $tipoarquivo_COMPROVACAODEPUBLICACAODENOMINIMODOISARTIGOSEMREVISTACIENTIFICA = TipoArquivo::where('nome', 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica')->first();
         $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO = TipoArquivo::where('nome', 'Boleto(s) de Pagamento da Inscrição')->first();
+        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAODISCIPLINASDESINSCRITAS = TipoArquivo::where ('nome', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas')->first();
 
         // adiciona registros na tabela tipoarquivo_nivelprograma
         $nivelprograma_id_MESTRADONEUROCIENCIASECOMPORTAMENTONEC = NivelPrograma::whereHas('nivel', function ($query) { $query->where('nome', 'Mestrado'); })->whereHas('programa', function ($query) { $query->where('nome', 'Neurociências e Comportamento (NEC)'); })->first()->id;
@@ -282,5 +289,7 @@ class TipoArquivoSeeder extends Seeder
         $tipoarquivo_COMPROVACAODEPUBLICACAODEUMARTIGOEMREVISTACIENTIFICA->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
         $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
         $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAODISCIPLINASDESINSCRITAS->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAODISCIPLINASDESINSCRITAS->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
     }
 }
