@@ -281,7 +281,9 @@ Para limpar e recriar todo o DB, rode sempre que necessário:
 ## Histórico
 
 -   27/03/2025
-    -   versão 1.0
+    -   versão 1.0.0
+-   27/05/2025
+    -   versão 1.4.0 - atualizado de Laravel 11 para 12
 
 ## Detalhamento técnico
 
@@ -302,6 +304,6 @@ Foram utilizados vários recursos do laravel que podem não ser muito trivial pa
 passou a ser assim:
     {{ html()->form('post', 'inscricoes')->open() }}
 
-Foi atualizado para Laravel 12 em 27/05/2025.
+-   Este sistema foi atualizado para Laravel 12 em 27/05/2025; não foram necessárias alterações no código.
 
 -   Em sua versão inicial, os seeders contêm dados específicos para o IP-USP. Para migrar para outras unidades, pode-se desconsiderar esses seeders, ou modificá-los com os dados da unidade em questão (são os seguintes seeders: funções, programas, linhas de pesquisa/temas, disciplinas, etc.).
