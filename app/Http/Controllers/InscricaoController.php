@@ -219,13 +219,16 @@ class InscricaoController extends Controller
                     }
 
                     $request->session()->flash('alert-success', 'Sua inscrição foi enviada' . $info_adicional);
+                    \UspTheme::activeUrl('inscricoes');
                     return view('inscricoes.index', $this->monta_compact_index());
                 } else {
                     $request->session()->flash('alert-success', 'É necessário antes escolher a(s) disciplina(s)');
+                    \UspTheme::activeUrl('inscricoes');
                     return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
                 }
             } else {
                 $request->session()->flash('alert-success', 'É necessário antes enviar todos os documentos exigidos');
+                \UspTheme::activeUrl('inscricoes');
                 return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
             }
         }
@@ -250,6 +253,7 @@ class InscricaoController extends Controller
             $request->session()->flash('alert-success', 'Inscrição alterada com sucesso');
         }
 
+        \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
