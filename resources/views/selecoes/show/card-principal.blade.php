@@ -61,6 +61,10 @@
       updateCamposSolicitacoesIsencaoTaxaDataHora();
       updateCamposBoleto();
 
+      $('#fluxo_continuo').on('click', function () {
+        updateCamposBoleto();
+      });
+
       $('#tem_taxa').on('click', function () {
         updateCamposSolicitacoesIsencaoTaxaDataHora();
         updateCamposBoleto();
@@ -103,12 +107,22 @@
       if (!$('#tem_taxa').prop('checked')) {
         $('#boleto_data_vencimento').val('');
         $('#boleto_data_vencimento').parents('div').eq(1).hide();
+        $('#boleto_offset_vencimento').val('');
+        $('#boleto_offset_vencimento').parents('div').eq(1).hide();
         $('#boleto_valor').val('');
         $('#boleto_valor').parents('div').eq(1).hide();
         $('#boleto_texto').val('');
         $('#boleto_texto').parents('div').eq(1).hide();
       } else {
-        $('#boleto_data_vencimento').parents('div').eq(1).show();
+        if ($('#fluxo_continuo').prop('checked')) {
+          $('#boleto_data_vencimento').val('');
+          $('#boleto_data_vencimento').parents('div').eq(1).hide();
+          $('#boleto_offset_vencimento').parents('div').eq(1).show();
+        } else {
+          $('#boleto_data_vencimento').parents('div').eq(1).show();
+          $('#boleto_offset_vencimento').val('');
+          $('#boleto_offset_vencimento').parents('div').eq(1).hide();
+        }
         $('#boleto_valor').parents('div').eq(1).show();
         $('#boleto_texto').parents('div').eq(1).show();
       }

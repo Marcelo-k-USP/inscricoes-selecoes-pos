@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         SolicitacaoIsencaoTaxa::flushEventListeners();
 
         $this->call([
+            FeriadoSeeder::class,           // adiciona feriados
             PermissionSeeder::class,        // adiciona permissions
             SetorReplicadoSeeder::class,    // adiciona todos os setores da unidade do replicado
             ProgramaSeeder::class,          // adiciona programas

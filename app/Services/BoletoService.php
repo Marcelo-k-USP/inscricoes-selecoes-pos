@@ -26,7 +26,7 @@ class BoletoService
             'codigoUnidadeDespesa' => getenv('REPLICADO_CODUNDCLG'),
             'codigoFonteRecurso' => $parametros->boleto_codigo_fonte_recurso,
             'estruturaHierarquica' => $parametros->boleto_estrutura_hierarquica,
-            'dataVencimentoBoleto' => $inscricao->selecao->boleto_data_vencimento,
+            'dataVencimentoBoleto' => ($inscricao->selecao->fluxocontinuo ? addWorkingDays(now(), $inscricao->selecao->boleto_offset_vencimento) : $inscricao->selecao->boleto_data_vencimento),
             'valorDocumento' => $inscricao->selecao->boleto_valor,
             'tipoSacado' => 'PF',
             'cpfCnpj' => $cpf,
@@ -35,6 +35,7 @@ class BoletoService
             'informacoesBoletoSacado' => 'Inscrição para Seleção da Pós-Graduação - ' . $inscricao->selecao->nome . (is_null($disciplina_sigla) ? '' : ' - Disciplina ' . $disciplina_sigla),
             'instrucoesObjetoCobranca' => 'Não receber após vencimento!',
         );
+        \Illuminate\Support\Facades\Log::info('$data[\'dataVencimentoBoleto\']: ' . $data['dataVencimentoBoleto']);
 
         try {
             config('app.debug') && Log::info('Gerando boleto para o ' . (($extras['tipo_de_documento'] == 'Passaporte') ? 'passaporte ' . $extras['numero_do_documento'] : 'CPF ' . $extras['cpf']) . '...');
