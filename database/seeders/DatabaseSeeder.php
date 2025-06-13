@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Arquivo;
 use App\Models\Inscricao;
+use App\Models\SolicitacaoIsencaoTaxa;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
