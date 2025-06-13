@@ -575,6 +575,7 @@ class Selecao extends Model
     protected $fillable = [
         'nome',
         'descricao',
+        'fluxo_continuo',
         'tem_taxa',
         'solicitacoesisencaotaxa_datahora_inicio',
         'solicitacoesisencaotaxa_datahora_fim',
@@ -583,6 +584,7 @@ class Selecao extends Model
         'boleto_valor',
         'boleto_texto',
         'boleto_data_vencimento',
+        'boleto_offset_vencimento',
         'email_inscricaoaprovacao_texto',
         'email_inscricaorejeicao_texto',
         'categoria_id',
@@ -616,6 +618,11 @@ class Selecao extends Model
             'label' => 'Descrição',
         ],
         [
+            'name' => 'fluxo_continuo',
+            'label' => 'Fluxo Contínuo',
+            'type' => 'checkbox',
+        ],
+        [
             'name' => 'tem_taxa',
             'label' => 'Taxa de Inscrição para a Seleção',
             'type' => 'checkbox',
@@ -644,6 +651,11 @@ class Selecao extends Model
             'name' => 'boleto_data_vencimento',
             'label' => 'Data de Vencimento do Boleto',
             'type' => 'date',
+        ],
+        [
+            'name' => 'boleto_offset_vencimento',
+            'label' => 'Dias Úteis para Pagamento do Boleto',
+            'type' => 'integer',
         ],
         [
             'name' => 'boleto_valor',

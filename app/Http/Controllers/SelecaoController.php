@@ -95,8 +95,10 @@ class SelecaoController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $request->merge(['tem_taxa' => $request->has('tem_taxa')]);    // acerta o valor do campo "tem_taxa" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
+        $request->merge(['fluxo_continuo' => $request->has('fluxo_continuo')]);    // acerta o valor do campo "fluxo_continuo" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
+        $request->merge(['tem_taxa' => $request->has('tem_taxa')]);                // acerta o valor do campo "tem_taxa"       (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
         $request->merge(['boleto_valor' => ($request->input('boleto_valor') !== '' ? $request->input('boleto_valor') : null)]);
+        $request->merge(['boleto_offset_vencimento' => ($request->input('boleto_offset_vencimento') !== '' ? $request->input('boleto_offset_vencimento') : null)]);
 
         $requestData = $request->all();
         $requestData['solicitacoesisencaotaxa_datahora_inicio'] = (is_null($requestData['solicitacoesisencaotaxa_data_inicio']) || is_null($requestData['solicitacoesisencaotaxa_hora_inicio']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['solicitacoesisencaotaxa_data_inicio'] . ' ' . $requestData['solicitacoesisencaotaxa_hora_inicio']));
@@ -105,6 +107,7 @@ class SelecaoController extends Controller
         $requestData['inscricoes_datahora_fim'] = (is_null($requestData['inscricoes_data_fim']) || is_null($requestData['inscricoes_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoes_data_fim'] . ' ' . $requestData['inscricoes_hora_fim']));
         $requestData['boleto_valor'] = (is_null($requestData['boleto_valor']) ? null : str_replace(',', '.', $requestData['boleto_valor']));
         $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento'])->endOfDay());
+        $requestData['boleto_offset_vencimento'] = (is_null($requestData['boleto_offset_vencimento']) ? null : $requestData['boleto_offset_vencimento']);
 
         if (!$this->validateDates($requestData['solicitacoesisencaotaxa_datahora_inicio']?->toDateTime(), $requestData['solicitacoesisencaotaxa_datahora_fim']?->toDateTime(), $requestData['inscricoes_datahora_inicio']?->toDateTime(), $requestData['inscricoes_datahora_fim']?->toDateTime(), $requestData['boleto_data_vencimento']?->toDateTime())) {
             $request->session()->flash('alert-danger', 'Datas/horas de início e fim dos períodos e data de vencimento do boleto estão inconsistentes');
@@ -197,8 +200,10 @@ class SelecaoController extends Controller
             return back()->withInput();
         }
 
-        $request->merge(['tem_taxa' => $request->has('tem_taxa')]);    // acerta o valor do campo "tem_taxa" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
+        $request->merge(['fluxo_continuo' => $request->has('fluxo_continuo')]);    // acerta o valor do campo "fluxo_continuo" (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
+        $request->merge(['tem_taxa' => $request->has('tem_taxa')]);                // acerta o valor do campo "tem_taxa"       (pois, se o usuário deixou false, o campo não vem no $request e, se o usuário deixou true, ele vem mas com valor null)
         $request->merge(['boleto_valor' => ($request->input('boleto_valor') !== '' ? $request->input('boleto_valor') : null)]);
+        $request->merge(['boleto_offset_vencimento' => ($request->input('boleto_offset_vencimento') !== '' ? $request->input('boleto_offset_vencimento') : null)]);
 
         // transaction para não ter problema de inconsistência do DB
         $selecao = DB::transaction(function () use ($request, $selecao) {
@@ -210,10 +215,12 @@ class SelecaoController extends Controller
             $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_fim', 'data/hora fim solicitações de isenção de taxa', 'a');
             $this->updateField($request, $selecao, 'inscricoes_datahora_inicio', 'data/hora início inscrições', 'a');
             $this->updateField($request, $selecao, 'inscricoes_datahora_fim', 'data/hora fim inscrições', 'a');
+            $this->updateField($request, $selecao, 'fluxo_continuo', 'fluxo contínuo', 'o');
             $this->updateField($request, $selecao, 'tem_taxa', 'taxa de inscrição', 'a');
             $this->updateField($request, $selecao, 'boleto_valor', 'valor do boleto', 'o');
             $this->updateField($request, $selecao, 'boleto_texto', 'texto do boleto', 'o');
             $this->updateField($request, $selecao, 'boleto_data_vencimento', 'data de vencimento do boleto', 'a');
+            $this->updateField($request, $selecao, 'boleto_offset_vencimento', 'quantidade de dias úteis para pagamento do boleto', 'a');
             $this->updateField($request, $selecao, 'email_inscricaoaprovacao_texto', 'texto do e-mail de aprovação da inscrição', 'o');
             $this->updateField($request, $selecao, 'email_inscricaorejeicao_texto', 'texto do e-mail de rejeição da inscrição', 'o');
             if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {

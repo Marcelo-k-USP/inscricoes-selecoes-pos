@@ -70,6 +70,23 @@ if (!function_exists('formatarDataHora')) {
     }
 }
 
+if (!function_exists('addWorkingDays')) {
+    function addWorkingDays($date, $offset) {
+        $carbonDate = Carbon::parse($date);
+        $holidays = \DB::table('feriados')->pluck('data')->map(function($date) {
+            return Carbon::parse($date)->format('Y-m-d');
+        })->toArray();
+
+        for ($i = 0; $i < $offset; $i++) {
+            $carbonDate->addDay();
+            while ($carbonDate->isWeekend() || in_array($carbonDate->format('Y-m-d'), $holidays))
+                $carbonDate->addDay();
+        }
+
+        return $carbonDate;
+    }
+}
+
 if (!function_exists('fixJson')) {
     function fixJson($json) {
         return trim(json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), '"');
