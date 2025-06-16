@@ -35,7 +35,6 @@ class BoletoService
             'informacoesBoletoSacado' => 'Inscrição para Seleção da Pós-Graduação - ' . $inscricao->selecao->nome . (is_null($disciplina_sigla) ? '' : ' - Disciplina ' . $disciplina_sigla),
             'instrucoesObjetoCobranca' => 'Não receber após vencimento!',
         );
-        \Illuminate\Support\Facades\Log::info('$data[\'dataVencimentoBoleto\']: ' . $data['dataVencimentoBoleto']);
 
         try {
             config('app.debug') && Log::info('Gerando boleto para o ' . (($extras['tipo_de_documento'] == 'Passaporte') ? 'passaporte ' . $extras['numero_do_documento'] : 'CPF ' . $extras['cpf']) . '...');
