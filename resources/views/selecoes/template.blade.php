@@ -2,7 +2,7 @@
 @section('content')
 @parent
   @php
-    $condicao_nao_iniciada = (in_array($selecao->estado, ['Em Elaboração', 'Aguardando Início']));
+    $condicao_nao_iniciada = (in_array($selecao->estado, ['Em Elaboração', 'Aguardando Início das Inscrições']));
   @endphp
   @include('common.modal-processando')
   <div class="row">
