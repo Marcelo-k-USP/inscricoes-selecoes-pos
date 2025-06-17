@@ -18,6 +18,11 @@ Ao cadastrar uma nova seleção, o gerente deve informar a quais combinações n
 Ao cadastrar uma nova seleção, todos os motivos de isenção de taxa são automaticamente associados à ela; cabe ao gerente verificar se é isso mesmo o desejado para a nova seleção.
 Ao cadastrar uma nova seleção na categoria aluno especial, todas as disciplinas são automaticamente associados à ela; cabe ao gerente verificar se é isso mesmo o desejado para a nova seleção.
 A seleção pode ser normal ou de "fluxo contínuo". No caso normal, a data de vencimento do boleto é cadastrada na própria seleção; no caso de fluxo contínuo, a data de vencimento do boleto será calculada somando uma determinada quantidade de dias úteis (quantidade essa cadastrada na seleção) acrescidos à data de envio da inscrição.
+O fluxo de estados de seleções sem cobrança de taxa é:
+Em Elaboração -> Aguardando Início das Inscrições -> Período de Inscrições -> Encerrada
+O fluxo de estados de seleções normais com cobrança de taxa é: Em Elaboração -> Aguardando Início das Solicitações de Isenção de Taxa -> Período de Solicitações de Isenção de Taxa -> Aguardando Início das Inscrições -> Período de Inscrições -> Encerrada
+O fluxo de estados de seleções de fluxo contínuo com cobrança de taxa é:
+Em Elaboração -> Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições -> Período de Solicitações de Isenção de Taxa e de Inscrições -> Encerrada
 
 Há cinco funções para gerentes: docentes do programa, secretários(as) dos programas, coordenadores dos programas, serviço de pós-graduação e coordenadores de pós-graduação.
 Gerentes das três primeiras funções são atrelados aos programas. Eles podem acessar seleções, solicitações de taxa de inscrição e inscrições somente de seus programas associados.

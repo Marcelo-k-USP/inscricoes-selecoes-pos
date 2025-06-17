@@ -50,7 +50,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @if ($inscricao->selecao->estado != 'Aguardando Início das Inscrições')
+              @if (!in_array($inscricao->selecao->estado, ['Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições', 'Aguardando Início das Inscrições']))
                 @include('inscricoes.show.card-principal', [    {{-- Principal --}}
                   'selecao' => $inscricao->selecao
                 ])
@@ -74,7 +74,7 @@
                   'selecao' => $inscricao->selecao,
                   'tipoarquivo_classe_nome_plural_acentuado' => 'Inscrições',
                 ])
-                @if (($inscricao->selecao->estado == 'Período de Inscrições') && (session('perfil') == 'usuario'))
+                @if (in_array($inscricao->selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']) && (session('perfil') == 'usuario'))
                   @include('inscricoes.show.card-envio')        {{-- Envio --}}
                 @endif
               @endif

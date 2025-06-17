@@ -29,6 +29,7 @@ class SelecaoRequest extends FormRequest
         // não poderíamos remover as closures porque elas seriam necessárias para que as views common/list-table-form-* pudessem verificar se os campos são obrigatórios (verificando se $rule instanceof \Illuminate\Validation\Rules\RequiredIf)
         // com esta implementação atual fica mais simples: mantemos 'required_if' nos campos e, desta forma, as views common/list-table-form-* nem precisam ser alteradas, conseguem verificar sem maiores dificuldades se os campos são obrigatórios
         $this->merge([
+            '_solicitacaoisencaotaxa_datas_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') !== 'on') ? 1 : 0,
             '_boleto_data_vencimento_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') !== 'on') ? 1 : 0,
             '_boleto_offset_vencimento_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') === 'on') ? 1 : 0,
         ]);
@@ -40,10 +41,10 @@ class SelecaoRequest extends FormRequest
             'descricao' => ['max:255'],
             'fluxo_continuo' => [],
             'tem_taxa' => [],
-            'solicitacoesisencaotaxa_data_inicio' => ['required_if:tem_taxa,on'],
-            'solicitacoesisencaotaxa_hora_inicio' => ['required_if:tem_taxa,on'],
-            'solicitacoesisencaotaxa_data_fim' => ['required_if:tem_taxa,on'],
-            'solicitacoesisencaotaxa_hora_fim' => ['required_if:tem_taxa,on'],
+            'solicitacoesisencaotaxa_data_inicio' => ['required_if:_solicitacaoisencaotaxa_datas_required_marker,1'],
+            'solicitacoesisencaotaxa_hora_inicio' => ['required_if:_solicitacaoisencaotaxa_datas_required_marker,1'],
+            'solicitacoesisencaotaxa_data_fim' => ['required_if:_solicitacaoisencaotaxa_datas_required_marker,1'],
+            'solicitacoesisencaotaxa_hora_fim' => ['required_if:_solicitacaoisencaotaxa_datas_required_marker,1'],
             'inscricoes_data_inicio' => ['required'],
             'inscricoes_hora_inicio' => ['required'],
             'inscricoes_data_fim' => ['required'],
@@ -85,6 +86,7 @@ class SelecaoRequest extends FormRequest
 
     protected function prepareForValidation() {
         $this->merge([
+            '_solicitacaoisencaotaxa_datas_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') !== 'on') ? 1 : 0,
             'boleto_valor' => str_replace(',', '.', $this->boleto_valor),
             '_boleto_data_vencimento_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') !== 'on') ? 1 : 0,
             '_boleto_offset_vencimento_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') === 'on') ? 1 : 0,

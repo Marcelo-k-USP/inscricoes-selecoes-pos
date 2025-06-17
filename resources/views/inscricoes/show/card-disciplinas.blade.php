@@ -13,7 +13,7 @@
   <div class="card-header">
     Disciplinas
     <span class="badge badge-pill badge-primary">{{ is_null($inscricao_disciplinas) ? 0 : count($inscricao_disciplinas) }}</span>
-    @if (($inscricao->selecao->estado == 'Período de Inscrições') && (session('perfil') == 'usuario'))
+    @if (in_array($inscricao->selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']) && (session('perfil') == 'usuario'))
       @include('disciplinas.partials.modal-add', ['inclusor_url' => 'inscricoes', 'inclusor_objeto' => $inscricao])
     @endif
   </div>

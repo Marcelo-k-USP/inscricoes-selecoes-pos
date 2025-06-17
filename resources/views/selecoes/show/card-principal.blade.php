@@ -62,6 +62,7 @@
       updateCamposBoleto();
 
       $('#fluxo_continuo').on('click', function () {
+        updateCamposSolicitacoesIsencaoTaxaDataHora();
         updateCamposBoleto();
       });
 
@@ -86,7 +87,8 @@
     });
 
     function updateCamposSolicitacoesIsencaoTaxaDataHora() {
-      if (!$('#tem_taxa').prop('checked')) {
+      if (!$('#tem_taxa').prop('checked') || $('#fluxo_continuo').prop('checked')) {
+        // oculta os campos de data e hora de solicitações de isenção de taxa
         $('#solicitacoesisencaotaxa_data_inicio').val('');
         $('#solicitacoesisencaotaxa_data_inicio').parents('div').eq(1).hide();
         $('#solicitacoesisencaotaxa_hora_inicio').next('.flatpickr-calendar').find('input[type="number"]').val('00');
@@ -96,6 +98,7 @@
         $('#solicitacoesisencaotaxa_hora_fim').next('.flatpickr-calendar').find('input[type="number"]').val('00');
         $('#solicitacoesisencaotaxa_hora_fim').parents('div').eq(1).hide();
       } else {
+        // exibe os campos de data e hora de solicitações de isenção de taxa
         $('#solicitacoesisencaotaxa_data_inicio').parents('div').eq(1).show();
         $('#solicitacoesisencaotaxa_hora_inicio').parents('div').eq(1).show();
         $('#solicitacoesisencaotaxa_data_fim').parents('div').eq(1).show();
@@ -105,6 +108,7 @@
 
     function updateCamposBoleto() {
       if (!$('#tem_taxa').prop('checked')) {
+        // oculta os campos de boleto
         $('#boleto_data_vencimento').val('');
         $('#boleto_data_vencimento').parents('div').eq(1).hide();
         $('#boleto_offset_vencimento').val('');
@@ -114,6 +118,7 @@
         $('#boleto_texto').val('');
         $('#boleto_texto').parents('div').eq(1).hide();
       } else {
+        // exibe os campos de boleto
         if ($('#fluxo_continuo').prop('checked')) {
           $('#boleto_data_vencimento').val('');
           $('#boleto_data_vencimento').parents('div').eq(1).hide();

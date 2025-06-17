@@ -13,18 +13,31 @@
   <button class="btn btn-sm {{ ($selecao->estado == 'Em Elaboração') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Em Elaboração">
     Em Elaboração
   </button>
-  <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Solicitações de Isenção de Taxa') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Solicitações de Isenção de Taxa">
-    Aguardando Início das Solicitações de Isenção de Taxa
-  </button>
-  <button class="btn btn-sm {{ ($selecao->estado == 'Período de Solicitações de Isenção de Taxa') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Solicitações de Isenção de Taxa">
-    Período de Solicitações de Isenção de Taxa
-  </button>
-  <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Inscrições') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Inscrições">
-    Aguardando Início das Inscrições
-  </button>
-  <button class="btn btn-sm {{ ($selecao->estado == 'Período de Inscrições') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Inscrições">
-    Período de Inscrições
-  </button>
+  @if ($selecao->tem_taxa)
+    @if (!$selecao->fluxo_continuo)
+      <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Solicitações de Isenção de Taxa') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Solicitações de Isenção de Taxa">
+        Aguardando Início das Solicitações de Isenção de Taxa
+      </button>
+      <button class="btn btn-sm {{ ($selecao->estado == 'Período de Solicitações de Isenção de Taxa') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Solicitações de Isenção de Taxa">
+        Período de Solicitações de Isenção de Taxa
+      </button>
+    @else
+      <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições">
+        Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições
+      </button>
+      <button class="btn btn-sm {{ ($selecao->estado == 'Período de Solicitações de Isenção de Taxa e de Inscrições') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Solicitações de Isenção de Taxa e de Inscrições">
+        Período de Solicitações de Isenção de Taxa e de Inscrições
+      </button>
+    @endif
+  @endif
+  @if (!$selecao->tem_taxa || !$selecao->fluxo_continuo)
+    <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Inscrições') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Inscrições">
+      Aguardando Início das Inscrições
+    </button>
+    <button class="btn btn-sm {{ ($selecao->estado == 'Período de Inscrições') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Inscrições">
+      Período de Inscrições
+    </button>
+  @endif
   <button class="btn btn-sm {{ ($selecao->estado == 'Encerrada') ? 'btn-danger' : 'btn-secondary' }}" disabled name="estado" value="Encerrada">
     Encerrada
   </button>

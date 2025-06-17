@@ -3,7 +3,7 @@
     {{ $inscricao_disciplina->sigla }} - {{ $inscricao_disciplina->nome }}
   </b>
   <div class="hidden-btn d-none ml-auto">
-    @if (($inscricao->selecao->estado == 'Período de Inscrições') && (session('perfil') == 'usuario'))
+    @if (in_array($inscricao->selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']) && (session('perfil') == 'usuario'))
       @include('common.btn-delete-sm', ['action' => "inscricoes/{$inscricao->id}/disciplinas/{$inscricao_disciplina->id}"])
     @endif
   </div>
