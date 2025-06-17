@@ -2,7 +2,7 @@
 @section('content')
 @parent
   @php
-    $condicao_iniciada = in_array($selecao->estado, ['Período de Inscrições', 'Encerrada']);
+    $condicao_iniciada = in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições', 'Encerrada']);
   @endphp
   @include('common.modal-processando')
   <div class="row">

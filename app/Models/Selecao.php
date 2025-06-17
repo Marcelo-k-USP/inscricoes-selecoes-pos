@@ -716,7 +716,11 @@ class Selecao extends Model
      */
     public static function estados()
     {
-        return ['Em Elaboração', 'Aguardando Início das Solicitações de Isenção de Taxa', 'Período de Solicitações de Isenção de Taxa', 'Aguardando Início das Inscrições', 'Periodo de Inscrições', 'Encerrada'];
+        return ['Em Elaboração',
+                'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições', 'Período de Solicitações de Isenção de Taxa e de Inscrições',    // usados nos casos de fluxo contínuo com taxa
+                'Aguardando Início das Solicitações de Isenção de Taxa', 'Período de Solicitações de Isenção de Taxa',                                     // usados nos casos de fluxo normal com taxa
+                'Aguardando Início das Inscrições', 'Periodo de Inscrições',                                                                               // usados nos casos sem taxa
+                'Encerrada'];
     }
 
     /**
@@ -793,7 +797,7 @@ class Selecao extends Model
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
-            $selecoes = $selecoes->filter(fn($selecao) => $selecao->estado == 'Período de Solicitações de Isenção de Taxa');    // só aceita as seleções que estejam em período de solicitações de isenção de taxa
+            $selecoes = $selecoes->filter(fn($selecao) => in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Solicitações de Isenção de Taxa']));    // só aceita as seleções que estejam em período de solicitações de isenção de taxa
             $categoria->selecoes = $selecoes;
         }
         return $categorias;                                              // retorna as seleções dentro de categorias
@@ -810,7 +814,7 @@ class Selecao extends Model
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
-            $selecoes = $selecoes->filter(fn($selecao) => $selecao->estado == 'Período de Inscrições');    // só aceita as seleções que estejam em período de inscrições
+            $selecoes = $selecoes->filter(fn($selecao) => in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']));    // só aceita as seleções que estejam em período de inscrições
             foreach ($selecoes as $selecao)
                 $selecao->niveis = $selecao->niveislinhaspesquisa->sortBy('nivel_id')->pluck('nivel')->unique();
             $categoria->selecoes = $selecoes;
@@ -820,6 +824,7 @@ class Selecao extends Model
 
     /**
      * Atualiza o status da seleção
+     * Esta é a máquina de fluxo de estados da seleção
      */
     public function atualizarStatus()
     {
@@ -839,19 +844,31 @@ class Selecao extends Model
         else {
             $agora = Carbon::now();
             if ($this->tem_taxa) {
-                if ($agora < $this->solicitacoesisencaotaxa_datahora_inicio)
-                    $this->update(['estado' => 'Aguardando Início das Solicitações de Isenção de Taxa']);
-                elseif (($this->solicitacoesisencaotaxa_datahora_inicio <= $agora) && ($agora <= $this->solicitacoesisencaotaxa_datahora_fim))
-                    $this->update(['estado' => 'Período de Solicitações de Isenção de Taxa']);
-                elseif (($this->solicitacoesisencaotaxa_datahora_fim < $agora) && ($agora < $this->inscricoes_datahora_inicio))
-                    $this->update(['estado' => 'Aguardando Início das Inscrições']);
+                if (!$this->fluxo_continuo) {
+                    // fluxo normal com taxa
+                    if ($agora < $this->solicitacoesisencaotaxa_datahora_inicio)
+                        $this->update(['estado' => 'Aguardando Início das Solicitações de Isenção de Taxa']);
+                    elseif (($this->solicitacoesisencaotaxa_datahora_inicio <= $agora) && ($agora <= $this->solicitacoesisencaotaxa_datahora_fim))
+                        $this->update(['estado' => 'Período de Solicitações de Isenção de Taxa']);
+                    elseif (($this->solicitacoesisencaotaxa_datahora_fim < $agora) && ($agora < $this->inscricoes_datahora_inicio))
+                        $this->update(['estado' => 'Aguardando Início das Inscrições']);
+                    elseif (($this->inscricoes_datahora_inicio <= $agora) && ($agora <= $this->inscricoes_datahora_fim))
+                        $this->update(['estado' => 'Período de Inscrições']);
+                } else {
+                    // fluxo contínuo com taxa
+                    if ($agora < $this->inscricoes_datahora_inicio)
+                        $this->update(['estado' => 'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições']);
+                    elseif (($this->inscricoes_datahora_inicio <= $agora) && ($agora <= $this->inscricoes_datahora_fim))
+                        $this->update(['estado' => 'Período de Solicitações de Isenção de Taxa e de Inscrições']);
+                }
             } else
+                // sem taxa
                 if ($agora < $this->inscricoes_datahora_inicio)
                     $this->update(['estado' => 'Aguardando Início das Inscrições']);
+                elseif (($this->inscricoes_datahora_inicio <= $agora) && ($agora <= $this->inscricoes_datahora_fim))
+                    $this->update(['estado' => 'Período de Inscrições']);
 
-            if (($this->inscricoes_datahora_inicio <= $agora) && ($agora <= $this->inscricoes_datahora_fim))
-                $this->update(['estado' => 'Período de Inscrições']);
-            elseif ($this->inscricoes_datahora_fim < $agora)
+            if ($this->inscricoes_datahora_fim < $agora)
                 $this->update(['estado' => 'Encerrada']);
         }
     }

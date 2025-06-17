@@ -19,7 +19,7 @@
       </a>
     @endif
     @can('perfiladmin')
-      @if (!in_array($selecao->estado, ['Período de Inscrições', 'Encerrada']))
+      @if (!in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições', 'Encerrada']))
         @include('selecoes.partials.btn-template-show-json-modal')
       @endif
     @endcan

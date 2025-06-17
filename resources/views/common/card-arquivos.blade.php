@@ -44,9 +44,9 @@
             $editavel = (isset($tipoarquivo['editavel']) && $tipoarquivo['editavel']);
             if (session('perfil') == 'usuario')
               if ($classe_nome == 'SolicitacaoIsencaoTaxa')
-                $editavel &= ($selecao->estado == 'Período de Solicitações de Isenção de Taxa');
+                $editavel &= in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Solicitações de Isenção de Taxa']);
               elseif ($classe_nome == 'Inscricao')
-                $editavel &= ($selecao->estado == 'Período de Inscrições');
+                $editavel &= in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']);
           @endphp
           @if (Gate::allows($classe_nome_plural . '.updateArquivos', $objeto) && $editavel)
             <label for="input_arquivo_{{ $i }}">

@@ -64,7 +64,7 @@ class InscricaoPolicy
     {
         if (!is_null($selecao)) {
             $selecao->atualizarStatus();
-            if ($selecao->estado !== 'Período de Inscrições')
+            if (!in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']))
                 return false;
         }
 
@@ -82,7 +82,7 @@ class InscricaoPolicy
     {
         $selecao = $inscricao->selecao;
         $selecao->atualizarStatus();
-        if ($selecao->estado !== 'Período de Inscrições')
+        if (!in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']))
             return false;
 
         return (Gate::allows('perfilusuario') && ($inscricao->pessoas('Autor')->id == $user->id));    // permite que apenas o usuário autor da inscrição a edite

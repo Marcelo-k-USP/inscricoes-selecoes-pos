@@ -36,8 +36,8 @@
             <a class="mr-2" href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->nome }}</a>
             @include('selecoes.partials.status-muted')
           </td>
-          <td>{{ formatarDataHora($selecao->solicitacoesisencaotaxa_datahora_inicio) }}</td>
-          <td>{{ formatarDataHora($selecao->solicitacoesisencaotaxa_datahora_fim) }}</td>
+          <td>{{ formatarDataHora($selecao->tem_taxa && $selecao->fluxo_continuo ? $selecao->inscricoes_datahora_inicio : $selecao->solicitacoesisencaotaxa_datahora_inicio) }}</td>
+          <td>{{ formatarDataHora($selecao->tem_taxa && $selecao->fluxo_continuo ? $selecao->inscricoes_datahora_fim : $selecao->solicitacoesisencaotaxa_datahora_fim) }}</td>
           <td>{{ formatarDataHora($selecao->inscricoes_datahora_inicio) }}</td>
           <td>{{ formatarDataHora($selecao->inscricoes_datahora_fim) }}</td>
         </tr>
