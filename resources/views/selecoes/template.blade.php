@@ -2,7 +2,7 @@
 @section('content')
 @parent
   @php
-    $condicao_nao_iniciada = (in_array($selecao->estado, ['Em Elaboração', 'Aguardando Início das Inscrições']));
+    $condicao_iniciada = in_array($selecao->estado, ['Período de Inscrições', 'Encerrada']);
   @endphp
   @include('common.modal-processando')
   <div class="row">
@@ -113,7 +113,7 @@
                             </div>
                           @endforeach
                           <div class="col">
-                            @if ($condicao_nao_iniciada)
+                            @if (!$condicao_iniciada)
                               <button class="btn btn-danger" type="button" onclick="apaga_campo(this)"{{ $disable_functions }}>Apagar</button>
                             @endif
                             <input type="hidden" name="template[{{ $tkey }}][order]" id="index[{{ $i }}]" value="{{ $i }}">
@@ -130,7 +130,7 @@
                       <br />
                     @endif
                     <br />
-                    @if ($template && $condicao_nao_iniciada)
+                    @if ($template && !$condicao_iniciada)
                       <button class="btn btn-primary ml-1" type="submit">Salvar</button>
                     @endif
                     <a class="btn btn-secondary" href="{{ route('selecoes.edit', ['selecao' => $selecao->id]) }}">Voltar</a>
