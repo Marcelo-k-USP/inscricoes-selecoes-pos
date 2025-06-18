@@ -17,6 +17,7 @@ class SolicitacaoIsencaoTaxaObserver
     public function created(SolicitacaoIsencaoTaxa $solicitacaoisencaotaxa)
     {
         // envia e-mail avisando o candidato da necessidade de enviar os arquivos e enviar a própria solicitação de isenção de taxa
+        // envio do e-mail "3" do README.md
         $passo = 'início';
         $user = $solicitacaoisencaotaxa->pessoas('Autor');
         \Mail::to($user->email)
@@ -47,6 +48,7 @@ class SolicitacaoIsencaoTaxaObserver
                 ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Solicitada')) {         // se o novo estado é Isenção de Taxa Solicitada
 
                 // envia e-mail avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
+                // envio do e-mail "4" do README.md
                 $passo = 'realização';
                 $user = $solicitacaoisencaotaxa->pessoas('Autor');
                 $servicoposgraduacao_nome = 'Prezados(as) Srs(as). do Serviço de Pós-Graduação';
@@ -57,6 +59,7 @@ class SolicitacaoIsencaoTaxaObserver
                       in_array($solicitacaoisencaotaxa->estado, ['Isenção de Taxa Aprovada', 'Isenção de Taxa Rejeitada'])) {    // se o novo estado é Isenção de Taxa Aprovada ou Isenção de Taxa Rejeitada
 
                 // envia e-mail avisando o candidato da aprovação/rejeição da solicitação de isenção de taxa
+                // envio do e-mail "5" do README.md
                 $passo = (($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada') ? 'aprovação' : 'rejeição');
                 $user = $solicitacaoisencaotaxa->pessoas('Autor');
                 \Mail::to($user->email)

@@ -293,6 +293,7 @@ class InscricaoController extends Controller
 
             if (!empty($arquivos)) {
                 // envia e-mail para o candidato com o(s) boleto(s)
+                // envio do e-mail "11" do README.md
                 $passo = 'boleto(s) - disciplinas alteradas';
                 $user = \Auth::user();
                 $email_secaoinformatica = Parametro::first()->email_secaoinformatica;

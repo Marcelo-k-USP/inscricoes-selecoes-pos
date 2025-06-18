@@ -39,6 +39,8 @@ class AlertaCandidatosIncompletude implements ShouldQueue
         $selecao = Selecao::where('id', $this->selecao_id)->first();
         switch ($this->classe_nome) {
             case 'SolicitacaoIsencaoTaxa':
+                // envia e-mail para os candidatos que não enviaram suas solicitações de isenção de taxa a respeito da proximidade do término do período de solicitações de isenção de taxa
+                // envio do e-mail "16" do README.md
                 $passo = 'alerta de proximidade do fim das solicitações de isenção de taxa';
                 foreach ($selecao->solicitacoesisencaotaxa as $solicitacaoisencaotaxa)
                     if ($solicitacaoisencaotaxa->estado === 'Aguardando Envio') {
@@ -50,6 +52,8 @@ class AlertaCandidatosIncompletude implements ShouldQueue
                 break;
 
             case 'Inscricao':
+                // envia e-mail para os candidatos que não enviaram suas inscrições a respeito da proximidade do término do período de inscrições
+                // envio do e-mail "17" do README.md
                 $passo = 'alerta de proximidade do fim das inscrições';
                 foreach ($selecao->inscricoes as $inscricao)
                     if ($inscricao->estado === 'Aguardando Envio') {
