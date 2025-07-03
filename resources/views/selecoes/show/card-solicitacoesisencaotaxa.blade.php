@@ -14,7 +14,7 @@
   </div>
   <div class="card-body">
     <ul class="list-unstyled">
-      <li>Contagem (últimos 5 anos)
+      <li>Contagem (sujeito a exclusão de dados antigos)
           @include('selecoes.partials.solicitacoesisencaotaxa-por-ano')
       </li>
     </ul>
