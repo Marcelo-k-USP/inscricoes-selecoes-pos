@@ -105,7 +105,7 @@ class LocalUserController extends Controller
         $password_reset_url = url('localusers/redefinesenha', $token);
 
         // envia e-mail para o usuário local... não utilizo observer como no Chamados pois aqui não faz sentido, o observer faz mais sentido disparando seus eventos próprios (created, updated, etc.)
-        // envio do e-mail "2" do README.md
+        // envio do e-mail "3" do README.md
         $passo = 'reset de senha';
         \Mail::to($localuser->email)
             ->queue(new LocalUserMail(compact('passo', 'localuser', 'password_reset_url')));
@@ -316,7 +316,7 @@ class LocalUserController extends Controller
         });
 
         // envia e-mail pedindo a confirmação do endereço de e-mail
-        // envio do e-mail "1" do README.md
+        // envio do e-mail "2" do README.md
         $passo = 'confirmação de e-mail';
         $email_confirmation_url = url('localusers/confirmaemail', $token);
         \Mail::to($localuser->email)

@@ -15,10 +15,12 @@ class SelecaoMail extends Mailable
     // campos gerais
     protected $passo;
     protected $selecao;
-    protected $candidatonome;
 
     // campos adicionais para novo(s) informativo(s)
     protected $tipoarquivo;
+
+    // campos adicionais para novo(s) informativo(s), alerta de proximidade do fim das solicitações de isenção de taxa e alerta de proximidade do fim das inscrições
+    protected $candidatonome;
 
     /**
      * Create a new message instance.
@@ -29,11 +31,16 @@ class SelecaoMail extends Mailable
     {
         $this->passo = $data['passo'];
         $this->selecao = $data['selecao'];
-        $this->candidatonome = $data['candidatonome'];
 
         switch ($this->passo) {
             case 'novo(s) informativo(s)':
                 $this->tipoarquivo = $data['tipoarquivo'];
+                $this->candidatonome = $data['candidatonome'];
+                break;
+
+            case 'alerta de proximidade do fim das solicitações de isenção de taxa':
+            case 'alerta de proximidade do fim das inscrições':
+                $this->candidatonome = $data['candidatonome'];
         }
     }
 
@@ -45,6 +52,15 @@ class SelecaoMail extends Mailable
     public function build()
     {
         switch ($this->passo) {
+            case 'seleção elaborada':
+                return $this
+                    ->subject('[' . config('app.name') . '] Seleção elaborada')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.selecao_elaborada')
+                    ->with([
+                        'selecao' => $this->selecao,
+                    ]);
+
             case 'novo(s) informativo(s)':
                 switch ($this->tipoarquivo) {
                     case 'Errata':
@@ -79,15 +95,15 @@ class SelecaoMail extends Mailable
                         'candidatonome' => $this->candidatonome,
                     ]);
 
-                case 'alerta de proximidade do fim das inscrições':
-                    return $this
-                        ->subject('[' . config('app.name') . '] Inscrição não enviada')
-                        ->from(config('mail.from.address'), config('mail.from.name'))
-                        ->view('emails.selecao_inscricaonaoconcluida')
-                        ->with([
-                            'selecao' => $this->selecao,
-                            'candidatonome' => $this->candidatonome,
-                        ]);
+            case 'alerta de proximidade do fim das inscrições':
+                return $this
+                    ->subject('[' . config('app.name') . '] Inscrição não enviada')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.selecao_inscricaonaoconcluida')
+                    ->with([
+                        'selecao' => $this->selecao,
+                        'candidatonome' => $this->candidatonome,
+                    ]);
         }
     }
 }

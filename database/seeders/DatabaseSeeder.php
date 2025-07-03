@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Arquivo;
 use App\Models\Inscricao;
+use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use Illuminate\Database\Seeder;
 
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
         // desativando eventos no seeder
         Arquivo::flushEventListeners();
         Inscricao::flushEventListeners();
+        Selecao::flushEventListeners();
         SolicitacaoIsencaoTaxa::flushEventListeners();
 
         $this->call([

@@ -28,7 +28,7 @@ class InscricaoObserver
     public function created(Inscricao $inscricao)
     {
         // envia e-mail avisando o candidato da necessidade de enviar os arquivos e enviar a própria inscrição
-        // envio do e-mail "6" do README.md
+        // envio do e-mail "7" do README.md
         $passo = 'início';
         $user = $inscricao->pessoas('Autor');
         \Mail::to($user->email)
@@ -71,7 +71,7 @@ class InscricaoObserver
                             $arquivos[] = $this->boletoService->gerarBoleto($inscricao, $disciplina->sigla);
 
                     // envia e-mail para o candidato com o(s) boleto(s)
-                    // envio do e-mail "7" do README.md
+                    // envio do e-mail "8" do README.md
                     \Mail::to($user->email)
                         ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'arquivos', 'email_secaoinformatica')));
                 }
@@ -79,13 +79,13 @@ class InscricaoObserver
                 $passo = 'realização';
                 if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
                     // envia e-mail avisando a secretaria do programa da seleção da inscrição sobre a realização da inscrição
-                    // envio do e-mail "8" do README.md
+                    // envio do e-mail "9" do README.md
                     $responsavel_nome = 'Prezados(as) Srs(as). da Secretaria do Programa ' . $inscricao->selecao->programa->nome;
                     \Mail::to($inscricao->selecao->programa->email_secretaria)
                         ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
 
                     // envia e-mails avisando os coordenadores do programa da seleção da inscrição sobre a realização da inscrição
-                    // envio do e-mail "9" do README.md
+                    // envio do e-mail "10" do README.md
                     foreach (collect($inscricao->selecao->programa->obterResponsaveis())->firstWhere('funcao', 'Coordenadores do Programa')['users'] as $coordenador) {
                         $responsavel_nome = 'Prezado(a) Sr(a). ' . Pessoa::obterNome($coordenador->codpes);
                         \Mail::to($coordenador->email)
@@ -93,7 +93,7 @@ class InscricaoObserver
                     }
                 } else {
                     // envia e-mails avisando o serviço de pós-graduação sobre a realização da inscrição
-                    // envio do e-mail "10" do README.md
+                    // envio do e-mail "11" do README.md
                     foreach (collect((new Programa)->obterResponsaveis())->firstWhere('funcao', 'Serviço de Pós-Graduação')['users'] as $servicoposgraduacao) {
                         $responsavel_nome = 'Prezado(a) Sr.(a) ' . Pessoa::obterNome($servicoposgraduacao->codpes);
                         \Mail::to($servicoposgraduacao->email)
@@ -104,7 +104,7 @@ class InscricaoObserver
                       ($inscricao->estado == 'Pré-Aprovada')) {                       // se o novo estado é Pré-Aprovada
 
                 // envia e-mail avisando o candidato da pré-aprovação da inscrição
-                // envio do e-mail "12" do README.md
+                // envio do e-mail "13" do README.md
                 $passo = 'pré-aprovação';
                 $link_acompanhamento = (($inscricao->selecao->categoria->nome == 'Aluno Especial') ? Parametro::first()->link_acompanhamento_especiais : $inscricao->selecao->programa->link_acompanhamento);
                 \Mail::to($user->email)
@@ -114,7 +114,7 @@ class InscricaoObserver
                       ($inscricao->estado == 'Pré-Rejeitada')) {                      // se o novo estado é Pré-Rejeitada
 
                 // envia e-mail avisando o candidato da pré-rejeição da inscrição
-                // envio do e-mail "13" do README.md
+                // envio do e-mail "14" do README.md
                 $passo = 'pré-rejeição';
                 \Mail::to($user->email)
                     ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
@@ -123,7 +123,7 @@ class InscricaoObserver
                       (in_array($inscricao->estado, ['Aprovada', 'Rejeitada']))) {    // se o novo estado é Aprovada ou Rejeitada
 
                 // envia e-mail avisando o candidato da aprovação/rejeição da inscrição
-                // envio do e-mail "14" do README.md
+                // envio do e-mail "15" do README.md
                 $passo = (($inscricao->estado == 'Aprovada') ? 'aprovação' : 'rejeição');
                 \Mail::to($user->email)
                     ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
