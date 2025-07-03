@@ -56,23 +56,24 @@ Caso um candidato reenvie sua inscrição, e seja para uma seleção de categori
 
 # Envios de e-mails
 
-1) quando um candidato realiza seu cadastro, o sistema lhe envia um e-mail com um link para confirmar o endereço de e-mail;
-2) quando um candidato clica em "Esqueceu sua senha", o sistema lhe envia um e-mail com um link para resetar a senha;
-3) quando um candidato inicia sua solicitação de isenção de taxa (clicando em "Prosseguir" mas ainda não em "Enviar Solicitação"), o sistema lhe envia um e-mail avisando sobre a necessidade de subir os documentos obrigatórios e de enviar a solicitação de isenção de taxa;
-4) quando um candidato envia sua solicitação de isenção de taxa, o sistema envia um e-mail para o serviço de pós-graduação avisando sobre a solicitação de isenção de taxa;
-5) quando um gerente aprova/rejeita uma solicitação de isenção de taxa, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
-6) quando um candidato inicia sua inscrição (clicando em "Prosseguir" mas ainda não em "Enviar Inscrição"), o sistema lhe envia um e-mail avisando sobre a necessidade de subir os documentos obrigatórios e de enviar a inscrição;
-7) quando um candidato envia sua inscrição, o sistema lhe envia um e-mail com o(s) boleto(s) a ser(em) pago(s);
-8) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Regular, o sistema também envia um e-mail para a secretaria do programa avisando sobre a inscrição;
-9) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Regular, o sistema também envia um e-mail para cada coordenador do programa avisando sobre a inscrição;
-10) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Especial, o sistema também envia um e-mail para cada pessoa do serviço de pós-graduação avisando sobre a inscrição;
-11) quando um candidato reenvia sua inscrição alterando as disciplinas para as quais se inscreveu, o sistema lhe envia um e-mail com o(s) boleto(s) da(s) nova(s) disciplina(s);
-12) quando um gerente pré-aprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-aprovação;
-13) quando um gerente pré-reprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-rejeição;
-14) quando um gerente aprova/rejeita uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
-15) quando um gerente sobe um documento dos tipos "Errata" ou "Lista de Inscritos" em uma seleção, o sistema envia e-mails para cada candidato avisando a respeito desses novos informativos;
-16) quando nos aproximamos do término do período de solicitações de isenção de taxa de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua solicitação de isenção de taxa;
-17) quando nos aproximamos do término do período de inscrições de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição.
+1) quando um gerente completa a elaboração de uma seleção, o sistema envia um e-mail para o gerenciamento do site da unidade avisando-a para atualizar a página da seleção no site da unidade;
+2) quando um candidato realiza seu cadastro, o sistema lhe envia um e-mail com um link para confirmar o endereço de e-mail;
+3) quando um candidato clica em "Esqueceu sua senha", o sistema lhe envia um e-mail com um link para resetar a senha;
+4) quando um candidato inicia sua solicitação de isenção de taxa (clicando em "Prosseguir" mas ainda não em "Enviar Solicitação"), o sistema lhe envia um e-mail avisando sobre a necessidade de subir os documentos obrigatórios e de enviar a solicitação de isenção de taxa;
+5) quando um candidato envia sua solicitação de isenção de taxa, o sistema envia um e-mail para o serviço de pós-graduação avisando sobre a solicitação de isenção de taxa;
+6) quando um gerente aprova/rejeita uma solicitação de isenção de taxa, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
+7) quando um candidato inicia sua inscrição (clicando em "Prosseguir" mas ainda não em "Enviar Inscrição"), o sistema lhe envia um e-mail avisando sobre a necessidade de subir os documentos obrigatórios e de enviar a inscrição;
+8) quando um candidato envia sua inscrição, o sistema lhe envia um e-mail com o(s) boleto(s) a ser(em) pago(s);
+9) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Regular, o sistema também envia um e-mail para a secretaria do programa avisando sobre a inscrição;
+10) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Regular, o sistema também envia um e-mail para cada coordenador do programa avisando sobre a inscrição;
+11) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Especial, o sistema também envia um e-mail para cada pessoa do serviço de pós-graduação avisando sobre a inscrição;
+12) quando um candidato reenvia sua inscrição alterando as disciplinas para as quais se inscreveu, o sistema lhe envia um e-mail com o(s) boleto(s) da(s) nova(s) disciplina(s);
+13) quando um gerente pré-aprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-aprovação;
+14) quando um gerente pré-reprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-rejeição;
+15) quando um gerente aprova/rejeita uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
+16) quando um gerente sobe um documento dos tipos "Errata" ou "Lista de Inscritos" em uma seleção, o sistema envia e-mails para cada candidato avisando a respeito desses novos informativos;
+17) quando nos aproximamos do término do período de solicitações de isenção de taxa de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua solicitação de isenção de taxa;
+18) quando nos aproximamos do término do período de inscrições de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição.
 
 Todo e qualquer e-mail enviado pelo sistema pode ser copiado (em cópia oculta) para o e-mail de envio do sistema. O endereço de envio de e-mail do sistema está definido no .env, e também está no .env essa configuração de copiar para esse remetente ou não.
 Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema, embora na caixa de entrada ao invés de na caixa de enviados.
@@ -91,7 +92,7 @@ Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema
 
 Se for aluno regular:
 3) um e-mail é enviado à secretaria do programa e aos coordenadores do programa para pré-avaliar a inscrição;
-4) a secretaria do programa ou os coordenadores do programa colocam a inscrição em pré-avaliação e depois a pré-aprovam ou pré-rejeitam;
+4) a secretaria do programa ou os coordenadores do programa colocam a inscrição em pré-avaliação e depois a pré-aprova ou pré-rejeita;
 5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o link de acompanhamento no site da unidade, na seção do programa correspondente;
 6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
 7) a secretaria do programa coloca a inscrição em avaliação e depois a aprova ou rejeita;

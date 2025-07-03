@@ -16,6 +16,7 @@ class Parametro extends Model
         'link_acompanhamento_especiais',
         'email_servicoposgraduacao',
         'email_secaoinformatica',
+        'email_gerenciamentosite',
     ];
 
     // uso no crud generico
@@ -40,6 +41,10 @@ class Parametro extends Model
         [
             'name' => 'email_secaoinformatica',
             'label' => 'E-mail da Seção de Informática',
+        ],
+        [
+            'name' => 'email_gerenciamentosite',
+            'label' => 'E-mail do Gerenciamento do Site',
         ],
     ];
 

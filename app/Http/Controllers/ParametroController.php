@@ -50,6 +50,7 @@ class ParametroController extends Controller
         $parametro->link_acompanhamento_especiais = $request->link_acompanhamento_especiais;
         $parametro->email_servicoposgraduacao = $request->email_servicoposgraduacao;
         $parametro->email_secaoinformatica = $request->email_secaoinformatica;
+        $parametro->email_gerenciamentosite = $request->email_gerenciamentosite;
         $parametro->save();
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');

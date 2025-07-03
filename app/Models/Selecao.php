@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Jobs\AlertaCandidatosIncompletude;
+use App\Observers\SelecaoObserver;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -675,6 +676,16 @@ class Selecao extends Model
             'label' => 'Texto do E-mail de Rejeição da Inscrição',
         ],
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        Selecao::observe(SelecaoObserver::class);
+    }
 
     // uso no crud generico
     public static function getFields()
