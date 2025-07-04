@@ -18,7 +18,7 @@ class BoletoService
     public function gerarBoleto(Inscricao $inscricao, ?string $disciplina_sigla = null)
     {
         $extras = json_decode($inscricao->extras, true);
-        $cpf = ((strtolower($extras['tipo_de_documento']) == 'passaporte') ? '99999999999' : str_replace(['-', '.'], '', $extras['cpf']));
+        $cpf = (preg_match('/passaporte|rne|crnm/i', $extras['tipo_de_documento']) ? '99999999999' : str_replace(['-', '.'], '', $extras['cpf']));
         $parametros = Parametro::first();
 
         $boleto = new Boleto(config('inscricoes-selecoes-pos.ws_boleto_usuario'), config('inscricoes-selecoes-pos.ws_boleto_senha'));
@@ -37,7 +37,7 @@ class BoletoService
         );
 
         try {
-            config('app.debug') && Log::info('Gerando boleto para o ' . (($extras['tipo_de_documento'] == 'Passaporte') ? 'passaporte ' . $extras['numero_do_documento'] : 'CPF ' . $extras['cpf']) . '...');
+            config('app.debug') && Log::info('Gerando boleto para o ' . (preg_match('/passaporte|rne|crnm/i', $extras['tipo_de_documento']) ? $extras['tipo_de_documento'] . ' ' . $extras['numero_do_documento'] : 'CPF ' . $extras['cpf']) . '...');
 
             $gerar = $boleto->gerar($data);
             if ($gerar['status']) {

@@ -75,7 +75,9 @@
       });
 
       $('select[id="extras\[tipo_de_documento\]"]').change(function () {
-        if (($(this).val() == 'passaporte') || ($(this).val() == 'rne')) {
+        if ($(this).val().toLowerCase().includes('passaporte') ||
+            $(this).val().toLowerCase().includes('rne') ||
+            $(this).val().toLowerCase().includes('crnm')) {
           $('#cpf_required').hide();
           $('input[id="extras\[cpf\]"]').removeAttr('required');
           $('#uf_de_nascimento_required').hide();
