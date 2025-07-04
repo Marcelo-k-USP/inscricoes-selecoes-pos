@@ -71,7 +71,7 @@
 
     function updateAlunoEspecial() {
       if ($('#classe_nome').val() != 'Inscrições') {
-        $('#aluno_especial').prop('checked', true);
+        $('#aluno_especial').prop('checked', false);
         $('#aluno_especial').closest('div.form-group').hide();
       }
       else
