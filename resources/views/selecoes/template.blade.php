@@ -106,6 +106,20 @@
                                       <option value='gerente'>Somente Gerente</option>
                                     </select>
                                     @break
+                                  @case('value')
+                                    @if (in_array($tvalue['type'], ['select', 'radio']))
+                                      @can('perfiladmin')
+                                        <input class="form-control" name="template[{{ $tkey }}][{{ $field }}]">
+                                      @else
+                                        <input class="form-control" name="template[{{ $tkey }}][{{ $field }}]" type="hidden">
+                                      @endcan
+                                      <a href="{{ route('selecoes.createtemplatevalue', ['selecao' => $selecao->id, 'campo' => $tkey]) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit"></i> Editar Lista
+                                      </a>
+                                    @else
+                                      <input class="form-control" name="template[{{ $tkey }}][{{ $field }}]" value="">
+                                    @endif
+                                    @break
                                   @default
                                     <input class="form-control" name="template[{{ $tkey }}][{{ $field }}]" value="">
                                 @endswitch
