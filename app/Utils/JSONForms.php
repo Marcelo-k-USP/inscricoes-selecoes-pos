@@ -269,9 +269,11 @@ class JSONForms
             $ordered_template = array_column($template, 'order');
             array_multisort($ordered_template, SORT_ASC, $template);
             foreach ($template as &$field)
-                if (!empty($field) && (($field['type'] == 'select') || ($field['type'] == 'radio'))) {
-                    $ordered_templatevalue = array_column($field['value'] ?? [], 'order');
-                    array_multisort($ordered_templatevalue, SORT_ASC, $field['value'] ?? []);
+                if (!empty($field) &&
+                    (($field['type'] == 'select') || ($field['type'] == 'radio')) &&
+                    isset($field['value'])) {
+                    $ordered_templatevalue = array_column($field['value'], 'order');
+                    array_multisort($ordered_templatevalue, SORT_ASC, $field['value']);    // não colocar $field['value'] aqui, senão o array_multisort não consegue ordenar
                 }
         }
         return json_encode($template);
