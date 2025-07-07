@@ -45,7 +45,7 @@ Se um aluno regular se inscreve, por exemplo, para o nível de mestrado, só lhe
 Cada seleção contém informativos (edital, etc.), que são documentos que o candidato pode consultar.
 Além disso, em cada seleção o gerente também define quais documentos o candidato pode (ou deve) subir quando da solicitação de isenção de taxa e quando da inscrição.
 O tipo de documento de boletos não é removível nem renomeável. O candidato não sobe documento desse tipo, pois ele é gerado quando do envio da inscrição.
-Inscrições para programas podem ser de três níveis diferentes (mestrado, doutorado ou doutorado direto) e os tipos de documento dessas inscrições podem variar conforme o nível e o programa. Tipos de documento com diferenciação por níveis e programas é algo que só faz sentido nas inscrições.
+Inscrições para programas podem ser de três níveis diferentes (mestrado, doutorado ou doutorado direto) e os tipos de documento dessas inscrições podem variar conforme o nível e o programa. Tipos de documento com diferenciação por níveis e programas é algo que só faz sentido nas inscrições. Para que um tipo de documento apareça na solicitação de isenção de taxa ou inscrição, devemos cadastrá-lo na relação de Tipos de Documento; devemos também cadastrar suas relações com combinações de nível com tipo de programa; por fim, devemos cadastrá-lo também na seleção em questão (como tipo de documento para solicitação de isenção de taxa ou inscrição).
 
 Para completar a inscrição, o candidato deve clicar em Enviar.
 Se houver cobrança de taxa de inscrição para a seleção em questão, então é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição.
