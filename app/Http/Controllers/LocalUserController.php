@@ -274,20 +274,13 @@ class LocalUserController extends Controller
             if (!$recaptcha_service->revalidate($request->input('g-recaptcha-response')))
                 return $this->processa_erro_store('Falha na validação do reCAPTCHA. Por favor, tente novamente.', $request);
 
+        $validator = Validator::make($request->all(), LocalUserRequest::rules, LocalUserRequest::messages);
+        if ($validator->fails())
+            return back()->withErrors($validator)->withInput();
+
         // verifica se está duplicando o e-mail (pois mais pra baixo este usuário será gravado na tabela users, e não podemos permitir duplicatas)
         if (User::emailExiste($request->email))
             return back()->withErrors(Validator::make([], [])->errors()->add('email', 'Este e-mail já está em uso!'))->withInput();
-
-        // verifica se a senha é forte... não usa $request->validate porque ele voltaria para a página apagando todos os campos... pois o {{ old(...) }} não funciona dentro do JSONForms.php pelo fato do blade não conseguir executar o {{ old(...) }} dentro do {!! $element !!} do inscricoes.show.card-principal
-        $validator = Validator::make($request->all(), [
-            'password' => ['required', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/'],
-        ],[
-            'password.required' => 'A senha é obrigatória!',
-            'password.min' => 'A senha deve ter pelo menos 8 caracteres!',
-            'password.regex' => 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial!',
-        ]);
-        if ($validator->fails())
-            return $this->processa_erro_store(json_decode($validator->errors())->password, $request);
 
         $token = Str::random(60);
 
