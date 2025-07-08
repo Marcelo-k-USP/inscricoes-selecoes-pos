@@ -4,8 +4,17 @@
 @parent
   <div class="row">
     <div class="col-md-12 form-inline">
-      <span class="h4 mt-2">Usuários Locais</span>
-      @include('partials.datatable-filter-box', ['otable'=>'oTable'])
+      <div class="d-none d-sm-block h4 mt-2">
+        Usuários Locais
+      </div>
+      <div class="d-block d-sm-none h4 mt-2">
+        {{-- vai mostrar no mobile --}}
+        <i class="fas fa-filter"></i>
+      </div>
+      <div class="h4 mt-1 ml-2">
+        <span class="badge badge-pill badge-primary datatable-counter">-</span>
+      </div>
+      @include('partials.datatable-filter-box', ['otable' => 'oTable'])
       @can('localusers.create')
         <button type="button" class="btn btn-sm btn-success" onclick="add_form()">
           <i class="fas fa-plus"></i> Novo
@@ -68,6 +77,9 @@
         dom:
           't{{ $paginar ? 'p' : '' }}',
           'paging': {{ $paginar ? 'true' : 'false' }},
+          'order': [
+            [2, 'desc']    // ordenado por data de criação descrescente
+          ],
           columnDefs: [
             { targets: -1, orderable: false }    // desativa ordenação da última coluna
           ]
