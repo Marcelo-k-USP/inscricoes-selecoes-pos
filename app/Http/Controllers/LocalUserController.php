@@ -39,6 +39,7 @@ class LocalUserController extends Controller
             'iniciaRedefinicaoSenha',
             'redefineSenha',
             'confirmaEmail',
+            'reenviaEmailConfirmacao',
             'create',
             'store'
         ]);    // exige que o usuário esteja logado, exceto para estes métodos listados
@@ -191,10 +192,48 @@ class LocalUserController extends Controller
         $localuser->save();
 
         request()->session()->flash('alert-success', 'E-mail confirmado com sucesso<br />' .
-            'faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
+            'Faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
 
         \UspTheme::activeUrl('inscricoes');
         return view('localusers.login');
+    }
+
+    public function reenviaEmailConfirmacao(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ], [
+            'email.required' => 'O e-mail é obrigatório!',
+            'email.email' => 'O e-mail não é válido!'
+        ]);
+
+        $localuser = (object) [
+            'name' => '',    // neste ponto, não temos o nome do usuário, pois ele ainda não está logado
+            'email' => $request->email,
+        ];
+
+        // anteriormente, o token foi gravado hasheado no banco e, portanto, não temos como recuperá-lo... sendo assim, geramos um novo token
+        $token = Str::random(60);
+        DB::table('email_confirmations')->updateOrInsert(
+            ['email' => $localuser->email],    // procura por registro com este e-mail
+                       [                       // atualiza ou insere com os dados abaixo
+                'email' => $localuser->email,
+                'token' => Hash::make($token),
+                'created_at' => now()
+            ]
+        );
+
+        // reenvia e-mail pedindo a confirmação do endereço de e-mail
+        // envio do e-mail "2" do README.md
+        $passo = 'confirmação de e-mail';
+        $email_confirmation_url = url('localusers/confirmaemail', $token);
+        \Mail::to($localuser->email)
+            ->queue(new LocalUserMail(compact('passo', 'localuser', 'email_confirmation_url')));
+
+        $request->session()->flash('alert-success', 'E-mail para confirmação reenviado<br />' .
+            'Verifique sua caixa de entrada para confirmar seu endereço<br />' .
+            'Em seguida, faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
+        return redirect('/localusers/login');
     }
 
     private function processa_erro_login(string $msg)
@@ -321,7 +360,7 @@ class LocalUserController extends Controller
 
         } else {
             $request->session()->flash('alert-success', 'Cadastro realizado com sucesso<br />' .
-                'Verifique seu e-mail para confirmar seu endereço de e-mail<br />' .
+                'Verifique sua caixa de entrada para confirmar seu endereço<br />' .
                 'Em seguida, faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
             return redirect('/');
         }
