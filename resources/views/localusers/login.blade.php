@@ -6,7 +6,7 @@
     <script type="text/javascript">window.location = "/inscricoes";</script>
   @else
     <div class="d-flex justify-content-center">
-      <form method="POST" action="/localusers/login" id="form_login">
+      <form method="POST" action="/localusers/login" id="form_diversasacoes">
         @csrf
         <h1 class="h3 mb-3 font-weight-normal">Login Local</h1>
         <label for="email" class="sr-only">E-mail</label>
@@ -23,6 +23,11 @@
         <br />
         <br />
         <h1 class="h3 mb-3 font-weight-normal">ou <a href="localusers/create" style="text-decoration: none; color: #007bff;">cadastre-se</a></h1>
+        @if (session('alert-danger') === 'E-mail não confirmado')
+          <h1 class="h3 mb-3 font-weight-normal">ou
+            <a href="javascript:void(0);" onclick="reenvia_email_confirmacao()" style="text-decoration: none; color: #007bff;">receba novamente<br />o e-mail para confirmação</a>
+          </h1>
+        @endif
       </form>
     </div>
   @endauth
@@ -34,8 +39,14 @@
   <script type="text/javascript">
     function esqueceu_senha()
     {
-      $('#form_login').attr('action', 'localusers/esqueceusenha');
-      $('#form_login').submit();
+      $('#form_diversasacoes').attr('action', 'localusers/esqueceusenha');
+      $('#form_diversasacoes').submit();
+    }
+
+    function reenvia_email_confirmacao()
+    {
+      $('#form_diversasacoes').attr('action', 'localusers/reenviaemailconfirmacao');
+      $('#form_diversasacoes').submit();
     }
   </script>
 @endsection
