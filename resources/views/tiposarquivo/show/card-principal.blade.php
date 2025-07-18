@@ -71,7 +71,7 @@
 
     function updateAlunoEspecial() {
       if ($('#classe_nome').val() != 'Inscrições') {
-        $('#aluno_especial').prop('checked', true);
+        $('#aluno_especial').prop('checked', false);    // muito poucos tipos de documento são exigidos para alunos especiais, então deixamos default como desmarcado aqui
         $('#aluno_especial').closest('div.form-group').hide();
       }
       else
