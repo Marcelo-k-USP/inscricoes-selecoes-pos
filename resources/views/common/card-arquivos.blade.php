@@ -62,7 +62,7 @@
                 @if (preg_match('/^(application\/pdf|image\/png|image\/jpeg)$/i', $arquivo->mimeType))
                   <li class="modo-visualizacao">
                     @if (Gate::allows($classe_nome_plural . '.updateArquivos', $objeto) && $editavel)
-                      <div class="arquivo-acoes d-inline-block">
+                      <div class="arquivo-acoes duas-acoes d-inline-block">
                         <a onclick="excluir_arquivo({{ $arquivo->id }}, '{{ $arquivo->nome_original }}'); return false;" class="btn btn-outline-danger btn-sm btn-deletar btn-arquivo-acao">
                           <i class="far fa-trash-alt"></i>
                         </a>
@@ -71,6 +71,15 @@
                         </a>
                       </div>
                     @endif
+                    @canany(['perfiladmin', 'perfilgerente'])
+                      @if ($tipoarquivo['nome'] === 'Boleto(s) de Pagamento da Inscrição')
+                        <div class="arquivo-acoes uma-acao d-inline-block">
+                          <a onclick="enviar_boleto({{ $inscricao->id }}, {{ $arquivo->id }});" class="btn btn-outline-warning btn-sm btn-enviar btn-arquivo-acao">
+                            <i class="far fa-paper-plane"></i>
+                          </a>
+                        </div>
+                      @endif
+                    @endcan
                     <a href="arquivos/{{ $arquivo->id }}" title="{{ $arquivo->nome_original }}" class="nome-arquivo-display"><i class="fas fa-file-pdf"></i>
                       <span>{{ $arquivo->nome_original }}</span>
                     </a>

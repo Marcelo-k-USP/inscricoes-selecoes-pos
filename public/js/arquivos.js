@@ -25,6 +25,10 @@ function alterar_arquivo(arquivo_id) {
   submete_form('arquivos/' + arquivo_id, 'patch');
 }
 
+function enviar_boleto(inscricao_id, arquivo_id) {
+  submete_form('inscricoes/' + inscricao_id + '/enviaboleto/' + arquivo_id, 'post');
+}
+
 function submete_form(acao, metodo, i_tipoarquivo) {
   $('#tipoarquivo').val($('#tipoarquivo_' + i_tipoarquivo).val());
   $('#modal_processando').modal('show');

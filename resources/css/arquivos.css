@@ -49,9 +49,11 @@
     transition: all .5s;
     display: flex;
 }
-.arquivos-lista ul li.modo-visualizacao:hover .arquivo-acoes{
+.arquivos-lista ul li.modo-visualizacao:hover .arquivo-acoes.duas-acoes{
     width: 73px;
-    height: auto;
+}
+.arquivos-lista ul li.modo-visualizacao:hover .arquivo-acoes.uma-acao{
+    width: 36px;
 }
 .arquivos-lista .btn-arquivo-acao{
     font-size: 13px;
@@ -61,6 +63,10 @@
 .arquivos-lista .btn-arquivo-acao.btn-editar{
     padding-right: 3px;
 }
+.arquivos-lista .btn-arquivo-acao.btn-enviar{
+    padding-right: 3px;
+}
+
 .arquivo-img{
     max-height: 35px;
 }

@@ -78,15 +78,15 @@ class BoletoService
                 }
 
                 // retorna o conteúdo do PDF
-                return ['nome' => $arquivo->nome_original, 'conteudo' => $obter['value']];
+                return ['nome_original' => $arquivo->nome_original, 'conteudo' => $obter['value']];
             } else {
                 Log::info('Erro ao gerar boleto... $gerar[\'value\']: ' . $gerar['value']);
-                return ['nome' => '', 'conteudo' => ''];
+                return ['nome_original' => '', 'conteudo' => ''];
             }
 
         } catch (Exception $e) {
             Log::info('Erro ao gerar boleto... $e->getMessage(): ' . $e->getMessage());
-            return ['nome' => '', 'conteudo' => ''];
+            return ['nome_original' => '', 'conteudo' => ''];
         }
     }
 }

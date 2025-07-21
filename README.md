@@ -68,12 +68,13 @@ Caso um candidato reenvie sua inscrição, e seja para uma seleção de categori
 10) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Regular, o sistema também envia um e-mail para cada coordenador do programa avisando sobre a inscrição;
 11) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Especial, o sistema também envia um e-mail para cada pessoa do serviço de pós-graduação avisando sobre a inscrição;
 12) quando um candidato reenvia sua inscrição alterando as disciplinas para as quais se inscreveu, o sistema lhe envia um e-mail com o(s) boleto(s) da(s) nova(s) disciplina(s);
-13) quando um gerente pré-aprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-aprovação;
-14) quando um gerente pré-reprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-rejeição;
-15) quando um gerente aprova/rejeita uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
-16) quando um gerente sobe um documento dos tipos "Errata" ou "Lista de Inscritos" em uma seleção, o sistema envia e-mails para cada candidato avisando a respeito desses novos informativos;
-17) quando nos aproximamos do término do período de solicitações de isenção de taxa de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua solicitação de isenção de taxa;
-18) quando nos aproximamos do término do período de inscrições de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição.
+13) quando um gerente clica em enviar um boleto de uma inscrição, o sistema envia um e-mail para o candidato enviando o boleto (isso é interessante para o caso de eventualmente o envio do boleto ter falhado quando o candidato enviou sua inscrição);
+14) quando um gerente pré-aprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-aprovação;
+15) quando um gerente pré-reprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-rejeição;
+16) quando um gerente aprova/rejeita uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
+17) quando um gerente sobe um documento dos tipos "Errata" ou "Lista de Inscritos" em uma seleção, o sistema envia e-mails para cada candidato avisando a respeito desses novos informativos;
+18) quando nos aproximamos do término do período de solicitações de isenção de taxa de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua solicitação de isenção de taxa;
+19) quando nos aproximamos do término do período de inscrições de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição.
 
 Todo e qualquer e-mail enviado pelo sistema pode ser copiado (em cópia oculta) para o e-mail de envio do sistema. O endereço de envio de e-mail do sistema está definido no .env, e também está no .env essa configuração de copiar para esse remetente ou não.
 Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema, embora na caixa de entrada ao invés de na caixa de enviados.
