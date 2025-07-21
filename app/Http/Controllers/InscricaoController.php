@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InscricaoRequest;
 use App\Jobs\AtualizaStatusSelecoes;
 use App\Mail\InscricaoMail;
+use App\Models\Arquivo;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
@@ -25,6 +26,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -304,9 +306,8 @@ class InscricaoController extends Controller
     }
 
     /**
-     * Adicionar disciplinas relacionadas à inscrição
+     * Adiciona uma disciplina relacionada à inscrição
      * autorizado a qualquer um que tenha acesso à inscrição
-     * request->codpes = required, int
      */
     public function storeDisciplina(Request $request, Inscricao $inscricao)
     {
@@ -351,8 +352,7 @@ class InscricaoController extends Controller
     }
 
     /**
-     * Remove disciplinas relacionadas à inscrição
-     * $user = required
+     * Remove uma disciplina relacionada à inscrição
      */
     public function destroyDisciplina(Request $request, Inscricao $inscricao, Disciplina $disciplina)
     {
@@ -376,6 +376,30 @@ class InscricaoController extends Controller
         $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa inscrição.' . $info_adicional);
         \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
+    }
+
+    /**
+     * Envia um boleto da inscrição
+     */
+    public function enviaBoleto(Request $request, Inscricao $inscricao, Arquivo $arquivo)
+    {
+        if (!$arquivo || !$arquivo->inscricoes->contains($inscricao)) {
+            $request->session()->flash('alert-success', 'Esse documento não existe ou não pertence a essa inscrição');
+            \UspTheme::activeUrl('inscricoes');
+            return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+        }
+
+        // envia e-mail para o candidato com o boleto
+        // envio do e-mail "13" do README.md
+        $passo = 'boleto - envio manual';
+        $user = $inscricao->pessoas('Autor');
+        $arquivo->conteudo = base64_encode(Storage::get($arquivo->caminho));
+        \Mail::to($user->email)
+            ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'arquivo')));
+
+        $request->session()->flash('alert-success', 'O boleto foi enviado com sucesso');
+        \UspTheme::activeUrl('inscricoes');
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'arquivos'));
     }
 
     public function monta_compact_index()

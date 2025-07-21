@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Arquivo;
 use App\Models\Inscricao;
 use App\Models\Selecao;
 use App\Models\User;
@@ -124,5 +125,25 @@ class InscricaoPolicy
             return false;
         elseif (Gate::allows('perfilusuario'))
             return ($inscricao->pessoas('Autor')->id == $user->id);
+    }
+
+    /**
+     * Determine whether the user can enviar um boleto.
+     *
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Inscricao  $inscricao
+     * @param  \App\Models\Arquivo    $arquivo
+     * @return mixed
+     */
+    public function enviaBoleto(User $user, Inscricao $inscricao, Arquivo $arquivo)
+    {
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($inscricao->selecao->programa_id);
+        elseif (Gate::allows('perfildocente'))
+            return false;
+        else
+            return false;
     }
 }

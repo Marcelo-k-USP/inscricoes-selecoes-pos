@@ -19,6 +19,9 @@ class InscricaoMail extends Mailable
     // campos adicionais para boleto(s) e boleto(s) - disciplinas alteradas
     protected $arquivos;
 
+    // campos adicionais para boleto - envio manual
+    protected $arquivo;
+
     // campos adicionais para inscrição enviada
     protected $responsavel_nome;
 
@@ -51,11 +54,18 @@ class InscricaoMail extends Mailable
                 $this->arquivos = [];
                 foreach ($data['arquivos'] as $data_arquivo)
                     $this->arquivos[] = [
-                        'nome' => $data_arquivo['nome'],
+                        'nome_original' => $data_arquivo['nome_original'],
                         'conteudo' => $data_arquivo['conteudo'],
-                        'erro' => (!empty($data_arquivo['conteudo']) ? '' : 'Ocorreu um erro na geração do boleto "' . $data_arquivo['nome'] . '".<br />' . PHP_EOL .
+                        'erro' => (!empty($data_arquivo['conteudo']) ? '' : 'Ocorreu um erro na geração do boleto "' . $data_arquivo['nome_original'] . '".<br />' . PHP_EOL .
                             'Por favor, entre em contato conosco em ' . $data['email_secaoinformatica'] . ', informando-nos sobre esse problema.<br />' . PHP_EOL),
                     ];
+                break;
+
+            case 'boleto - envio manual':
+                $this->arquivo = [
+                    'nome_original' => $data['arquivo']->nome_original,
+                    'conteudo' => $data['arquivo']->conteudo,
+                ];
                 break;
 
             case 'realização':
@@ -111,7 +121,20 @@ class InscricaoMail extends Mailable
                     ]);
                 foreach ($this->arquivos as $arquivo)
                     if (!empty($arquivo['conteudo']))
-                        $mail->attachData(base64_decode($arquivo['conteudo']), $arquivo['nome'], ['mime' => 'application/pdf']);
+                        $mail->attachData(base64_decode($arquivo['conteudo']), $arquivo['nome_original'], ['mime' => 'application/pdf']);
+                return $mail;
+
+            case 'boleto - envio manual':
+                $mail = $this
+                    ->subject('[' . config('app.name') . '] Boleto Enviado')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.inscricao_enviomanualdeboleto')
+                    ->with([
+                        'inscricao' => $this->inscricao,
+                        'user' => $this->user,
+                    ]);
+                if (!empty($this->arquivo['conteudo']))
+                    $mail->attachData(base64_decode($this->arquivo['conteudo']), $this->arquivo['nome_original'], ['mime' => 'application/pdf']);
                 return $mail;
 
             case 'realização':

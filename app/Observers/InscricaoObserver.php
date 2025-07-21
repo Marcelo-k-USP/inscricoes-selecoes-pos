@@ -104,7 +104,7 @@ class InscricaoObserver
                       ($inscricao->estado == 'Pré-Aprovada')) {                       // se o novo estado é Pré-Aprovada
 
                 // envia e-mail avisando o candidato da pré-aprovação da inscrição
-                // envio do e-mail "13" do README.md
+                // envio do e-mail "14" do README.md
                 $passo = 'pré-aprovação';
                 $link_acompanhamento = (($inscricao->selecao->categoria->nome == 'Aluno Especial') ? Parametro::first()->link_acompanhamento_especiais : $inscricao->selecao->programa->link_acompanhamento);
                 \Mail::to($user->email)
@@ -114,7 +114,7 @@ class InscricaoObserver
                       ($inscricao->estado == 'Pré-Rejeitada')) {                      // se o novo estado é Pré-Rejeitada
 
                 // envia e-mail avisando o candidato da pré-rejeição da inscrição
-                // envio do e-mail "14" do README.md
+                // envio do e-mail "15" do README.md
                 $passo = 'pré-rejeição';
                 \Mail::to($user->email)
                     ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
@@ -123,7 +123,7 @@ class InscricaoObserver
                       (in_array($inscricao->estado, ['Aprovada', 'Rejeitada']))) {    // se o novo estado é Aprovada ou Rejeitada
 
                 // envia e-mail avisando o candidato da aprovação/rejeição da inscrição
-                // envio do e-mail "15" do README.md
+                // envio do e-mail "16" do README.md
                 $passo = (($inscricao->estado == 'Aprovada') ? 'aprovação' : 'rejeição');
                 \Mail::to($user->email)
                     ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
