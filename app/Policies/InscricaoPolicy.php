@@ -128,6 +128,25 @@ class InscricaoPolicy
     }
 
     /**
+     * Determine whether the user can gerar boleto(s).
+     *
+     * @param  \App\Models\User       $user
+     * @param  \App\Models\Inscricao  $inscricao
+     * @return mixed
+     */
+    public function geraBoletos(User $user, Inscricao $inscricao)
+    {
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($inscricao->selecao->programa_id);
+        elseif (Gate::allows('perfildocente'))
+            return false;
+        else
+            return false;
+    }
+
+    /**
      * Determine whether the user can enviar um boleto.
      *
      * @param  \App\Models\User       $user

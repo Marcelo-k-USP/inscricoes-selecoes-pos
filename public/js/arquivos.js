@@ -25,6 +25,10 @@ function alterar_arquivo(arquivo_id) {
   submete_form('arquivos/' + arquivo_id, 'patch');
 }
 
+function gerar_boletos(inscricao_id) {
+  submete_form('inscricoes/geraboletos/' + inscricao_id, 'post');
+}
+
 function enviar_boleto(inscricao_id, arquivo_id) {
   submete_form('inscricoes/' + inscricao_id + '/enviaboleto/' + arquivo_id, 'post');
 }

@@ -224,12 +224,12 @@ class InscricaoController extends Controller
                     \UspTheme::activeUrl('inscricoes');
                     return view('inscricoes.index', $this->monta_compact_index());
                 } else {
-                    $request->session()->flash('alert-success', 'É necessário antes escolher a(s) disciplina(s)');
+                    $request->session()->flash('alert-danger', 'É necessário antes escolher a(s) disciplina(s)');
                     \UspTheme::activeUrl('inscricoes');
                     return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
                 }
             } else {
-                $request->session()->flash('alert-success', 'É necessário antes enviar todos os documentos exigidos');
+                $request->session()->flash('alert-danger', 'É necessário antes enviar todos os documentos exigidos');
                 \UspTheme::activeUrl('inscricoes');
                 return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
             }
@@ -274,13 +274,14 @@ class InscricaoController extends Controller
                 $tipoarquivo_boletodisciplinasdesinscritas = TipoArquivo::where('classe_nome', 'Inscrições')->where('nome', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas')->first();
                 foreach (array_diff($disciplinas_id_anterior, $disciplinas_id) as $disciplina_id_desinscrita) {
                     $disciplina = Disciplina::find($disciplina_id_desinscrita);
-                    $arquivo = $inscricao->arquivos()->whereHas('tipoarquivo', function ($query) { $query->where('nome', 'Boleto(s) de Pagamento da Inscrição'); })->where('disciplina', $disciplina->sigla)->first();
-                    $inscricao->arquivos()->updateExistingPivot(
-                        $arquivo->id,                                                                   // estranhamente, o Laravel precisa que eu passe o arquivo_id aqui, mesmo que eu tenha começado este comando com $inscricao (ou seja, ele deveria saber qual é a inscrição)
-                        ['tipo' => 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']    // atualiza o tipo do arquivo para "Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas"
-                    );
-                    $arquivo->tipoarquivo_id = $tipoarquivo_boletodisciplinasdesinscritas->id;          // atualiza o tipo do arquivo para "Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas"
-                    $arquivo->save();
+                    foreach ($inscricao->arquivos()->whereHas('tipoarquivo', function ($query) { $query->where('nome', 'Boleto(s) de Pagamento da Inscrição'); })->where('disciplina', $disciplina->sigla)->get() as $arquivo) {
+                        $inscricao->arquivos()->updateExistingPivot(
+                            $arquivo->id,                                                                   // estranhamente, o Laravel precisa que eu passe o arquivo_id aqui, mesmo que eu tenha começado este comando com $inscricao (ou seja, ele deveria saber qual é a inscrição)
+                            ['tipo' => 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']    // atualiza o tipo do arquivo para "Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas"
+                        );
+                        $arquivo->tipoarquivo_id = $tipoarquivo_boletodisciplinasdesinscritas->id;          // atualiza o tipo do arquivo para "Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas"
+                        $arquivo->save();
+                    }
                 }
 
                 // gera boletos para as novas disciplinas deste reenvio
@@ -379,12 +380,39 @@ class InscricaoController extends Controller
     }
 
     /**
+     * Gera o(s) boleto(s) para a inscrição
+     */
+    public function geraBoletos(Request $request, Inscricao $inscricao)
+    {
+        if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
+            // gera o boleto da inscrição
+            if (empty($this->boletoService->gerarBoleto($inscricao)['nome_original'])) {
+                $request->session()->flash('alert-danger', 'Não foi possível gerar o boleto para essa inscrição');
+                \UspTheme::activeUrl('inscricoes');
+                return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+            }
+        } else
+            // gera um boleto para cada disciplina solicitada
+            foreach ($request->disciplinas as $sigla => $valor)
+                if (empty($this->boletoService->gerarBoleto($inscricao, $sigla)['nome_original'])) {
+                    $request->session()->flash('alert-danger', 'Não foi possível gerar o boleto da disciplina ' . $sigla . ' para essa inscrição<br />' .
+                        'A geração do(s) boleto(s) foi abortada');
+                    \UspTheme::activeUrl('inscricoes');
+                    return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+                }
+
+        $request->session()->flash('alert-success', ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? 'O boleto foi gerado com sucesso' : 'O(s) boleto(s) foi(ram) gerado(s) com sucesso'));
+        \UspTheme::activeUrl('inscricoes');
+        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'arquivos'));
+    }
+
+    /**
      * Envia um boleto da inscrição
      */
     public function enviaBoleto(Request $request, Inscricao $inscricao, Arquivo $arquivo)
     {
         if (!$arquivo || !$arquivo->inscricoes->contains($inscricao)) {
-            $request->session()->flash('alert-success', 'Esse documento não existe ou não pertence a essa inscrição');
+            $request->session()->flash('alert-danger', 'Esse documento não existe ou não pertence a essa inscrição');
             \UspTheme::activeUrl('inscricoes');
             return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
         }
@@ -439,6 +467,12 @@ class InscricaoController extends Controller
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id)
             ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $inscricao->selecao->tem_taxa; });
         $solicitacaoisencaotaxa_aprovada = $inscricao->pessoas('Autor')?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
+        $disciplinas_sem_boleto = [];
+        if ($inscricao->selecao->categoria->nome == 'Aluno Especial')
+            foreach ($inscricao_disciplinas as $disciplina)
+                if ($inscricao->arquivos->filter(fn($a) => ($a->pivot->tipo == 'Boleto(s) de Pagamento da Inscrição') && str_contains(strtolower($a->nome_original), strtolower($disciplina->sigla)))->count() == 0)
+                    $disciplinas_sem_boleto[] = $disciplina;
+        $inscricao->disciplinas_sem_boleto = $disciplinas_sem_boleto;
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'nivel', 'tiposarquivo_selecao', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size', 'scroll');
