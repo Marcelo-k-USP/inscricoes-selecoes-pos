@@ -317,7 +317,7 @@ class LocalUserController extends Controller
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
 
-        // verifica se está duplicando o e-mail (pois mais pra baixo este usuário será gravado na tabela users, e não podemos permitir duplicatas)
+        // verifica se está tentando utilizar o e-mail de outro usuário (pois mais pra baixo este usuário será gravado na tabela users, e não podemos permitir duplicatas)
         if (User::emailExiste($request->email))
             return back()->withErrors(Validator::make([], [])->errors()->add('email', 'Este e-mail já está em uso!'))->withInput();
 
@@ -389,6 +389,10 @@ class LocalUserController extends Controller
         $validator = Validator::make($request->all(), LocalUserRequest::rules, LocalUserRequest::messages);
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
+
+        // verifica se está tentando utilizar o e-mail de outro usuário (pois não podemos permitir duplicatas)
+        if (User::emailExiste($request->email) && (User::where('email', $request->email)->first()->id != $request->id))
+            return back()->withErrors(Validator::make([], [])->errors()->add('email', 'Este e-mail já está em uso por outro usuário!'))->withInput();
 
         $request->merge(['password' => Hash::make($request->password)]);
         $localuser->update($request->all());
