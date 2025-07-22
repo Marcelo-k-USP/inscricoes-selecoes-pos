@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -43,16 +44,16 @@ class AuthServiceProvider extends ServiceProvider
         # perfis
         # o perfil é o modo como o usuário se apresenta
         # ideal para mostrar os menus e a lista de categorias
-        Gate::define('perfiladmin', function ($user) {
-            return (session('perfil') == 'admin');
+        Gate::define('perfiladmin', function (?User $user) {
+            return ($user && (session('perfil') == 'admin'));
         });
 
-        Gate::define('perfilgerente', function ($user) {
-            return (session('perfil') == 'gerente');
+        Gate::define('perfilgerente', function (?User $user) {
+            return ($user && (session('perfil') == 'gerente'));
         });
 
-        Gate::define('perfildocente', function ($user) {
-            return (session('perfil') == 'docente');
+        Gate::define('perfildocente', function (?User $user) {
+            return ($user && (session('perfil') == 'docente'));
         });
 
         Gate::define('perfilusuario', function ($user) {
