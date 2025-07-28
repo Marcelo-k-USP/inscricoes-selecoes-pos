@@ -183,7 +183,7 @@ class LocalUserController extends Controller
             return Hash::check($token, $confirmation->token);
         });
         if (!$email_confirmation)
-            return $this->processa_erro_confirmation('Este link é inválido');
+            return $this->processa_erro_login('Este link é inválido');
 
         // marca o e-mail como confirmado
         $localuser = User::where('email', $email_confirmation->email)->first();
