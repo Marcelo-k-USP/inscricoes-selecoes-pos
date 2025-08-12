@@ -57,6 +57,10 @@ class LoginController extends Controller
         $user->email = $userSenhaUnica->email;
         $user->name = $userSenhaUnica->nompes;
 
+        // verifica se está tentando utilizar o e-mail de outro usuário local (pois não podemos permitir e-mails duplicados)... acontece quando um candidato que possui número USP tenta logar como gestor
+        if (User::emailExiste($user->email) && User::where('email', $user->email)->first()->local && (User::where('email', $user->email)->first()->id != $user->id))
+            return response()->view('errors.nao_gestor');
+
         // permissions do senhaunica-socialite v3... por enquanto está false, pois está dando conflito
         if (config('senhaunica.permission')) {
 
