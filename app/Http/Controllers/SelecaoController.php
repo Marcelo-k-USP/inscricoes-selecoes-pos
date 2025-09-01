@@ -682,6 +682,7 @@ class SelecaoController extends Controller
             $extras = json_decode($solicitacaoisencaotaxa->extras, true) ?? [];
             $i['programa'] = $solicitacaoisencaotaxa->selecao->programa?->nome ?? 'N/A';
             $i['selecao'] = $solicitacaoisencaotaxa->selecao->nome;
+            $i['estado'] = $solicitacaoisencaotaxa->estado;
             $i['motivo_isencao_taxa'] = MotivoIsencaoTaxa::where('id', $extras['motivo_isencao_taxa'])->first()->nome;
             $autor = $solicitacaoisencaotaxa->pessoas('Autor');
             $i['autor'] = $autor ? $autor->name : '';
@@ -726,6 +727,8 @@ class SelecaoController extends Controller
             $extras = json_decode($inscricao->extras, true) ?? [];
             $i['programa'] = $inscricao->selecao->programa?->nome ?? 'N/A';
             $i['selecao'] = $inscricao->selecao->nome;
+            $i['estado'] = $inscricao->estado;
+            $i['nivel'] = isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '';
             $i['linha_pesquisa'] = isset($extras['linha_pesquisa']) ? LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome : '';
             $autor = $inscricao->pessoas('Autor');
             $i['autor'] = $autor ? $autor->name : '';
