@@ -680,6 +680,7 @@ class SelecaoController extends Controller
             $i = [];
 
             $extras = json_decode($solicitacaoisencaotaxa->extras, true) ?? [];
+            $i['numero_solicitacao'] = $solicitacaoisencaotaxa->id;
             $i['programa'] = $solicitacaoisencaotaxa->selecao->programa?->nome ?? 'N/A';
             $i['selecao'] = $solicitacaoisencaotaxa->selecao->nome;
             $i['estado'] = $solicitacaoisencaotaxa->estado;
@@ -725,6 +726,7 @@ class SelecaoController extends Controller
             $i = [];
 
             $extras = json_decode($inscricao->extras, true) ?? [];
+            $i['numero_inscricao'] = $inscricao->id;
             $i['programa'] = $inscricao->selecao->programa?->nome ?? 'N/A';
             $i['selecao'] = $inscricao->selecao->nome;
             $i['estado'] = $inscricao->estado;

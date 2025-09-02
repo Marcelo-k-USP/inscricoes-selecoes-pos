@@ -30,7 +30,7 @@
           <div class="card-title my-0">
             @if ($modo == 'edit')
               <div style="display: flex; align-items: center; white-space: nowrap;">
-                <a href="solicitacoesisencaotaxa">Solicitações de Isenção de Taxa</a>
+                <a href="solicitacoesisencaotaxa">Solicitações de Isenção de Taxa</a> <i class="fas fa-angle-right mx-2"></i> Solicitação nº {{ $solicitacaoisencaotaxa->id }}
                 &nbsp; | &nbsp;
                 @include('solicitacoesisencaotaxa.partials.btn-enable-disable')
               </div>
