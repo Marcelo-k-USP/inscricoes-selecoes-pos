@@ -24,13 +24,16 @@ class TipoArquivoRequest extends FormRequest
     public const rules = [
         'classe_nome' => ['required'],
         'nome' => ['required', 'max:100'],
+        'abreviacao' => ['required_if:classe_nome,Inscrições', 'max:20'],
         'obrigatorio' => [],
         'aluno_especial' => [],
     ];
 
     public const messages = [
         'classe_nome.required' => 'É obrigatório definir se para seleção, solicitação de isenção de taxa ou inscrição!',
-        'nome.required' => 'O nome do tipo de arquivo é obrigatório!',
-        'nome.max' => 'O nome do tipo de arquivo não pode exceder 100 caracteres!',
+        'nome.required' => 'O nome do tipo de documento é obrigatório!',
+        'nome.max' => 'O nome do tipo de documento não pode exceder 100 caracteres!',
+        'abreviacao.required_if' => 'A abreviação do tipo de documento é obrigatória!',
+        'abreviacao.max' => 'A abreviação do tipo de documento não pode exceder 20 caracteres!',
     ];
 }
