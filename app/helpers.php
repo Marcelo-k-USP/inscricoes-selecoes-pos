@@ -70,6 +70,14 @@ if (!function_exists('formatarDataHora')) {
     }
 }
 
+if (!function_exists('formatarDataHoraAtualComMilissegundos')) {
+    function formatarDataHoraAtualComMilissegundos()
+    {
+        $data_hora_atual = Carbon::createFromTimestamp(microtime(true), config('app.timezone'));
+        return $data_hora_atual->format('YmdHis'). str_pad((int) ($data_hora_atual->micro / 1000), 3, '0', STR_PAD_LEFT);
+    }
+}
+
 if (!function_exists('addWorkingDays')) {
     function addWorkingDays($date, $offset) {
         $carbonDate = Carbon::parse($date);
