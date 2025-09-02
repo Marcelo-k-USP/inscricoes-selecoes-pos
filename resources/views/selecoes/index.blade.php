@@ -18,9 +18,9 @@
     <thead>
       <tr>
         <th>Número</th>
-        <th>Categoria</th>
-        <th>Programa</th>
         <th>Nome</th>
+        <th>Programa</th>
+        <th>Categoria</th>
         <th class="text-right">Criada em</th>
         <th class="text-right">Atualização</th>
       </tr>
@@ -33,9 +33,9 @@
             <a class="mr-2" href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->id }}</a>
             @include('selecoes.partials.status-muted')
           </td>
-          <td>{{ $selecao->categoria->nome }}</td>
-          <td>{{ $selecao->programa?->nome ?? 'N/A' }}</td>
           <td>{{ $selecao->nome }}</td>
+          <td>{{ $selecao->programa?->nome ?? 'N/A' }}</td>
+          <td>{{ $selecao->categoria->nome }}</td>
           <td class="text-right">
             <span class="d-none">{{ $selecao->created_at }}</span>
             {{ formatarDataHora($selecao->created_at) }}
