@@ -22,9 +22,10 @@
     <table class="table table-striped tabela-solicitacoesisencaotaxa display responsive" style="width:100%">
       <thead>
         <tr>
-          <th>Solicitante</th>
+          <th>Número</th>
+          <th>Candidato</th>
           <th>Seleção</th>
-          <th class="text-right">Efetuada em</th>
+          <th class="text-right">Criada em</th>
           <th class="text-right">Atualização</th>
         </tr>
       </thead>
@@ -33,17 +34,19 @@
           <tr>
             <td>
               @include('solicitacoesisencaotaxa.partials.status-small')
-              <a href="solicitacoesisencaotaxa/edit/{{ $solicitacaoisencaotaxa->id }}">
-                @php
-                  $nome = null;
-                  if (!is_null($solicitacaoisencaotaxa->extras)) {
-                    $extras = json_decode($solicitacaoisencaotaxa->extras);
-                    if ($extras && property_exists($extras, 'nome'))
-                      $nome = Str::limit($extras->nome, 20);
-                  }
-                @endphp
-                {{ $nome }}</a>
+              <a href="solicitacoesisencaotaxa/edit/{{ $solicitacaoisencaotaxa->id }}">{{ $solicitacaoisencaotaxa->id }}</a>
               @include('solicitacoesisencaotaxa.partials.status-muted')
+            </td>
+            <td>
+              @php
+                $nome = null;
+                if (!is_null($solicitacaoisencaotaxa->extras)) {
+                  $extras = json_decode($solicitacaoisencaotaxa->extras);
+                  if ($extras && property_exists($extras, 'nome'))
+                    $nome = Str::limit($extras->nome, 32);
+                }
+              @endphp
+              {{ $nome }}
             </td>
             <td>
               {{ $solicitacaoisencaotaxa->selecao->nome }} ({{ $solicitacaoisencaotaxa->selecao->categoria->nome }})
@@ -88,7 +91,7 @@
           'paging': {{ $paginar ? 'true' : 'false' }},
           'sort': true,
           'order': [
-            [3, 'desc']    // ordenado por data de atualização descrescente
+            [4, 'desc']    // ordenado por data de atualização descrescente
           ],
           'fixedHeader': true,
           language: {

@@ -22,10 +22,11 @@
     <table class="table table-striped tabela-inscricoes display responsive" style="width:100%">
       <thead>
         <tr>
-          <th>Inscrito</th>
+          <th>Número</th>
+          <th>Candidato</th>
           <th>Seleção</th>
           <th>Nível com Linha de Pesquisa/Tema ou Disciplina(s)</th>
-          <th class="text-right">Efetuada em</th>
+          <th class="text-right">Criada em</th>
           <th class="text-right">Atualização</th>
         </tr>
       </thead>
@@ -34,18 +35,20 @@
           <tr>
             <td>
               @include('inscricoes.partials.status-small')
-              <a href="inscricoes/edit/{{ $inscricao->id }}">
-                @php
-                  $nome = null;
-                  $extras = null;
-                  if (!is_null($inscricao->extras)) {
-                    $extras = json_decode($inscricao->extras);
-                    if ($extras && property_exists($extras, 'nome'))
-                      $nome = Str::limit($extras->nome, 20);
-                  }
-                @endphp
-                {{ $nome }}</a>
+              <a href="inscricoes/edit/{{ $inscricao->id }}">{{ $inscricao->id }}</a>
               @include('inscricoes.partials.status-muted')
+            </td>
+            <td>
+              @php
+                $nome = null;
+                $extras = null;
+                if (!is_null($inscricao->extras)) {
+                  $extras = json_decode($inscricao->extras);
+                  if ($extras && property_exists($extras, 'nome'))
+                    $nome = Str::limit($extras->nome, 32);
+                }
+              @endphp
+              {{ $nome }}
             </td>
             <td>
               {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})
@@ -109,7 +112,7 @@
           'paging': {{ $paginar ? 'true' : 'false' }},
           'sort': true,
           'order': [
-            [3, 'desc']    // ordenado por data de atualização descrescente
+            [5, 'desc']    // ordenado por data de atualização descrescente
           ],
           'fixedHeader': true,
           language: {

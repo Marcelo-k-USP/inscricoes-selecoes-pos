@@ -22,13 +22,11 @@
         <div class="card-header">
           <div class="card-title form-inline my-0">
             @if ($modo == 'edit')
-              <a href="selecoes">Seleções</a> <i class="fas fa-angle-right mx-2"></i>
-              {{ $selecao->nome }}
-              @if (!is_null($selecao->categoria))
-                &nbsp;({{ $selecao->categoria->nome }})
-              @endif
-              &nbsp; | &nbsp; &nbsp;
-              @include('selecoes.partials.btn-enable-disable')
+              <div style="display: flex; align-items: center; white-space: nowrap;">
+                <a href="selecoes">Seleções</a> <i class="fas fa-angle-right mx-2"></i> Seleção nº {{ $selecao->id }}
+                &nbsp; | &nbsp;
+                @include('selecoes.partials.btn-enable-disable')
+              </div>
             @else
               Nova Seleção
             @endif

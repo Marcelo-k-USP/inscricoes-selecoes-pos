@@ -17,29 +17,33 @@
   <table class="table table-striped table-hover datatable-nopagination display responsive" style="width:100%">
     <thead>
       <tr>
+        <th>Número</th>
         <th>Categoria</th>
         <th>Programa</th>
         <th>Nome</th>
-        <th>Solicitações de Isenção de Taxa<br />Início</th>
-        <th>Fim</th>
-        <th>Inscrições<br />Início</th>
-        <th>Fim</th>
+        <th class="text-right">Criada em</th>
+        <th class="text-right">Atualização</th>
       </tr>
     </thead>
     <tbody>
       @foreach ($objetos as $selecao)
         <tr>
-          <td>{{ $selecao->categoria->nome }}</td>
-          <td>{{ $selecao->programa?->nome ?? 'N/A' }}</td>
           <td>
             @include('selecoes.partials.status-small')
-            <a class="mr-2" href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->nome }}</a>
+            <a class="mr-2" href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->id }}</a>
             @include('selecoes.partials.status-muted')
           </td>
-          <td>{{ formatarDataHora($selecao->tem_taxa && $selecao->fluxo_continuo ? $selecao->inscricoes_datahora_inicio : $selecao->solicitacoesisencaotaxa_datahora_inicio) }}</td>
-          <td>{{ formatarDataHora($selecao->tem_taxa && $selecao->fluxo_continuo ? $selecao->inscricoes_datahora_fim : $selecao->solicitacoesisencaotaxa_datahora_fim) }}</td>
-          <td>{{ formatarDataHora($selecao->inscricoes_datahora_inicio) }}</td>
-          <td>{{ formatarDataHora($selecao->inscricoes_datahora_fim) }}</td>
+          <td>{{ $selecao->categoria->nome }}</td>
+          <td>{{ $selecao->programa?->nome ?? 'N/A' }}</td>
+          <td>{{ $selecao->nome }}</td>
+          <td class="text-right">
+            <span class="d-none">{{ $selecao->created_at }}</span>
+            {{ formatarDataHora($selecao->created_at) }}
+          </td>
+          <td class="text-right">
+            <span class="d-none">{{ $selecao->updated_at }}</span>
+            {{ formatarDataHora($selecao->updated_at) }}
+          </td>
         </tr>
       @endforeach
     </tbody>
@@ -57,7 +61,15 @@
       oTable = $('.datatable-nopagination').DataTable({
         dom:
           't{{ $paginar ? 'p' : '' }}',
-          'paging': {{ $paginar ? 'true' : 'false' }}
+          'paging': {{ $paginar ? 'true' : 'false' }},
+          'sort': true,
+          'order': [
+            [5, 'desc']    // ordenado por data de atualização descrescente
+          ],
+          'fixedHeader': true,
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json'
+          }
       });
     });
   </script>
