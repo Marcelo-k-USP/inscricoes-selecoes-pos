@@ -67,9 +67,11 @@ class ArquivoController extends Controller
         $classe_nome = fixJson($request->classe_nome);
         $classe_nome_plural = $this->obterClasseNomePlural($classe_nome);
         $classe_nome_plural_acentuado = $this->obterClasseNomePluralAcentuado($classe_nome);
+        $classe_nome_abreviada = $this->obterClasseNomeAbreviada($classe_nome);
         $classe = $this->obterClasse($classe_nome);
         $objeto = $classe::find($request->objeto_id);
         $form = $this->obterForm($classe_nome, $objeto);
+        $tipoarquivo = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipoarquivo)->first();
 
         $validator = \Validator::make($request->all(), [
             'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('inscricoes-selecoes-pos.upload_max_filesize'),
@@ -82,15 +84,18 @@ class ArquivoController extends Controller
         $this->authorize('arquivos.create', [$objeto, $classe_nome]);
 
         // transaction para não ter problema de inconsistência do DB
-        $db_transaction = DB::transaction(function () use ($request, $classe_nome, $classe_nome_plural, $classe_nome_plural_acentuado, $objeto) {
+        $db_transaction = DB::transaction(function () use ($request, $classe_nome, $classe_nome_plural, $classe_nome_plural_acentuado, $classe_nome_abreviada, $objeto, $tipoarquivo) {
 
             foreach ($request->arquivo as $arq) {
                 $arquivo = new Arquivo;
                 $arquivo->user_id = \Auth::user()->id;
-                $arquivo->nome_original = $arq->getClientOriginalName();
+                $arquivo->nome_original = $classe_nome_abreviada . $objeto->id . '_'
+                                            . $tipoarquivo->abreviacao . '_'
+                                            . formatarDataHoraAtualComMilissegundos()
+                                            . '.' . pathinfo($arq->getClientOriginalName(), PATHINFO_EXTENSION);
                 $arquivo->caminho = $arq->store('./arquivos/' . $objeto->created_at->year);
                 $arquivo->mimeType = $arq->getClientMimeType();
-                $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipoarquivo)->first()->id;
+                $arquivo->tipoarquivo_id = $tipoarquivo->id;
                 $arquivo->saveQuietly();    // vamos salvar sem evento pois a classe ainda não está cadastrada
 
                 $arquivo->{$classe_nome_plural}()->attach($objeto->id, ['tipo' => $request->tipoarquivo]);
@@ -218,6 +223,17 @@ class ArquivoController extends Controller
                 return 'Solicitações de Isenção de Taxa';
             case 'Inscricao':
                 return 'Inscrições';
+        }
+    }
+
+    private function obterClasseNomeAbreviada(string $classe_nome) {
+        switch ($classe_nome) {
+            case 'Selecao':
+                return 'Sel';
+            case 'SolicitacaoIsencaoTaxa':
+                return 'SolicIsenc';
+            case 'Inscricao':
+                return 'Insc';
         }
     }
 
