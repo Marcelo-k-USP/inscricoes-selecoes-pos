@@ -41,6 +41,7 @@
       @endif
 
       $('#form_principal').find('input, select').filter(':visible').not(':disabled').first().focus();
+      updateAbreviacao();
       updateMinimo();
       updateAlunoEspecial();
     });
@@ -58,8 +59,17 @@
     });
 
     $('#classe_nome').on('change', function () {
+      updateAbreviacao();
       updateAlunoEspecial();
     });
+
+    function updateAbreviacao() {
+      if ($('#classe_nome').val() != 'Inscrições') {
+        $('#abreviacao').val('');
+        $('#abreviacao').parents('div').eq(1).hide();
+      } else
+        $('#abreviacao').parents('div').eq(1).show();
+    }
 
     function updateMinimo() {
       if (!$('#obrigatorio').prop('checked')) {
@@ -73,8 +83,7 @@
       if ($('#classe_nome').val() != 'Inscrições') {
         $('#aluno_especial').prop('checked', false);    // muito poucos tipos de documento são exigidos para alunos especiais, então deixamos default como desmarcado aqui
         $('#aluno_especial').closest('div.form-group').hide();
-      }
-      else
+      } else
         $('#aluno_especial').closest('div.form-group').show();
     }
   </script>

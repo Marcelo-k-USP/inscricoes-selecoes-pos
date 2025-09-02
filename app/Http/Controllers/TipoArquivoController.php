@@ -132,6 +132,7 @@ class TipoArquivoController extends Controller
         $request->merge(['aluno_especial' => $request->has('aluno_especial')]);
 
         $tipoarquivo->nome = $request->nome;
+        $tipoarquivo->abreviacao = $request->abreviacao;
         $tipoarquivo->obrigatorio = $request->obrigatorio;
         $tipoarquivo->minimo = $request->minimo;
         $tipoarquivo->aluno_especial = $request->aluno_especial;

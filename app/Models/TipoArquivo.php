@@ -18,6 +18,7 @@ class TipoArquivo extends Model
     protected $fillable = [
         'classe_nome',
         'nome',
+        'abreviacao',
         'obrigatorio',
         'minimo',
         'aluno_especial',
@@ -34,6 +35,10 @@ class TipoArquivo extends Model
         [
             'name' => 'nome',
             'label' => 'Nome',
+        ],
+        [
+            'name' => 'abreviacao',
+            'label' => 'Abreviação',
         ],
         [
             'name' => 'obrigatorio',
