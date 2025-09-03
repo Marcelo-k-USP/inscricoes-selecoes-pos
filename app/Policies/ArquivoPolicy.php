@@ -111,7 +111,7 @@ class ArquivoPolicy
      */
     public function update(User $user, Arquivo $arquivo, object $objeto, string $classe_nome)
     {
-        return $this->authorize_update_delete($user, $arquivo, $objeto, $classe_nome);
+        //
     }
 
     /**
@@ -124,33 +124,6 @@ class ArquivoPolicy
      * @return mixed
      */
     public function delete(User $user, Arquivo $arquivo, object $objeto, string $classe_nome)
-    {
-        return $this->authorize_update_delete($user, $arquivo, $objeto, $classe_nome);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function restore(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function forceDelete(User $user)
-    {
-        //
-    }
-
-    private function authorize_update_delete(User $user, Arquivo $arquivo, object $objeto, string $classe_nome)
     {
         if ($classe_nome == 'Selecao')
             return Gate::any(['perfiladmin', 'perfilgerente']);    // permite que admins e gerentes renomeiem/apaguem arquivos de seleção
@@ -178,5 +151,27 @@ class ArquivoPolicy
             if (($autor_arquivo_id == $user->id) && $autor_inscricao && ($autor_inscricao->id == $user->id))
                 return true;                                       // permite que usuários renomeiem/apaguem arquivos em suas inscrições
         }
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function restore(User $user)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function forceDelete(User $user)
+    {
+        //
     }
 }
