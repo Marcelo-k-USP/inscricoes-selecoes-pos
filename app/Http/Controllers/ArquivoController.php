@@ -124,37 +124,6 @@ class ArquivoController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request   $request
-     * @param  \App\Models\Arquivo        $arquivo
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Arquivo $arquivo)
-    {
-        $classe_nome = fixJson($request->classe_nome);
-        $classe_nome_plural = $this->obterClasseNomePlural($classe_nome);
-        $classe = $this->obterClasse($classe_nome);
-        $objeto = $classe::find($request->objeto_id);
-        $form = $this->obterForm($classe_nome, $objeto);
-
-        $request->validate(
-            ['nome_arquivo' => 'required'],
-            ['nome_arquivo.required' => 'O nome do arquivo é obrigatório!']
-        );
-        $this->authorize('arquivos.update', [$arquivo, $objeto, $classe_nome]);
-
-        $nome_antigo = $arquivo->nome_original;
-        $extensao = pathinfo($nome_antigo, PATHINFO_EXTENSION);
-        $arquivo->nome_original = $request->nome_arquivo . '.' . $extensao;
-        $arquivo->update();
-
-        $request->session()->flash('alert-success', 'Documento renomeado com sucesso');
-        \UspTheme::activeUrl($classe_nome_plural);
-        return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request   $request

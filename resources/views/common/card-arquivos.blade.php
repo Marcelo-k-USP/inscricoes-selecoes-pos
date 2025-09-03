@@ -76,12 +76,9 @@
                   @if (preg_match('/^(application\/pdf|image\/png|image\/jpeg)$/i', $arquivo->mimeType))
                     <li class="modo-visualizacao">
                       @if (Gate::allows($classe_nome_plural . '.updateArquivos', $objeto) && $editavel)
-                        <div class="arquivo-acoes duas-acoes d-inline-block">
+                        <div class="arquivo-acoes uma-acao d-inline-block">
                           <a onclick="excluir_arquivo({{ $arquivo->id }}, '{{ $arquivo->nome_original }}'); return false;" class="btn btn-outline-danger btn-sm btn-deletar btn-arquivo-acao">
                             <i class="far fa-trash-alt"></i>
-                          </a>
-                          <a onclick="toggle_modo_edicao(this, {{ $arquivo->id }});" class="btn btn-outline-warning btn-sm btn-editar btn-arquivo-acao">
-                            <i class="far fa-edit"></i>
                           </a>
                         </div>
                       @endif
@@ -97,20 +94,6 @@
                       <a href="arquivos/{{ $arquivo->id }}" title="{{ $arquivo->nome_original }}" class="nome-arquivo-display"><i class="fas fa-file-pdf"></i>
                         <span>{{ $arquivo->nome_original }}</span>
                       </a>
-                      <div class="editar-nome-arquivo-form">
-                        <div class="input-wrapper">
-                          <input type="hidden" id="nome_arquivo_original_{{ $arquivo->id }}" value="{{ pathinfo($arquivo->nome_original, PATHINFO_FILENAME) }}">
-                          <input type="text" id="nome_arquivo_{{ $arquivo->id }}" class="input-nome-arquivo" value="{{ pathinfo($arquivo->nome_original, PATHINFO_FILENAME) }}">
-                        </div>
-                        <div class="btns-wrapper">
-                          <a onclick="alterar_arquivo({{ $arquivo->id }}); return false;" class="btn btn-outline-success btn-sm ml-2 btn-arquivo-acao">
-                            <i class="fas fa-check"></i>
-                          </a>
-                          <a onclick="toggle_modo_edicao(this, {{ $arquivo->id }});" class="btn btn-outline-danger btn-sm btn-arquivo-acao limpar-edicao-nome">
-                            <i class="fas fa-times"></i>
-                          </a>
-                        </div>
-                      </div>
                     </li>
                   @endif
                 @endforeach

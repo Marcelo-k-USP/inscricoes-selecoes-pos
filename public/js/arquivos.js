@@ -8,21 +8,9 @@ $(document).ready(function() {
   });
 });
 
-function toggle_modo_edicao(element, arquivo_id) {
-  var li = $(element).closest('li');
-  li.toggleClass('modo-edicao');
-  li.toggleClass('modo-visualizacao');
-  $('#nome_arquivo_' + arquivo_id).val($('#nome_arquivo_original_' + arquivo_id).val());
-}
-
 function excluir_arquivo(arquivo_id, arquivo_nome) {
   if (confirm('Tem certeza que deseja deletar o documento ' + arquivo_nome + '?'))
     submete_form('arquivos/' + arquivo_id, 'delete');
-}
-
-function alterar_arquivo(arquivo_id) {
-  $('#nome_arquivo').val($('#nome_arquivo_' + arquivo_id).val());
-  submete_form('arquivos/' + arquivo_id, 'patch');
 }
 
 function gerar_boletos(inscricao_id) {
