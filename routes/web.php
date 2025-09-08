@@ -65,6 +65,8 @@ Route::delete('inscricoes/{inscricao}/disciplinas/{disciplina}', [InscricaoContr
 Route::get('consulta-cep', [EnderecoController::class, 'consultarCep'])->name('consulta.cep');
 
 // ARQUIVOS
+Route::get('arquivos/ziptodosdoobjeto/{classe_nome}/{objeto_id}', [ArquivoController::class, 'zipTodosDoObjeto'])->name('arquivos.ziptodosdoobjeto');    // pelo fato do objeto poder ser de diferentes tipos, é melhor usarmos o id dele ao invés dele propriamente dito
+Route::get('arquivos/downloadtodosdoobjeto/{classe_nome}/{objeto_id}', [ArquivoController::class, 'downloadTodosDoObjeto'])->name('arquivos.downloadtodosdoobjeto');
 Route::resource('arquivos', ArquivoController::class);
 
 // SELEÇÕES

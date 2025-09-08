@@ -28,6 +28,7 @@
       <span data-toggle="tooltip" data-html="true" title="Tamanho máximo de cada arquivo: {{ $max_upload_size }}KB ">
         <i class="fas fa-question-circle text-secondary ml-2"></i>
       </span>
+      <span class="btn btn-sm btn-light text-primary ml-2" onclick="baixar_todos_arquivos('{{ $classe_nome }}', {{ $objeto->id }})"> <i class="fas fa-download"></i> Baixar Todos</span>
     </div>
     <div class="card-body">
       <input type="hidden" name="classe_nome" value="{{ $classe_nome }}">
@@ -115,8 +116,7 @@
 @parent
   <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
   <script type="text/javascript">
-    var max_upload_size = {{ $max_upload_size }};
-    var count_tiposarquivo = {{ $objeto->tiposarquivo->count() }};
+    var max_upload_size = {{ $max_upload_size }};    // esta variável precisa ser definida aqui para que fique disponível no arquivos.js
   </script>
   <script src="js/arquivos.js"></script>
 @endsection

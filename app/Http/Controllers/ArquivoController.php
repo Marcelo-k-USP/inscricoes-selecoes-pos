@@ -14,19 +14,24 @@ use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\TipoArquivo;
 use App\Models\User;
+use App\Services\ZipService;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 
 class ArquivoController extends Controller
 {
-    public function __construct()
+    protected $zipService;
+
+    public function __construct(ZipService $zipService)
     {
         $this->middleware('auth')->except('show');
+        $this->zipService = $zipService;
     }
 
     public function index()
@@ -160,6 +165,49 @@ class ArquivoController extends Controller
         $request->session()->flash('alert-success', 'Documento removido com sucesso');
         \UspTheme::activeUrl($classe_nome_plural);
         return view($classe_nome_plural . '.edit', $this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
+    }
+
+    /**
+     * Gera zip com todos os arquivos do objeto indicado
+     *
+     * @param  string  $classe_nome
+     * @param  int     $objeto_id      - pelo fato do objeto poder ser de diferentes tipos, é melhor usarmos o id dele ao invés dele propriamente dito
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function zipTodosDoObjeto(string $classe_nome, int $objeto_id)
+    {
+        $objeto = $this->obterClasse($classe_nome)::findOrFail($objeto_id);
+        $this->authorize('viewAny', [$objeto, $classe_nome]);
+
+        $zip_name = $this->obterClasseNomeAbreviada($classe_nome) . $objeto->id . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
+        $zip_fullfilename = $this->zipService->gerarZip($objeto->arquivos, $zip_name);
+        if (!$zip_fullfilename)
+            return response()->json(['status' => 'erro', 'mensagem' => 'Erro ao gerar o arquivo zip.']);
+
+        return response()->json(['status' => 'concluído', 'zip_name' => $zip_name]);
+    }
+
+    /**
+     * Faz o download do zip com todos os arquivos do objeto indicado
+     *
+     * @param  string  $classe_nome
+     * @param  int     $objeto_id      - pelo fato do objeto poder ser de diferentes tipos, é melhor usarmos o id dele ao invés dele propriamente dito
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    public function downloadTodosDoObjeto(string $classe_nome, int $objeto_id, Request $request)
+    {
+        $objeto = $this->obterClasse($classe_nome)::findOrFail($objeto_id);
+        $this->authorize('viewAny', [$objeto, $classe_nome]);
+
+        $zip_fullfilename = storage_path('app/temp/' . $request->query('zip_name'));
+        if (!File::exists($zip_fullfilename))
+            return response('Arquivo zip não encontrado.', 404);
+
+        while (ob_get_level() > 0)    // este while é para não estourar erro quando usando docker
+            ob_end_clean();           // sem este clean, o arquivo zip será baixado corrompido
+
+        return response()->download($zip_fullfilename, basename($zip_fullfilename))->deleteFileAfterSend(true);
     }
 
     private function obterClasseNomeFormatada(string $classe_nome) {

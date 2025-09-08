@@ -14,6 +14,7 @@
 <div class="card bg-light mb-3 w-100" id="card-informativos">
   <div class="card-header form-inline">
     Informativos
+    <span class="btn btn-sm btn-light text-primary ml-2" onclick="baixar_todos_arquivos('Selecao', {{ $objeto->selecao_id }})"> <i class="fas fa-download"></i> Baixar Todos</span>
   </div>
   <div class="card-body">
     @foreach ($tiposarquivo_selecao as $tipoarquivo)
@@ -37,11 +38,3 @@
     @endforeach
   </div>
 </div>
-
-@include('common.modal-processando')
-
-@section('javascripts_bottom')
-@parent
-  <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-@endsection

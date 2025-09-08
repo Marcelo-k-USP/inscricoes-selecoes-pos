@@ -14,12 +14,29 @@ class ArquivoPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User                                            $user
+     * @param  \App\Models\Selecao ou SolicitacaoIsencaoTaxa ou Inscricao  $objeto
+     * @param  string                                                      $classe_nome
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user, object $objeto, string $classe_nome)
     {
-        //
+        if ($classe_nome == 'Selecao')
+            return true;                                           // permite que todos baixem arquivos de seleções
+
+        if (Gate::allows('perfiladmin'))
+            return true;                                           // permite que admins baixem todos os arquivos
+        elseif (Gate::allows('perfilgerente')) {
+            if ($user->gerenciaPrograma($objeto->selecao->programa_id))
+                return true;
+        } elseif (Gate::allows('perfildocente')) {
+            if ($user->gerenciaProgramaFuncao('Docentes do Programa', $objeto->selecao->programa_id))
+                return true;
+        } elseif (Gate::allows('perfilusuario')) {
+            $autor_objeto = $objeto->pessoas('Autor');
+            if ($autor_objeto && ($autor_objeto->id == $user->id))
+                return true;                                       // permite que usuários baixem arquivos de seus objetos
+        }
     }
 
     /**
@@ -71,9 +88,9 @@ class ArquivoPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User                  $user
-     * @param  \App\Models\Selecao ou Inscricao  $objeto
-     * @param  string                            $classe_nome
+     * @param  \App\Models\User                                            $user
+     * @param  \App\Models\Selecao ou SolicitacaoIsencaoTaxa ou Inscricao  $objeto
+     * @param  string                                                      $classe_nome
      * @return mixed
      */
     public function create(User $user, object $objeto, string $classe_nome)
@@ -103,10 +120,10 @@ class ArquivoPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User                  $user
-     * @param  \App\Models\Arquivo               $arquivo
-     * @param  \App\Models\Selecao ou Inscricao  $objeto
-     * @param  string                            $classe_nome
+     * @param  \App\Models\User                                            $user
+     * @param  \App\Models\Arquivo                                         $arquivo
+     * @param  \App\Models\Selecao ou SolicitacaoIsencaoTaxa ou Inscricao  $objeto
+     * @param  string                                                      $classe_nome
      * @return mixed
      */
     public function update(User $user, Arquivo $arquivo, object $objeto, string $classe_nome)
@@ -117,10 +134,10 @@ class ArquivoPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User                  $user
-     * @param  \App\Models\Arquivo               $arquivo
-     * @param  \App\Models\Selecao ou Inscricao  $objeto
-     * @param  string                            $classe_nome
+     * @param  \App\Models\User                                            $user
+     * @param  \App\Models\Arquivo                                         $arquivo
+     * @param  \App\Models\Selecao ou SolicitacaoIsencaoTaxa ou Inscricao  $objeto
+     * @param  string                                                      $classe_nome
      * @return mixed
      */
     public function delete(User $user, Arquivo $arquivo, object $objeto, string $classe_nome)
