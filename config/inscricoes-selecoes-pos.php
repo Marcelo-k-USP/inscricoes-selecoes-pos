@@ -21,4 +21,7 @@ return [
 
     // tempo de expiração do link de redefinição de senha de usuários locais (em minutos)
     'password_reset_link_expiry_time' => (int) env('PASSWORD_RESET_LINK_EXPIRY_TIME', 60),
+
+    // média em segundos do tempo para download de 1 Gb
+    'timeout_por_gb' => (int) env('TIMEOUT_POR_GB', 90),
 ];

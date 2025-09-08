@@ -179,6 +179,12 @@ class ArquivoController extends Controller
         $objeto = $this->obterClasse($classe_nome)::findOrFail($objeto_id);
         $this->authorize('viewAny', [$objeto, $classe_nome]);
 
+        // aumenta o tempo máximo de execução deste método com base no tamanho do arquivo a baixar
+        $totalsize = $objeto->arquivos->sum(function ($arquivo) {
+            return Storage::size($arquivo->caminho);
+        });
+        ini_set('max_execution_time', $this->obterTimeoutMaximo($totalsize));
+
         $zip_name = $this->obterClasseNomeAbreviada($classe_nome) . $objeto->id . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
         $zip_fullfilename = $this->zipService->gerarZip($objeto->arquivos, $zip_name);
         if (!$zip_fullfilename)
@@ -204,10 +210,19 @@ class ArquivoController extends Controller
         if (!File::exists($zip_fullfilename))
             return response('Arquivo zip não encontrado.', 404);
 
+        // aumenta o tempo máximo de execução deste método com base no tamanho do arquivo a baixar
+        $totalsize = filesize($zip_fullfilename);
+        ini_set('max_execution_time', $this->obterTimeoutMaximo($totalsize));
+
         while (ob_get_level() > 0)    // este while é para não estourar erro quando usando docker
             ob_end_clean();           // sem este clean, o arquivo zip será baixado corrompido
 
         return response()->download($zip_fullfilename, basename($zip_fullfilename))->deleteFileAfterSend(true);
+    }
+
+    private function obterTimeoutMaximo($filesize) {
+        $filesize = $filesize / (1024 * 1024 * 1024);    // tamanho do arquivo em Gb
+        return max(60, ceil($filesize * env('inscricoes-selecoes-pos.timeout_por_gb')));    // o tempo máximo será de no mínimo 60 segundos
     }
 
     private function obterClasseNomeFormatada(string $classe_nome) {
