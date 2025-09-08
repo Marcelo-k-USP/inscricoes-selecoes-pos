@@ -38,3 +38,8 @@
     @endforeach
   </div>
 </div>
+
+{{-- todos os blades que incluem este card-informativos também incluem o card-arquivos
+     e o card-arquivos já inclui o arquivos.js
+     sendo assim, não posso aqui, de novo, incluir o arquivos.js
+     senão, ao clicar no "Baixar Todos", executaria duas vezes a função para baixar todos, gerando zip duplicado e baixando duplicado --}}
