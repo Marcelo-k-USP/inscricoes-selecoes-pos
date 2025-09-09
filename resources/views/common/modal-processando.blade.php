@@ -7,6 +7,7 @@
       <div class="modal-body">
         <span id="processando-mensagem">Processando... Aguarde.</span>
       </div>
+      <div class="modal-footer" id="modal-processando-footer" style="display: none;"></div>
     </div>
   </div>
 </div>
