@@ -18,7 +18,7 @@
   @foreach ($selecao->contarInscricoesPorAno() as $anual)
     <tr>
       <th>{{ $anual->ano }}</th>
-      <th>
+      <th style="white-space: nowrap;">
         {{ $anual->count }}
         <a href="{{ route('selecoes.downloadinscricoes', $selecao) }}?ano={{ $anual->ano }}" title="Fazer download dos dados das inscrições"><i class="fas fa-download"></i></a>
         <a href="javascript:void(0);" onclick="baixar_todos_arquivos('arquivos/ziptodosdosobjetosdaselecao/Inscricao/{{ $selecao->id }}', 'arquivos/downloadtodosdosobjetosdaselecao/Inscricao/{{ $selecao->id }}', true)" title="Fazer download dos documentos das inscrições"><i class="fas fa-download" style="color: #CD5C5C;"></i></a>
