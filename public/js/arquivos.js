@@ -8,6 +8,12 @@ $(document).ready(function() {
   });
 });
 
+$(document).on('click', '#btn-fechar-modal-processando', function () {
+  $('#modal_processando').modal('hide');
+  $('#modal-processando-footer').html('').hide();
+  $('#processando-mensagem').html('Processando... Aguarde.');
+});
+
 function baixar_todos_arquivos(url_zip, url_download, too_many_files = false) {
   $('#modal_processando').modal('show');
 
@@ -32,10 +38,12 @@ function baixar_todos_arquivos(url_zip, url_download, too_many_files = false) {
         }, 2000);    // espera 2 segundos após o download iniciar para fechar o modal, para dar tempo de ler a mensagem "Baixando o arquivo zip... Aguarde."
       } else {
         $('#processando-mensagem').html(data.mensagem);
+        $('#modal-processando-footer').html('<button type="button" class="btn btn-secondary modal-dismiss" id="btn-fechar-modal-processando">Fechar</button>').show();
       }
     },
     error: function() {
-      $('#modal_processando .modal-body').html('Ocorreu um erro ao iniciar a geração do arquivo.<br />Por favor, tente novamente.');
+      $('#processando-mensagem').html('Ocorreu um erro ao iniciar a geração do arquivo.<br />Por favor, tente novamente.');
+      $('#modal-processando-footer').html('<button type="button" class="btn btn-secondary modal-dismiss" id="btn-fechar-modal-processando">Fechar</button>').show();
     }
   });
 }
