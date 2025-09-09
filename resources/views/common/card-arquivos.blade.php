@@ -28,7 +28,9 @@
       <span data-toggle="tooltip" data-html="true" title="Tamanho máximo de cada arquivo: {{ $max_upload_size }}KB ">
         <i class="fas fa-question-circle text-secondary ml-2"></i>
       </span>
-      <span class="btn btn-sm btn-light text-primary ml-2" onclick="baixar_todos_arquivos('arquivos/ziptodosdoobjeto/{{ $classe_nome }}/{{ $objeto->id }}', 'arquivos/downloadtodosdoobjeto/{{ $classe_nome }}/{{ $objeto->id }}')"> <i class="fas fa-download"></i> Baixar Todos</span>
+      @if ($objeto->arquivos->count() > 0)
+        <span class="btn btn-sm btn-light text-primary ml-2" onclick="baixar_todos_arquivos('arquivos/ziptodosdoobjeto/{{ $classe_nome }}/{{ $objeto->id }}', 'arquivos/downloadtodosdoobjeto/{{ $classe_nome }}/{{ $objeto->id }}')"> <i class="fas fa-download"></i> Baixar Todos</span>
+      @endif
     </div>
     <div class="card-body">
       <input type="hidden" name="classe_nome" value="{{ $classe_nome }}">
