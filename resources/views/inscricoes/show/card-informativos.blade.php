@@ -14,7 +14,7 @@
 <div class="card bg-light mb-3 w-100" id="card-informativos">
   <div class="card-header form-inline">
     Informativos
-    <span class="btn btn-sm btn-light text-primary ml-2" onclick="baixar_todos_arquivos('Selecao', {{ $objeto->selecao_id }})"> <i class="fas fa-download"></i> Baixar Todos</span>
+    <span class="btn btn-sm btn-light text-primary ml-2" onclick="baixar_todos_arquivos('arquivos/ziptodosdoobjeto/Selecao/{{ $objeto->selecao_id }}', 'arquivos/downloadtodosdoobjeto/Selecao/{{ $objeto->selecao_id }}')"> <i class="fas fa-download"></i> Baixar Todos</span>
   </div>
   <div class="card-body">
     @foreach ($tiposarquivo_selecao as $tipoarquivo)
