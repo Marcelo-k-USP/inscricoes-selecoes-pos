@@ -110,13 +110,11 @@
   </div>
 {{ html()->form()->close() }}
 
-@include('common.modal-processando')
+@once
+  @include('common.modal-processando')
+@endonce
 
 @section('javascripts_bottom')
-@parent
-  <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
-  <script type="text/javascript">
-    var max_upload_size = {{ $max_upload_size }};    // esta variável precisa ser definida aqui para que fique disponível no arquivos.js
-  </script>
-  <script src="js/arquivos.js"></script>
+  @parent
+  @include('partials.scripts-arquivos')
 @endsection
