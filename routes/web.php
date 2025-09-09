@@ -67,6 +67,8 @@ Route::get('consulta-cep', [EnderecoController::class, 'consultarCep'])->name('c
 // ARQUIVOS
 Route::get('arquivos/ziptodosdoobjeto/{classe_nome}/{objeto_id}', [ArquivoController::class, 'zipTodosDoObjeto'])->name('arquivos.ziptodosdoobjeto');    // pelo fato do objeto poder ser de diferentes tipos, é melhor usarmos o id dele ao invés dele propriamente dito
 Route::get('arquivos/downloadtodosdoobjeto/{classe_nome}/{objeto_id}', [ArquivoController::class, 'downloadTodosDoObjeto'])->name('arquivos.downloadtodosdoobjeto');
+Route::get('arquivos/ziptodosdosobjetosdaselecao/{classe_nome}/{selecao}', [ArquivoController::class, 'zipTodosDosObjetosDaSelecao'])->name('arquivos.ziptodosdosobjetosdaselecao');
+Route::get('arquivos/downloadtodosdosobjetosdaselecao/{classe_nome}/{selecao}', [ArquivoController::class, 'downloadTodosDosObjetosDaSelecao'])->name('arquivos.downloadtodosdosobjetosdaselecao');
 Route::resource('arquivos', ArquivoController::class);
 
 // SELEÇÕES

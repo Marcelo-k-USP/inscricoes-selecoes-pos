@@ -179,18 +179,8 @@ class ArquivoController extends Controller
         $objeto = $this->obterClasse($classe_nome)::findOrFail($objeto_id);
         $this->authorize('viewAny', [$objeto, $classe_nome]);
 
-        // aumenta o tempo máximo de execução deste método com base no tamanho do arquivo a baixar
-        $totalsize = $objeto->arquivos->sum(function ($arquivo) {
-            return Storage::size($arquivo->caminho);
-        });
-        ini_set('max_execution_time', $this->obterTimeoutMaximo($totalsize));
-
         $zip_name = $this->obterClasseNomeAbreviada($classe_nome) . $objeto->id . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
-        $zip_fullfilename = $this->zipService->gerarZip($objeto->arquivos, $zip_name);
-        if (!$zip_fullfilename)
-            return response()->json(['status' => 'erro', 'mensagem' => 'Erro ao gerar o arquivo zip.']);
-
-        return response()->json(['status' => 'concluído', 'zip_name' => $zip_name]);
+        return $this->zip($objeto->arquivos, $zip_name);
     }
 
     /**
@@ -206,13 +196,67 @@ class ArquivoController extends Controller
         $objeto = $this->obterClasse($classe_nome)::findOrFail($objeto_id);
         $this->authorize('viewAny', [$objeto, $classe_nome]);
 
-        $zip_fullfilename = storage_path('app/temp/' . $request->query('zip_name'));
+        return $this->downloadZip($request->query('zip_name'));
+    }
+
+    /**
+     * Gera zip com todos os arquivos de todos os objetos da classe indicada da seleção indicada
+     *
+     * @param  string               $classe_nome
+     * @param  \App\Models\Selecao  $selecao
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function zipTodosDosObjetosDaSelecao(string $classe_nome, Selecao $selecao)
+    {
+        $this->authorize('selecoes.view', $selecao);
+
+        $zip_name = $this->obterClasseNomeAbreviada('Selecao') . $selecao->id . '_' . $this->obterClasseNomeAbreviadaPlural($classe_nome) . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
+        $arquivos = collect();
+        switch ($classe_nome) {
+            case 'SolicitacaoIsencaoTaxa':
+                $arquivos = $selecao->solicitacoesisencaotaxa->flatMap(function ($solicitacaoisencaotaxa) { return $solicitacaoisencaotaxa->arquivos; });
+                break;
+            case 'Inscricao':
+                $arquivos = $selecao->inscricoes->flatMap(function ($inscricao) { return $inscricao->arquivos; });
+        }
+        return $this->zip($arquivos, $zip_name);
+    }
+
+    /**
+     * Faz o download do zip com todos os arquivos de todos os objetos da classe indicada da seleção indicada
+     *
+     * @param  string               $classe_nome
+     * @param  \App\Models\Selecao  $selecao
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    public function downloadTodosDosObjetosDaSelecao(string $classe_nome, Selecao $selecao, Request $request)
+    {
+        $this->authorize('selecoes.view', $selecao);
+
+        return $this->downloadZip($request->query('zip_name'));
+    }
+
+    private function zip(Collection $arquivos, string $zip_name)
+    {
+        $totalsize = $arquivos->sum(function ($arquivo) { return Storage::size($arquivo->caminho); });
+        ini_set('max_execution_time', $this->obterTimeoutMaximo($totalsize));    // aumenta o tempo máximo de execução deste método com base no tamanho do arquivo a baixar
+
+        $zip_fullfilename = $this->zipService->gerarZip($arquivos, $zip_name);
+        if (!$zip_fullfilename)
+            return response()->json(['status' => 'erro', 'mensagem' => 'Erro ao gerar o arquivo zip.']);
+
+        return response()->json(['status' => 'concluído', 'zip_name' => $zip_name]);
+    }
+
+    private function downloadZip(string $zip_name)
+    {
+        $zip_fullfilename = storage_path('app/temp/' . $zip_name);
         if (!File::exists($zip_fullfilename))
             return response('Arquivo zip não encontrado.', 404);
 
-        // aumenta o tempo máximo de execução deste método com base no tamanho do arquivo a baixar
         $totalsize = filesize($zip_fullfilename);
-        ini_set('max_execution_time', $this->obterTimeoutMaximo($totalsize));
+        ini_set('max_execution_time', $this->obterTimeoutMaximo($totalsize));    // aumenta o tempo máximo de execução deste método com base no tamanho do arquivo a baixar
 
         while (ob_get_level() > 0)    // este while é para não estourar erro quando usando docker
             ob_end_clean();           // sem este clean, o arquivo zip será baixado corrompido
@@ -220,7 +264,8 @@ class ArquivoController extends Controller
         return response()->download($zip_fullfilename, basename($zip_fullfilename))->deleteFileAfterSend(true);
     }
 
-    private function obterTimeoutMaximo($filesize) {
+    private function obterTimeoutMaximo($filesize)
+    {
         $filesize = $filesize / (1024 * 1024 * 1024);    // tamanho do arquivo em Gb
         return max(60, ceil($filesize * env('inscricoes-selecoes-pos.timeout_por_gb')));    // o tempo máximo será de no mínimo 60 segundos
     }
@@ -266,6 +311,17 @@ class ArquivoController extends Controller
                 return 'SolicIsenc';
             case 'Inscricao':
                 return 'Insc';
+        }
+    }
+
+    private function obterClasseNomeAbreviadaPlural(string $classe_nome) {
+        switch ($classe_nome) {
+            case 'Selecao':
+                return 'Sels';
+            case 'SolicitacaoIsencaoTaxa':
+                return 'SolicsIsenc';
+            case 'Inscricao':
+                return 'Inscs';
         }
     }
 

@@ -8,21 +8,21 @@ $(document).ready(function() {
   });
 });
 
-function baixar_todos_arquivos(classe_nome, objeto_id) {
+function baixar_todos_arquivos(url_zip, url_download, too_many_files = false) {
   $('#modal_processando').modal('show');
 
   // inicia geração do zip
-  $('#processando-mensagem').html('Gerando o arquivo zip... Aguarde.');
+  $('#processando-mensagem').html('Gerando o arquivo zip... Aguarde.' + (too_many_files ? '<br />Dependendo da quantidade de documentos, este processo pode demorar.' : ''));
   $.ajax({
-    url: 'arquivos/ziptodosdoobjeto/' + classe_nome + '/' + objeto_id,
+    url: url_zip,
     method: 'GET',
     success: function(data) {
       if (data.status === 'concluído') {
 
         // inicia o download do zip usando um link oculto
-        $('#processando-mensagem').html('Baixando o arquivo zip... Aguarde.');
+        $('#processando-mensagem').html('Baixando o arquivo zip... Aguarde.' + (too_many_files ? '<br />Dependendo da quantidade de documentos, este processo pode demorar.' : ''));
 
-        let a = $('<a>', { href: 'arquivos/downloadtodosdoobjeto/' + classe_nome + '/' + objeto_id + '?zip_name=' + data.zip_name, style: 'display:none' });
+        let a = $('<a>', { href: url_download + '?zip_name=' + data.zip_name, style: 'display:none' });
         a.appendTo('body');
         a[0].click();
         a.remove();
