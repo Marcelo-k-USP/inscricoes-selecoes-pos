@@ -271,7 +271,8 @@ class JSONForms
             foreach ($template as &$field)
                 if (!empty($field) &&
                     (($field['type'] == 'select') || ($field['type'] == 'radio')) &&
-                    isset($field['value'])) {
+                    isset($field['value']) &&
+                    is_array($field['value'])) {
                     $ordered_templatevalue = array_column($field['value'], 'order');
                     array_multisort($ordered_templatevalue, SORT_ASC, $field['value']);    // não colocar $field['value'] aqui, senão o array_multisort não consegue ordenar
                 }
