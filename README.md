@@ -115,7 +115,7 @@ Veja o [histórico de atualizações](docs/changelog.md).
 
 Este sistema foi projetado para rodar em servidores linux (Ubuntu e Debian).
 
--   Laravel 11
+-   Laravel 12
 -   PHP 8.3
 -   Apache ou Nginx
 -   Banco de dados local (MariaDB mas pode ser qualquer um suportado pelo Laravel)
