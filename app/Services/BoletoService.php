@@ -57,7 +57,7 @@ class BoletoService
                 // grava informações do arquivo no banco de dados
                 $arquivo = new Arquivo;
                 $arquivo->user_id = \Auth::user()->id;
-                $arquivo->nome_original = 'Insc' . $inscricao->id . '_Boleto_' . (is_null($disciplina_sigla) ? '' : strtolower($disciplina_sigla) . '_') . formatarDataHoraAtualComMilissegundos() . '.pdf';
+                $arquivo->nome_original = 'Insc' . $inscricao->id . '_Boleto_' . (is_null($disciplina_sigla) ? '' : strtoupper($disciplina_sigla) . '_') . formatarDataHoraAtualComMilissegundos() . '.pdf';
                 $arquivo->caminho = $arquivo_caminho;
                 $arquivo->mimeType = 'application/pdf';
                 $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', 'Inscrições')->where('nome', 'Boleto(s) de Pagamento da Inscrição')->first()->id;
