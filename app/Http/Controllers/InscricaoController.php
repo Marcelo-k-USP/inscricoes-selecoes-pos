@@ -280,6 +280,7 @@ class InscricaoController extends Controller
                             ['tipo' => 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']    // atualiza o tipo do arquivo para "Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas"
                         );
                         $arquivo->tipoarquivo_id = $tipoarquivo_boletodisciplinasdesinscritas->id;          // atualiza o tipo do arquivo para "Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas"
+                        $arquivo->nome_original = str_replace('_Boleto_', '_BoletoDiscDesins_', $arquivo->nome_original);    // atualiza o nome do arquivo para refletir o novo tipo
                         $arquivo->save();
                     }
                 }
