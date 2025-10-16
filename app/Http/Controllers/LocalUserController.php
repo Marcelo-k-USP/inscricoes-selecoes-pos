@@ -177,7 +177,8 @@ class LocalUserController extends Controller
     public function confirmaEmail(string $token)
     {
         // verifica se o token recebido existe
-        if (!DB::table('email_confirmations')->where('token', $token)->first())
+        $email_confirmation = DB::table('email_confirmations')->where('token', $token)->first();
+        if (!$email_confirmation)
             return $this->processa_erro_login('Este link é inválido');
 
         // marca o e-mail como confirmado
