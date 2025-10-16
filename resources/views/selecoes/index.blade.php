@@ -17,7 +17,8 @@
   <table class="table table-striped table-hover datatable-nopagination display responsive" style="width:100%">
     <thead>
       <tr>
-        <th>Número</th>
+        <th>Nro</th>
+        <th></th>
         <th>Nome</th>
         <th>Programa</th>
         <th>Categoria</th>
@@ -29,11 +30,15 @@
       @foreach ($objetos as $selecao)
         <tr>
           <td>
-            @include('selecoes.partials.status-small')
             <a class="mr-2" href="selecoes/edit/{{ $selecao->id }}">{{ $selecao->id }}</a>
+          </td>
+          <td>
+            @include('selecoes.partials.status-small')
+          </td>
+          <td>
+            {{ $selecao->nome }}
             @include('selecoes.partials.status-muted')
           </td>
-          <td>{{ $selecao->nome }}</td>
           <td>{{ $selecao->programa?->nome ?? 'N/A' }}</td>
           <td>{{ $selecao->categoria->nome }}</td>
           <td class="text-right">
@@ -64,9 +69,13 @@
           'paging': {{ $paginar ? 'true' : 'false' }},
           'sort': true,
           'order': [
-            [5, 'desc']    // ordenado por data de atualização descrescente
+            [6, 'desc']    // ordenado por data de atualização descrescente
           ],
           'fixedHeader': true,
+          columnDefs: [{
+            targets: 1,
+            orderable: false
+          }],
           language: {
             url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json'
           }
