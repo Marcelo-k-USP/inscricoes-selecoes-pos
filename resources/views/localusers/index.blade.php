@@ -30,9 +30,10 @@
       <thead>
         <tr>
           <th width="25%">Nome</th>
-          <th width="25%">E-mail</th>
-          <th width="20%">Confirmado?</th>
-          <th width="20%">Criado em</th>
+          <th width="20%">E-mail</th>
+          <th width="15%">Confirmação</th>
+          <th width="15%">Criado em</th>
+          <th width="15%">Atualização</th>
           <th width="10%">Ações</th>
         </tr>
       </thead>
@@ -41,8 +42,9 @@
           <tr>
             <td>{{ $localuser->name }}</td>
             <td>{{ $localuser->email }}</td>
-            <td>{{ $localuser->email_confirmado ? 'Sim' : 'Não' }}</td>
+            <td data-order="{{ $localuser->email_verified_at }}">{{ $localuser->email_confirmado ? formatarDataHora($localuser->email_verified_at) : 'N/A' }}</td>
             <td data-order="{{ $localuser->created_at }}">{{ formatarDataHora($localuser->created_at) }}</td>
+            <td data-order="{{ $localuser->updated_at }}">{{ formatarDataHora($localuser->updated_at) }}</td>
             <td>
               <div id="actions">
                 @can('localusers.update')
@@ -80,7 +82,7 @@
           't{{ $paginar ? 'p' : '' }}',
           'paging': {{ $paginar ? 'true' : 'false' }},
           'order': [
-            [2, 'desc']    // ordenado por data de criação descrescente
+            [4, 'desc']    // ordenado por data de atualização descrescente
           ],
           columnDefs: [
             { targets: -1, orderable: false }    // desativa ordenação da última coluna
