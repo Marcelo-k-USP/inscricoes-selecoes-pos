@@ -97,7 +97,7 @@ class LocalUserController extends Controller
             ['email' => $localuser->email],    // procura por registro com este e-mail
             [                                  // atualiza ou insere com os dados abaixo
                 'email' => $localuser->email,
-                'token' => Hash::make($token),
+                'token' => $token,
                 'created_at' => now()
             ]
         );
@@ -118,9 +118,7 @@ class LocalUserController extends Controller
     public function iniciaRedefinicaoSenha(string $token)
     {
         // verifica se o token recebido existe
-        $password_reset = DB::table('password_resets')->get()->first(function ($reset) use ($token) {
-            return Hash::check($token, $reset->token);
-        });
+        $password_reset = DB::table('password_resets')->where('token', $token)->first();
         if (!$password_reset)
             return $this->processa_erro_login('Este link é inválido');
 
@@ -147,7 +145,7 @@ class LocalUserController extends Controller
 
         // verifica se os dados vieram válidos
         $password_reset = DB::table('password_resets')->where('email', $request->email)->first();
-        if ((!$password_reset) || (!Hash::check($request->token, $password_reset->token)))
+        if ((!$password_reset) || ($request->token != $password_reset->token))
             return $this->processa_erro_login('Este link é inválido');
 
         // verifica se o token recebido expirou
@@ -179,10 +177,7 @@ class LocalUserController extends Controller
     public function confirmaEmail(string $token)
     {
         // verifica se o token recebido existe
-        $email_confirmation = DB::table('email_confirmations')->get()->first(function ($confirmation) use ($token) {
-            return Hash::check($token, $confirmation->token);
-        });
-        if (!$email_confirmation)
+        if (!DB::table('email_confirmations')->where('token', $token)->first())
             return $this->processa_erro_login('Este link é inválido');
 
         // marca o e-mail como confirmado
@@ -339,7 +334,7 @@ class LocalUserController extends Controller
                 ['email' => $localuser->email],    // procura por registro com este e-mail
                 [                                  // atualiza ou insere com os dados abaixo
                     'email' => $localuser->email,
-                    'token' => Hash::make($token),
+                    'token' => $token,
                     'created_at' => now()
                 ]
             );
