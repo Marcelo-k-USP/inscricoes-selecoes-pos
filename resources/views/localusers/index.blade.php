@@ -29,8 +29,9 @@
     <table class="table table-striped table-hover datatable-nopagination display responsive" style="width:100%">
       <thead>
         <tr>
-          <th width="35%">Nome</th>
-          <th width="35%">E-mail</th>
+          <th width="25%">Nome</th>
+          <th width="25%">E-mail</th>
+          <th width="20%">Confirmado?</th>
           <th width="20%">Criado em</th>
           <th width="10%">Ações</th>
         </tr>
@@ -40,6 +41,7 @@
           <tr>
             <td>{{ $localuser->name }}</td>
             <td>{{ $localuser->email }}</td>
+            <td>{{ $localuser->email_confirmado ? 'Sim' : 'Não' }}</td>
             <td data-order="{{ $localuser->created_at }}">{{ formatarDataHora($localuser->created_at) }}</td>
             <td>
               <div id="actions">
