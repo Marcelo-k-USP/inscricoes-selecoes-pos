@@ -181,15 +181,19 @@ class LocalUserController extends Controller
         if (!$email_confirmation)
             return $this->processa_erro_login('Este link é inválido');
 
-        // marca o e-mail como confirmado
-        $localuser = User::where('email', $email_confirmation->email)->first();
-        $localuser->givePermissionTo('user');
-        $localuser->email_confirmado = true;
-        $localuser->email_confirmed_at = now();
-        $localuser->save();
+        // transaction para não ter problema de inconsistência do DB
+        DB::transaction(function () use ($email_confirmation) {
 
-        // apaga o registro de confirmação de e-mail, por não ser mais necessário
-        DB::table('email_confirmations')->where('email', $email_confirmation->email)->delete();
+            // marca o e-mail como confirmado
+            $localuser = User::where('email', $email_confirmation->email)->first();
+            $localuser->givePermissionTo('user');
+            $localuser->email_confirmado = true;
+            $localuser->email_verified_at = now();
+            $localuser->save();
+
+            // apaga o registro de confirmação de e-mail, por não ser mais necessário
+            DB::table('email_confirmations')->where('email', $email_confirmation->email)->delete();
+        });
 
         request()->session()->flash('alert-success', 'E-mail confirmado com sucesso<br />' .
             'Faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
