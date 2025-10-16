@@ -22,7 +22,8 @@
     <table class="table table-striped tabela-inscricoes display responsive" style="width:100%">
       <thead>
         <tr>
-          <th>Número</th>
+          <th>Nro</th>
+          <th></th>
           <th>Candidato</th>
           <th>Seleção</th>
           <th>Nível com Linha de Pesquisa/Tema ou Disciplina(s)</th>
@@ -34,9 +35,10 @@
         @foreach ($objetos as $inscricao)
           <tr>
             <td>
-              @include('inscricoes.partials.status-small')
               <a href="inscricoes/edit/{{ $inscricao->id }}">{{ $inscricao->id }}</a>
-              @include('inscricoes.partials.status-muted')
+            </td>
+            <td>
+              @include('inscricoes.partials.status-small')
             </td>
             <td>
               @php
@@ -49,6 +51,7 @@
                 }
               @endphp
               {{ $nome }}
+              @include('inscricoes.partials.status-muted')
             </td>
             <td>
               {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})
@@ -112,9 +115,13 @@
           'paging': {{ $paginar ? 'true' : 'false' }},
           'sort': true,
           'order': [
-            [5, 'desc']    // ordenado por data de atualização descrescente
+            [6, 'desc']    // ordenado por data de atualização descrescente
           ],
           'fixedHeader': true,
+          columnDefs: [{
+            targets: 1,
+            orderable: false
+          }],
           language: {
             url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json'
           }

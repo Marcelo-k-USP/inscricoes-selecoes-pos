@@ -22,7 +22,8 @@
     <table class="table table-striped tabela-solicitacoesisencaotaxa display responsive" style="width:100%">
       <thead>
         <tr>
-          <th>Número</th>
+          <th>Nro</th>
+          <th></th>
           <th>Candidato</th>
           <th>Seleção</th>
           <th class="text-right">Criada em</th>
@@ -33,9 +34,10 @@
         @foreach ($objetos as $solicitacaoisencaotaxa)
           <tr>
             <td>
-              @include('solicitacoesisencaotaxa.partials.status-small')
               <a href="solicitacoesisencaotaxa/edit/{{ $solicitacaoisencaotaxa->id }}">{{ $solicitacaoisencaotaxa->id }}</a>
-              @include('solicitacoesisencaotaxa.partials.status-muted')
+            </td>
+            <td>
+              @include('solicitacoesisencaotaxa.partials.status-small')
             </td>
             <td>
               @php
@@ -47,6 +49,7 @@
                 }
               @endphp
               {{ $nome }}
+              @include('solicitacoesisencaotaxa.partials.status-muted')
             </td>
             <td>
               {{ $solicitacaoisencaotaxa->selecao->nome }} ({{ $solicitacaoisencaotaxa->selecao->categoria->nome }})
@@ -91,9 +94,13 @@
           'paging': {{ $paginar ? 'true' : 'false' }},
           'sort': true,
           'order': [
-            [4, 'desc']    // ordenado por data de atualização descrescente
+            [5, 'desc']    // ordenado por data de atualização descrescente
           ],
           'fixedHeader': true,
+          columnDefs: [{
+            targets: 1,
+            orderable: false
+          }],
           language: {
             url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json'
           }
