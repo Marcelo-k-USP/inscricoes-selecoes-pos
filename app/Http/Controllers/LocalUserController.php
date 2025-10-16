@@ -185,7 +185,11 @@ class LocalUserController extends Controller
         $localuser = User::where('email', $email_confirmation->email)->first();
         $localuser->givePermissionTo('user');
         $localuser->email_confirmado = true;
+        $localuser->email_confirmed_at = now();
         $localuser->save();
+
+        // apaga o registro de confirmação de e-mail, por não ser mais necessário
+        DB::table('email_confirmations')->where('email', $email_confirmation->email)->delete();
 
         request()->session()->flash('alert-success', 'E-mail confirmado com sucesso<br />' .
             'Faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
