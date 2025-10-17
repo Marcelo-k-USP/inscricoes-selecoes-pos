@@ -22,8 +22,8 @@
         <th>Nome</th>
         <th>Programa</th>
         <th>Categoria</th>
-        <th class="text-right">Criada em</th>
-        <th class="text-right">Atualização</th>
+        <th width="10%">Criada em</th>
+        <th width="10%">Atualização</th>
       </tr>
     </thead>
     <tbody>
