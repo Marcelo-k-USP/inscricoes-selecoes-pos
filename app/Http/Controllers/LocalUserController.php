@@ -258,6 +258,10 @@ class LocalUserController extends Controller
         \UspTheme::activeUrl('localusers');
 
         $localusers = User::where('local', '1')->get();
+        foreach ($localusers as $localuser) {
+            $localuser->qtde_solicitacoesisencaotaxa = $localuser->solicitacoesisencaotaxa()->count();
+            $localuser->qtde_inscricoes = $localuser->inscricoes()->count();
+        }
         $fields = LocalUser::getFields();
 
         if ($request->ajax()) {
