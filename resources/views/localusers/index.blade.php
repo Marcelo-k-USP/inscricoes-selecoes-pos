@@ -29,9 +29,11 @@
     <table class="table table-striped table-hover datatable-nopagination display responsive" style="width:100%">
       <thead>
         <tr>
-          <th width="25%">Nome</th>
-          <th width="20%">E-mail</th>
+          <th width="20%">Nome</th>
+          <th width="15%">E-mail</th>
           <th width="15%">Confirmação</th>
+          <th width="5%">Sols. Isenç.</th>
+          <th width="5%">Inscs.</th>
           <th width="15%">Criado em</th>
           <th width="15%">Atualização</th>
           <th width="10%">Ações</th>
@@ -43,6 +45,8 @@
             <td>{{ $localuser->name }}</td>
             <td>{{ $localuser->email }}</td>
             <td data-order="{{ $localuser->email_verified_at }}">{{ $localuser->email_confirmado ? formatarDataHora($localuser->email_verified_at) : 'N/A' }}</td>
+            <td>{{ $localuser->qtde_solicitacoesisencaotaxa }}</td>
+            <td>{{ $localuser->qtde_inscricoes }}</td>
             <td data-order="{{ $localuser->created_at }}">{{ formatarDataHora($localuser->created_at) }}</td>
             <td data-order="{{ $localuser->updated_at }}">{{ formatarDataHora($localuser->updated_at) }}</td>
             <td>
@@ -82,7 +86,7 @@
           't{{ $paginar ? 'p' : '' }}',
           'paging': {{ $paginar ? 'true' : 'false' }},
           'order': [
-            [4, 'desc']    // ordenado por data de atualização descrescente
+            [6, 'desc']    // ordenado por data de atualização descrescente
           ],
           columnDefs: [
             { targets: -1, orderable: false }    // desativa ordenação da última coluna
