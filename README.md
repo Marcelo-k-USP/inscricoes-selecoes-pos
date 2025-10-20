@@ -335,4 +335,4 @@ passou a ser assim:
 
 -   Este sistema foi atualizado para Laravel 12 em 27/05/2025; não foram necessárias alterações no código.
 
--   Em sua versão inicial, os seeders contêm dados específicos para o IP-USP. Para migrar para outras unidades, pode-se desconsiderar esses seeders, ou modificá-los com os dados da unidade em questão (são os seguintes seeders: funções, programas, linhas de pesquisa/temas, disciplinas, etc.).
+-   Em sua versão inicial, os seeders contêm dados específicos para o IPUSP. Para migrar para outras unidades, pode-se desconsiderar esses seeders (categorias, disciplinas, funções, linhas de pesquisa/temas, motivos de isenção de taxa, parâmetros, programas e tipos de documento), ou modificá-los com os dados da unidade em questão. Optamos por mantê-los no github, pois servem de exemplo para o que se deve cadastrar nas tabelas correspondentes. Os demais seeders (feriados e níveis) muito provavelmente não terão de ser alterados.
