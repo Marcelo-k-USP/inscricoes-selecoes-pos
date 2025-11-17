@@ -1,6 +1,6 @@
 Olá {{ $user->name }},<br />
 <br />
-Você completou sua inscrição no processo seletivo {{ $inscricao->selecao->nome }}.<br />
+Você completou sua inscrição para {{ ($inscricao->selecao->categoria->nome != 'Aluno Especial') ? 'o processo seletivo ' . $inscricao->selecao->nome : 'aluno especial' }}.<br />
 @if ($arquivos_count == 1)
   Não deixe de pagar o boleto que segue em anexo.<br />
 @else

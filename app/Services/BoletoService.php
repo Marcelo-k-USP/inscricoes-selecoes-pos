@@ -32,7 +32,7 @@ class BoletoService
             'cpfCnpj' => $cpf,
             'nomeSacado' => $extras['nome'],
             'codigoEmail' => $extras['e_mail'],
-            'informacoesBoletoSacado' => 'Inscrição para Seleção da Pós-Graduação - ' . $inscricao->selecao->nome . (is_null($disciplina_sigla) ? '' : ' - Disciplina ' . $disciplina_sigla),
+            'informacoesBoletoSacado' => 'Inscrição para ' . (is_null($disciplina_sigla) ? 'Seleção da Pós-Graduação - ' . $inscricao->selecao->nome : 'Disciplina ' . $disciplina_sigla),
             'instrucoesObjetoCobranca' => 'Não receber após vencimento!',
         );
 
