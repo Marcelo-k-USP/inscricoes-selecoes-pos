@@ -39,6 +39,8 @@ O aluno regular, ao se inscrever, deve especificar a combinação nível com lin
 No caso de aluno especial, as seleções/inscrições/solicitações de isenção de taxa não são atreladas a um programa.
 O aluno especial, ao se inscrever, deve especificar a(s) disciplina(s) na(s) qual(is) está se inscrevendo.
 
+A secretaria de pós-graduação gerencia as inscrições através de um fluxo ligeiramente diferente: há uma fase inicial adicional em que o candidato entra em contato com o docente para obter sua aprovação (a secretaria de pós-graduação chama esse passo de "inscrição"); isso é feito por e-mail, fora deste sistema. Em seguida, o candidato solicita a isenção de taxa e, por fim, realiza sua inscrição; a secretaria de pós-graduação realiza a matrícula dele no período de inscrições do sistema (ela chama esse passo de "matrícula"). Portanto, este sistema trata a segunda e a terceira fases do processo para aluno especial. O sistema também modifica os textos de comunicações para, no caso de aluno especial, na terceira fase do processo, não dizer "inscrição para o processo seletivo x" mas sim "inscrição para aluno especial".
+
 As linhas de pesquisa/temas são relacionadas aos níveis da pós-graduação (mestrado, doutorado, doutorado direto).
 Se um aluno regular se inscreve, por exemplo, para o nível de mestrado, só lhe serão permitidas as linhas de pesquisa/temas desse programa dessa seleção que estejam relacionadas ao nível escolhido.
 

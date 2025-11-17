@@ -1,6 +1,6 @@
 Olá {{ $user->name }},<br />
 <br />
-Você reenviou sua inscrição no processo seletivo {{ $inscricao->selecao->nome }}.<br />
+Você reenviou sua inscrição para {{ ($inscricao->selecao->categoria->nome != 'Aluno Especial') ? 'o processo seletivo ' . $inscricao->selecao->nome : 'aluno especial' }}.<br />
 Pelo fato de você ter incluído e/ou removido disciplinas, o sistema gerou novo(s) boleto(s) para pagamento.<br />
 @if ($arquivos_count == 1)
   Não deixe de pagar o boleto que segue em anexo.<br />
