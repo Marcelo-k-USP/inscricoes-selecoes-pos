@@ -220,9 +220,9 @@ class LocalUserController extends Controller
         $token = Str::random(60);
         DB::table('email_confirmations')->updateOrInsert(
             ['email' => $localuser->email],    // procura por registro com este e-mail
-                       [                       // atualiza ou insere com os dados abaixo
+            [                                  // atualiza ou insere com os dados abaixo
                 'email' => $localuser->email,
-                'token' => Hash::make($token),
+                'token' => $token,
                 'created_at' => now()
             ]
         );
