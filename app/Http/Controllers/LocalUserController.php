@@ -204,12 +204,17 @@ class LocalUserController extends Controller
 
     public function reenviaEmailConfirmacao(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email'
         ], [
             'email.required' => 'O e-mail é obrigatório!',
             'email.email' => 'O e-mail não é válido!'
         ]);
+        if ($validator->fails()) {
+            $request->session()->flash('alert-danger', implode('<br />', $validator->errors()->all()));
+            $request->session()->flash('exibir_link_reenvio', true);
+            return redirect('/localusers/login');
+        }
 
         $localuser = (object) [
             'name' => '',    // neste ponto, não temos o nome do usuário, pois ele ainda não está logado
