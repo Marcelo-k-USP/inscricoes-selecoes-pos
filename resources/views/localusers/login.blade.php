@@ -23,7 +23,7 @@
         <br />
         <br />
         <h1 class="h3 mb-3 font-weight-normal">ou <a href="localusers/create" style="text-decoration: none; color: #007bff;">cadastre-se</a></h1>
-        @if (session('alert-danger') === 'E-mail não confirmado')
+        @if ((session('alert-danger') === 'E-mail não confirmado') || session('exibir_link_reenvio'))
           <h1 class="h3 mb-3 font-weight-normal">ou
             <a href="javascript:void(0);" onclick="reenvia_email_confirmacao()" style="text-decoration: none; color: #007bff;">receba novamente<br />o e-mail para confirmação</a>
           </h1>
