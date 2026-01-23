@@ -210,7 +210,7 @@ class InscricaoController extends Controller
 
                     $info_adicional = '';
                     $user = \Auth::user();
-                    if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
+                    if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->exists()) {
 
                         $inscricao->load('arquivos');    // atualiza a relação de arquivos da inscrição, pois foi gerado mais um arquivo (boleto) para ela no evento disparado pelo $inscricao->save() acima
                         $inscricao->save();
@@ -467,7 +467,7 @@ class InscricaoController extends Controller
             ->sortBy(function ($tipoarquivo) { return in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']) ? 1 : 0; });
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id)
             ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $inscricao->selecao->tem_taxa; });
-        $solicitacaoisencaotaxa_aprovada = $inscricao->pessoas('Autor')?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->first();
+        $solicitacaoisencaotaxa_aprovada = $inscricao->pessoas('Autor')?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->first();
         $disciplinas_sem_boleto = [];
         if ($inscricao->selecao->categoria->nome == 'Aluno Especial')
             foreach ($inscricao_disciplinas as $disciplina)

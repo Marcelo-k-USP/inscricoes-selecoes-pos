@@ -86,7 +86,8 @@ Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema
 1) o candidato envia a solicitação;
 2) um e-mail é enviado ao serviço de pós-graduação para avaliar a solicitação;
 3) o serviço de pós-graduação coloca a solicitação em avaliação e depois a aprova ou rejeita;
-4) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da solicitação.
+4) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da solicitação;
+5) caso a solicitação tenha sido rejeitada e posteriormente aprovada devido a recurso do candidato, um e-mail é enviado ao candidato avisando da aprovação após recurso.
 
 # Fluxo de inscrição
 

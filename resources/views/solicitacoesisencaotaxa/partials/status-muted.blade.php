@@ -8,4 +8,6 @@
   <span class="badge badge-light text-secondary"> {{ $solicitacaoisencaotaxa->estado }} </span>
 @elseif ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Rejeitada')
   <span class="badge badge-light text-secondary"> {{ $solicitacaoisencaotaxa->estado }} </span>
+@elseif ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada Após Recurso')
+  <span class="badge badge-light text-secondary"> {{ $solicitacaoisencaotaxa->estado }} </span>
 @endif

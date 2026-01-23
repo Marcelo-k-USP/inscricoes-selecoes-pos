@@ -60,7 +60,7 @@ class InscricaoObserver
             if (($inscricao->getOriginal('estado') == 'Aguardando Envio') &&    // se o estado anterior era Aguardando Envio
                 ($inscricao->estado == 'Enviada')) {                            // se o novo estado é Enviada
 
-                if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Isenção de Taxa Aprovada')->exists()) {
+                if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->exists()) {
                     $passo = 'boleto(s)';
                     $arquivos = [];
                     $email_secaoinformatica = Parametro::first()->email_secaoinformatica;
