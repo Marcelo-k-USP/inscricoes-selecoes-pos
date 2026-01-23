@@ -32,9 +32,14 @@
         Isenção de Taxa Aprovada
       </button>
     @endif
-    @if (in_array($solicitacaoisencaotaxa->estado, ['Isenção de Taxa em Avaliação', 'Isenção de Taxa Rejeitada']))
+    @if (in_array($solicitacaoisencaotaxa->estado, ['Isenção de Taxa em Avaliação', 'Isenção de Taxa Rejeitada', 'Isenção de Taxa Aprovada Após Recurso']))
       <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Rejeitada') ? 'btn-danger' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($solicitacaoisencaotaxa->estado != 'Isenção de Taxa em Avaliação')) disabled @endif name="estado" value="Isenção de Taxa Rejeitada">
         Isenção de Taxa Rejeitada
+      </button>
+    @endif
+    @if (in_array($solicitacaoisencaotaxa->estado, ['Isenção de Taxa Rejeitada', 'Isenção de Taxa Aprovada Após Recurso']))
+      <button type="submit" class="btn btn-sm {{ ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada Após Recurso') ? 'btn-success' : 'btn-secondary' }}" @if ((session('perfil') == 'usuario') || ($solicitacaoisencaotaxa->estado != 'Isenção de Taxa Rejeitada')) disabled @endif name="estado" value="Isenção de Taxa Aprovada Após Recurso">
+        Isenção de Taxa Aprovada Após Recurso
       </button>
     @endif
   </div>

@@ -64,6 +64,16 @@ class SolicitacaoIsencaoTaxaObserver
                 $user = $solicitacaoisencaotaxa->pessoas('Autor');
                 \Mail::to($user->email)
                     ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user')));
+
+            } elseif (($solicitacaoisencaotaxa->getOriginal('estado') == 'Isenção de Taxa Rejeitada') &&    // se o estado anterior era Isenção de Taxa Rejeitada
+                      ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada Após Recurso')) {       // se o novo estado é Isenção de Taxa Aprovada Após Recurso
+
+                // envia e-mail avisando o candidato da aprovação da solicitação de isenção de taxa após recurso
+                // envio do e-mail "6" do README.md
+                $passo = 'aprovação após recurso';
+                $user = $solicitacaoisencaotaxa->pessoas('Autor');
+                \Mail::to($user->email)
+                    ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user')));
             }
         }
     }

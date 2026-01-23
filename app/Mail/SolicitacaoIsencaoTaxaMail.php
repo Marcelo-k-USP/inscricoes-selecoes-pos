@@ -23,6 +23,8 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
 
     // campos adicionais para solicitação de isenção de taxa reprovada
 
+    // campos adicionais para solicitação de isenção de taxa aprovada após recurso
+
     /**
      * Create a new message instance.
      *
@@ -46,6 +48,9 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
                 break;
 
             case 'rejeição':
+                break;
+
+            case 'aprovação após recurso':
         }
     }
 
@@ -92,6 +97,16 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
                     ->subject('[' . config('app.name') . '] Rejeição de Solicitação de Isenção de Taxa')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.solicitacaoisencaotaxa_rejeicao')
+                    ->with([
+                        'solicitacaoisencaotaxa' => $this->solicitacaoisencaotaxa,
+                        'user' => $this->user,
+                    ]);
+
+            case 'aprovação após recurso':
+                return $this
+                    ->subject('[' . config('app.name') . '] Aprovação de Solicitação de Isenção de Taxa Após Recurso')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.solicitacaoisencaotaxa_aprovacaoaposrecurso')
                     ->with([
                         'solicitacaoisencaotaxa' => $this->solicitacaoisencaotaxa,
                         'user' => $this->user,
