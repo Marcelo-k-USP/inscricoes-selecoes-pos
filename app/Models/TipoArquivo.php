@@ -102,11 +102,11 @@ class TipoArquivo extends Model
                         $query->where('aluno_especial', true);
                     else
                         // se houver combinação de nível com programa, se restringe a ela
-                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {{
+                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {
                             $query->whereIn('nivel_id', function ($query) use ($niveis) {
                                 $query->select('id')->from('niveis')->whereIn('nome', $niveis->pluck('nome'));
                             })->where('programa_id', $programa_id);
-                        }});
+                        })->where('aluno_especial', false);
                 })->get();
         }
     }
