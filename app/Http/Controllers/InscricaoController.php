@@ -335,11 +335,14 @@ class InscricaoController extends Controller
             if (!$existia) {
                 $extras['disciplinas'][] = $request->id;
                 $inscricao->extras = json_encode($extras);
-                $inscricao->save();
 
                 // se já havia enviado a inscrição, avisa para reenviá-la
-                if ($inscricao->estado == 'Enviada')
+                if ($inscricao->estado == 'Enviada') {
+                    $inscricao->estado = 'Aguardando Envio';
                     $info_adicional = '<br />Reenvie esta inscrição para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
+                }
+
+                $inscricao->save();
             }
 
             return ['disciplina' => $disciplina, 'existia' => $existia, 'info_adicional' => $info_adicional];
@@ -360,6 +363,8 @@ class InscricaoController extends Controller
     {
         $this->authorize('inscricoes.update', $inscricao);
 
+        $info_adicional = '';
+
         $extras = json_decode($inscricao->extras, true);
         $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
         $indice = array_search($disciplina->id, $disciplinas_id);
@@ -367,13 +372,15 @@ class InscricaoController extends Controller
         if ($indice !== false) {
             unset($extras['disciplinas'][$indice]);
             $inscricao->extras = json_encode($extras);
+
+            // se já havia enviado a inscrição, avisa para reenviá-la
+            if ($inscricao->estado == 'Enviada') {
+                $inscricao->estado = 'Aguardando Envio';
+                $info_adicional = '<br />Reenvie esta inscrição para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
+            }
+
             $inscricao->save();
         }
-
-        // se já havia enviado a inscrição, avisa para reenviá-la
-        $info_adicional = '';
-        if ($inscricao->estado == 'Enviada')
-            $info_adicional = '<br />Reenvie esta inscrição para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
 
         $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa inscrição.' . $info_adicional);
         \UspTheme::activeUrl('inscricoes');
