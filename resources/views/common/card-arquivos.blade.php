@@ -43,7 +43,7 @@
       @foreach ($objeto->tiposarquivo->where('classe_nome', $tipoarquivo_classe_nome_plural_acentuado) as $tipoarquivo)
         @if (($tipoarquivo['nome'] !== 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas') ||
              ($objeto->arquivos->where('pivot.tipo', $tipoarquivo['nome'])->count() > 0))
-          @if (!$solicitacaoisencaotaxa_aprovada ||
+          @if (!($solicitacaoisencaotaxa_aprovada ?? false) ||
                !in_array($tipoarquivo['nome'], ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']))
             <div class="arquivos-lista">
               {{ $tipoarquivo['nome'] }} {!! ((isset($tipoarquivo['obrigatorio']) && $tipoarquivo['obrigatorio']) ? '<small class="text-required">(*)</small>' : '') !!}
