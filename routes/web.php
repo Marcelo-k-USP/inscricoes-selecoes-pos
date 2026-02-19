@@ -36,6 +36,7 @@ Route::post('localusers/esqueceusenha', [LocalUserController::class, 'esqueceuSe
 Route::get('localusers/redefinesenha/{token}', [LocalUserController::class, 'iniciaRedefinicaoSenha'])->name('localusers.iniciaredefinicaosenha');
 Route::post('localusers/redefinesenha', [LocalUserController::class, 'redefineSenha'])->name('localusers.redefinesenha');
 Route::get('localusers/confirmaemail/{token}', [LocalUserController::class, 'confirmaEmail'])->name('localusers.confirmaemail');
+Route::put('localusers/adminconfirmaemail/{localuser}', [LocalUserController::class, 'adminConfirmaEmail'])->name('localusers.adminconfirmaemail');
 Route::post('localusers/reenviaemailconfirmacao', [LocalUserController::class, 'reenviaEmailConfirmacao'])->name('localusers.reenviaemailconfirmacao');
 
 // SOLICITAÇÕES DE ISENÇÃO DE TAXA

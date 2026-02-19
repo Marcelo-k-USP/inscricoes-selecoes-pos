@@ -85,6 +85,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('limpezadados.run', 'App\Policies\LimpezaDadosPolicy@run');
         Gate::resource('linhaspesquisa', 'App\Policies\LinhaPesquisaPolicy');
         Gate::resource('localusers', 'App\Policies\LocalUserPolicy');
+        Gate::define('localusers.adminConfirmEmail', 'App\Policies\LocalUserPolicy@adminConfirmEmail');
         Gate::resource('motivosisencaotaxa', 'App\Policies\MotivoIsencaoTaxaPolicy');
         Gate::resource('parametros', 'App\Policies\ParametroPolicy');
         Gate::resource('programas', 'App\Policies\ProgramaPolicy');

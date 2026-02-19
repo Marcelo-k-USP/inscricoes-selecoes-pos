@@ -86,4 +86,15 @@ class LocalUserPolicy
     {
         //
     }
+
+    /**
+     * Determine whether the user can confirm the email of the model.
+     *
+     * @param  \App\Models\User   $user
+     * @return mixed
+     */
+    public function adminConfirmEmail(User $user)
+    {
+        return Gate::allows('perfiladmin');
+    }
 }
