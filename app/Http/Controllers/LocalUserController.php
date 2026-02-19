@@ -202,6 +202,29 @@ class LocalUserController extends Controller
         return view('localusers.login');
     }
 
+    public function adminConfirmaEmail(User $localuser)
+    {
+        $this->authorize('localusers.adminConfirmEmail');
+
+        // transaction para não ter problema de inconsistência do DB
+        DB::transaction(function () use ($localuser) {
+
+            // marca o e-mail como confirmado
+            $localuser->givePermissionTo('user');
+            $localuser->email_confirmado = true;
+            $localuser->email_verified_at = now();
+            $localuser->save();
+
+            // apaga o registro de confirmação de e-mail, por não ser mais necessário
+            DB::table('email_confirmations')->where('email', $localuser->email)->delete();
+        });
+
+        request()->session()->flash('alert-success', 'E-mail confirmado com sucesso');
+
+        \UspTheme::activeUrl('localusers');
+        return view('localusers.index', $this->monta_compact('edit'));
+    }
+
     public function reenviaEmailConfirmacao(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -410,6 +433,8 @@ class LocalUserController extends Controller
         $request->merge(['password' => Hash::make($request->password)]);
         $localuser->update($request->all());
 
+        request()->session()->flash('alert-success', 'Usuário atualizado com sucesso');
+
         \UspTheme::activeUrl('localusers');
         return view('localusers.index', $this->monta_compact('edit'));
     }
@@ -430,6 +455,8 @@ class LocalUserController extends Controller
             return redirect('/localusers');
         }
         $localuser->delete();
+
+        request()->session()->flash('alert-success', 'Usuário apagado com sucesso');
 
         \UspTheme::activeUrl('localusers');
         return view('localusers.index', $this->monta_compact('edit'));

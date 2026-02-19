@@ -57,6 +57,9 @@
                 @can('localusers.delete')
                   @include('localusers.partials.btn-delete')
                 @endcan
+                @can('localusers.adminConfirmEmail')
+                  @includeWhen(!$localuser->email_confirmado, 'localusers.partials.btn-confirm-email')
+                @endcan
               </div>
             </td>
           </tr>
@@ -82,6 +85,7 @@
     $(document).ready(function() {
 
       oTable = $('.datatable-nopagination').DataTable({
+        stateSave: true,    // não perde a ordenação prévia ao clique do botão de confirmar e-mail
         dom:
           't{{ $paginar ? 'p' : '' }}',
           'paging': {{ $paginar ? 'true' : 'false' }},
