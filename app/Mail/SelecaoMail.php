@@ -73,11 +73,11 @@ class SelecaoMail extends Mailable
                                 'candidatonome' => $this->candidatonome,
                             ]);
 
-                    case 'Lista de Inscritos':
+                    case 'Resultado':
                         return $this
-                            ->subject('[' . config('app.name') . '] Publicação de Lista de Inscritos')
+                            ->subject('[' . config('app.name') . '] Publicação do Resultado')
                             ->from(config('mail.from.address'), config('mail.from.name'))
-                            ->view('emails.selecao_publicacaolistainscritos')
+                            ->view('emails.selecao_publicacaoresultado')
                             ->with([
                                 'selecao' => $this->selecao,
                                 'candidatonome' => $this->candidatonome,

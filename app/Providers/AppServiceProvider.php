@@ -9,6 +9,7 @@ use App\Services\ViacepService;
 use GuzzleHttp\Client;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -51,5 +52,12 @@ class AppServiceProvider extends ServiceProvider
             Event::listen(MessageSending::class, function (MessageSending $event) {
                 $event->message->addBcc(config('mail.from.address'));
             });
+
+        // faz com que se possa incluir nomenclatura.php em qualquer view de forma extremamente resumida, usando somente @nomenclatura
+        Blade::directive('nomenclatura', function ($expression) {
+            if ($expression)
+                return "<?php extract({$expression}); require resource_path('views/common/nomenclatura.php'); ?>";
+            return "<?php require resource_path('views/common/nomenclatura.php'); ?>";
+        });
     }
 }

@@ -48,15 +48,31 @@
 
       $('#categoria_id').change(function () {
         var programa_div = $('#programa_id').closest('.form-group');
-        if ($('#categoria_id option:selected').text() !== 'Aluno Especial')
+        if ($('#categoria_id option:selected').text() !== 'Aluno Especial') {
           programa_div.show();
-        else {
+          updateInscricaoMatriculaLabels('Matrícula', 'Matrículas', 'Inscrição', 'Inscrições');
+        } else {
           $('#programa_id option:first').prop('selected', true);
           programa_div.hide();
+          updateInscricaoMatriculaLabels('Inscrição', 'Inscrições', 'Matrícula', 'Matrículas');
         }
       });
 
       $('#categoria_id').trigger('change');
+
+      $('#programa_id').change(function () {
+        var programa_id = $(this).val();
+        var programa = $({!! $programas !!}).filter(function(index, item) {
+          return item.id == programa_id;
+        })[0];
+        if (programa)
+          if (programa.matricula)
+            updateInscricaoMatriculaLabels('Inscrição', 'Inscrições', 'Matrícula', 'Matrículas');
+          else
+            updateInscricaoMatriculaLabels('Matrícula', 'Matrículas', 'Inscrição', 'Inscrições');
+      });
+
+      $('#programa_id').trigger('change');
 
       updateCamposSolicitacoesIsencaoTaxaDataHora();
       updateCamposBoleto();
@@ -131,6 +147,14 @@
         $('#boleto_valor').parents('div').eq(1).show();
         $('#boleto_texto').parents('div').eq(1).show();
       }
+    }
+
+    function updateInscricaoMatriculaLabels(oldLabel, oldLabelPlural, newLabel, newLabelPlural) {
+      $('label[for="tem_taxa"]').text($('label[for="tem_taxa"]').text().replace(oldLabel, newLabel));
+      $('label[for="inscricoes_data_inicio"]').html($('label[for="inscricoes_data_inicio"]').html().replace(oldLabelPlural, newLabelPlural));
+      $('label[for="inscricoes_data_fim"]').html($('label[for="inscricoes_data_fim"]').html().replace(oldLabelPlural, newLabelPlural));
+      $('label[for="email_inscricaoaprovacao_texto"]').text($('label[for="email_inscricaoaprovacao_texto"]').text().replace(oldLabel, newLabel));
+      $('label[for="email_inscricaorejeicao_texto"]').text($('label[for="email_inscricaorejeicao_texto"]').text().replace(oldLabel, newLabel));
     }
   </script>
 @endsection

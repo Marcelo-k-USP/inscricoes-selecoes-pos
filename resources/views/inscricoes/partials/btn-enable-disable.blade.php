@@ -9,7 +9,7 @@
 </style>
 @endsection
 
-{{ html()->form('post', 'inscricoes/edit/' . $inscricao->id)->open() }}
+{{ html()->form('post', $data->url . '/edit/' . $inscricao->id)->open() }}
   @method('put')
   @csrf
   <input type="hidden" name="conjunto_alterado" id="conjunto_alterado" value="estado">

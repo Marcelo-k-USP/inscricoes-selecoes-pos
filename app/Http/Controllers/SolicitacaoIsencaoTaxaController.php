@@ -175,7 +175,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
 
                 $request->session()->flash('alert-success', 'Sua solicitação de isenção de taxa foi enviada');
                 \UspTheme::activeUrl('solicitacoesisencaotaxa');
-                return view('solicitacoesisencaotaxa.index', $this->monta_compact_index());
+                return redirect()->to(url('solicitacoesisencaotaxa'))->with($this->monta_compact_index());    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
 
             } else {
                 $request->session()->flash('alert-success', 'É necessário antes enviar todos os documentos exigidos');

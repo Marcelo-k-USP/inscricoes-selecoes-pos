@@ -74,7 +74,7 @@ class LocalUserController extends Controller
         }
 
         session(['perfil' => 'usuario']);
-        return redirect('/inscricoes');
+        return redirect('/');
     }
 
     public function esqueceuSenha(Request $request)
@@ -196,7 +196,7 @@ class LocalUserController extends Controller
         });
 
         request()->session()->flash('alert-success', 'E-mail confirmado com sucesso<br />' .
-            'Faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
+            'Faça login e prossiga solicitando isenções de taxa ou efetuando inscrições ou matrículas');
 
         \UspTheme::activeUrl('inscricoes');
         return view('localusers.login');
@@ -264,7 +264,7 @@ class LocalUserController extends Controller
 
         $request->session()->flash('alert-success', 'E-mail para confirmação reenviado<br />' .
             'Verifique sua caixa de entrada para confirmar seu endereço<br />' .
-            'Em seguida, faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
+            'Em seguida, faça login e prossiga solicitando isenções de taxa ou efetuando inscrições ou matrículas');
         return redirect('/localusers/login');
     }
 
@@ -397,7 +397,7 @@ class LocalUserController extends Controller
         } else {
             $request->session()->flash('alert-success', 'Cadastro realizado com sucesso<br />' .
                 'Verifique sua caixa de entrada para confirmar seu endereço<br />' .
-                'Em seguida, faça login e prossiga solicitando isenção de taxa ou se inscrevendo para nossos processos seletivos');
+                'Em seguida, faça login e prossiga solicitando isenções de taxa ou efetuando inscrições ou matrículas');
             return redirect('/');
         }
     }

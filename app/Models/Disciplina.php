@@ -54,7 +54,7 @@ class Disciplina extends Model
         return $ret;
     }
 
-    public static function listarDisciplinas(?Selecao $selecao = null)
+    public static function obterDisciplinasPossiveis(?Selecao $selecao = null)
     {
         if (is_null($selecao))
             return self::orderBy('sigla')->get();

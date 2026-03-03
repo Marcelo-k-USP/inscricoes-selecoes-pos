@@ -8,10 +8,12 @@
   </style>
 @endsection
 
+@nomenclatura
+
 <a name="card_tiposarquivo{{ strtolower($tipoarquivo_classe_nome) }}"></a>
 <div class="card bg-light mb-3" id="card-tiposarquivo{{ strtolower($tipoarquivo_classe_nome) }}">
   <div class="card-header">
-    Tipos de Documento nas {{ $tipoarquivo_classe_nome_plural_acentuado }}
+    Tipos de Documento nas {{ ($tipoarquivo_classe_nome_plural_acentuado === 'Inscrições') ? ucfirst($inscricao_ou_matricula_plural) : $tipoarquivo_classe_nome_plural_acentuado }}
     @php
       $selecao_tiposarquivo = $selecao->tiposarquivo->where('classe_nome', $tipoarquivo_classe_nome_plural_acentuado)
     @endphp

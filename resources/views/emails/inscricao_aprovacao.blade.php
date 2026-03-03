@@ -1,6 +1,8 @@
+@nomenclatura(['selecao' => $inscricao->selecao])
+
 Olá {{ $user->name }},<br />
 <br />
-Sua inscrição para {{ ($inscricao->selecao->categoria->nome != 'Aluno Especial') ? 'o processo seletivo ' . $inscricao->selecao->nome : 'aluno especial' }} foi aceita.<br />
+Sua {{ $inscricao_ou_matricula }} para {{ $objetivo }} foi aceita.<br />
 <br />
 {{ $inscricao->selecao->email_inscricaoaprovacao_texto }}
 <br />

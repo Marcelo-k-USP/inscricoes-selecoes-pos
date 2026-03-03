@@ -31,10 +31,10 @@
       <td>
         <div>
           <a name="{{ \Str::lower($linhapesquisa->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $linhapesquisa->nome }}</a>
-          @can('linhaspesquisa.update')
+          @can('linhaspesquisa.update', $linhapesquisa)
             @include('linhaspesquisa.partials.btn-edit')
           @endcan
-          @can('linhaspesquisa.delete')
+          @can('linhaspesquisa.delete', $linhapesquisa)
             @include('linhaspesquisa.partials.btn-delete')
           @endcan
           @include('linhaspesquisa.partials.detalhes')

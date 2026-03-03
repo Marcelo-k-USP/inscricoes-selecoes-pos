@@ -127,17 +127,17 @@ class SelecaoController extends Controller
 
             $is_aluno_especial = ($selecao->categoria->nome === 'Aluno Especial');
             if ($is_aluno_especial)    // cadastra automaticamente todas as disciplinas como possíveis para este processo seletivo
-                foreach (Disciplina::listarDisciplinas() as $disciplina)
+                foreach (Disciplina::obterDisciplinasPossiveis() as $disciplina)
                     $selecao->disciplinas()->attach($disciplina);
 
             foreach (TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get() as $tipoarquivo)    // cadastra automaticamente todos os tipos de arquivo para solicitações de isenção de taxa como possíveis para este processo seletivo
                 $selecao->tiposarquivo()->attach($tipoarquivo);
 
             if ($is_aluno_especial)    // cadastra automaticamente tipos de arquivo para inscrições como possíveis para este processo seletivo
-                foreach (TipoArquivo::where('classe_nome', 'Inscrições')->where('aluno_especial', true)->get() as $tipoarquivo)
+                foreach (TipoArquivo::where('classe_nome', 'Inscrições')->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Especial'); })->get() as $tipoarquivo)
                     $selecao->tiposarquivo()->attach($tipoarquivo);
             else
-                foreach (TipoArquivo::where('classe_nome', 'Inscrições')->whereRelation('niveisprogramas', 'programa_id', $selecao->programa_id)->get() as $tipoarquivo)
+                foreach (TipoArquivo::where('classe_nome', 'Inscrições')->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Regular'); })->whereRelation('niveisprogramas', 'programa_id', $selecao->programa_id)->get() as $tipoarquivo)
                     $selecao->tiposarquivo()->attach($tipoarquivo);
 
             $selecao->reagendarTarefas();
@@ -442,7 +442,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'A combinação nível ' . $nivellinhapesquisa->nivel->nome . ' com a linha de pesquisa/tema ' . $nivellinhapesquisa->linhapesquisa->nome . ' foi removida dessa seleção.');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -498,7 +498,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa seleção.');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'disciplinas'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'disciplinas'));
     }
 
     /**
@@ -549,7 +549,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'O motivo de isenção de taxa ' . $motivoisencaotaxa->nome . ' foi removido dessa seleção');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'motivosisencaotaxa'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'motivosisencaotaxa'));
     }
 
     /**
@@ -600,7 +600,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'O tipo de documento ' . $tipoarquivo->nome . ' foi removido dessa seleção');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'tiposarquivosolicitacaoisencaotaxa'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'tiposarquivosolicitacaoisencaotaxa'));
     }
 
     /**
@@ -651,7 +651,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'O tipo de documento ' . $tipoarquivo->nome . ' foi removido dessa seleção');
         \UspTheme::activeUrl('selecoes');
-        return view('selecoes.edit', $this->monta_compact($selecao, 'edit', 'tiposarquivoinscricao'));
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'tiposarquivoinscricao'));
     }
 
     /**
@@ -681,7 +681,8 @@ class SelecaoController extends Controller
 
             $extras = json_decode($solicitacaoisencaotaxa->extras, true) ?? [];
             $i['numero_solicitacao'] = $solicitacaoisencaotaxa->id;
-            $i['programa'] = $solicitacaoisencaotaxa->selecao->programa?->nome ?? 'N/A';
+            if ($selecao->categoria->nome != 'Aluno Especial')
+                $i['programa'] = $solicitacaoisencaotaxa->selecao->programa->nome;
             $i['selecao'] = $solicitacaoisencaotaxa->selecao->nome;
             $i['estado'] = $solicitacaoisencaotaxa->estado;
             $i['motivo_isencao_taxa'] = MotivoIsencaoTaxa::where('id', $extras['motivo_isencao_taxa'])->first()->nome;
@@ -721,17 +722,24 @@ class SelecaoController extends Controller
         $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
         $keys = array_keys($template);
 
+        $inscricao_ou_matricula = $selecao->isMatricula() ? 'matricula' : 'inscricao';
+        $inscricao_ou_matricula_plural = $selecao->isMatricula() ? 'matriculas' : 'inscricoes';
+
         $arr = [];
         foreach ($inscricoes as $inscricao) {
             $i = [];
 
             $extras = json_decode($inscricao->extras, true) ?? [];
-            $i['numero_inscricao'] = $inscricao->id;
-            $i['programa'] = $inscricao->selecao->programa?->nome ?? 'N/A';
+            $i['numero_' . $inscricao_ou_matricula] = $inscricao->id;
+            if ($selecao->categoria->nome != 'Aluno Especial')
+                $i['programa'] = $inscricao->selecao->programa->nome;
             $i['selecao'] = $inscricao->selecao->nome;
             $i['estado'] = $inscricao->estado;
-            $i['nivel'] = isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '';
-            $i['linha_pesquisa'] = isset($extras['linha_pesquisa']) ? LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome : '';
+            if ($selecao->categoria->nome != 'Aluno Especial') {
+                $i['nivel'] = isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '';
+                $i['linha_pesquisa'] = isset($extras['linha_pesquisa']) ? LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome : '';
+            } else
+                $i['disciplinas'] = Disciplina::whereIn('id', $extras['disciplinas'] ?? [])->pluck('sigla')->implode(', ');
             $autor = $inscricao->pessoas('Autor');
             $i['autor'] = $autor ? $autor->name : '';
             foreach ($keys as $field)
@@ -742,7 +750,7 @@ class SelecaoController extends Controller
             $arr[] = $i;
         }
 
-        $writer = SimpleExcelWriter::streamDownload('inscricoes_' . $ano . '_selecao' . $selecao->id . '.xlsx')
+        $writer = SimpleExcelWriter::streamDownload($inscricao_ou_matricula_plural . '_' . $ano . '_selecao' . $selecao->id . '.xlsx')
             ->addRows($arr);
     }
 
@@ -756,19 +764,20 @@ class SelecaoController extends Controller
         $rules = (new SelecaoRequest())->rules();
         $objeto->niveislinhaspesquisa = NivelLinhaPesquisa::obterNiveisLinhasPesquisaDaSelecao($objeto);
         $niveislinhaspesquisa = NivelLinhaPesquisa::obterNiveisLinhasPesquisaPossiveis($selecao->programa_id);
-        $disciplinas = Disciplina::listarDisciplinas();
+        $disciplinas = Disciplina::obterDisciplinasPossiveis();
         $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
         $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id)
                             ->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $selecao->tem_taxa; })
                         ->merge(TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $selecao))
                         ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao)
-                            ->filter(function ($tipoarquivo) { return !in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']); }));
+                            ->filter(function ($tipoarquivo) { return !str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento'); }));
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id);
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
+        $programas = Programa::all();
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'niveislinhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'max_upload_size', 'rules', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'niveislinhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'programas', 'max_upload_size', 'rules', 'scroll');
     }
 }

@@ -23,7 +23,7 @@
               <a href="tiposarquivo">Tipos de Documento</a> <i class="fas fa-angle-right mx-2"></i>
               {{ $objeto->nome }}
               @if (!is_null($objeto->classe_nome))
-                &nbsp;({{ $objeto->classe_nome }})
+                &nbsp;({{ $objeto->classe_nome }}{{ ($objeto->classe_nome == 'Inscrições') ? '/Matrículas' : '' }})
               @endif
             @else
               Novo Tipo de Documento
@@ -34,6 +34,9 @@
           <div class="row">
             <div class="col-md-7">
               @include('tiposarquivo.show.card-principal')              {{-- Principal --}}
+              @if ($objeto->classe_nome == 'Inscrições')
+                @include('tiposarquivo.show.card-categorias')           {{-- Categorias --}}
+              @endif
             </div>
             <div class="col-md-5">
               @if ($modo == 'edit')

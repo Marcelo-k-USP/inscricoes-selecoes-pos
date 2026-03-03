@@ -15,9 +15,9 @@ class ArquivoObserver
      */
     public function created(Arquivo $arquivo)
     {
-        if (($arquivo->tipoarquivo->classe_nome == 'Seleções') && (in_array($arquivo->tipoarquivo->nome, ['Errata', 'Lista de Inscritos']))) {
+        if (($arquivo->tipoarquivo->classe_nome == 'Seleções') && (in_array($arquivo->tipoarquivo->nome, ['Errata', 'Resultado']))) {
 
-            // envia e-mail para os candidatos avisando de novos documentos dos tipos Errata ou Lista de Inscritos na seleção
+            // envia e-mail para os candidatos avisando de novos documentos dos tipos Errata ou Resultado na seleção
             // envio do e-mail "17" do README.md
             $passo = 'novo(s) informativo(s)';
             $selecao = $arquivo->selecoes()->first();

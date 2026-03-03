@@ -18,7 +18,7 @@
     @if ($tipoarquivo->classe_nome != $classe_nome_anterior)
       <tr>
         <td colspan="2">
-          {{ $tipoarquivo->classe_nome }}
+          {{ $tipoarquivo->classe_nome }}{{ ($tipoarquivo->classe_nome == 'Inscrições') ? '/Matrículas' : '' }}
         </td>
       </tr>
       @php
@@ -31,7 +31,7 @@
       <td>
         <div>
           <a name="{{ \Str::lower($tipoarquivo->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $tipoarquivo->nome }}</a>
-          @if (!in_array($tipoarquivo->nome, ['Boleto(s) de Pagamento da Inscrição', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas']))
+          @if (!str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento'))
             @can('tiposarquivo.update')
               @include('tiposarquivo.partials.btn-edit')
             @endcan

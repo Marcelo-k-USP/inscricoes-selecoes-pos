@@ -1,10 +1,10 @@
 <div class="d-flex">
   <b>
-    {{ $orientador->nome }}
+    {{ $categoria->nome }}
   </b>
   <div class="hidden-btn d-none ml-auto">
-    @can('linhaspesquisa.update', $linhapesquisa)
-      @include('common.btn-delete-sm', ['action' => "linhaspesquisa/{$linhapesquisa->id}/orientadores/{$orientador->id}"])
+    @can('tiposarquivo.update', $tipoarquivo)
+      @include('common.btn-delete-sm', ['action' => "tiposarquivo/{$tipoarquivo->id}/categorias/{$categoria->id}"])
     @endcan
   </div>
 </div>
@@ -14,7 +14,7 @@
 @parent
   <script type="text/javascript">
     $(function() {
-      $('.orientador-item').hover(
+      $('.categoria-item').hover(
         function() {
           $(this).find('.hidden-btn').removeClass('d-none');
         },

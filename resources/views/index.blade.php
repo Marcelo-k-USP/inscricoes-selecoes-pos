@@ -3,7 +3,7 @@
 @section('content')
 @parent
   @auth
-    <script type="text/javascript">window.location = "inscricoes";</script>
+    Utilize o menu acima para navegar pelo sistema.
   @else
     <div class="d-flex justify-content-center">
       <h1 class="h3 mb-3 font-weight-normal"><a href="localusers/login">Candidatos</a></h1>

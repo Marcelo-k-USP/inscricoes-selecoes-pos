@@ -60,12 +60,22 @@ class LinhaPesquisa extends Model
         return $ret;
     }
 
-    public static function listarLinhasPesquisa(Programa $programa)
+    /**
+     * Menu Linhas de Pesquisa/Temas, lista as linhas de pesquisa/temas
+     *
+     * @return coleção de linhas de pesquisa/temas
+     */
+    public static function listarLinhasPesquisa()
     {
-        if ((!is_null($programa)) && ($programa->id > 0))
-            return self::where('programa_id', $programa->id)->get();
-        else
-            return self::get();
+        return self::with('programa')
+            ->whereIn('programa_id', \Auth::user()->listarProgramasGerenciados()->pluck('id'))    // linhas de pesquisa/temas de programas que o usuário gerencia, e também...
+            ->orWhere(function ($query) {
+                if (session('perfil') == 'admin')
+                    $query->whereNotNull('id');
+            })
+            ->orderBy('programa_id')
+            ->orderBy('id')
+            ->get();
     }
 
     /**

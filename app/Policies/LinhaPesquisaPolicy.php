@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\LinhaPesquisa;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
@@ -24,12 +25,18 @@ class LinhaPesquisaPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User           $user
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return mixed
      */
-    public function view(User $user)
+    public function view(User $user, LinhaPesquisa $linhapesquisa)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($linhapesquisa->programa_id);
+        else
+            return false;
     }
 
     /**
@@ -46,44 +53,34 @@ class LinhaPesquisaPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User           $user
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return mixed
      */
-    public function update(User $user)
+    public function update(User $user, LinhaPesquisa $linhapesquisa)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($linhapesquisa->programa_id);
+        else
+            return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\User           $user
+     * @param  \App\Models\LinhaPesquisa  $linhapesquisa
      * @return mixed
      */
-    public function delete(User $user)
+    public function delete(User $user, LinhaPesquisa $linhapesquisa)
     {
-        return Gate::any(['perfiladmin', 'perfilgerente']);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function restore(User $user)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function forceDelete(User $user)
-    {
-        //
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::allows('perfilgerente'))
+            return $user->gerenciaPrograma($linhapesquisa->programa_id);
+        else
+            return false;
     }
 }

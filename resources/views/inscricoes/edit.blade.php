@@ -23,6 +23,7 @@
     $classe_nome = 'Inscricao';
     $condicao_ativa = true;
   @endphp
+  @nomenclatura(['selecao' => $inscricao->selecao])
   <div class="row">
     <div class="col-md-12">
       <div class="card card-outline card-primary">
@@ -30,12 +31,12 @@
           <div class="card-title my-0">
             @if ($modo == 'edit')
               <div style="display: flex; align-items: center; white-space: nowrap;">
-                <a href="inscricoes">Inscrições</a> <i class="fas fa-angle-right mx-2"></i> Inscrição nº {{ $inscricao->id }}
+                <a href="{{ request()->segment(1) }}">{{ ucfirst($inscricao_ou_matricula_plural) }}</a> <i class="fas fa-angle-right mx-2"></i> {{ ucfirst($inscricao_ou_matricula) }} nº {{ $inscricao->id }}
                 &nbsp; | &nbsp;
                 @include('inscricoes.partials.btn-enable-disable')
               </div>
             @else
-              Nova Inscrição
+              Nova {{ ucfirst($inscricao_ou_matricula) }}
             @endif
             para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})
             @if ($inscricao->selecao->categoria->nome !== 'Aluno Especial')

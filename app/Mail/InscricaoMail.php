@@ -22,17 +22,17 @@ class InscricaoMail extends Mailable
     // campos adicionais para boleto - envio manual
     protected $arquivo;
 
-    // campos adicionais para inscrição enviada
+    // campos adicionais para inscrição/matrícula enviada
     protected $responsavel_nome;
 
-    // campos adicionais para inscrição pré-aprovada
+    // campos adicionais para inscrição/matrícula pré-aprovada
     protected $link_acompanhamento;
 
-    // campos adicionais para inscrição pré-rejeitada
+    // campos adicionais para inscrição/matrícula pré-rejeitada
 
-    // campos adicionais para inscrição aprovada
+    // campos adicionais para inscrição/matrícula aprovada
 
-    // campos adicionais para inscrição reprovada
+    // campos adicionais para inscrição/matrícula reprovada
 
     /**
      * Create a new message instance.
