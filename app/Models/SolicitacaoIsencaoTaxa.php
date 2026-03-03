@@ -137,7 +137,8 @@ class SolicitacaoIsencaoTaxa extends Model
             case 'gerente':
                 if (DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
                         ->where('user_id', Auth::id())
-                        ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenador de Pós-Graduação'])
+                        ->whereNull('programa_id')
+                        ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenadores da Pós-Graduação'])
                         ->exists())
                     return self::all();
                 else

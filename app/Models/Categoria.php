@@ -64,4 +64,12 @@ class Categoria extends Model
             ->orderBy('users.name')
             ->withTimestamps();
     }
+
+    /**
+     * relacionamento com tipos de arquivo
+     */
+    public function tiposarquivo()
+    {
+        return $this->belongsToMany('App\Models\TipoArquivo', 'tipoarquivo_categoria', 'categoria_id', 'tipoarquivo_id')->withTimestamps();
+    }
 }

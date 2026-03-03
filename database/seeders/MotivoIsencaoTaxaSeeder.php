@@ -23,7 +23,7 @@ class MotivoIsencaoTaxaSeeder extends Seeder
                 'nome' => 'Aluno de Pós em Universidade Pública Brasileira',
             ],
             [
-                'nome' => 'Aluno de Instituição Estrangeira com Convênio com o ' . strtoupper(config('laravel-usp-theme.skin')) . '-USP',
+                'nome' => 'Aluno de Instituição Estrangeira com Convênio com o ' . strtoupper(config('laravel-usp-theme.skin')) . 'USP',
             ],
             [
                 'nome' => 'Servidor(a) da USP',

@@ -21,7 +21,6 @@ class TipoArquivo extends Model
         'abreviacao',
         'obrigatorio',
         'minimo',
-        'aluno_especial',
     ];
 
     // uso no crud generico
@@ -49,11 +48,6 @@ class TipoArquivo extends Model
             'name' => 'minimo',
             'label' => 'Mínimo',
             'type' => 'integer',
-        ],
-        [
-            'name' => 'aluno_especial',
-            'label' => 'Aluno Especial',
-            'type' => 'checkbox',
         ],
     ];
 
@@ -99,14 +93,14 @@ class TipoArquivo extends Model
                 // todos os tipos de arquivo possíveis para inscrições
                 return self::where('classe_nome', 'Inscrições')->where(function ($query) use ($niveis, $programa_id) {
                     if ($niveis->isEmpty())
-                        $query->where('aluno_especial', true);
+                        $query->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Especial'); });
                     else
                         // se houver combinação de nível com programa, se restringe a ela
                         $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {
                             $query->whereIn('nivel_id', function ($query) use ($niveis) {
                                 $query->select('id')->from('niveis')->whereIn('nome', $niveis->pluck('nome'));
                             })->where('programa_id', $programa_id);
-                        })->where('aluno_especial', false);
+                        })->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Regular'); });
                 })->get();
         }
     }
@@ -122,15 +116,13 @@ class TipoArquivo extends Model
             case 'Inscricao':
                 // todos os tipos de arquivo para inscrições nesta seleção
                 return $selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where(function ($query) use ($niveis, $programa_id) {
-                    if ($niveis->isEmpty())
-                        $query->where('aluno_especial', true);
-                    else
+                    if (!$niveis->isEmpty())
                         // se houver combinação de nível com programa, se restringe a ela
-                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {{
+                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {
                             $query->whereIn('nivel_id', function ($query) use ($niveis) {
                                 $query->select('id')->from('niveis')->whereIn('nome', $niveis->pluck('nome'));
                             })->where('programa_id', $programa_id);
-                        }});
+                        });
                 })->get();
         }
     }
@@ -145,7 +137,8 @@ class TipoArquivo extends Model
 
         if (DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
                 ->where('user_id', Auth::id())
-                ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenador de Pós-Graduação'])
+                ->whereNull('programa_id')
+                ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenadores da Pós-Graduação'])
                 ->exists())
             return self::query();
 
@@ -178,5 +171,13 @@ class TipoArquivo extends Model
     public function arquivos()
     {
         return $this->hasMany('App\Models\Arquivo', 'tipoarquivo_id');
+    }
+
+    /*
+     * relacionamento com categorias
+     */
+    public function categorias()
+    {
+        return $this->belongsToMany('App\Models\Categoria', 'tipoarquivo_categoria', 'tipoarquivo_id', 'categoria_id')->withTimestamps();
     }
 }

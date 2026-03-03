@@ -4,7 +4,7 @@
 @parent
   <div class="row">
     <div class="col-md-12 form-inline">
-      <span class="h4 mt-2">Nova Inscrição</span>
+      <span class="h4 mt-2">Nova {{ ucfirst(\App\Utils\Nomenclatura::InscricaoOuMatricula()) }}</span>
       @include('partials.datatable-filter-box', ['otable'=>'oTable'])
     </div>
   </div>
@@ -20,7 +20,7 @@
 
   @if ($existem_selecoes)
     <br />
-    Para qual processo seletivo você deseja se inscrever?<br />
+    Deseja se {{ request()->segment(1) == 'inscricoes' ? 'inscrever para' : 'matricular em' }}:<br />
     <table class="table table-sm table-hover nova-inscricao display responsive" style="width: 100%;">
       <thead>
         <tr>
@@ -42,14 +42,14 @@
                       @endif
                       <br />
                       @foreach ($selecao->niveis as $nivel)
-                        &nbsp; &nbsp; &nbsp;<a href="inscricoes/create/{{ $selecao['id'] }}/{{ $nivel->id }}">{{ $nivel->nome }}</a><br />
+                        &nbsp; &nbsp; &nbsp;<a href="{{ request()->segment(1) }}/create/{{ $selecao['id'] }}/{{ $nivel->id }}">{{ $nivel->nome }}</a><br />
                       @endforeach
                     </div>
                   @endforeach
                 @else
                   @foreach ($categoria->selecoes as $selecao)
                     <div class="ml-3">
-                      <a href="inscricoes/create/{{ $selecao['id'] }}">{{ $selecao->nome }}
+                      <a href="{{ request()->segment(1) }}/create/{{ $selecao['id'] }}">{{ $selecao->nome }}
                         @if (!is_null($selecao->descricao))
                           - {{ $selecao->descricao }}
                         @endif
@@ -66,7 +66,7 @@
     </table>
   @else
     <br />
-    No momento, não há processos seletivos ocorrendo.
+    No momento, não há períodos abertos para {{ request()->segment(1) == 'inscricoes' ? 'inscrições' : 'matrículas' }}.
   @endif
 @endsection
 

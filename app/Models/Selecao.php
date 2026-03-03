@@ -790,7 +790,7 @@ class Selecao extends Model
                                 $query->select(\DB::raw(1))
                                     ->from('user_programa')
                                     ->where('user_id', \Auth::id())
-                                    ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenador de Pós-Graduação']);    // ou que o usuário seja do Serviço de Pós-Graduação ou Coordenador de Pós-Graduação
+                                    ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenadores da Pós-Graduação']);    // ou que o usuário seja do Serviço de Pós-Graduação ou Coordenadores da Pós-Graduação
                             });
                         });
                     })
@@ -816,16 +816,20 @@ class Selecao extends Model
 
     /**
      * Mostra lista de categorias e respectivas seleções
-     * para selecionar e criar nova inscrição
+     * para selecionar e criar nova inscrição/matrícula
      *
+     * @param  string  $inscricao_ou_matricula
      * @return \Illuminate\Http\Response
      */
-    public static function listarSelecoesParaNovaInscricao()
+    public static function listarSelecoesParaNovaInscricao(string $inscricao_ou_matricula)
     {
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
-            $selecoes = $selecoes->filter(fn($selecao) => in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']));    // só aceita as seleções que estejam em período de inscrições
+            $selecoes = $selecoes->filter(fn($selecao) =>
+                in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições'])    // só aceita as seleções que estejam em período de inscrições/matrículas
+                && ($selecao->isMatricula() === ($inscricao_ou_matricula == 'matriculas'))
+            );
             foreach ($selecoes as $selecao)
                 $selecao->niveis = $selecao->niveislinhaspesquisa->sortBy('nivel_id')->pluck('nivel')->unique();
             $categoria->selecoes = $selecoes;
@@ -890,7 +894,7 @@ class Selecao extends Model
         // quando o usuário altera uma seleção, eventualmente ele pode alterar as datas de fim
         // neste caso, ao invés de alterarmos as datas/horas das jobs da seleção, simplesmente as removemos e as recriamos logo em seguida, considerando as datas de fim eventualmente alteradas
 
-        // remove jobs de alerta de solicitações de isenção de taxa e inscrições não concluídas
+        // remove jobs de alerta de solicitações de isenção de taxa e inscrições/matrículas não concluídas
         foreach (DB::table('jobs')->where('payload->displayName', 'App\Jobs\AlertaCandidatosIncompletude')->get() as $job) {
             $payload = json_decode($job->payload, true);
             if (!empty($payload['data']['command'])) {
@@ -910,7 +914,7 @@ class Selecao extends Model
                 AlertaCandidatosIncompletude::dispatch($this->id, 'SolicitacaoIsencaoTaxa')->delay($job_datahora);
         }
 
-        // (re)agenda job de alerta de inscrições não concluídas
+        // (re)agenda job de alerta de inscrições/matrículas não concluídas
         $job_datahora = Carbon::parse($this->inscricoes_datahora_fim)->subHours(24);
         if ($job_datahora > now())
             AlertaCandidatosIncompletude::dispatch($this->id, 'Inscricao')->delay($job_datahora);
@@ -936,6 +940,14 @@ class Selecao extends Model
         return Inscricao::contarInscricoesPorMes($ano, $this);
     }
 
+    public function isMatricula()
+    {
+        if (!$this->categoria)    // acontece quando a seleção está sendo criada, ainda não tem categoria associada
+            return false;
+
+        return (($this->categoria->nome == 'Aluno Especial') || $this->programa->matricula);
+    }
+
     /**
      * Seleção possui Solicitações de Isenção de Taxa
      */
@@ -945,7 +957,7 @@ class Selecao extends Model
     }
 
     /**
-     * Seleção possui Inscrições
+     * Seleção possui Inscrições/matrículas
      */
     public function inscricoes()
     {

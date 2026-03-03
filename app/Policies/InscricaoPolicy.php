@@ -36,6 +36,46 @@ class InscricaoPolicy
     }
 
     /**
+     * Determine whether the user can see the Inscrições menu item.
+     */
+    public function viewAny_Inscricoes(User $user)
+    {
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::any(['perfilgerente', 'perfildocente'])) {
+            if ($user->gerenciaProgramaFuncao('Serviço de Pós-Graduação') || $user->gerenciaProgramaFuncao('Coordenadores da Pós-Graduação'))
+                return true;
+            $programas = $this->obterProgramasParaMenu($user);
+            return $programas->contains(fn($programa) => !$programa->matricula);
+        } else
+            return false;
+    }
+
+    /**
+     * Determine whether the user can see the Matrículas menu item.
+     */
+    public function viewAny_Matriculas(User $user)
+    {
+        if (Gate::allows('perfiladmin'))
+            return true;
+        elseif (Gate::any(['perfilgerente', 'perfildocente'])) {
+            if ($user->gerenciaProgramaFuncao('Serviço de Pós-Graduação') || $user->gerenciaProgramaFuncao('Coordenadores da Pós-Graduação'))
+                return true;
+            $programas = $this->obterProgramasParaMenu($user);
+            return $programas->contains(fn($programa) => $programa->matricula);
+        } else
+            return false;
+    }
+
+    private function obterProgramasParaMenu(User $user)
+    {
+        if (Gate::allows('perfilgerente'))
+            return $user->listarProgramasGerenciados();
+        if (Gate::allows('perfildocente'))
+            return $user->listarProgramasGerenciadosFuncao('Docentes do Programa');
+    }
+
+    /**
      * Determine whether the user can view the inscrição.
      *
      * @param  \App\Models\User       $user

@@ -13,7 +13,7 @@ class Inscricao extends Model
 {
     use HasFactory;
 
-    # inscrições não segue convenção do laravel para nomes de tabela
+    # inscrições/matrículas não segue convenção do laravel para nomes de tabela
     protected $table = 'inscricoes';
 
     protected $fillable = [
@@ -67,8 +67,8 @@ class Inscricao extends Model
     {
         return [
             'Aguardando Envio', 'Enviada',                          // decorrem de ações do candidato
-            'Em Pré-Avaliação', 'Pré-Aprovada', 'Pré-Rejeitada',    // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição
-            'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição
+            'Em Pré-Avaliação', 'Pré-Aprovada', 'Pré-Rejeitada',    // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição/matrícula
+            'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição/matrícula
         ];
     }
 
@@ -85,7 +85,7 @@ class Inscricao extends Model
     }
 
     /**
-     * Retorna a contagem de inscrições por ano
+     * Retorna a contagem de inscrições/matrículas por ano
      *
      * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
      *
@@ -101,7 +101,7 @@ class Inscricao extends Model
     }
 
     /**
-     * Retorna a contagem de inscrições por mês de determinado ano
+     * Retorna a contagem de inscrições/matrículas por mês de determinado ano
      *
      * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
      *
@@ -128,38 +128,45 @@ class Inscricao extends Model
     }
 
     /**
-     * Lista as inscrições autorizadas para o usuário
+     * Lista as inscrições/matrículas autorizadas para o usuário
      *
-     * Se perfiladmin mostra todas as inscrições
-     * Se perfilusuario mostra as inscrições que ele está cadastrado como criador
+     * Se perfiladmin mostra todas as inscrições/matrículas
+     * Se perfilusuario mostra as inscrições/matrículas que ele está cadastrado como criador
      *
+     * @param  string  $inscricao_ou_matricula
      * @return Collection
      */
-    public static function listarInscricoes()
+    public static function listarInscricoes(string $inscricao_ou_matricula)
     {
         switch (session('perfil')) {
             case 'admin':
-                return self::all();
+                $inscricoes = self::with('selecao')->get();
+                break;
 
             case 'gerente':
                 if (DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
                         ->where('user_id', Auth::id())
-                        ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenador de Pós-Graduação'])
+                        ->whereNull('programa_id')
+                        ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenadores da Pós-Graduação'])
                         ->exists())
-                    return self::all();
+                    $inscricoes = self::with('selecao')->get();
                 else
-                    return self::with('selecao')->whereHas('selecao', function ($query) {
+                    $inscricoes = self::with('selecao')->whereHas('selecao', function ($query) {
                         $query->whereIn('programa_id', Auth::user()->listarProgramasGerenciados()->pluck('id'));
                     })->get();
+                break;
 
             case 'docente':
-                return self::with('selecao')->whereHas('selecao', function ($query) {
+                $inscricoes = self::with('selecao')->whereHas('selecao', function ($query) {
                     $query->whereIn('programa_id', Auth::user()->listarProgramasGerenciadosFuncao('Docentes do Programa')->pluck('id'));
                 })->get();
+                break;
 
             default:
-                return Auth::user()->inscricoes()->wherePivotIn('papel', ['Autor'])->get();
+                $inscricoes = Auth::user()->inscricoes()->with('selecao')->wherePivotIn('papel', ['Autor'])->get();
         }
+
+        return $inscricoes->filter(fn($inscricao) => ($inscricao->selecao->isMatricula() == ($inscricao_ou_matricula == 'matriculas')));
     }
 
     public static function listarInscricoesPorSelecao(Selecao $selecao, int $ano)
@@ -168,8 +175,8 @@ class Inscricao extends Model
     }
 
     /**
-     * Verifica se todos os arquivos requeridos da inscrição estão presentes
-     * Conforme for o caso, altera o estado da inscrição
+     * Verifica se todos os arquivos requeridos da inscrição/matrícula estão presentes
+     * Conforme for o caso, altera o estado da inscrição/matrícula
      */
     public function todosArquivosRequeridosPresentes(?int $nivel_id = null)
     {
@@ -181,10 +188,10 @@ class Inscricao extends Model
             });
         $tiposarquivo_requeridos = $tiposarquivo_requeridos->get();
 
-        // obtém os tipos de arquivo da inscrição
+        // obtém os tipos de arquivo da inscrição/matrícula
         $arquivos_inscricao = $this->arquivos->pluck('pivot.tipo')->countBy()->all();
 
-        // verifica se todos os tipos requeridos estão presentes nos arquivos da inscrição
+        // verifica se todos os tipos requeridos estão presentes nos arquivos da inscrição/matrícula
         $todos_requeridos_presentes = function() use ($tiposarquivo_requeridos, $arquivos_inscricao) {
             foreach ($tiposarquivo_requeridos as $tipoarquivo_requerido) {
                 $tipo_nome = $tipoarquivo_requerido['nome'];
@@ -197,12 +204,22 @@ class Inscricao extends Model
         return $todos_requeridos_presentes();
     }
 
+    public function InscricaoOuMatricula()
+    {
+        return $this->selecao->isMatricula() ? 'matrícula' : 'inscrição';
+    }
+
+    public function InscricaoOuMatriculaAbrev()
+    {
+        return $this->selecao->isMatricula() ? 'Matr' : 'Insc';
+    }
+
     /**
-     * Mostra as pessoas que têm vínculo com a inscrição
+     * Mostra as pessoas que têm vínculo com a inscrição/matrícula
      *
      * Se informado $pivot, retorna somente o primeiro usuário, senão retorna a lista completa
      *
-     * @param  $pivot Papel da pessoa na inscrição (autor, null = todos)
+     * @param  $pivot Papel da pessoa na inscrição/matrícula (autor, null = todos)
      * @return App\Models\User|Collection
      */
     public function pessoas($pivot = null)

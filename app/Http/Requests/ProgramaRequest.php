@@ -26,6 +26,7 @@ class ProgramaRequest extends FormRequest
         'descricao' => ['max:255'],
         'email_secretaria' => ['max:255', 'nullable', 'email'],
         'link_acompanhamento' => ['max:255', 'nullable', 'url', 'regex:/^(http:\/\/|https:\/\/)/'],
+        'matricula' => [],
     ];
 
     public const messages = [

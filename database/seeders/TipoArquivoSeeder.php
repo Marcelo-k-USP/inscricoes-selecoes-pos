@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Categoria;
 use App\Models\Nivel;
 use App\Models\NivelPrograma;
 use App\Models\Programa;
@@ -23,87 +24,100 @@ class TipoArquivoSeeder extends Seeder
                 'classe_nome' => 'Seleções',
                 'nome' => 'Edital',
                 'obrigatorio' => true,
+                'abreviacao' => 'Edital',
             ],
             [
                 'classe_nome' => 'Seleções',
                 'nome' => 'Normas para Isenção de Taxa',
                 'obrigatorio' => true,
+                'abreviacao' => 'NormasIsenc',
             ],
             [
                 'classe_nome' => 'Seleções',
                 'nome' => 'Errata',
                 'obrigatorio' => false,
+                'abreviacao' => 'Errata',
             ],
             [
                 'classe_nome' => 'Seleções',
-                'nome' => 'Lista de Inscritos',
+                'nome' => 'Resultado',
                 'obrigatorio' => false,
+                'abreviacao' => 'Result',
             ],
             [
                 'classe_nome' => 'Solicitações de Isenção de Taxa',
                 'nome' => 'Comprovação',
                 'obrigatorio' => true,
+                'abreviacao' => 'Comprov',
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Documento com Foto',
                 'obrigatorio' => true,
-                'aluno_especial' => true,
+                'abreviacao' => 'DocFoto',
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Histórico Escolar da Graduação',
                 'obrigatorio' => true,
-                'aluno_especial' => true,
+                'abreviacao' => 'HistEscGrad',
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Histórico Escolar do Mestrado',
                 'obrigatorio' => true,
+                'abreviacao' => 'HistEscMestr',
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Diploma da Graduação',
                 'obrigatorio' => true,
-                'aluno_especial' => true,
+                'abreviacao' => 'DiplGrad',
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Diploma do Mestrado',
                 'obrigatorio' => true,
+                'abreviacao' => 'DiplMestr',
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Dissertação do Mestrado',
                 'obrigatorio' => true,
+                'abreviacao' => 'DissertMestr',
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Comprovação de Proficiência em uma Língua Estrangeira',
                 'obrigatorio' => true,
+                'abreviacao' => 'ProficLinguaEstr',
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Comprovação de Publicação de um Artigo em Revista Científica',
                 'obrigatorio' => true,
+                'abreviacao' => 'Publ1ArtRev',
             ],
             [
                 'classe_nome' => 'Inscrições',
                 'nome' => 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica',
                 'obrigatorio' => true,
                 'minimo' => 2,
+                'abreviacao' => 'Publ2ArtRev',
             ],
             [
                 'classe_nome' => 'Inscrições',
-                'nome' => 'Boleto(s) de Pagamento da Inscrição',
+                'nome' => 'Boleto(s) de Pagamento',
                 'editavel' => false,
                 'obrigatorio' => false,
+                'abreviacao' => 'Boleto',
             ],
             [
                 'classe_nome' => 'Inscrições',
-                'nome' => 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas',
+                'nome' => 'Boleto(s) de Pagamento - Disciplinas Removidas',
                 'editavel' => false,
                 'obrigatorio' => false,
+                'abreviacao' => 'BoletoDiscRemov',
             ],
         ];
 
@@ -114,7 +128,7 @@ class TipoArquivoSeeder extends Seeder
         $tipoarquivo_EDITAL = TipoArquivo::where('nome', 'Edital')->first();
         $tipoarquivo_NORMASPARAISENCAODETAXA = TipoArquivo::where('nome', 'Normas para Isenção de Taxa')->first();
         $tipoarquivo_ERRATA = TipoArquivo::where('nome', 'Errata')->first();
-        $tipoarquivo_LISTADEINSCRITOS = TipoArquivo::where('nome', 'Lista de Inscritos')->first();
+        $tipoarquivo_RESULTADO = TipoArquivo::where('nome', 'Resultado')->first();
         $tipoarquivo_COMPROVACAO = TipoArquivo::where('nome', 'Comprovação')->first();
         $tipoarquivo_DOCUMENTOCOMFOTO = TipoArquivo::where('nome', 'Documento com Foto')->first();
         $tipoarquivo_HISTORICOESCOLARDAGRADUACAO = TipoArquivo::where('nome', 'Histórico Escolar da Graduação')->first();
@@ -125,8 +139,8 @@ class TipoArquivoSeeder extends Seeder
         $tipoarquivo_COMPROVACAODEPROFICIENCIAEMUMALINGUAESTRANGEIRA = TipoArquivo::where('nome', 'Comprovação de Proficiência em uma Língua Estrangeira')->first();
         $tipoarquivo_COMPROVACAODEPUBLICACAODEUMARTIGOEMREVISTACIENTIFICA = TipoArquivo::where('nome', 'Comprovação de Publicação de um Artigo em Revista Científica')->first();
         $tipoarquivo_COMPROVACAODEPUBLICACAODENOMINIMODOISARTIGOSEMREVISTACIENTIFICA = TipoArquivo::where('nome', 'Comprovação de Publicação de no Mínimo 2 Artigos em Revista Científica')->first();
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO = TipoArquivo::where('nome', 'Boleto(s) de Pagamento da Inscrição')->first();
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAODISCIPLINASDESINSCRITAS = TipoArquivo::where ('nome', 'Boleto(s) de Pagamento da Inscrição - Disciplinas Desinscritas')->first();
+        $tipoarquivo_BOLETOSDEPAGAMENTO = TipoArquivo::where('nome', 'Boleto(s) de Pagamento')->first();
+        $tipoarquivo_BOLETOSDEPAGAMENTODISCIPLINASREMOVIDAS = TipoArquivo::where ('nome', 'Boleto(s) de Pagamento - Disciplinas Removidas')->first();
 
         // adiciona registros na tabela tipoarquivo_nivelprograma
         $nivelprograma_id_MESTRADONEUROCIENCIASECOMPORTAMENTONEC = NivelPrograma::whereHas('nivel', function ($query) { $query->where('nome', 'Mestrado'); })->whereHas('programa', function ($query) { $query->where('nome', 'Neurociências e Comportamento (NEC)'); })->first()->id;
@@ -244,21 +258,21 @@ class TipoArquivoSeeder extends Seeder
         $tipoarquivo_COMPROVACAODEPUBLICACAODENOMINIMODOISARTIGOSEMREVISTACIENTIFICA->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIAESCOLAREDODESENVOLVIMENTOHUMANOPSA);
         $tipoarquivo_COMPROVACAODEPUBLICACAODENOMINIMODOISARTIGOSEMREVISTACIENTIFICA->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIACLINICAPSC);
         $tipoarquivo_COMPROVACAODEPUBLICACAODENOMINIMODOISARTIGOSEMREVISTACIENTIFICA->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIAEXPERIMENTALPSE);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_MESTRADONEUROCIENCIASECOMPORTAMENTONEC);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_MESTRADOPSICOLOGIAESCOLAREDODESENVOLVIMENTOHUMANOPSA);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_MESTRADOPSICOLOGIACLINICAPSC);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_MESTRADOPSICOLOGIAEXPERIMENTALPSE);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_MESTRADOPSICOLOGIASOCIALPST);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADONEUROCIENCIASECOMPORTAMENTONEC);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADOPSICOLOGIAESCOLAREDODESENVOLVIMENTOHUMANOPSA);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADOPSICOLOGIACLINICAPSC);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADOPSICOLOGIAEXPERIMENTALPSE);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADOPSICOLOGIASOCIALPST);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETONEUROCIENCIASECOMPORTAMENTONEC);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIAESCOLAREDODESENVOLVIMENTOHUMANOPSA);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIACLINICAPSC);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIAEXPERIMENTALPSE);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIASOCIALPST);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_MESTRADONEUROCIENCIASECOMPORTAMENTONEC);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_MESTRADOPSICOLOGIAESCOLAREDODESENVOLVIMENTOHUMANOPSA);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_MESTRADOPSICOLOGIACLINICAPSC);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_MESTRADOPSICOLOGIAEXPERIMENTALPSE);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_MESTRADOPSICOLOGIASOCIALPST);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADONEUROCIENCIASECOMPORTAMENTONEC);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADOPSICOLOGIAESCOLAREDODESENVOLVIMENTOHUMANOPSA);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADOPSICOLOGIACLINICAPSC);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADOPSICOLOGIAEXPERIMENTALPSE);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADOPSICOLOGIASOCIALPST);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETONEUROCIENCIASECOMPORTAMENTONEC);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIAESCOLAREDODESENVOLVIMENTOHUMANOPSA);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIACLINICAPSC);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIAEXPERIMENTALPSE);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->niveisprogramas()->attach($nivelprograma_id_DOUTORADODIRETOPSICOLOGIASOCIALPST);
 
         // adiciona registros na tabela selecao_tipoarquivo
         $selecao_id_SELECAO2025ALUNOREGULARNEC = Selecao::where('nome', 'Seleção 2025 Aluno Regular NEC')->first()->id;
@@ -269,8 +283,8 @@ class TipoArquivoSeeder extends Seeder
         $tipoarquivo_NORMASPARAISENCAODETAXA->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
         $tipoarquivo_ERRATA->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
         $tipoarquivo_ERRATA->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
-        $tipoarquivo_LISTADEINSCRITOS->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
-        $tipoarquivo_LISTADEINSCRITOS->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_RESULTADO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_RESULTADO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
         $tipoarquivo_COMPROVACAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
         $tipoarquivo_COMPROVACAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
         $tipoarquivo_DOCUMENTOCOMFOTO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
@@ -284,9 +298,24 @@ class TipoArquivoSeeder extends Seeder
         $tipoarquivo_DISSERTACAODOMESTRADO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
         $tipoarquivo_COMPROVACAODEPROFICIENCIAEMUMALINGUAESTRANGEIRA->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
         $tipoarquivo_COMPROVACAODEPUBLICACAODEUMARTIGOEMREVISTACIENTIFICA->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAODISCIPLINASDESINSCRITAS->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
-        $tipoarquivo_BOLETOSDEPAGAMENTODAINSCRICAODISCIPLINASDESINSCRITAS->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->selecoes()->attach($selecao_id_SELECAO2025ALUNOREGULARNEC);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+        $tipoarquivo_BOLETOSDEPAGAMENTODISCIPLINASREMOVIDAS->selecoes()->attach($selecao_id_SELECAO2025ALUNOESPECIAL);
+
+        // adiciona registros na tabela tipoarquivo_categoria
+        $categoria_id_ALUNOREGULAR = Categoria::where('nome', 'Aluno Regular')->first()->id;
+        $categoria_id_ALUNOESPECIAL = Categoria::where('nome', 'Aluno Especial')->first()->id;
+        $tipoarquivo_DOCUMENTOCOMFOTO->categorias()->attach($categoria_id_ALUNOREGULAR);
+        $tipoarquivo_HISTORICOESCOLARDAGRADUACAO->categorias()->attach($categoria_id_ALUNOREGULAR);
+        $tipoarquivo_HISTORICOESCOLARDOMESTRADO->categorias()->attach($categoria_id_ALUNOREGULAR);
+        $tipoarquivo_DIPLOMADAGRADUACAO->categorias()->attach($categoria_id_ALUNOREGULAR);
+        $tipoarquivo_DIPLOMADAGRADUACAO->categorias()->attach($categoria_id_ALUNOESPECIAL);
+        $tipoarquivo_DIPLOMADOMESTRADO->categorias()->attach($categoria_id_ALUNOREGULAR);
+        $tipoarquivo_DISSERTACAODOMESTRADO->categorias()->attach($categoria_id_ALUNOREGULAR);
+        $tipoarquivo_COMPROVACAODEPROFICIENCIAEMUMALINGUAESTRANGEIRA->categorias()->attach($categoria_id_ALUNOREGULAR);
+        $tipoarquivo_COMPROVACAODEPUBLICACAODEUMARTIGOEMREVISTACIENTIFICA->categorias()->attach($categoria_id_ALUNOREGULAR);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->categorias()->attach($categoria_id_ALUNOREGULAR);
+        $tipoarquivo_BOLETOSDEPAGAMENTO->categorias()->attach($categoria_id_ALUNOESPECIAL);
+        $tipoarquivo_BOLETOSDEPAGAMENTODISCIPLINASREMOVIDAS->categorias()->attach($categoria_id_ALUNOESPECIAL);
     }
 }

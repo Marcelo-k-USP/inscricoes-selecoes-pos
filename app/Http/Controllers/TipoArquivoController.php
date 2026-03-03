@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TipoArquivoRequest;
+use App\Models\Categoria;
 use App\Models\NivelPrograma;
 use App\Models\TipoArquivo;
 use Illuminate\Http\Request;
@@ -76,16 +77,18 @@ class TipoArquivoController extends Controller
 
         // acerta os valores dos campos tipo checkbox (pois, se o usuário deixou false, os campos não vêm no $request e, se o usuário deixou true, ele vêm mas com valor null)
         $request->merge(['obrigatorio' => $request->has('obrigatorio')]);
-        $request->merge(['aluno_especial' => $request->has('aluno_especial')]);
 
         // transaction para não ter problema de inconsistência do DB
         $tipoarquivo = DB::transaction(function () use ($request) {
 
             $tipoarquivo = TipoArquivo::create($request->all());
 
-            if ($tipoarquivo->classe_nome == 'Inscrições')
+            if ($tipoarquivo->classe_nome == 'Inscrições') {
+                foreach (Categoria::all() as $categoria)            // cadastra automaticamente todas as categorias como possíveis para este tipo de arquivo
+                    $tipoarquivo->categorias()->attach($categoria->id);
                 foreach (NivelPrograma::all() as $nivelprograma)    // cadastra automaticamente todas as combinações de níveis com programas como possíveis para este tipo de arquivo
                     $tipoarquivo->niveisprogramas()->attach($nivelprograma->id);
+            }
 
             return $tipoarquivo;
         });
@@ -129,13 +132,11 @@ class TipoArquivoController extends Controller
 
         // acerta os valores dos campos tipo checkbox (pois, se o usuário deixou false, os campos não vêm no $request e, se o usuário deixou true, ele vêm mas com valor null)
         $request->merge(['obrigatorio' => $request->has('obrigatorio')]);
-        $request->merge(['aluno_especial' => $request->has('aluno_especial')]);
 
         $tipoarquivo->nome = $request->nome;
         $tipoarquivo->abreviacao = $request->abreviacao;
         $tipoarquivo->obrigatorio = $request->obrigatorio;
         $tipoarquivo->minimo = $request->minimo;
-        $tipoarquivo->aluno_especial = $request->aluno_especial;
         $tipoarquivo->save();
 
         $request->session()->flash('alert-success', 'Tipo de documento alterado com sucesso');
@@ -159,6 +160,8 @@ class TipoArquivoController extends Controller
             $request->session()->flash('alert-danger', 'Há seleções que usam este tipo de documento!');
         elseif ($tipoarquivo->arquivos()->exists())
             $request->session()->flash('alert-danger', 'Há arquivos armazenados deste tipo!');
+        elseif ($tipoarquivo->categorias()->exists())
+            $request->session()->flash('alert-danger', 'Há categorias que usam este tipo de documento!');
         elseif ($tipoarquivo->niveisprogramas()->exists())
             $request->session()->flash('alert-danger', 'Há combinações de níveis com programas que usam este tipo de documento!');
         else {
@@ -167,6 +170,57 @@ class TipoArquivoController extends Controller
         }
         \UspTheme::activeUrl('tiposarquivo');
         return view('tiposarquivo.tree', $this->monta_compact_index());
+    }
+
+    /**
+     * Adicionar categorias relacionadas ao tipo de arquivo
+     * autorizado a qualquer um que tenha acesso ao tipo de arquivo
+     * request->codpes = required, int
+     */
+    public function storeCategoria(Request $request, TipoArquivo $tipoarquivo)
+    {
+        $this->authorize('tiposarquivo.update', $tipoarquivo);
+
+        $request->validate([
+            'id' => 'required',
+        ],
+        [
+            'id.required' => 'Categoria obrigatória',
+        ]);
+
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $tipoarquivo) {
+
+            $categoria = Categoria::where('id', $request->id)->first();
+
+            $existia = $tipoarquivo->categorias()->detach($categoria);
+
+            $tipoarquivo->categorias()->attach($categoria);
+
+            return ['categoria' => $categoria, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'A categoria ' . $db_transaction['categoria']->nome . ' foi adicionada a esse tipo de documento');
+        else
+            $request->session()->flash('alert-info', 'A categoria ' . $db_transaction['categoria']->nome . ' já estava vinculada a esse tipo de documento');
+        \UspTheme::activeUrl('tiposarquivo');
+        return redirect()->to(url('tiposarquivo/edit/' . $tipoarquivo->id))->with($this->monta_compact($tipoarquivo, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
+    }
+
+    /**
+     * Remove categorias relacionadas ao tipo de arquivo
+     * $user = required
+     */
+    public function destroyCategoria(Request $request, TipoArquivo $tipoarquivo, Categoria $categoria)
+    {
+        $this->authorize('tiposarquivo.update', $tipoarquivo);
+
+        $tipoarquivo->categorias()->detach($categoria);
+
+        $request->session()->flash('alert-success', 'A categoria ' . $categoria->nome . ' foi removida desse tipo de documento');
+        \UspTheme::activeUrl('tiposarquivo');
+        return view('tiposarquivo.edit', $this->monta_compact($tipoarquivo, 'edit'));
     }
 
     /**
@@ -244,8 +298,9 @@ class TipoArquivoController extends Controller
         $objeto = $tipoarquivo;
         $objeto->niveisprogramas = NivelPrograma::obterNiveisProgramasDoTipoArquivo($objeto);
         $niveisprogramas = NivelPrograma::obterNiveisProgramasPossiveis();
+        $categorias = Categoria::all();
         $rules = TipoArquivoRequest::rules;
 
-        return compact('data', 'objeto', 'niveisprogramas', 'rules', 'modo');
+        return compact('data', 'objeto', 'niveisprogramas', 'categorias', 'rules', 'modo');
     }
 }

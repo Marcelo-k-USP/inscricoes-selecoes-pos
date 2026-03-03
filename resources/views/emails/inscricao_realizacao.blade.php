@@ -1,6 +1,8 @@
+@nomenclatura(['selecao' => $inscricao->selecao])
+
 {{ $responsavel_nome }},
 <br />
-Foi enviada uma inscrição para {{ ($inscricao->selecao->categoria->nome != 'Aluno Especial') ? 'o processo seletivo ' . $inscricao->selecao->nome : 'aluno especial' }}.<br />
-Favor avaliar os documentos do candidato, e pré-aprovar (ou pré-reprovar) sua inscrição no sistema.<br />
+Foi enviada uma {{ $inscricao_ou_matricula }} para {{ $objetivo }}.<br />
+Clique <a href="{{ config('app.url') }}/{{ str($inscricao_ou_matricula_plural)->ascii() }}/edit/{{ $inscricao->id }}">aqui</a> para avaliar os dados e documentos do candidato, e pré-aprovar (ou pré-reprovar) sua {{ $inscricao_ou_matricula }} no sistema.<br />
 <br />
 @include('emails.rodape')

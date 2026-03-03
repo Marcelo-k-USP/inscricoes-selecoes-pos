@@ -58,9 +58,20 @@ Route::put('inscricoes/edit/{inscricao}', [InscricaoController::class, 'update']
 Route::post('inscricoes/geraboletos/{inscricao}', [InscricaoController::class, 'geraBoletos'])->name('inscricoes.geraboletos');
 Route::post('inscricoes/{inscricao}/enviaboleto/{arquivo}', [InscricaoController::class, 'enviaBoleto'])->name('inscricoes.enviaboleto');
 
-// INSCRIÇÕES > DISCIPLINAS
-Route::post('inscricoes/{inscricao}/disciplinas', [InscricaoController::class, 'storeDisciplina']);
-Route::delete('inscricoes/{inscricao}/disciplinas/{disciplina}', [InscricaoController::class, 'destroyDisciplina']);
+// MATRÍCULAS
+Route::get('matriculas', [InscricaoController::class, 'index'])->name('matriculas.index');
+Route::get('matriculas/create', [InscricaoController::class, 'listaSelecoesParaNovaInscricao'])->name('matriculas.create');
+Route::get('matriculas/create/{selecao}/{nivel}', [InscricaoController::class, 'create']);    // define a rota mais específica antes da mais geral (na linha de baixo)
+Route::get('matriculas/create/{selecao}', [InscricaoController::class, 'create']);
+Route::post('matriculas/create', [InscricaoController::class, 'store'])->name('matriculas.store');
+Route::get('matriculas/edit/{inscricao}', [InscricaoController::class, 'edit'])->name('matriculas.edit');
+Route::put('matriculas/edit/{inscricao}', [InscricaoController::class, 'update'])->name('matriculas.update');
+Route::post('matriculas/geraboletos/{inscricao}', [InscricaoController::class, 'geraBoletos'])->name('matriculas.geraboletos');
+Route::post('matriculas/{inscricao}/enviaboleto/{arquivo}', [InscricaoController::class, 'enviaBoleto'])->name('matriculas.enviaboleto');
+
+// MATRÍCULAS > DISCIPLINAS
+Route::post('matriculas/{inscricao}/disciplinas', [InscricaoController::class, 'storeDisciplina']);
+Route::delete('matriculas/{inscricao}/disciplinas/{disciplina}', [InscricaoController::class, 'destroyDisciplina']);
 
 // CONSULTA DE CEP
 Route::get('consulta-cep', [EnderecoController::class, 'consultarCep'])->name('consulta.cep');
@@ -138,6 +149,10 @@ Route::resource('tiposarquivo', TipoArquivoController::class);
 Route::post('tiposarquivo/create', [TipoArquivoController::class, 'store']);
 Route::get('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'edit']);
 Route::put('tiposarquivo/edit/{tipoarquivo}', [TipoArquivoController::class, 'update']);
+
+// TIPOS DE ARQUIVO > CATEGORIAS
+Route::post('tiposarquivo/{tipoarquivo}/categorias', [TipoArquivoController::class, 'storeCategoria']);
+Route::delete('tiposarquivo/{tipoarquivo}/categorias/{categoria}', [TipoArquivoController::class, 'destroyCategoria']);
 
 // TIPOS DE ARQUIVO > NÍVEIS + PROGRAMAS
 Route::post('tiposarquivo/{tipoarquivo}/niveisprogramas', [TipoArquivoController::class, 'storeNivelPrograma']);

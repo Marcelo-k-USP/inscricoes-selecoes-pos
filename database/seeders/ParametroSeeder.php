@@ -18,6 +18,10 @@ class ParametroSeeder extends Seeder
             [
                 'boleto_codigo_fonte_recurso' => 514,
                 'boleto_estrutura_hierarquica' => '\DIR\ATAC-47\SVPOSGR-47',
+                'link_acompanhamento_especiais' => 'https://www.ip.usp.br/site/alunos-especiais-3/',
+                'email_servicoposgraduacao' => 'inscricao_pos_ip@usp.br',
+                'email_secaoinformatica' => 'inforip@usp.br',
+                'email_gerenciamentosite' => 'website_ip@usp.br',
             ],
         ];
 

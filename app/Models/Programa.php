@@ -16,6 +16,7 @@ class Programa extends Model
         'descricao',
         'email_secretaria',
         'link_acompanhamento',
+        'matricula',
     ];
 
     // uso no crud generico
@@ -35,6 +36,11 @@ class Programa extends Model
         [
             'name' => 'link_acompanhamento',
             'label' => 'Link de Acompanhamento',
+        ],
+        [
+            'name' => 'matricula',
+            'label' => 'Usar matrícula ao invés de inscrição',
+            'type' => 'checkbox',
         ],
     ];
 

@@ -1,31 +1,29 @@
-<button type="button" class="btn btn-sm btn-light text-primary" data-toggle="modal" data-target="#TipoArquivo{{ $tipoarquivo_classe_nome }}Modal">
+<button type="button" class="btn btn-sm btn-light text-primary" data-toggle="modal" data-target="#CategoriaModal">
   <i class="fas fa-plus"></i> Adicionar
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="TipoArquivo{{ $tipoarquivo_classe_nome }}Modal" data-backdrop="static" tabindex="-1">
+<div class="modal fade" id="CategoriaModal" data-backdrop="static" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Adicionar Tipo de Documento nas {{ ($tipoarquivo_classe_nome_plural_acentuado == 'Inscrições' && $selecao->isMatricula()) ? 'Matrículas' : $tipoarquivo_classe_nome_plural_acentuado }}</h5>
+        <h5 class="modal-title">Adicionar Categoria</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="list_table_div_form">
-          {{ html()->form('post', $inclusor_url . '/' . $selecao->id . '/tiposarquivo' . strtolower($tipoarquivo_classe_nome))->open() }}
+          {{ html()->form('post', $inclusor_url . '/' . $inclusor_objeto->id . '/categorias')->open() }}
             @csrf
             @method('post')
             {{ html()->hidden('id') }}
             <div class="form-group row">
-              <div class="col-form-label col-sm-3">Tipo de Arquivo</div>
+              <div class="col-form-label col-sm-3">Categoria</div>
               <div class="col-sm-8">
                 <select class="form-control" name="id" id="id_campo1">
-                  @foreach ($tiposarquivo as $tipoarquivo)
-                    @if (!str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento'))
-                      <option value='{{ $tipoarquivo->id }}'>{{ $tipoarquivo->nome }}</option>
-                    @endif
+                  @foreach ($categorias as $categoria)
+                    <option value='{{ $categoria->id }}'>{{ $categoria->nome }}</option>
                   @endforeach
                 </select>
               </div>
@@ -46,12 +44,12 @@
   <script type="text/javascript">
     $(document).ready(function() {
 
-      $('#TipoArquivo{{ $tipoarquivo_classe_nome }}Modal').on('shown.bs.modal', function() {
+      $('#CategoriaModal').on('shown.bs.modal', function() {
         $('#id_campo1').focus();
       });
 
       add_modal_form = function() {
-        $('#TipoArquivo{{ $tipoarquivo_classe_nome }}Modal').modal();
+        $('#CategoriaModal').modal();
       };
     });
   </script>

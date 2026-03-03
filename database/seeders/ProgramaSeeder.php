@@ -25,7 +25,8 @@ class ProgramaSeeder extends Seeder
             ],
             [
                 'nome' => 'Psicologia Clínica (PSC)',
-                'descricao' => 'Programa de Pós-Graduação em Psicologia Clínica'
+                'descricao' => 'Programa de Pós-Graduação em Psicologia Clínica',
+                'matricula' => true
             ],
             [
                 'nome' => 'Psicologia Experimental (PSE)',

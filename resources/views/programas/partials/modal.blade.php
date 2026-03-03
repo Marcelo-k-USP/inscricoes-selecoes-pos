@@ -22,6 +22,8 @@
               @include('common.list-table-form-text')
             @elseif ($col['type'] == 'select')
               @include('common.list-table-form-select')
+            @elseif ($col['type'] == 'checkbox')
+              @include('common.list-table-form-checkbox')
             @endif
           @endforeach
           <div class="text-right">
@@ -54,7 +56,10 @@
             // preenchendo o form com os valores a serem editados
             var inputs = $("#modalForm :input").not(":input[type=button], :input[type=submit], :input[type=reset], input[name^='_']");
             inputs.each(function() {
-              $(this).val(row[this.name]);
+              if ($(this).is(':checkbox')) {
+                $(this).prop('checked', row[this.name] == 1 || row[this.name] === true);
+              } else
+                $(this).val(row[this.name]);
               console.log(this.name);
             });
 
@@ -71,6 +76,9 @@
 
       add_form = function(id) {
         $("#modalForm :input").filter("input[type='text']").val('');
+
+        // desmarca os checkboxes
+        $("#modalForm :input").filter(":checkbox").prop('checked', false);
 
         // preenchendo o form com os valores a serem editados
         $("#modalForm select").val(id);

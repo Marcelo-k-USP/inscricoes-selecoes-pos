@@ -97,7 +97,7 @@ class LinhaPesquisaController extends Controller
      */
     public function edit(Request $request, LinhaPesquisa $linhapesquisa)
     {
-        $this->authorize('linhaspesquisa.update');
+        $this->authorize('linhaspesquisa.update', $linhapesquisa);
 
         \UspTheme::activeUrl('linhaspesquisa');
         return view('linhaspesquisa.edit', $this->monta_compact($linhapesquisa, 'edit'));
@@ -112,7 +112,7 @@ class LinhaPesquisaController extends Controller
      */
     public function update(LinhaPesquisaRequest $request, LinhaPesquisa $linhapesquisa)
     {
-        $this->authorize('linhaspesquisa.update');
+        $this->authorize('linhaspesquisa.update', $linhapesquisa);
 
         $validator = Validator::make($request->all(), LinhaPesquisaRequest::rules, LinhaPesquisaRequest::messages);
         if ($validator->fails()) {
@@ -138,9 +138,9 @@ class LinhaPesquisaController extends Controller
      */
     public function destroy(LinhaPesquisaRequest $request, string $id)
     {
-        $this->authorize('linhaspesquisa.delete');
-
         $linhapesquisa = LinhaPesquisa::find((int) $id);
+        $this->authorize('linhaspesquisa.delete', $linhapesquisa);
+
         if ($linhapesquisa->selecoes()->exists())
             $request->session()->flash('alert-danger', 'Há seleções para esta linha de pesquisa/tema!');
         else {
@@ -164,7 +164,7 @@ class LinhaPesquisaController extends Controller
      */
     public function storeOrientador(Request $request, LinhaPesquisa $linhapesquisa)
     {
-        $this->authorize('linhaspesquisa.update');
+        $this->authorize('linhaspesquisa.update', $linhapesquisa);
 
         if ($request->externo)
             $request->validate([
@@ -224,7 +224,7 @@ class LinhaPesquisaController extends Controller
      */
     public function destroyOrientador(Request $request, LinhaPesquisa $linhapesquisa, Orientador $orientador)
     {
-        $this->authorize('linhaspesquisa.update');
+        $this->authorize('linhaspesquisa.update', $linhapesquisa);
 
         $linhapesquisa->orientadores()->detach($orientador);
 
@@ -235,7 +235,7 @@ class LinhaPesquisaController extends Controller
 
     private function monta_compact_index()
     {
-        $linhaspesquisa = LinhaPesquisa::with('programa')->orderBy('programa_id')->orderBy('id')->get();
+        $linhaspesquisa = LinhaPesquisa::listarLinhasPesquisa();
         $fields = LinhaPesquisa::getFields();
         $modal_pessoa['url'] = 'linhas de pesquisa/temas';
         $modal_pessoa['title'] = 'Adicionar Pessoa';

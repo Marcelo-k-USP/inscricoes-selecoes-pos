@@ -9,6 +9,8 @@
 </style>
 @endsection
 
+@nomenclatura
+
 <div class="btn-group btn-enable-disable">
   <button class="btn btn-sm {{ ($selecao->estado == 'Em Elaboração') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Em Elaboração">
     Em Elaboração
@@ -23,19 +25,19 @@
       </button>
     @else
       <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições">
-        Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições
+        Aguardando Início das Solicitações de Isenção de Taxa e das {{ ucfirst($inscricao_ou_matricula_plural) }}
       </button>
       <button class="btn btn-sm {{ ($selecao->estado == 'Período de Solicitações de Isenção de Taxa e de Inscrições') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Solicitações de Isenção de Taxa e de Inscrições">
-        Período de Solicitações de Isenção de Taxa e de Inscrições
+        Período de Solicitações de Isenção de Taxa e de {{ ucfirst($inscricao_ou_matricula_plural) }}
       </button>
     @endif
   @endif
   @if (!$selecao->tem_taxa || !$selecao->fluxo_continuo)
     <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Inscrições') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Inscrições">
-      Aguardando Início das Inscrições
+      Aguardando Início das {{ ucfirst($inscricao_ou_matricula_plural) }}
     </button>
     <button class="btn btn-sm {{ ($selecao->estado == 'Período de Inscrições') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Inscrições">
-      Período de Inscrições
+      Período de {{ ucfirst($inscricao_ou_matricula_plural) }}
     </button>
   @endif
   <button class="btn btn-sm {{ ($selecao->estado == 'Encerrada') ? 'btn-danger' : 'btn-secondary' }}" disabled name="estado" value="Encerrada">

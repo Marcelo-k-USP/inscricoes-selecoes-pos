@@ -8,6 +8,8 @@
   </style>
 @endsection
 
+@nomenclatura(['selecao' => (in_array(request()->segment(1), ['inscricoes', 'matriculas']) ? $inscricao->selecao : $solicitacaoisencaotaxa->selecao)])
+
 {{ html()->form('post', $data->url . '/edit/' . $objeto->id)
   ->attribute('id', 'form_envio')
   ->attribute('novalidate', '')          // pois faço minha validação manual em $('#form_envio').on('submit'
@@ -31,7 +33,7 @@
         </div>
       </div>
       <div class="text-right">
-        <button type="submit" class="btn btn-primary">Enviar {{ ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'Solicitação' : 'Inscrição') }}</button>
+        <button type="submit" class="btn btn-primary">Enviar {{ ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'Solicitação' : ucfirst($inscricao_ou_matricula)) }}</button>
       </div>
     </div>
   </div>

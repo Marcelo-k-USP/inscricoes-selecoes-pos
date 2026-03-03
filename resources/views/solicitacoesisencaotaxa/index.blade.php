@@ -68,11 +68,7 @@
     </table>
   @else
     <br />
-    @canany(['perfiladmin', 'perfilgerente'])
-      Não há nenhuma solicitação de isenção de taxa cadastrada no sistema.
-    @else
-      Você não realizou nenhuma solicitação de isenção de taxa para nossos processos seletivos.
-    @endcan
+    Não há nenhuma solicitação de isenção de taxa {{ auth()->user()->canAny(['perfiladmin', 'perfilgerente']) ? '' : 'sua' }} a ser consultada.
   @endif
 @stop
 

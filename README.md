@@ -1,60 +1,65 @@
 # Sobre o projeto
 
-Trata o fluxo de inscrições para processos seletivos da pós-graduação.
-Não trata do fluxo que segue após isso: avaliação, inscrição na pós-graduação, etc.
+Trata o fluxo de inscrições para processos seletivos da pós-graduação e, eventualmente, da matrícula na seção de pós-graduação.
+Essa matrícula é uma inscrição adaptada, consistindo de uma submissão de formulário e de documentos à pós-graduação, que posteriormente realiza a matrícula propriamente dita no Janus.
 
 # Características
 
-Permite que candidatos solicitem isenção de taxa de inscrição e realizem inscrição.
-Ambas as "entidades" (isenção de taxa de solicitação e inscrição) possuem fluxo de estados.
-Para que um candidato solicite isenção de taxa ou se inscreva, ele precisa estar logado, ou seja, ele deve antes realizar um cadastro local.
+Permite que candidatos solicitem isenção de taxa de inscrição/matrícula e realizem inscrição/matrícula.
+Ambas as "entidades" (isenção de taxa de solicitação e inscrição/matrícula) possuem fluxo de estados.
+Para que um candidato solicite isenção de taxa ou se inscreva/matricule, ele precisa estar logado, ou seja, ele deve antes realizar um cadastro local.
 Os usuários locais são gravados também na tabela users, embora possuam modelo próprio no projeto.
 
-Os gerentes devem cadastrar as seleções nas quais os candidatos se inscreverão/solicitarão isenção de taxa.
+Há duas categorias de processos seletivos: para aluno regular e para aluno especial.
+No caso de aluno regular, as seleções/inscrições/matrículas/solicitações de isenção de taxa dizem respeito a um programa específico.
+O aluno regular, ao se inscrever/matricular, deve escolher a combinação nível com linha de pesquisa/tema na qual está se inscrevendo/matriculando.
+No caso de aluno especial, as seleções/matrículas/solicitações de isenção de taxa não são atreladas a um programa.
+O aluno especial, ao se matricular, deve escolher a(s) disciplina(s) na(s) qual(is) está se matriculando.
+
+A matrícula, neste sistema, nada mais é que uma inscrição "disfarçada".
+Ela utiliza as mesmas tabelas, models, controllers, policies, observers, requests, views e mails da inscrição; as diferenças acontecem no fluxo de ações decorrentes e na comunicação com os usuários: dependendo do caso, diz-se inscrição ou matrícula.
+A princípio, todos os casos são de inscrições. Matrículas são utilizadas apenas para o caso de aluno especial e, no caso de aluno regular, para programas configurados para atuar com matrículas ao invés de inscrições (por exemplo, programas que realizem os passos anteriores do processo seletivo através da FUVEST e/ou outros e após isso necessitem dos dados do candidato).
+
+Os gerentes devem cadastrar as seleções nas quais os candidatos se inscreverão/matricularão/solicitarão isenção de taxa.
 Cada seleção tem um formulário próprio, gerado a partir de um template, e editável pelo gerente (excetos por campos utilizados pelo sistema, que não podem ser removidos, como CPF, e-mail, etc.).
-O estado da seleção é modificado quando o gerente altera a data início/fim das solicitações de isenção de taxa ou a data início/fim das inscrições, também quando as seleções são consultadas (neste momento, o sistema verifica se alguma seleção passou da data início/fim, e muda o estado de acordo), também quando um usuário vai iniciar uma nova solicitação de isenção de taxa ou inscrição.
+O estado da seleção é modificado quando o gerente altera a data início/fim das solicitações de isenção de taxa ou a data início/fim das inscrições/matrículas, também quando as seleções são consultadas (neste momento, o sistema verifica se alguma seleção passou da data início/fim, e muda o estado de acordo), também quando um usuário vai iniciar uma nova solicitação de isenção de taxa ou inscrição/matrícula.
 O estado também é modificado quando o gerente sobe/remove os documentos da seleção (edital, etc.), pois não podemos abrir uma seleção sem que ela tenha esses documentos.
 Ao cadastrar uma nova seleção, o gerente deve informar a quais combinações níveis com linhas de pesquisa/temas ela está atrelada (se a categoria da seleção for aluno regular, pois na categoria de aluno especial não temos combinações níveis com linhas de pesquisa/temas, o aluno especial se inscreve para disciplina(s)).
 Ao cadastrar uma nova seleção, todos os motivos de isenção de taxa são automaticamente associados à ela; cabe ao gerente verificar se é isso mesmo o desejado para a nova seleção.
 Ao cadastrar uma nova seleção na categoria aluno especial, todas as disciplinas são automaticamente associados à ela; cabe ao gerente verificar se é isso mesmo o desejado para a nova seleção.
-A seleção pode ser normal ou de "fluxo contínuo". No caso normal, a data de vencimento do boleto é cadastrada na própria seleção; no caso de fluxo contínuo, a data de vencimento do boleto será calculada somando uma determinada quantidade de dias úteis (quantidade essa cadastrada na seleção) acrescidos à data de envio da inscrição.
+A seleção pode ser normal ou de "fluxo contínuo". No caso normal, a data de vencimento do boleto é cadastrada na própria seleção; no caso de fluxo contínuo, a data de vencimento do boleto será calculada somando uma determinada quantidade de dias úteis (quantidade essa cadastrada na seleção) acrescidos à data de envio da inscrição/matrícula.
 O fluxo de estados de seleções sem cobrança de taxa é:
 Em Elaboração -> Aguardando Início das Inscrições -> Período de Inscrições -> Encerrada
 O fluxo de estados de seleções normais com cobrança de taxa é: Em Elaboração -> Aguardando Início das Solicitações de Isenção de Taxa -> Período de Solicitações de Isenção de Taxa -> Aguardando Início das Inscrições -> Período de Inscrições -> Encerrada
 O fluxo de estados de seleções de fluxo contínuo com cobrança de taxa é:
 Em Elaboração -> Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições -> Período de Solicitações de Isenção de Taxa e de Inscrições -> Encerrada
 
-Há cinco funções para gerentes: docentes do programa, secretários(as) dos programas, coordenadores dos programas, serviço de pós-graduação e coordenadores de pós-graduação.
-Gerentes das três primeiras funções são atrelados aos programas. Eles podem acessar seleções, solicitações de taxa de inscrição e inscrições somente de seus programas associados.
-Gerentes das duas últimas funções podem acessar todas as seleções, solicitações de taxa de inscrição e inscrições.
+Há cinco funções para gestores: docentes do programa, secretários(as) dos programas, coordenadores dos programas, serviço de pós-graduação e coordenadores da pós-graduação.
+Gestores das três primeiras funções são atrelados aos programas. Eles podem acessar seleções, solicitações de isenção de taxa e inscrições/matrículas somente de seus programas associados.
+Gestores das duas últimas funções podem acessar todas as seleções, solicitações de isenção de taxa e inscrições/matrículas.
 
-Em adição aos perfis existentes (admin, gerente e usuário), foi criado o perfil de docente.
-A razão disso é que os docentes terão acesso às inscrições, mas somente leitura.
-Os docentes são definidos na mesma tabela que os gerentes, mas com a função docentes dos programas.
-No caso de inscrições de seleções para alunos especiais, os docentes não terão acesso.
+A função de docente corresponde ao perfil de docente. As funções de secretários(as) dos programas, coordenadores dos programas, serviço de pós-graduação e coordenadores da pós-graduação correspondem ao perfil de gerente. O conjunto de docentes, gerentes e admins forma o grupo de gestores.
+Docentes têm acesso às inscrições/matrículas, mas somente leitura.
+Os docentes são definidos na mesma tabela que os gerentes, mas com a função docentes dos programas. No caso de matrículas de seleções para alunos especiais, os docentes não têm acesso.
 
-Há duas categorias de processos seletivos: aluno regular e aluno especial.
-No caso de aluno regular, as seleções/inscrições/solicitações de isenção de taxa dizem respeito a um programa específico.
-O aluno regular, ao se inscrever, deve especificar a combinação nível com linha de pesquisa/tema na qual está se inscrevendo.
-No caso de aluno especial, as seleções/inscrições/solicitações de isenção de taxa não são atreladas a um programa.
-O aluno especial, ao se inscrever, deve especificar a(s) disciplina(s) na(s) qual(is) está se inscrevendo.
-
-A secretaria de pós-graduação gerencia as inscrições através de um fluxo ligeiramente diferente: há uma fase inicial adicional em que o candidato entra em contato com o docente para obter sua aprovação (a secretaria de pós-graduação chama esse passo de "inscrição"); isso é feito por e-mail, fora deste sistema. Em seguida, o candidato solicita a isenção de taxa e, por fim, realiza sua inscrição; a secretaria de pós-graduação realiza a matrícula dele no período de inscrições do sistema (ela chama esse passo de "matrícula"). Portanto, este sistema trata a segunda e a terceira fases do processo para aluno especial. O sistema também modifica os textos de comunicações para, no caso de aluno especial, na terceira fase do processo, não dizer "inscrição para o processo seletivo x" mas sim "inscrição para aluno especial".
+A secretaria de pós-graduação gerencia as matrículas para aluno especial através de um fluxo ligeiramente diferente: há uma fase inicial adicional em que o candidato entra em contato com o docente para obter sua aprovação (a secretaria de pós-graduação chama esse passo de "inscrição"); isso é feito por e-mail, fora deste sistema. Em seguida, o candidato solicita a isenção de taxa e, por fim, realiza sua matrícula (submissão de formulário e documentos à pós-graduação através deste sistema); a secretaria de pós-graduação realiza a matrícula dele no período de matrículas do sistema (esta é a matrícula propriamente dita, no Janus). Portanto, este sistema trata a segunda e a terceira fases do processo para aluno especial. O sistema também modifica os textos de comunicações para, no caso de aluno especial, não informar "inscrição para o processo seletivo x" mas sim "matrícula para aluno especial" e, no caso de aluno regular para programa que atua com matrículas, informar "matrícula para o programa x".
 
 As linhas de pesquisa/temas são relacionadas aos níveis da pós-graduação (mestrado, doutorado, doutorado direto).
-Se um aluno regular se inscreve, por exemplo, para o nível de mestrado, só lhe serão permitidas as linhas de pesquisa/temas desse programa dessa seleção que estejam relacionadas ao nível escolhido.
+Se um aluno regular se inscreve, por exemplo, para o nível de mestrado, só lhe serão permitidas as linhas de pesquisa/temas desse programa dessa seleção que estejam relacionadas ao nível escolhido. O gerente só pode acessar as linhas de pesquisa/temas de seu programa.
+
+Para as disciplinas, os acessão são abertos: qualquer gerente pode acessar disciplinas de quaisquer programas. Na verdade, as disciplinas nem estão atreladas a programas, embora isso talvez fosse possível, mas não se mostrou necessário, por serem de escolha exclusiva de aluno especial, que não opta por programa.
 
 Cada seleção contém informativos (edital, etc.), que são documentos que o candidato pode consultar.
-Além disso, em cada seleção o gerente também define quais documentos o candidato pode (ou deve) subir quando da solicitação de isenção de taxa e quando da inscrição.
-O tipo de documento de boletos não é removível nem renomeável. O candidato não sobe documento desse tipo, pois ele é gerado quando do envio da inscrição.
-Inscrições para programas podem ser de três níveis diferentes (mestrado, doutorado ou doutorado direto) e os tipos de documento dessas inscrições podem variar conforme o nível e o programa. Tipos de documento com diferenciação por níveis e programas é algo que só faz sentido nas inscrições. Para que um tipo de documento apareça na solicitação de isenção de taxa ou inscrição, devemos cadastrá-lo na relação de Tipos de Documento; devemos também cadastrar suas relações com combinações de nível com tipo de programa; por fim, devemos cadastrá-lo também na seleção em questão (como tipo de documento para solicitação de isenção de taxa ou inscrição).
+Além disso, em cada seleção o gerente também define quais documentos o candidato pode (ou deve) subir quando da solicitação de isenção de taxa e quando da inscrição/matrícula.
+O tipo de documento de boletos não é removível nem renomeável. O candidato não sobe documento desse tipo, pois ele é gerado quando do envio da inscrição/matrícula.
+Inscrições/matrículas para programas podem ser de três níveis diferentes (mestrado, doutorado ou doutorado direto) e os tipos de documento dessas inscrições podem variar conforme o nível e o programa. Tipos de documento com diferenciação por níveis e programas é algo que só faz sentido nas inscrições/matrículas. Para que um tipo de documento apareça na solicitação de isenção de taxa ou inscrição/matrícula, devemos cadastrá-lo na relação de Tipos de Documento; devemos também cadastrar suas relações com combinações de nível com tipo de programa; por fim, devemos cadastrá-lo também na seleção em questão (como tipo de documento para solicitação de isenção de taxa ou inscrição/matrícula).
 
-Para completar a inscrição, o candidato deve clicar em Enviar.
-Se houver cobrança de taxa de inscrição para a seleção em questão, então é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição.
+Para completar a inscrição/matrícula, o candidato deve clicar em Enviar Inscrição/Matrícula.
+Se houver cobrança de taxa de inscrição/matrícula para a seleção em questão, é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição/matrícula.
 No caso de aluno regular, é gerado um único boleto.
 No caso de aluno especial, é gerado um boleto para cada disciplina na qual ele se inscreveu, e enviado para o candidato um único e-mail com todos esses boletos anexados.
-Algumas informações necessárias para a geração de boletos se encontram na tabela parametros, que é editável pelos admins em tela.
-Caso um candidato reenvie sua inscrição, e seja para uma seleção de categoria aluno especial, e as disciplinas para as quais ele está se inscrevendo tenham sido alteradas em relação ao envio anterior, o sistema irá gerar e enviar boletos para as novas disciplinas, além de marcar como boletos referentes a disciplinas desinscritas aqueles boletos que haviam sido gerados anteriormente e para cujas disciplinas o candidato se desinscreveu nesse reenvio da inscrição.
+Algumas informações necessárias para a geração de boletos se encontram na tabela "parametros", que é editável pelos admins em tela.
+Caso um candidato reenvie sua matrícula, e ela seja para uma seleção de categoria aluno especial, e as disciplinas para as quais ele está se matriculando tenham sido alteradas em relação ao envio anterior, o sistema irá gerar e enviar boletos para as novas disciplinas, além de marcar como boletos referentes a disciplinas removidas aqueles boletos que haviam sido gerados anteriormente e cujas disciplinas o candidato removeu nesse reenvio da matrícula.
 
 # Envios de e-mails
 
@@ -64,19 +69,19 @@ Caso um candidato reenvie sua inscrição, e seja para uma seleção de categori
 4) quando um candidato inicia sua solicitação de isenção de taxa (clicando em "Prosseguir" mas ainda não em "Enviar Solicitação"), o sistema lhe envia um e-mail avisando sobre a necessidade de subir os documentos obrigatórios e de enviar a solicitação de isenção de taxa;
 5) quando um candidato envia sua solicitação de isenção de taxa, o sistema envia um e-mail para o serviço de pós-graduação avisando sobre a solicitação de isenção de taxa;
 6) quando um gerente aprova/rejeita uma solicitação de isenção de taxa, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
-7) quando um candidato inicia sua inscrição (clicando em "Prosseguir" mas ainda não em "Enviar Inscrição"), o sistema lhe envia um e-mail avisando sobre a necessidade de subir os documentos obrigatórios e de enviar a inscrição;
-8) quando um candidato envia sua inscrição, o sistema lhe envia um e-mail com o(s) boleto(s) a ser(em) pago(s);
-9) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Regular, o sistema também envia um e-mail para a secretaria do programa avisando sobre a inscrição;
-10) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Regular, o sistema também envia um e-mail para cada coordenador do programa avisando sobre a inscrição;
-11) ainda quando um candidato envia sua inscrição, no caso de seleção para Aluno Especial, o sistema também envia um e-mail para cada pessoa do serviço de pós-graduação avisando sobre a inscrição;
-12) quando um candidato reenvia sua inscrição alterando as disciplinas para as quais se inscreveu, o sistema lhe envia um e-mail com o(s) boleto(s) da(s) nova(s) disciplina(s);
-13) quando um gerente clica em enviar um boleto de uma inscrição, o sistema envia um e-mail para o candidato enviando o boleto (isso é interessante para o caso de eventualmente o envio do boleto ter falhado quando o candidato enviou sua inscrição);
-14) quando um gerente pré-aprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-aprovação;
-15) quando um gerente pré-reprova uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da pré-rejeição;
-16) quando um gerente aprova/rejeita uma inscrição, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
-17) quando um gerente sobe um documento dos tipos "Errata" ou "Lista de Inscritos" em uma seleção, o sistema envia e-mails para cada candidato avisando a respeito desses novos informativos;
+7) quando um candidato inicia sua inscrição/matrícula (clicando em "Prosseguir" mas ainda não em "Enviar Inscrição/Matrícula"), o sistema lhe envia um e-mail avisando sobre a necessidade de subir os documentos obrigatórios e de enviar a inscrição/matrícula;
+8) quando um candidato envia sua inscrição/matrícula, o sistema lhe envia um e-mail com o(s) boleto(s) a ser(em) pago(s);
+9) ainda quando um candidato envia sua inscrição (não matrícula!), o sistema também envia um e-mail para a secretaria do programa avisando sobre a inscrição;
+10) ainda quando um candidato envia sua inscrição (não matrícula!), o sistema também envia um e-mail para cada coordenador do programa avisando sobre a inscrição;
+11) ainda quando um candidato envia sua matrícula (não inscrição!), o sistema também envia um e-mail para cada pessoa do serviço de pós-graduação avisando sobre a matrícula;
+12) quando um candidato reenvia sua matrícula alterando as disciplinas para as quais se inscreveu, o sistema lhe envia um e-mail com o(s) boleto(s) da(s) nova(s) disciplina(s);
+13) quando um gerente clica em enviar um boleto de uma inscrição/matrícula, o sistema envia um e-mail para o candidato enviando o boleto (isso é interessante para o caso de eventualmente o envio do boleto ter falhado quando o candidato enviou sua inscrição/matrícula);
+14) quando um gerente pré-aprova uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da pré-aprovação;
+15) quando um gerente pré-reprova uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da pré-rejeição;
+16) quando um gerente aprova/rejeita uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
+17) quando um gerente sobe um documento dos tipos "Errata" ou "Resultado" em uma seleção, o sistema envia e-mails para cada candidato avisando a respeito desses novos informativos;
 18) quando nos aproximamos do término do período de solicitações de isenção de taxa de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua solicitação de isenção de taxa;
-19) quando nos aproximamos do término do período de inscrições de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição.
+19) quando nos aproximamos do término do período de inscrições/matrículas de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição/matrícula.
 
 Todo e qualquer e-mail enviado pelo sistema pode ser copiado (em cópia oculta) para o e-mail de envio do sistema. O endereço de envio de e-mail do sistema está definido no .env, e também está no .env essa configuração de copiar para esse remetente ou não.
 Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema, embora na caixa de entrada ao invés de na caixa de enviados.
@@ -90,25 +95,29 @@ Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema
 5) caso a solicitação tenha sido rejeitada e posteriormente aprovada devido a recurso do candidato, um e-mail é enviado ao candidato avisando da aprovação após recurso.
 
 # Fluxo de inscrição
+# (para aluno regular)
 
 1) o candidato envia a inscrição;
 2) um e-mail é enviado ao candidato com o(s) eventual(is) boleto(s) da taxa de inscrição a pagar;
-
-Se for aluno regular:
 3) um e-mail é enviado à secretaria do programa e aos coordenadores do programa para pré-avaliar a inscrição;
-4) a secretaria do programa ou os coordenadores do programa colocam a inscrição em pré-avaliação e depois a pré-aprova ou pré-rejeita;
+4) a secretaria do programa ou os coordenadores do programa colocam a inscrição em pré-avaliação e depois a pré-aprovam ou pré-rejeitam;
 5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o link de acompanhamento no site da unidade, na seção do programa correspondente;
 6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
 7) a secretaria do programa coloca a inscrição em avaliação e depois a aprova ou rejeita;
 8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
 
-Se for aluno especial:
-3) se for aluno especial, um e-mail é enviado ao serviço de pós-graduação para pré-avaliar a inscrição;
-4) o serviço de pós-graduação coloca a inscrição em pré-avaliação e depois a pré-aprova ou pré-rejeita;
+# Fluxo de matrícula
+# (para aluno regular de programa configurado para atuar com matrícula ao invés de inscrição
+# e para aluno especial)
+
+1) o candidato envia a matrícula;
+2) um e-mail é enviado ao candidato com o(s) eventual(is) boleto(s) da taxa de matrícula a pagar;
+3) um e-mail é enviado ao serviço de pós-graduação para pré-avaliar a matrícula;
+4) o serviço de pós-graduação coloca a matrícula em pré-avaliação e depois a pré-aprova ou pré-rejeita;
 5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o link de acompanhamento no site da unidade, na seção de alunos especiais;
 6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
-7) o serviço de pós-graduação coloca a inscrição em avaliação e depois a aprova ou rejeita;
-8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
+7) o serviço de pós-graduação coloca a matrícula em avaliação e depois a aprova ou rejeita;
+8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da matrícula.
 
 ## Changelog
 
@@ -325,7 +334,7 @@ Foram utilizados vários recursos do laravel que podem não ser muito trivial pa
 
 -   O sistema faz uso dos seguintes serviços externos: WSBoleto da USP, Recaptcha v2 do Google e Viacep (que é gratuito, diferente do webservice dos Correios, que exige convênio específico).
 
--   Quase a totalidade da implementação deste sistema foi inspirado no chamados; muito código foi copiado de lá, e adaptado: as solicitações de isenção de taxa e inscrições deste sistema são de certa forma similares aos chamados do sistema de chamados, as seleções deste sistema são de certa forma similares às filas do sistema de chamados, e os programas deste sistema são de certa forma similares aos setores do sistema de chamados.
+-   Quase a totalidade da implementação deste sistema foi inspirado no chamados; muito código foi copiado de lá, e adaptado: as solicitações de isenção de taxa e inscrições/matrículas deste sistema são de certa forma similares aos chamados do sistema de chamados, as seleções deste sistema são de certa forma similares às filas do sistema de chamados, e os programas deste sistema são de certa forma similares aos setores do sistema de chamados.
 
 -   A tela de funções foi inspirada no datagrad, embora a implementação tenha sido nova.
 

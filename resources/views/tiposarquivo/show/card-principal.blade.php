@@ -35,6 +35,10 @@
   <script src="js/functions.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
+      $('#classe_nome option').filter(function() {
+        return $(this).text() === 'Inscrições';
+      }).text('Inscrições/Matrículas');
+
       @if ($modo == 'edit')
         $('#classe_nome').attr('disabled', true);                 // quando desabilitamos um select, o campo dele não sobe no submit do form
 		    $('#classe_nome_hidden').val($('#classe_nome').val());    // então vamos jogar o valor do select para um campo hidden, e no submit renomear os campos
@@ -42,7 +46,6 @@
 
       $('#form_principal').find('input, select').filter(':visible').not(':disabled').first().focus();
       updateMinimo();
-      updateAlunoEspecial();
     });
 
     $('#form_principal').on('submit', function(event) {
@@ -57,24 +60,12 @@
       updateMinimo();
     });
 
-    $('#classe_nome').on('change', function () {
-      updateAlunoEspecial();
-    });
-
     function updateMinimo() {
       if (!$('#obrigatorio').prop('checked')) {
         $('#minimo').val('');
         $('#minimo').parents('div').eq(1).hide();
       } else
         $('#minimo').parents('div').eq(1).show();
-    }
-
-    function updateAlunoEspecial() {
-      if ($('#classe_nome').val() != 'Inscrições') {
-        $('#aluno_especial').prop('checked', false);    // muito poucos tipos de documento são exigidos para alunos especiais, então deixamos default como desmarcado aqui
-        $('#aluno_especial').closest('div.form-group').hide();
-      } else
-        $('#aluno_especial').closest('div.form-group').show();
     }
   </script>
 @endsection

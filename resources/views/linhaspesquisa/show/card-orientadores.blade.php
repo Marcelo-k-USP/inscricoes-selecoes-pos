@@ -13,7 +13,7 @@
   <div class="card-header">
     Orientadores
     <span class="badge badge-pill badge-primary">{{ is_null($linhapesquisa->orientadores) ? 0 : $linhapesquisa->orientadores->count() }}</span>
-    @can('linhaspesquisa.update')
+    @can('linhaspesquisa.update', $linhapesquisa)
       @include('orientadores.partials.modal-add', ['inclusor_url' => 'linhaspesquisa', 'inclusor_objeto' => $linhapesquisa])
     @endcan
   </div>

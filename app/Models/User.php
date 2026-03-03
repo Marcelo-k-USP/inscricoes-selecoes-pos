@@ -234,6 +234,7 @@ class User extends Authenticatable
         if ((session('perfil') == 'admin') ||
             (DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
                  ->where('user_id', $this->id)
+                 ->whereNull('programa_id')
                  ->where(function ($query) {
                      $query->where('funcao', 'Serviço de Pós-Graduação')
                          ->orWhere('funcao', 'Coordenadores da Pós-Graduação');
@@ -248,6 +249,7 @@ class User extends Authenticatable
         if ((session('perfil') == 'admin') ||
             (DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
                  ->where('user_id', $this->id)
+                 ->whereNull('programa_id')
                  ->where(function ($query) use ($funcao) {
                      $query->where('funcao', $funcao);
                  })->exists()))
@@ -265,10 +267,9 @@ class User extends Authenticatable
 
         return DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
                    ->where('user_id', $this->id)
-                   ->where(function ($query) {
-                       $query->where('funcao', 'Serviço de Pós-Graduação')
-                           ->orWhere('funcao', 'Coordenadores da Pós-Graduação');
-                   })->exists();
+                   ->whereNull('programa_id')
+                   ->whereIn('funcao', ['Serviço de Pós-Graduação', 'Coordenadores da Pós-Graduação'])
+                   ->exists();
     }
 
     public function gerenciaProgramaFuncao(string $funcao, ?int $programa_id = null)
@@ -276,6 +277,7 @@ class User extends Authenticatable
         if (in_array($funcao, ['Serviço de Pós-Graduação', 'Coordenadores da Pós-Graduação']))
             return DB::table('user_programa')    // não dá pra partir de $this->, pelo fato de programa_id ser null na tabela relacional
                        ->where('user_id', $this->id)
+                       ->whereNull('programa_id')
                        ->where('funcao', $funcao)
                        ->exists();
 

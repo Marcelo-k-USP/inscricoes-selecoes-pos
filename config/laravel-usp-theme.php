@@ -1,6 +1,6 @@
 <?php
 
-$solicitacaoisencaotaxa = [
+$solicitacoesisencaotaxa = [
     [
         'text' => '<i class="far fa-plus-square"></i> Nova Solicitação de Isenção de Taxa',
         'url' => 'solicitacoesisencaotaxa/create',
@@ -22,6 +22,19 @@ $inscricoes = [
     [
         'text' => '<i class="far fa-list-alt"></i> Minhas Inscrições',
         'url' => 'inscricoes',
+        'can' => 'inscricoes.viewTheir',
+    ],
+];
+
+$matriculas = [
+    [
+        'text' => '<i class="far fa-plus-square"></i> Nova Matrícula',
+        'url' => 'matriculas/create',
+        'can' => 'inscricoes.create',
+    ],
+    [
+        'text' => '<i class="far fa-list-alt"></i> Minhas Matrículas',
+        'url' => 'matriculas',
         'can' => 'inscricoes.viewTheir',
     ],
 ];
@@ -77,6 +90,10 @@ $admin = [
         'can' => 'localusers.viewAny',
     ],
     [
+        'type' => 'divider',
+        'can'=> 'parametros.viewAny'
+    ],
+    [
         'text' => '<i class="fa fa-trash-alt"></i> Limpeza de Dados',
         'url' => 'limpezadados',
         'can' => 'limpezadados.showForm',
@@ -86,7 +103,7 @@ $admin = [
 $menu = [
     [
         'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Solicitações de Isenção de Taxa',
-        'submenu' => $solicitacaoisencaotaxa,
+        'submenu' => $solicitacoesisencaotaxa,
         'can' => 'solicitacoesisencaotaxa.create',
     ],
     [
@@ -102,7 +119,17 @@ $menu = [
     [
         'text' => '<i class="far fa-list-alt"></i> Inscrições',
         'url' => 'inscricoes',
-        'can' => 'inscricoes.viewAny',
+        'can' => 'inscricoes.viewAny_Inscricoes',    // necessário para conseguir diferenciar na policy se é o menu Inscrições ou Matrículas
+    ],
+    [
+        'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Matrículas',
+        'submenu' => $matriculas,
+        'can' => 'inscricoes.create',
+    ],
+    [
+        'text' => '<i class="far fa-list-alt"></i> Matrículas',
+        'url' => 'matriculas',
+        'can' => 'inscricoes.viewAny_Matriculas',    // necessário para conseguir diferenciar na policy se é o menu Inscrições ou Matrículas
     ],
     [
         'text' => '<i class="fas fa-tasks ml-2"></i> Seleções',
