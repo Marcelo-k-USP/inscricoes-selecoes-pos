@@ -45,7 +45,14 @@ class ParametroController extends Controller
         if ($validator->fails())
             return back()->withErrors($validator)->withInput();
 
-        $parametro = Parametro::first();
+        // Se vier 'programa_id' no request, e não for modo único, criamos um NOVO registro.
+        // Caso contrário, buscamos o primeiro (global) como sempre foi.
+        if (!config('app.usar_parametro_unico') && $request->filled('programa_id')) {
+            $parametro = new Parametro;
+        } else {
+            $parametro = Parametro::first() ?: new Parametro;
+        }
+
         $parametro->boleto_codigo_fonte_recurso = $request->boleto_codigo_fonte_recurso;
         $parametro->boleto_estrutura_hierarquica = $request->boleto_estrutura_hierarquica;
         $parametro->link_acompanhamento_especiais = $request->link_acompanhamento_especiais;
@@ -53,6 +60,15 @@ class ParametroController extends Controller
         $parametro->email_secaoinformatica = $request->email_secaoinformatica;
         $parametro->email_gerenciamentosite = $request->email_gerenciamentosite;
         $parametro->save();
+
+        // Se criamos um parametro específico para cada programa, atualizamos o programa correspondente
+        if (!config('app.usar_parametro_unico') && $request->filled('programa_id')) {
+            $programa = Programa::find($request->programa_id);
+            if ($programa) {
+                $programa->parametro_id = $parametro->id;
+                $programa->save();
+            }
+        }
 
         $request->session()->flash('alert-success', 'Dados editados com sucesso');
         \UspTheme::activeUrl('parametros');
