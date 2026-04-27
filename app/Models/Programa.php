@@ -137,7 +137,7 @@ class Programa extends Model
         }
 
         // se possui múltiplos parâmetros, retorna aquele que está relacionado a esse programa.
-        return $this->parametro;
+        return $this->parametro;    
     }
 
 }
