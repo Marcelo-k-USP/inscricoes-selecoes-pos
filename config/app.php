@@ -1,10 +1,6 @@
 <?php
 
 return [
-
-    // caso o sistema use apenas um parâmetro, essa opção deve ser true. No caso de cada programa ter seu próprio parâmetro, deve ser false (no .env, claro)
-    'usar_parametro_unico' => env('USAR_PARAMETRO_UNICO', true),
-
     /*
     |--------------------------------------------------------------------------
     | Application Name

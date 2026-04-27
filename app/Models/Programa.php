@@ -132,7 +132,7 @@ class Programa extends Model
     public function getParametro()
     {
         // se tem um único parâmetro no sistema, retorna esse mesmo.
-        if(config('app.usar_parametro_unico')) {
+        if(config('inscricoes-selecoes-pos.usar_parametro_unico')) {
             return Parametro::first();
         }
 
