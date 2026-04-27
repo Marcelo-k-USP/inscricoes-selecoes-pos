@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ParametroRequest;
 use App\Models\Parametro;
+use App\Models\Programa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
@@ -22,12 +23,12 @@ class ParametroController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit($id = null)
     {
         Gate::authorize('parametros.update');
 
-        \UspTheme::activeUrl('parametros');
-        return view('parametros.edit', $this->monta_compact());
+        \UspTheme::activeUrl('parametros'); 
+        return view('parametros.edit', $this->monta_compact($id));
     }
 
     /**
@@ -58,12 +59,19 @@ class ParametroController extends Controller
         return view('parametros.edit', $this->monta_compact());
     }
 
-    private function monta_compact()
+    private function monta_compact($id = null)
     {
-        $parametros = Parametro::first();    // preenche os dados do form de edição dos parâmetros
+        // Se passar ID, busca o específico. Se não, busca o primeiro (global).
+        // Se a tabela estiver vazia, cria uma instância vazia para a View não dar erro.
+        $parametros = $id ? Parametro::find($id) : (Parametro::first() ?: new Parametro);
+        
         $fields = Parametro::getFields();
         $rules = ParametroRequest::rules;
+        
+        // Injeta a lista apenas se o sistema permitir múltiplos parâmetros
+        $programasSemParametro = !config('app.usar_parametro_unico') 
+            ? Programa::whereNull('parametro_id')->get() : collect();
 
-        return compact('parametros', 'fields', 'rules');
+        return compact('parametros', 'fields', 'rules', 'programasSemParametro');
     }
 }

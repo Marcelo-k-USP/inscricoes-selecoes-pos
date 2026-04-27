@@ -9,14 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('programas', function (Blueprint $table) {
-            // nullable para os casos onde o parâmetro será unico (e para os que já estão em produção)
-            $table->foreignId('parametro_id')->constrained('parametros')->nullable()->onDelete('set null');
+            // Criamos a coluna apenas se ela NÃO existir (proteção extra)
+            if (!Schema::hasColumn('programas', 'parametro_id')) {
+                $table->unsignedBigInteger('parametro_id')->nullable()->after('id');
+            }
+        });
+
+        Schema::table('programas', function (Blueprint $table) {
+            // Criamos a FK em um comando separado
+            $table->foreign('parametro_id')
+                ->references('id')
+                ->on('parametros')
+                ->onDelete('set null');
         });
     }
-
     /**
      * Reverse the migrations.
      */

@@ -23,6 +23,22 @@
             Editar Parâmetros
           </div>
           <div class="card-body">
+
+            {{-- BLOCO CONDICIONAL: Só aparece se NÃO for parâmetro único --}}
+            @if(!config('inscricoes-selecoes-pos.usar_parametro_unico'))
+              <div class="form-group mb-4">
+                <label for="programa_id"><strong>Vincular ao Programa:</strong></label>
+                <select name="programa_id" id="programa_id" class="form-control" required>
+                  <option value="" disabled selected>Selecione um programa...</option>
+                  @foreach($programasSemParametro as $prog)
+                    <option value="{{ $prog->id }}">{{ $prog->nome }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <hr>
+            @endif
+
+
             <div class="list_table_div_form">
               @php
                 $modo = 'create';
