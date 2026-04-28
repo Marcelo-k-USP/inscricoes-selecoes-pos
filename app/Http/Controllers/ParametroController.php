@@ -27,8 +27,15 @@ class ParametroController extends Controller
     {
         Gate::authorize('parametros.update');
 
-        \UspTheme::activeUrl('parametros'); 
-        return view('parametros.edit', $this->monta_compact($id));
+        \UspTheme::activeUrl('parametros');
+        // MODO A: Se for parâmetro único, redireciona direto para o edit
+        if (config('inscricoes-selecoes-pos.usar_parametro_unico')) {
+            return view('parametros.edit', $this->monta_compact($id));
+        }
+
+        // MODO B: Busca os programas com seus respectivos parâmetros para montar um novo index
+        $programas = Programa::with('parametro')->get();
+        return view('parametros.index', compact('programas'));
     }
 
     /**
