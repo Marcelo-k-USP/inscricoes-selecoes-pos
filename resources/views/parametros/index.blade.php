@@ -21,12 +21,12 @@
                 @foreach($programas as $prog)
                 <tr>
                     <td>{{ $prog->nome }}</td>
-                    <td>{{ $prog->parametro->boleto_codigo_fonte_recurso }}</td>
-                    <td>{{ $prog->parametro->boleto_estrutura_hierarquica }}</td>
-                    <td>{{ $prog->parametro->link_acompanhamento_especiais }}</td>
-                    <td>{{ $prog->parametro->email_servicoposgraduacao }}</td>
-                    <td>{{ $prog->parametro->email_secaoinformatica }}</td>
-                    <td>{{ $prog->parametro->email_gerenciamentosite }}</td>
+                    <td>{{ $prog->parametro->boleto_codigo_fonte_recurso ?? "Parâmetro não criado!" }}</td>
+                    <td>{{ $prog->parametro->boleto_estrutura_hierarquica ?? "Parâmetro não criado!" }}</td>
+                    <td>{{ $prog->parametro->link_acompanhamento_especiais ?? "Parâmetro não criado!" }}</td>
+                    <td>{{ $prog->parametro->email_servicoposgraduacao ?? "Parâmetro não criado!"}}</td>
+                    <td>{{ $prog->parametro->email_secaoinformatica ?? "Parâmetro não criado!"}}</td>
+                    <td>{{ $prog->parametro->email_gerenciamentosite ?? "Parâmetro não criado!"}}</td>
                     <td class="text-center">
                         <a href="{{ route('parametros.edit', ['id' => $prog->parametro_id, 'programa_id' => $prog->id]) }}" 
                            class="btn btn-sm btn-primary">
