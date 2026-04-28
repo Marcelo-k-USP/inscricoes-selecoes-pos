@@ -2,17 +2,17 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header">Gerenciar Parâmetros por Programa</div>
+    <div class="card-header">Parâmetros por Programa</div>
     <div class="card-body">
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Programa</th>
-                    <th>Código Fonte do Recurso</th>
-                    <th>Estrutura Hierárquica</th>
+                    <th>Fonte do Recurso</th>
+                    <th>Centro Gerencial</th>
                     <th>Link de Acompanhamento</th>
-                    <th>E-mail Serviço de Pós-Graduação</th>
-                    <th>E-mail Seção de Informática</th>
+                    <th>E-mail da Pós</th>
+                    <th>E-mail da Informática</th>
                     <th>E-mail Gerenciamento do Site</th>
                     <th class="text-center">Ações</th>
                 </tr>
@@ -21,12 +21,12 @@
                 @foreach($programas as $prog)
                 <tr>
                     <td>{{ $prog->nome }}</td>
-                    <td>{{ $prog->parametro->boleto_codigo_fonte_recurso ?? "Parâmetro não criado!" }}</td>
-                    <td>{{ $prog->parametro->boleto_estrutura_hierarquica ?? "Parâmetro não criado!" }}</td>
-                    <td>{{ $prog->parametro->link_acompanhamento_especiais ?? "Parâmetro não criado!" }}</td>
-                    <td>{{ $prog->parametro->email_servicoposgraduacao ?? "Parâmetro não criado!"}}</td>
-                    <td>{{ $prog->parametro->email_secaoinformatica ?? "Parâmetro não criado!"}}</td>
-                    <td>{{ $prog->parametro->email_gerenciamentosite ?? "Parâmetro não criado!"}}</td>
+                    <td>{{ $prog->parametro->boleto_codigo_fonte_recurso ?? null }}</td>
+                    <td>{{ $prog->parametro->boleto_estrutura_hierarquica ?? null }}</td>
+                    <td>{{ $prog->parametro->link_acompanhamento_especiais ?? null }}</td>
+                    <td>{{ $prog->parametro->email_servicoposgraduacao ?? null }}</td>
+                    <td>{{ $prog->parametro->email_secaoinformatica ?? null }}</td>
+                    <td>{{ $prog->parametro->email_gerenciamentosite ?? null }}</td>
                     <td class="text-center">
                         <a href="{{ route('parametros.edit', ['id' => $prog->parametro_id, 'programa_id' => $prog->id]) }}" 
                            class="btn btn-sm btn-primary">

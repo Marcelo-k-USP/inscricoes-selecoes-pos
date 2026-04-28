@@ -27,7 +27,7 @@
             {{-- BLOCO CONDICIONAL: Só aparece se NÃO for parâmetro único --}}
             @if(!config('inscricoes-selecoes-pos.usar_parametro_unico'))
                 <div class="form-group mb-4">
-                    <label for="programa_id"><strong>Programa:</strong></label>
+                    <label for="programa_id">Programa:</label>
                     
                     @if(isset($programa_id))
                         @php 
@@ -47,7 +47,6 @@
                         </select>
                     @endif
                 </div>
-                <hr>
             @endif
 
 
