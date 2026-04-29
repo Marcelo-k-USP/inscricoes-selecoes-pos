@@ -23,7 +23,7 @@
                     <td>{{ $prog->nome }}</td>
                     <td>{{ $prog->parametro->boleto_codigo_fonte_recurso ?? null }}</td>
                     <td>{{ $prog->parametro->boleto_estrutura_hierarquica ?? null }}</td>
-                    <td>{{ $prog->parametro->link_acompanhamento_especiais ?? null }}</td>
+                    <td><a href="{{ $prog->parametro->link_acompanhamento_especiais ?? null }}">{{ $prog->parametro->link_acompanhamento_especiais ?? null }}</a></td>
                     <td>{{ $prog->parametro->email_servicoposgraduacao ?? null }}</td>
                     <td>{{ $prog->parametro->email_secaoinformatica ?? null }}</td>
                     <td>{{ $prog->parametro->email_gerenciamentosite ?? null }}</td>
