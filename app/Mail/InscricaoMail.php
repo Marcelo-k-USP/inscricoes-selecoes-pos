@@ -15,7 +15,6 @@ class InscricaoMail extends Mailable
     protected $passo;
     protected $inscricao;
     protected $user;
-    protected $rota;
 
     // campos adicionais para boleto(s) e boleto(s) - disciplinas alteradas
     protected $arquivos;
@@ -45,7 +44,6 @@ class InscricaoMail extends Mailable
         $this->passo = $data['passo'];
         $this->inscricao = $data['inscricao'];
         $this->user = $data['user'];
-        $this->rota = $data['rota'] ?? null;
 
         switch ($this->passo) {
             case 'início':
@@ -104,7 +102,7 @@ class InscricaoMail extends Mailable
                     ->with([
                         'inscricao' => $this->inscricao,
                         'user' => $this->user,
-                        'rota' => $this->rota,
+                        'rota' => ($this->inscricao->selecao->isMatricula() ? 'matriculas' : 'inscricoes'),
                     ]);
 
             case 'boleto(s)':
