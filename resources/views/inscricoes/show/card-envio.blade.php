@@ -10,6 +10,10 @@
 
 @nomenclatura(['selecao' => (in_array(request()->segment(1), ['inscricoes', 'matriculas']) ? $inscricao->selecao : $solicitacaoisencaotaxa->selecao)])
 
+@php
+  $inscricao_aprovada = $objeto->estado === 'Aprovada';
+@endphp
+
 {{ html()->form('post', $data->url . '/edit/' . $objeto->id)
   ->attribute('id', 'form_envio')
   ->attribute('novalidate', '')          // pois faço minha validação manual em $('#form_envio').on('submit'
@@ -26,15 +30,17 @@
       <div class="list_table_div_form">
         <div class="form-group row">
           <div class="col-sm-12 d-flex align-items-center" style="gap: 10px;">
-            <input class="form-control" style="width: auto; margin: 0;" name="declaro" id="declaro" type="checkbox" required>
+            <input class="form-control" style="width: auto; margin: 0;" name="declaro" id="declaro" type="checkbox" required {{ $inscricao_aprovada ? 'checked disabled' : '' }}>
             <label style="margin: 0;" for="declaro">Declaro que as informações prestadas são verdadeiras e assumo inteira responsabilidade pelas mesmas. <small class="text-required">(*)</small></label>
           </div>
           <br />
         </div>
       </div>
-      <div class="text-right">
-        <button type="submit" class="btn btn-primary">Enviar {{ ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'Solicitação' : ucfirst($inscricao_ou_matricula)) }}</button>
-      </div>
+      @if (!$inscricao_aprovada)
+        <div class="text-right">
+          <button type="submit" class="btn btn-primary">Enviar {{ ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'Solicitação' : ucfirst($inscricao_ou_matricula)) }}</button>
+        </div>
+      @endif
     </div>
   </div>
 {{ html()->form()->close() }}
