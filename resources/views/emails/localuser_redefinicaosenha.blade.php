@@ -4,8 +4,8 @@ Recebemos uma solicitação para redefinir a senha da sua conta.<br />
 <br />
 Se você não solicitou uma redefinição de senha, por favor, ignore este e-mail. Nenhuma outra ação é necessária.<br />
 <br />
-Para redefinir sua senha, clique no link abaixo:<br />
-<br />
+Para redefinir sua senha, clique <a href="{{ $password_reset_url }}">aqui</a>.<br />
+Caso o link não funcione, copie e cole o endereço abaixo no seu navegador:<br />
 {{ $password_reset_url }}<br />
 <br />
 Este link é válido por {{ config('inscricoes-selecoes-pos.password_reset_link_expiry_time') }} minutos e só pode ser usado uma vez.<br />
