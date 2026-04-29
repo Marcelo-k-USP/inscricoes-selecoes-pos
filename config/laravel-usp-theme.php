@@ -80,7 +80,7 @@ $admin = [
         'can' => 'parametros.viewAny',
     ],
     [
-        'text' => '<i class="fas fa-users-cogs"></i> Funções',
+        'text' => '<i class="fas fa-users-cog"></i> Funções',
         'url' => 'funcoes',
         'can' => 'funcoes.viewAny',
     ],
