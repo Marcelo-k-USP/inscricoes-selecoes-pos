@@ -233,7 +233,13 @@ Depois de importado faça uma conferência para não haver inconsistências.
 ### Seeders e Generalização do Sistema
 
 Foi criado um seeder central para automatizar a população do banco de dados com informações da unidade configurada no `.env`.
-Para executar este seeder isoladamente, utilize o comando:
+
+Os dados são consumidos dinamicamente do **Replicado** e do **Cadastros Auxiliares**.
+* **Dados dinâmicos por unidade:** Programas, Disciplinas e Docentes.
+* **Dados gerais: (não dependem do Replicado)** Feriados, Permissões (*Permissions*), Setores Replicados, Categorias e Níveis.
+
+Para executar este seeder, utilize o comando:
+
 
         php artisan db:seed
 

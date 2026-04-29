@@ -102,7 +102,7 @@ class InscricaoMail extends Mailable
                     ->with([
                         'inscricao' => $this->inscricao,
                         'user' => $this->user,
-                        'rota' => ($this->inscricao->selecao->isMatricula() ? 'matriculas' : 'inscricoes'),
+                        'rota' => ($this->inscricao->selecao->isMatricula() ? 'matriculas' : 'inscriddcoes'),
                     ]);
 
             case 'boleto(s)':
