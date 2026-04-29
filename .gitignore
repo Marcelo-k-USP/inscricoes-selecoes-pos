@@ -21,3 +21,6 @@ public/vendor
 Dockerfile.custom
 
 /.ddev
+
+.codex
+ai-context.md
