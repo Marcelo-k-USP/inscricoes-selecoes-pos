@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ParametroRequest;
 use App\Models\Parametro;
+use App\Models\Programa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
@@ -22,12 +23,26 @@ class ParametroController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit($id = null)
     {
         Gate::authorize('parametros.update');
-
         \UspTheme::activeUrl('parametros');
-        return view('parametros.edit', $this->monta_compact());
+
+        if (config('inscricoes-selecoes-pos.usar_parametro_unico')) {
+            return view('parametros.edit', $this->monta_compact($id));
+        }
+
+        if (request()->has('programa_id')) {
+            $prog_id = request()->query('programa_id');
+            $programa = Programa::find($prog_id);
+            
+            $id_param = ($programa && $programa->parametro_id) ? $programa->parametro_id : null;
+            
+            return view('parametros.edit', $this->monta_compact($id_param, $prog_id));
+        }
+
+        $programas = Programa::with('parametro')->get();
+        return view('parametros.index', compact('programas'));
     }
 
     /**
@@ -41,10 +56,25 @@ class ParametroController extends Controller
         Gate::authorize('parametros.update');
 
         $validator = Validator::make($request->all(), ParametroRequest::rules, ParametroRequest::messages);
-        if ($validator->fails())
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
+        }
 
-        $parametro = Parametro::first();
+        $id_global = Parametro::orderBy('id', 'asc')->first()->id ?? null;
+
+        if (!config('inscricoes-selecoes-pos.usar_parametro_unico') && $request->filled('programa_id')) {
+            $programa = Programa::find($request->programa_id);
+            
+            if (!$programa->parametro_id || $programa->parametro_id == $id_global) {
+                $parametro = new Parametro;
+            } else {
+                $parametro = Parametro::find($programa->parametro_id);
+            }
+        } else {
+            $parametro = Parametro::first() ?: new Parametro;
+        }
+
+        // Atribuição manual dos dados
         $parametro->boleto_codigo_fonte_recurso = $request->boleto_codigo_fonte_recurso;
         $parametro->boleto_estrutura_hierarquica = $request->boleto_estrutura_hierarquica;
         $parametro->link_acompanhamento_especiais = $request->link_acompanhamento_especiais;
@@ -53,17 +83,28 @@ class ParametroController extends Controller
         $parametro->email_gerenciamentosite = $request->email_gerenciamentosite;
         $parametro->save();
 
-        $request->session()->flash('alert-success', 'Dados editados com sucesso');
-        \UspTheme::activeUrl('parametros');
-        return view('parametros.edit', $this->monta_compact());
+        if (isset($programa)) {
+            $programa->parametro_id = $parametro->id;
+            $programa->save();
+        }
+
+        $request->session()->flash('alert-success', 'Dados salvos com sucesso');
+        
+        if (!config('inscricoes-selecoes-pos.usar_parametro_unico')) {
+            return redirect()->route('parametros.edit'); // Volta para o index/tabela
+        }
+
+        return view('parametros.edit', $this->monta_compact($parametro->id));
     }
 
-    private function monta_compact()
+   private function monta_compact($id = null, $programa_id = null)
     {
-        $parametros = Parametro::first();    // preenche os dados do form de edição dos parâmetros
+        // Carrega o registro correto ou um novo se for a primeira customização do programa
+        $parametros = $id ? Parametro::find($id) : (Parametro::first() ?: new Parametro);
         $fields = Parametro::getFields();
         $rules = ParametroRequest::rules;
+        $programasParaSelect = !config('inscricoes-selecoes-pos.usar_parametro_unico') ? Programa::all() : collect();
 
-        return compact('parametros', 'fields', 'rules');
+        return compact('parametros', 'fields', 'rules', 'programasParaSelect', 'programa_id');
     }
 }

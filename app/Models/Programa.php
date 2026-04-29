@@ -122,4 +122,22 @@ class Programa extends Model
     {
         return $this->belongsToMany('App\Models\User', 'user_programa')->withPivot('funcao')->withTimestamps();
     }
+
+
+    public function parametro()
+    {
+        return $this->belongsTo(Parametro::class, 'parametro_id');
+    }
+
+    public function getParametro()
+    {
+        // se tem um único parâmetro no sistema, retorna esse mesmo.
+        if(config('inscricoes-selecoes-pos.usar_parametro_unico')) {
+            return Parametro::first();
+        }
+
+        // se possui múltiplos parâmetros, retorna aquele que está relacionado a esse programa.
+        return $this->parametro;    
+    }
+
 }
