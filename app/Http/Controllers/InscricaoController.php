@@ -207,6 +207,12 @@ class InscricaoController extends Controller
         $this->validaRotaInscricaoOuMatricula($inscricao->selecao);
         \UspTheme::activeUrl(request()->segment(1));
 
+        if($inscricao->estado === 'Aprovada')
+        {
+            $request->session()->flash('alert-danger', 'Inscrição já aprovada não pode ser editada.');
+            return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+        }
+
         if ($request->input('acao', null) == 'envio') {
             Gate::authorize('inscricoes.update', $inscricao);
 
