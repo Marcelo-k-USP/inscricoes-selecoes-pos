@@ -39,7 +39,9 @@
       </div>
       @if (in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']) && (session('perfil') == 'usuario'))
         <div class="text-right">
+          @if($inscricao->estado !== 'Aprovada')
           <button type="submit" class="btn btn-primary">{{ ($modo == 'edit' ) ? 'Salvar' : 'Prosseguir' }}</button>
+          @endif
         </div>
       @endif
     </div>
@@ -175,4 +177,19 @@
       }
     }
   </script>
+
+  @if($inscricao->estado === 'Aprovada')
+<script>
+  $(document).ready(function() {
+    $('#form_principal')
+      .find('input:not([type="hidden"]), textarea')
+      .prop('readonly', true);
+
+    $('#form_principal')
+      .find('select, input[type="checkbox"], input[type="radio"], input[type="file"]')
+      .prop('disabled', true);
+  });
+</script>
+@endif
+
 @endsection
