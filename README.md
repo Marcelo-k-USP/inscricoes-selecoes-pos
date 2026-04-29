@@ -232,7 +232,7 @@ Depois de importado faça uma conferência para não haver inconsistências.
 
 ### Relação Programas x Parâmetros
 
-Existe a variável de ambiente `USAR_PARAMETRO_UNICO` cujo valor padrão `true` reflete o caso onde todos os programas possuem o mesmo parâmetro. Caso seja necessário que cada programa possua seus príprios parámetros, basta alterar o seu valor para `false`.
+Existe a variável de ambiente `USAR_PARAMETRO_UNICO` cujo valor padrão `true` reflete o caso onde todos os programas possuem o mesmo parâmetro. Caso seja necessário que cada programa possua seus próprios parámetros, basta alterar o seu valor para `false`.
  
 No modo com múltiplos parâmetros, a rota `/parametros` apresenta uma tabela com todos os programas e seus respectivos parâmetros, além de um botão `editar` que permite a edição de parâmetros e a criação de novos parâmetros (além de associá-los a um programa).
 
