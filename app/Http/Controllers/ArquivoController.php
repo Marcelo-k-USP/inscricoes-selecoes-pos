@@ -81,7 +81,7 @@ class ArquivoController extends Controller
         $tipoarquivo = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipoarquivo)->first();
 
         $validator = \Validator::make($request->all(), [
-            'arquivo.*' => 'required|mimes:jpeg,jpg,png,pdf|max:' . config('inscricoes-selecoes-pos.upload_max_filesize'),
+            'arquivo.*' => 'required|mimes:pdf|max:' . config('inscricoes-selecoes-pos.upload_max_filesize'),
             'objeto_id' => 'required|integer|exists:' . $classe_nome_plural . ',id',
         ]);
         if ($validator->fails()) {

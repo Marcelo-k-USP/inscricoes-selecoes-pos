@@ -3,6 +3,19 @@ $(document).ready(function() {
   $('[data-toggle="tooltip"]').tooltip();
 
   $('input[id^="input_arquivo_"]').change(function() {
+
+    let arquivos_validos = true;
+    $.each($(this).prop('files'), (index, file) => {
+      if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith('.pdf')) {
+        window.alert("Apenas arquivos PDF são permitidos.");
+        $(this).val('');
+        arquivos_validos = false;
+        return false;    // interrompe o loop $.each
+      }
+    });
+    if (!arquivos_validos)
+      return false;    // aborta a função inteira, impedindo a execução do submete_form abaixo
+
     var i_tipoarquivo = $(this).attr('id').split('_')[2];
     submete_form('arquivos', 'post', i_tipoarquivo);
   });

@@ -73,7 +73,7 @@
                 @endif
               @endcan
               <input type="hidden" id="tipoarquivo_{{ $i }}" value="{{ $tipoarquivo['nome'] }}">
-              <input type="file" name="arquivo[]" id="input_arquivo_{{ $i }}" accept="image/jpeg,image/png,application/pdf" class="d-none" multiple capture="environment">
+              <input type="file" name="arquivo[]" id="input_arquivo_{{ $i }}" accept="application/pdf, .pdf" class="d-none" multiple>
 
               @if ($objeto->arquivos->where('pivot.tipo', $tipoarquivo['nome'])->count() > 0)
                 <ul class="list-unstyled">
