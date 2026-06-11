@@ -78,9 +78,9 @@ class SelecaoRequest extends FormRequest
             'boleto_offset_vencimento.required_if' => 'A quantidade de dias úteis para pagamento do boleto é obrigatória!',
             'boleto_valor.required_if' => 'O valor do boleto é obrigatório!',
             'boleto_valor.numeric' => 'O valor do boleto é inválido!',
-            'boleto_texto.max' => 'O texto do boleto não pode exceder 255 caracteres!',
-            'email_inscricaoaprovacao_texto.max' => 'O texto do e-mail de aprovação da inscrição não pode exceder 255 caracteres!',
-            'email_inscricaorejeicao_texto.max' => 'O texto do e-mail de rejeição da inscrição não pode exceder 255 caracteres!',
+            'boleto_texto.max' => 'As informações adicionais no boleto não podem exceder 255 caracteres!',
+            'email_inscricaoaprovacao_texto.max' => 'As informações adicionais no e-mail de aprovação da inscrição não podem exceder 255 caracteres!',
+            'email_inscricaorejeicao_texto.max' => 'As informações adicionais no e-mail de rejeição da inscrição não podem exceder 255 caracteres!',
         ];
     }
 

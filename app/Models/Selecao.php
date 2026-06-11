@@ -666,15 +666,15 @@ class Selecao extends Model
         ],
         [
             'name' => 'boleto_texto',
-            'label' => 'Texto do Boleto',
+            'label' => 'Informações Adicionais no Boleto',
         ],
         [
             'name' => 'email_inscricaoaprovacao_texto',
-            'label' => 'Texto do E-mail de Aprovação da Inscrição',
+            'label' => 'Informações Adicionais no E-mail de Aprovação da Inscrição',
         ],
         [
             'name' => 'email_inscricaorejeicao_texto',
-            'label' => 'Texto do E-mail de Rejeição da Inscrição',
+            'label' => 'Informações Adicionais no E-mail de Rejeição da Inscrição',
         ],
     ];
 
@@ -956,8 +956,8 @@ class Selecao extends Model
         $unidade = Estrutura::obterUnidade(config('senhaunica.codigoUnidade'))['nomund'] ?? 'Unidade';
 
         $this->attributes['template'] = str_replace(
-            '{{NOME UNIDADE}}', 
-            $unidade, 
+            '{{NOME UNIDADE}}',
+            $unidade,
             $this->attributes['template']
         );
     }
