@@ -80,13 +80,9 @@
         if ($(this).val().toLowerCase().includes('passaporte') ||
             $(this).val().toLowerCase().includes('rne') ||
             $(this).val().toLowerCase().includes('crnm')) {
-          $('#cpf_required').hide();
-          $('input[id="extras\[cpf\]"]').removeAttr('required');
           $('#uf_de_nascimento_required').hide();
           $('select[id="extras\[uf_de_nascimento\]"]').removeAttr('required');
         } else {
-          $('#cpf_required').show();
-          $('input[id="extras\[cpf\]"]').attr('required', true);
           $('#uf_de_nascimento_required').show();
           $('select[id="extras\[uf_de_nascimento\]"]').attr('required', true);
         }

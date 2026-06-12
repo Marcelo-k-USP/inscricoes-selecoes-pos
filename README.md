@@ -47,7 +47,7 @@ A secretaria de pós-graduação gerencia as matrículas para aluno especial atr
 As linhas de pesquisa/temas são relacionadas aos níveis da pós-graduação (mestrado, doutorado, doutorado direto).
 Se um aluno regular se inscreve, por exemplo, para o nível de mestrado, só lhe serão permitidas as linhas de pesquisa/temas desse programa dessa seleção que estejam relacionadas ao nível escolhido. O gerente só pode acessar as linhas de pesquisa/temas de seu programa.
 
-Para as disciplinas, os acessão são abertos: qualquer gerente pode acessar disciplinas de quaisquer programas. Na verdade, as disciplinas nem estão atreladas a programas, embora isso talvez fosse possível, mas não se mostrou necessário, por serem de escolha exclusiva de aluno especial, que não opta por programa.
+Para as disciplinas, os acessos são abertos: qualquer gerente pode acessar disciplinas de quaisquer programas. Na verdade, as disciplinas nem estão atreladas a programas, embora isso talvez fosse possível, mas não se mostrou necessário, por serem de escolha exclusiva de aluno especial, que não opta por programa.
 
 Cada seleção contém informativos (edital, etc.), que são documentos que o candidato pode consultar.
 Além disso, em cada seleção o gerente também define quais documentos o candidato pode (ou deve) subir quando da solicitação de isenção de taxa e quando da inscrição/matrícula.
@@ -60,6 +60,8 @@ No caso de aluno regular, é gerado um único boleto.
 No caso de aluno especial, é gerado um boleto para cada disciplina na qual ele se inscreveu, e enviado para o candidato um único e-mail com todos esses boletos anexados.
 Algumas informações necessárias para a geração de boletos se encontram na tabela "parametros", que é editável pelos admins em tela.
 Caso um candidato reenvie sua matrícula, e ela seja para uma seleção de categoria aluno especial, e as disciplinas para as quais ele está se matriculando tenham sido alteradas em relação ao envio anterior, o sistema irá gerar e enviar boletos para as novas disciplinas, além de marcar como boletos referentes a disciplinas removidas aqueles boletos que haviam sido gerados anteriormente e cujas disciplinas o candidato removeu nesse reenvio da matrícula.
+
+A lei 14.534/2023 estabeleceu que estrangeiros devem possuir CPF para cursar pós-graduação. Com base nisso, passamos a utilizar o CPF como identificador único de pessoas nas situações em que precisamos identificar a mesma pessoa tendo realizado ações em momentos diferentes. Antes nos baseávamos no usuário autor, o que poderia levar a erros caso um usuário realizasse solicitação de isenção de taxa/inscrição/matrícula para outro candidato.
 
 # Envios de e-mails
 
