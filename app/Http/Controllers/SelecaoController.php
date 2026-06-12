@@ -126,14 +126,10 @@ class SelecaoController extends Controller
             foreach (MotivoIsencaoTaxa::listarMotivosIsencaoTaxa() as $motivoisencaotaxa)    // cadastra automaticamente todos os motivos de isenção de taxa como possíveis para este processo seletivo
                 $selecao->motivosisencaotaxa()->attach($motivoisencaotaxa);
 
-            $is_aluno_especial = ($selecao->categoria->nome === 'Aluno Especial');
-            if ($is_aluno_especial)    // cadastra automaticamente todas as disciplinas como possíveis para este processo seletivo
-                foreach (Disciplina::obterDisciplinasPossiveis() as $disciplina)
-                    $selecao->disciplinas()->attach($disciplina);
-
             foreach (TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get() as $tipoarquivo)    // cadastra automaticamente todos os tipos de arquivo para solicitações de isenção de taxa como possíveis para este processo seletivo
                 $selecao->tiposarquivo()->attach($tipoarquivo);
 
+            $is_aluno_especial = ($selecao->categoria->nome === 'Aluno Especial');
             if ($is_aluno_especial)    // cadastra automaticamente tipos de arquivo para inscrições como possíveis para este processo seletivo
                 foreach (TipoArquivo::where('classe_nome', 'Inscrições')->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Especial'); })->get() as $tipoarquivo)
                     $selecao->tiposarquivo()->attach($tipoarquivo);
