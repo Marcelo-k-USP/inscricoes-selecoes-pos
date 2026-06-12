@@ -83,7 +83,7 @@ class InscricaoObserver
                 if (!$inscricao->selecao->isMatricula()) {
                     // envia e-mail avisando a secretaria do programa da seleção da inscrição/matrícula sobre a realização da inscrição/matrícula
                     // envio do e-mail "9" do README.md
-                    $responsavel_nome = 'Prezados(as) Srs(as). da Secretaria do Programa ' . $inscricao->selecao->programa->nome;
+                    $responsavel_nome = 'Prezados(as) Srs(as). da Secretaria do Programa ' . $inscricao->selecao->programa->nomeCompleto();
                     \Mail::to($inscricao->selecao->programa->email_secretaria)
                         ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'responsavel_nome')));
 

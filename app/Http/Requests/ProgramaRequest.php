@@ -23,6 +23,7 @@ class ProgramaRequest extends FormRequest
      */
     public const rules = [
         'nome' => ['required', 'max:100'],
+        'sigla' => ['required', 'max:3'],
         'descricao' => ['max:255'],
         'email_secretaria' => ['max:255', 'nullable', 'email'],
         'link_acompanhamento' => ['max:255', 'nullable', 'url', 'regex:/^(http:\/\/|https:\/\/)/'],
@@ -32,6 +33,8 @@ class ProgramaRequest extends FormRequest
     public const messages = [
         'nome.required' => 'O nome do programa é obrigatório!',
         'nome.max' => 'O nome do programa não pode exceder 100 caracteres!',
+        'sigla.required' => 'A sigla do programa é obrigatória!',
+        'sigla.max' => 'A sigla do programa não pode exceder 3 caracteres!',
         'descricao.max' => 'A descrição do programa não pode exceder 255 caracteres!',
         'email_secretaria.max' => 'O e-mail da secretaria não pode exceder 255 caracteres!',
         'email_secretaria.email' => 'O e-mail da secretaria deve ser válido.',

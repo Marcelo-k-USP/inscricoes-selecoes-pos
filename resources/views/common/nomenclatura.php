@@ -8,7 +8,7 @@
     $inscricao_ou_matricula = 'matrícula';
     $inscricao_ou_matricula_plural = 'matrículas';
     $inscricao_ou_matricula_plural_passivo = 'matriculados';
-    $objetivo = 'o programa ' . $selecao->programa->nome;
+    $objetivo = 'o programa ' . $selecao->programa->nomeCompleto();
   } else {
     $inscricao_ou_matricula = 'inscrição';
     $inscricao_ou_matricula_plural = 'inscrições';

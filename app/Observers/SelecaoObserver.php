@@ -16,7 +16,7 @@ class SelecaoObserver
      */
     public function created(Selecao $selecao)
     {
-        //
+        $this->atualizaNome($selecao);
     }
 
     /**
@@ -38,6 +38,8 @@ class SelecaoObserver
      */
     public function updated(Selecao $selecao)
     {
+        $this->atualizaNome($selecao);
+
         if ($selecao->isDirty('estado'))                                           // se a alteração na seleção foi no estado
             if (($selecao->getOriginal('estado') == 'Em Elaboração') &&            // se o estado anterior era Em Elaboração
                 (str_starts_with($selecao->estado, 'Aguardando Início das ') ||    // se o novo estado é algum desses
@@ -84,5 +86,27 @@ class SelecaoObserver
     public function forceDeleted(Selecao $selecao)
     {
         //
+    }
+
+    /**
+     * Atualiza o campo nome da seleção com base na categoria, programa e ingresso
+     *
+     * @param  \App\Models\Selecao  $selecao
+     * @return void
+     */
+    private function atualizaNome(Selecao $selecao)
+    {
+        $selecao_nome_novo = (($selecao->categoria->nome === 'Aluno Especial') ? 'Aluno Especial' : $selecao->programa->sigla . ' para ingresso');
+
+        if ($selecao->categoria->nome === 'Aluno Especial')
+            $selecao_nome_novo .= ' ';
+        else
+            $selecao_nome_novo .= (($selecao->ingresso_semestre == 0) ? ' em ' : ' no ');
+
+        $selecao_nome_novo .= (($selecao->ingresso_semestre == 0) ? $selecao->ingresso_ano : $selecao->ingresso_semestre . 'º semestre de ' . $selecao->ingresso_ano);
+
+        // verifica se o nome realmente precisa ser alterado para evitar operações desnecessárias
+        if ($selecao->nome !== $selecao_nome_novo)
+            $selecao->updateQuietly(['nome' => $selecao_nome_novo]);
     }
 }

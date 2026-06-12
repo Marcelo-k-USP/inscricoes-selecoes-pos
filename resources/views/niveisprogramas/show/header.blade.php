@@ -1,6 +1,6 @@
 <div class="d-flex">
   <b>
-    {{ $nivelprograma->nivel->nome }} em {{ $nivelprograma->programa->nome }}
+    {{ $nivelprograma->nivel->nome }} em {{ $nivelprograma->programa->nomeCompleto() }}
   </b>
   <div class="hidden-btn d-none ml-auto">
     @can('tiposarquivo.update', $tipoarquivo)
