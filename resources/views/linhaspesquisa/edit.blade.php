@@ -23,7 +23,7 @@
               <a href="linhaspesquisa">Linhas de Pesquisa/Temas</a> <i class="fas fa-angle-right mx-2"></i>
               {{ $objeto->nome }}
               @if (!is_null($objeto->programa))
-                &nbsp;({{ $objeto->programa->nome }})
+                &nbsp;({{ $objeto->programa->nomeCompleto() }})
               @endif
             @else
               Nova Linha de Pesquisa/Tema

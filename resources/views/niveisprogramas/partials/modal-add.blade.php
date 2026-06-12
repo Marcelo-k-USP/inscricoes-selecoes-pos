@@ -23,7 +23,7 @@
               <div class="col-sm-8">
                 <select class="form-control" name="id" id="id_campo1">
                   @foreach ($niveisprogramas as $nivelprograma)
-                    <option value='{{ $nivelprograma->id }}'>{{ $nivelprograma->nivel->nome }} em {{ $nivelprograma->programa->nome }}</option>
+                    <option value='{{ $nivelprograma->id }}'>{{ $nivelprograma->nivel->nome }} em {{ $nivelprograma->programa->nomeCompleto() }}</option>
                   @endforeach
                 </select>
               </div>

@@ -13,6 +13,7 @@ class Programa extends Model
 
     protected $fillable = [
         'nome',
+        'sigla',
         'descricao',
         'email_secretaria',
         'link_acompanhamento',
@@ -24,6 +25,10 @@ class Programa extends Model
         [
             'name' => 'nome',
             'label' => 'Nome',
+        ],
+        [
+            'name' => 'sigla',
+            'label' => 'Sigla',
         ],
         [
             'name' => 'descricao',
@@ -60,7 +65,7 @@ class Programa extends Model
         $ret = [];
         foreach ($programas as $programa)
             if (Gate::allows('programas.view', $programa)) {
-                $ret[$programa->id] = $programa->nome;
+                $ret[$programa->id] = $programa->nomeCompleto();
             }
         return $ret;
     }
@@ -137,7 +142,11 @@ class Programa extends Model
         }
 
         // se possui múltiplos parâmetros, retorna aquele que está relacionado a esse programa.
-        return $this->parametro;    
+        return $this->parametro;
     }
 
+    public function nomeCompleto()
+    {
+        return $this->nome . ' (' . $this->sigla . ')';
+    }
 }

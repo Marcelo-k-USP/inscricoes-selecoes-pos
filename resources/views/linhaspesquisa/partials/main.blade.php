@@ -15,14 +15,14 @@
     $programa_anterior = '';
   @endphp
   @foreach ($linhaspesquisa as $linhapesquisa)
-    @if ($linhapesquisa->programa->nome != $programa_anterior)
+    @if ($linhapesquisa->programa->nomeCompleto() != $programa_anterior)
       <tr>
         <td colspan="2">
-          {{ $linhapesquisa->programa->nome }}
+          {{ $linhapesquisa->programa->nomeCompleto() }}
         </td>
       </tr>
       @php
-        $programa_anterior = $linhapesquisa->programa->nome;
+        $programa_anterior = $linhapesquisa->programa->nomeCompleto();
       @endphp
     @endif
     {{-- Mostra o conteúdo de uma linha de pesquisa/tema --}}

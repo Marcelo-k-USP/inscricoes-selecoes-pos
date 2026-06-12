@@ -206,7 +206,8 @@ class SelecaoController extends Controller
         $selecao = DB::transaction(function () use ($request, $selecao) {
 
             $this->updateField($request, $selecao, 'categoria_id', 'categoria', 'a');
-            $this->updateField($request, $selecao, 'nome', 'nome', 'o');
+            $this->updateField($request, $selecao, 'ingresso_semestre', 'semestre de ingresso', 'o');
+            $this->updateField($request, $selecao, 'ingresso_ano', 'ano de ingresso', 'o');
             $this->updateField($request, $selecao, 'descricao', 'descrição', 'a');
             $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_inicio', 'data/hora início solicitações de isenção de taxa', 'a');
             $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_fim', 'data/hora fim solicitações de isenção de taxa', 'a');
@@ -679,7 +680,7 @@ class SelecaoController extends Controller
             $extras = json_decode($solicitacaoisencaotaxa->extras, true) ?? [];
             $i['numero_solicitacao'] = $solicitacaoisencaotaxa->id;
             if ($selecao->categoria->nome != 'Aluno Especial')
-                $i['programa'] = $solicitacaoisencaotaxa->selecao->programa->nome;
+                $i['programa'] = $solicitacaoisencaotaxa->selecao->programa->nomeCompleto();
             $i['selecao'] = $solicitacaoisencaotaxa->selecao->nome;
             $i['estado'] = $solicitacaoisencaotaxa->estado;
             $i['motivo_isencao_taxa'] = MotivoIsencaoTaxa::where('id', $extras['motivo_isencao_taxa'])->first()->nome;
@@ -729,7 +730,7 @@ class SelecaoController extends Controller
             $extras = json_decode($inscricao->extras, true) ?? [];
             $i['numero_' . $inscricao_ou_matricula] = $inscricao->id;
             if ($selecao->categoria->nome != 'Aluno Especial')
-                $i['programa'] = $inscricao->selecao->programa->nome;
+                $i['programa'] = $inscricao->selecao->programa->nomeCompleto();
             $i['selecao'] = $inscricao->selecao->nome;
             $i['estado'] = $inscricao->estado;
             if ($selecao->categoria->nome != 'Aluno Especial') {

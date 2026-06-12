@@ -16,7 +16,7 @@
     <tr>
       <td>
         <div>
-          <a name="{{ \Str::lower($programa->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $programa->nome }}</a>
+          <a name="{{ \Str::lower($programa->id) }}" class="font-weight-bold" style="text-decoration: none;">{{ $programa->nomeCompleto() }}</a>
           @can('programas.update')
             @include('programas.partials.btn-edit')
           @endcan

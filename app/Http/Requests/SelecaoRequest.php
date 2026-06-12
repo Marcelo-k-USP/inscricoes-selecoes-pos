@@ -37,7 +37,8 @@ class SelecaoRequest extends FormRequest
         return [
             'categoria_id' => ['required', 'numeric'],
             'programa_id' => ['required_unless:categoria_id,' . Categoria::where('nome', 'Aluno Especial')->value('id')],
-            'nome' => ['required', 'max:100'],
+            'ingresso_semestre' => ['required', 'integer', 'between:0,2'],
+            'ingresso_ano' => ['required', 'integer', 'digits:4'],
             'descricao' => ['max:255'],
             'fluxo_continuo' => [],
             'tem_taxa' => [],
@@ -63,8 +64,6 @@ class SelecaoRequest extends FormRequest
             'categoria_id.required' => 'A categoria é obrigatória!',
             'categoria_id.numeric' => 'A categoria é inválida!',
             'programa_id.required_unless' => 'O programa é obrigatório!',
-            'nome.required' => 'O nome da seleção é obrigatório!',
-            'nome.max' => 'O nome da seleção não pode exceder 100 caracteres!',
             'descricao.max' => 'A descrição da seleção não pode exceder 255 caracteres!',
             'solicitacoesisencaotaxa_data_inicio.required_if' => 'A data de início das solicitações de isenção de taxa é obrigatória!',
             'solicitacoesisencaotaxa_hora_inicio.required_if' => 'A hora de início das solicitações de isenção de taxa é obrigatória!',
