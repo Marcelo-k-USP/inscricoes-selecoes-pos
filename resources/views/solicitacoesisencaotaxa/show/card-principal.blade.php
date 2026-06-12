@@ -58,20 +58,6 @@
       $('input[id="extras\[cpf\]"], input[id^="extras\[cpf_"]').each(function() {
         $(this).mask('000.000.000-00');
       });
-
-      $('select[id="extras\[tipo_de_documento\]"]').change(function () {
-        if ($(this).val().toLowerCase().includes('passaporte') ||
-            $(this).val().toLowerCase().includes('rne') ||
-            $(this).val().toLowerCase().includes('crnm')) {
-          $('#cpf_required').hide();
-          $('input[id="extras\[cpf\]"]').removeAttr('required');
-        } else {
-          $('#cpf_required').show();
-          $('input[id="extras\[cpf\]"]').attr('required', true);
-        }
-      });
-
-      $('select[id="extras\[tipo_de_documento\]"]').trigger('change');
     });
 
     $('#form_principal_solicitacaoisencaotaxa').on('submit', function(event) {
