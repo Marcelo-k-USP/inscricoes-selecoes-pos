@@ -46,8 +46,10 @@ class SelecaoObserver
                 // envia e-mail avisando o gerenciamento do site da unidade sobre a seleção
                 // envio do e-mail "1" do README.md
                 $passo = 'seleção elaborada';
-                \Mail::to(Parametro::first()->email_gerenciamentosite)
-                    ->queue(new SelecaoMail(compact('passo', 'selecao')));
+                $email_gerenciamentosite = Parametro::first()->email_gerenciamentosite;
+                if ($email_gerenciamentosite)
+                    \Mail::to($email_gerenciamentosite)
+                        ->queue(new SelecaoMail(compact('passo', 'selecao')));
             }
     }
 

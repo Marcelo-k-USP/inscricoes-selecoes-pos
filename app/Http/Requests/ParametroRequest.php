@@ -27,7 +27,7 @@ class ParametroRequest extends FormRequest
         'link_acompanhamento_especiais' => ['required', 'max:255', 'url', 'regex:/^(http:\/\/|https:\/\/)/'],
         'email_servicoposgraduacao' => ['required', 'max:255', 'email'],
         'email_secaoinformatica' => ['required', 'max:255', 'email'],
-        'email_gerenciamentosite' => ['required', 'max:255', 'email'],
+        'email_gerenciamentosite' => ['nullable', 'max:255', 'email'],
     ];
 
     public const messages = [
@@ -45,7 +45,6 @@ class ParametroRequest extends FormRequest
         'email_secaoinformatica.required' => 'O e-mail da seção de informática é obrigatório!',
         'email_secaoinformatica.max' => 'O e-mail da seção de informática não pode exceder 255 caracteres!',
         'email_secaoinformatica.email' => 'O e-mail da seção de informática deve ser válido.',
-        'email_gerenciamentosite.required' => 'O e-mail do gerenciamento do site é obrigatório!',
         'email_gerenciamentosite.max' => 'O e-mail do gerenciamento do site não pode exceder 255 caracteres!',
         'email_gerenciamentosite.email' => 'O e-mail do gerenciamento do site deve ser válido.',
     ];
