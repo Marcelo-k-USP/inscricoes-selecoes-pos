@@ -35,9 +35,9 @@ class ParametroController extends Controller
         if (request()->has('programa_id')) {
             $prog_id = request()->query('programa_id');
             $programa = Programa::find($prog_id);
-            
+
             $id_param = ($programa && $programa->parametro_id) ? $programa->parametro_id : null;
-            
+
             return view('parametros.edit', $this->monta_compact($id_param, $prog_id));
         }
 
@@ -64,7 +64,7 @@ class ParametroController extends Controller
 
         if (!config('inscricoes-selecoes-pos.usar_parametro_unico') && $request->filled('programa_id')) {
             $programa = Programa::find($request->programa_id);
-            
+
             if (!$programa->parametro_id || $programa->parametro_id == $id_global) {
                 $parametro = new Parametro;
             } else {
@@ -78,6 +78,7 @@ class ParametroController extends Controller
         $parametro->boleto_codigo_fonte_recurso = $request->boleto_codigo_fonte_recurso;
         $parametro->boleto_estrutura_hierarquica = $request->boleto_estrutura_hierarquica;
         $parametro->link_acompanhamento_especiais = $request->link_acompanhamento_especiais;
+        $parametro->max_disciplinas_aluno_especial = $request->max_disciplinas_aluno_especial;
         $parametro->email_servicoposgraduacao = $request->email_servicoposgraduacao;
         $parametro->email_secaoinformatica = $request->email_secaoinformatica;
         $parametro->email_gerenciamentosite = $request->email_gerenciamentosite;
@@ -89,7 +90,7 @@ class ParametroController extends Controller
         }
 
         $request->session()->flash('alert-success', 'Dados salvos com sucesso');
-        
+
         if (!config('inscricoes-selecoes-pos.usar_parametro_unico')) {
             return redirect()->route('parametros.edit'); // Volta para o index/tabela
         }
