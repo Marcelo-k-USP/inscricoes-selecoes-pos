@@ -458,7 +458,9 @@ class InscricaoController extends Controller
             ->sortBy(function ($tipoarquivo) { return str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento') ? 1 : 0; });
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id)
             ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $inscricao->selecao->tem_taxa; });
-        $solicitacaoisencaotaxa_aprovada = $inscricao->pessoas('Autor')?->solicitacoesIsencaoTaxa()?->where('selecao_id', $objeto->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->first();
+        $solicitacaoisencaotaxa_aprovada = SolicitacaoIsencaoTaxa::where('extras->cpf', $extras['cpf'] ?? null)
+                                                                ->where('selecao_id', $objeto->selecao->id)
+                                                                ->where('estado', 'LIKE', 'Isenção de Taxa Aprovada%')->first();
         $disciplinas_sem_boleto = [];
         if ($inscricao->selecao->categoria->nome == 'Aluno Especial')
             foreach ($inscricao_disciplinas as $disciplina)
