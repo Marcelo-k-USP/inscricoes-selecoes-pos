@@ -31,40 +31,17 @@ class Selecao extends Model
     protected $attributes = [
         'estado' => 'Em Elaboração',
         'template' => '{
-            "ingresso_semestre": {
-                "label": "Ingresso Semestre",
-                "type": "select",
-                "value": [
-                    {
-                        "label": "-",
-                        "value": "0",
-                        "order": 0
-                    },
-                    {
-                        "label": "1º",
-                        "value": "1",
-                        "order": 1
-                    },
-                    {
-                        "label": "2º",
-                        "value": "2",
-                        "order": 2
-                    }
-                ],
-                "validate": "required",
-                "order": 0
-            },
-            "ingresso_ano": {
-                "label": "Ingresso Ano",
+            "nome": {
+                "label": "Nome",
                 "type": "text",
                 "validate": "required",
-                "order": 1
+                "order": 0
             },
             "nome_social": {
                 "label": "Nome Social",
                 "type": "text",
                 "help": "Decreto Estadual n. 55.588, de 17/03/2010",
-                "order": 2
+                "order": 1
             },
             "tipo_de_documento": {
                 "label": "Tipo de Documento",
@@ -88,58 +65,58 @@ class Selecao extends Model
                 ],
                 "help": "Utilize o passaporte apenas se não possuir documento de identidade brasileira (RG)",
                 "validate": "required",
-                "order": 3
+                "order": 2
             },
             "numero_do_documento": {
                 "label": "Número do Documento",
                 "type": "text",
                 "validate": "required",
-                "order": 4
+                "order": 3
             },
             "data_vencto_passaporte": {
                 "label": "Data de Vencimento do Passaporte",
                 "type": "date",
-                "order": 5
+                "order": 4
             },
             "cpf": {
                 "label": "CPF",
                 "type": "text",
                 "validate": "required",
-                "order": 6
+                "order": 5
             },
             "titulo_de_eleitor": {
                 "label": "Título de Eleitor",
                 "type": "text",
-                "order": 7
+                "order": 6
             },
             "documento_militar": {
                 "label": "Documento Militar",
                 "type": "text",
                 "help": "Quando pertinente",
-                "order": 8
+                "order": 7
             },
             "nome_da_mae": {
                 "label": "Nome da Mãe",
                 "type": "text",
                 "validate": "required",
-                "order": 9
+                "order": 8
             },
             "nome_do_pai": {
                 "label": "Nome do Pai",
                 "type": "text",
-                "order": 10
+                "order": 9
             },
             "data_de_nascimento": {
                 "label": "Data de Nascimento",
                 "type": "date",
                 "validate": "required",
-                "order": 11
+                "order": 10
             },
             "local_de_nascimento": {
                 "label": "Local de Nascimento",
                 "type": "text",
                 "validate": "required",
-                "order": 12
+                "order": 11
             },
             "uf_de_nascimento": {
                 "label": "UF de Nascimento",
@@ -282,7 +259,7 @@ class Selecao extends Model
                     }
                 ],
                 "validate": "required",
-                "order": 13
+                "order": 12
             },
             "sexo": {
                 "label": "Sexo",
@@ -300,7 +277,7 @@ class Selecao extends Model
                     }
                 ],
                 "validate": "required",
-                "order": 14
+                "order": 13
             },
             "raca_cor": {
                 "label": "Raça/Cor",
@@ -338,7 +315,7 @@ class Selecao extends Model
                     }
                 ],
                 "validate": "required",
-                "order": 15
+                "order": 14
             },
             "declaro_ppi": {
                 "label": "Declaro, para os devidos fins, que sou preto, pardo ou indígena",
@@ -356,7 +333,7 @@ class Selecao extends Model
                     }
                 ],
                 "validate": "required",
-                "order": 16
+                "order": 15
             },
             "portador_de_deficiencia": {
                 "label": "Portador de Deficiência",
@@ -374,52 +351,52 @@ class Selecao extends Model
                     }
                 ],
                 "validate": "required",
-                "order": 17
+                "order": 16
             },
             "qual_a_sua_deficiencia": {
                 "label": "Qual a sua deficiência",
                 "type": "text",
-                "order": 18
+                "order": 17
             },
             "condicoes_prova": {
                 "label": "Condições Necessárias para a Realização da Prova",
                 "type": "textarea",
-                "order": 19
+                "order": 18
             },
             "cep": {
                 "label": "CEP",
                 "type": "text",
                 "validate": "required",
-                "order": 20
+                "order": 19
             },
             "endereco_residencial": {
                 "label": "Endereço Residencial",
                 "type": "text",
                 "validate": "required",
-                "order": 21
+                "order": 20
             },
             "numero": {
                 "label": "Número",
                 "type": "text",
                 "validate": "required",
-                "order": 22
+                "order": 21
             },
             "complemento": {
                 "label": "Complemento",
                 "type": "text",
-                "order": 23
+                "order": 22
             },
             "bairro": {
                 "label": "Bairro",
                 "type": "text",
                 "validate": "required",
-                "order": 24
+                "order": 23
             },
             "cidade": {
                 "label": "Cidade",
                 "type": "text",
                 "validate": "required",
-                "order": 25
+                "order": 24
             },
             "uf": {
                 "label": "UF",
@@ -562,37 +539,37 @@ class Selecao extends Model
                     }
                 ],
                 "validate": "required",
-                "order": 26
+                "order": 25
             },
             "celular": {
                 "label": "Celular",
                 "type": "text",
                 "validate": "required",
-                "order": 27
+                "order": 26
             },
             "e_mail": {
                 "label": "E-mail",
                 "type": "email",
                 "validate": "required",
-                "order": 28
+                "order": 27
             },
             "declaro_concordo_termos": {
                 "label": "Declaro estar ciente e concordo com os <a href=\"#\">termos de inscrição no Programa de Pós-Graduação do(a) {{NOME UNIDADE}}</a>",
                 "type": "checkbox",
                 "validate": "required",
-                "order": 29
+                "order": 28
             },
             "declaro_revisei_inscricao": {
                 "label": "Declaro que revisei todas as informações inseridas neste formulário e que elas estão corretas, e venho requerer minha inscrição como candidato(a) à vaga no Programa de Pós-Graduação no(a) {{NOME UNIDADE}}",
                 "type": "checkbox",
                 "validate": "required",
-                "order": 30
+                "order": 29
             },
             "declaro_ciente_nao_presencial": {
                 "label": "Declaro estar ciente de que o processo seletivo será realizado no formato não presencial, on-line, e que a <u>Comissão de Seleção não se responsabiliza por eventuais falhas técnicas por parte do(a) candidato(a) (tais como falta de internet, cortes de som, corte de luz, etc.) durante a realização das provas e das arguições relizadas online</u>. A sugestão é que o(a) candidato(a) se organize com antecedência para o bom andamento da prova",
                 "type": "checkbox",
                 "validate": "required",
-                "order": 31
+                "order": 30
             }
         }',
     ];
