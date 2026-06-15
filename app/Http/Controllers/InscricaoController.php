@@ -207,9 +207,9 @@ class InscricaoController extends Controller
         $this->validaRotaInscricaoOuMatricula($inscricao->selecao);
         \UspTheme::activeUrl(request()->segment(1));
 
-        if($inscricao->estado === 'Aprovada')
-        {
+        if ($inscricao->estado === 'Aprovada') {
             $request->session()->flash('alert-danger', 'Inscrição já aprovada não pode ser editada.');
+            \UspTheme::activeUrl(request()->segment(1));
             return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
         }
 
@@ -222,17 +222,26 @@ class InscricaoController extends Controller
                 $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
                 if (($inscricao->selecao->categoria->nome != 'Aluno Especial') || (count($disciplinas_id) > 0)) {
 
-                    $inscricao->estado = 'Enviada';
-                    $inscricao->save();
+                    // verifica se ultrapassou o máximo de disciplinas para aluno especial
+                    $cpf = $extras['cpf'];
+                    $qtde_disciplinas_matriculas_anteriores = Inscricao::where('selecao_id', $inscricao->selecao->id)->where('estado', 'Enviada')->sum(DB::raw('JSON_LENGTH(extras->"$.disciplinas")'));
+                    if (count($disciplinas_id) + $qtde_disciplinas_matriculas_anteriores <= (Parametro::first()?->max_disciplinas_aluno_especial ?: PHP_INT_MAX)) {
+                        $inscricao->estado = 'Enviada';
+                        $inscricao->save();
 
-                    $info_adicional = '';
-                    $user = \Auth::user();
-                    if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->exists())
-                        $info_adicional = ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ((count($disciplinas_id) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los'));
+                        $info_adicional = '';
+                        $user = \Auth::user();
+                        if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->exists())
+                            $info_adicional = ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ((count($disciplinas_id) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los'));
 
-                    $request->session()->flash('alert-success', 'Sua ' . Nomenclatura::InscricaoOuMatricula() . ' foi enviada' . $info_adicional);
-                    \UspTheme::activeUrl(request()->segment(1));
-                    return redirect()->to(url(request()->segment(1)))->with($this->monta_compact_index());    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
+                        $request->session()->flash('alert-success', 'Sua ' . Nomenclatura::InscricaoOuMatricula() . ' foi enviada' . $info_adicional);
+                        \UspTheme::activeUrl(request()->segment(1));
+                        return redirect()->to(url(request()->segment(1)))->with($this->monta_compact_index());    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
+                    } else {
+                        $request->session()->flash('alert-danger', 'Você pode se matricular em no máximo ' . Parametro::first()->max_disciplinas_aluno_especial . ' disciplina(s) como aluno especial');
+                        \UspTheme::activeUrl(request()->segment(1));
+                        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+                    }
                 } else {
                     $request->session()->flash('alert-danger', 'É necessário antes escolher a(s) disciplina(s)');
                     \UspTheme::activeUrl(request()->segment(1));

@@ -14,6 +14,7 @@ class Parametro extends Model
         'boleto_codigo_fonte_recurso',
         'boleto_estrutura_hierarquica',
         'link_acompanhamento_especiais',
+        'max_disciplinas_aluno_especial',
         'email_servicoposgraduacao',
         'email_secaoinformatica',
         'email_gerenciamentosite',
@@ -33,6 +34,11 @@ class Parametro extends Model
         [
             'name' => 'link_acompanhamento_especiais',
             'label' => 'Link de Acompanhamento para Alunos Especiais',
+        ],
+        [
+            'name' => 'max_disciplinas_aluno_especial',
+            'label' => 'Número Máximo de Disciplinas Permitidas a Aluno Especial',
+            'type' => 'integer',
         ],
         [
             'name' => 'email_servicoposgraduacao',
