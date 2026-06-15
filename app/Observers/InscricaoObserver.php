@@ -7,6 +7,7 @@ use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\Parametro;
 use App\Models\Programa;
+use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\TipoArquivo;
 use App\Models\User;
 use App\Services\BoletoService;
@@ -64,7 +65,11 @@ class InscricaoObserver
             if (($inscricao->getOriginal('estado') == 'Aguardando Envio') &&    // se o estado anterior era Aguardando Envio
                 ($inscricao->estado == 'Enviada')) {                            // se o novo estado é Enviada
 
-                if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->exists()) {
+                // verifica se a seleção tem taxa e se o candidato não tem isenção de taxa aprovada
+                $extras = json_decode($inscricao->extras, true);
+                if ($inscricao->selecao->tem_taxa && !SolicitacaoIsencaoTaxa::where('extras->cpf', $extras['cpf'] ?? null)
+                                                                            ->where('selecao_id', $inscricao->selecao->id)
+                                                                            ->where('estado', 'LIKE', 'Isenção de Taxa Aprovada%')->exists()) {
                     $passo = 'boleto(s)';
                     $arquivos = [];
                     $email_secaoinformatica = Parametro::first()->email_secaoinformatica;
