@@ -28,16 +28,13 @@ class ParametroController extends Controller
         Gate::authorize('parametros.update');
         \UspTheme::activeUrl('parametros');
 
-        if (config('inscricoes-selecoes-pos.usar_parametro_unico')) {
+        if (config('inscricoes-selecoes-pos.usar_parametro_unico'))
             return view('parametros.edit', $this->monta_compact($id));
-        }
 
         if (request()->has('programa_id')) {
             $prog_id = request()->query('programa_id');
             $programa = Programa::find($prog_id);
-
             $id_param = ($programa && $programa->parametro_id) ? $programa->parametro_id : null;
-
             return view('parametros.edit', $this->monta_compact($id_param, $prog_id));
         }
 
@@ -56,27 +53,23 @@ class ParametroController extends Controller
         Gate::authorize('parametros.update');
 
         $validator = Validator::make($request->all(), ParametroRequest::rules, ParametroRequest::messages);
-        if ($validator->fails()) {
+        if ($validator->fails())
             return back()->withErrors($validator)->withInput();
-        }
 
         $id_global = Parametro::orderBy('id', 'asc')->first()->id ?? null;
-
         if (!config('inscricoes-selecoes-pos.usar_parametro_unico') && $request->filled('programa_id')) {
             $programa = Programa::find($request->programa_id);
-
-            if (!$programa->parametro_id || $programa->parametro_id == $id_global) {
+            if (!$programa->parametro_id || $programa->parametro_id == $id_global)
                 $parametro = new Parametro;
-            } else {
+            else
                 $parametro = Parametro::find($programa->parametro_id);
-            }
-        } else {
+        } else
             $parametro = Parametro::first() ?: new Parametro;
-        }
 
-        // Atribuição manual dos dados
+        // atribuição manual dos dados
         $parametro->boleto_codigo_fonte_recurso = $request->boleto_codigo_fonte_recurso;
         $parametro->boleto_estrutura_hierarquica = $request->boleto_estrutura_hierarquica;
+        $parametro->boleto_momento_envio = $request->boleto_momento_envio;
         $parametro->link_acompanhamento_especiais = $request->link_acompanhamento_especiais;
         $parametro->max_disciplinas_aluno_especial = $request->max_disciplinas_aluno_especial;
         $parametro->email_servicoposgraduacao = $request->email_servicoposgraduacao;
@@ -91,16 +84,16 @@ class ParametroController extends Controller
 
         $request->session()->flash('alert-success', 'Dados salvos com sucesso');
 
-        if (!config('inscricoes-selecoes-pos.usar_parametro_unico')) {
-            return redirect()->route('parametros.edit'); // Volta para o index/tabela
-        }
+        if (!config('inscricoes-selecoes-pos.usar_parametro_unico'))
+            return redirect()->route('parametros.edit');    // retorna para o index/tabela
 
+        \UspTheme::activeUrl('parametros');
         return view('parametros.edit', $this->monta_compact($parametro->id));
     }
 
    private function monta_compact($id = null, $programa_id = null)
     {
-        // Carrega o registro correto ou um novo se for a primeira customização do programa
+        // carrega o registro correto ou um novo se for a primeira customização do programa
         $parametros = $id ? Parametro::find($id) : (Parametro::first() ?: new Parametro);
         $fields = Parametro::getFields();
         $rules = ParametroRequest::rules;
