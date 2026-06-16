@@ -40,7 +40,7 @@ class Programa extends Model
         ],
         [
             'name' => 'link_acompanhamento',
-            'label' => 'Link de Acompanhamento',
+            'label' => 'Endereço no site da unidade para acompanhamento do processo pelos candidatos',
         ],
         [
             'name' => 'matricula',

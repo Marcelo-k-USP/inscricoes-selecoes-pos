@@ -103,7 +103,7 @@ Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema
 2) um e-mail é enviado ao candidato com o(s) eventual(is) boleto(s) da taxa de inscrição a pagar;
 3) um e-mail é enviado à secretaria do programa e aos coordenadores do programa para pré-avaliar a inscrição;
 4) a secretaria do programa ou os coordenadores do programa colocam a inscrição em pré-avaliação e depois a pré-aprovam ou pré-rejeitam;
-5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o link de acompanhamento no site da unidade, na seção do programa correspondente;
+5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o endereço no site da unidade para acompanhamento do processo pelos candidatos, na seção do programa correspondente;
 6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
 7) a secretaria do programa coloca a inscrição em avaliação e depois a aprova ou rejeita;
 8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
@@ -116,7 +116,7 @@ Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema
 2) um e-mail é enviado ao candidato com o(s) eventual(is) boleto(s) da taxa de matrícula a pagar;
 3) um e-mail é enviado ao serviço de pós-graduação para pré-avaliar a matrícula;
 4) o serviço de pós-graduação coloca a matrícula em pré-avaliação e depois a pré-aprova ou pré-rejeita;
-5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o link de acompanhamento no site da unidade, na seção de alunos especiais;
+5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o endereço no site da unidade para acompanhamento do processo pelos candidatos, na seção de alunos especiais;
 6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
 7) o serviço de pós-graduação coloca a matrícula em avaliação e depois a aprova ou rejeita;
 8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da matrícula.

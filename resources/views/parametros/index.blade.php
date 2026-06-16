@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header">Parâmetros por Programa</div>
+    <div class="card-header">Parâmetros do Sistema</div>
     <div class="card-body">
         <table class="table table-striped">
             <thead>
@@ -10,10 +10,10 @@
                     <th>Programa</th>
                     <th>Fonte do Recurso</th>
                     <th>Centro Gerencial</th>
-                    <th>Link de Acompanhamento</th>
-                    <th>E-mail da Pós</th>
+                    <th>Endereço no Site da Unidade para Acompanhamento do Processo pelos Candidatos</th>
+                    <th>E-mail da Pós-Graduação</th>
                     <th>E-mail da Informática</th>
-                    <th>E-mail Gerenciamento do Site</th>
+                    <th>E-mail da Equipe de Gerenciamento do Site da Unidade</th>
                     <th class="text-center">Ações</th>
                 </tr>
             </thead>
@@ -28,7 +28,7 @@
                     <td>{{ $prog->parametro->email_secaoinformatica ?? null }}</td>
                     <td>{{ $prog->parametro->email_gerenciamentosite ?? null }}</td>
                     <td class="text-center">
-                        <a href="{{ route('parametros.edit', ['id' => $prog->parametro_id, 'programa_id' => $prog->id]) }}" 
+                        <a href="{{ route('parametros.edit', ['id' => $prog->parametro_id, 'programa_id' => $prog->id]) }}"
                            class="btn btn-sm btn-primary">
                             <i class="fas fa-edit"></i> Editar
                         </a>
