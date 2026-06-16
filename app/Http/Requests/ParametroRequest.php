@@ -24,10 +24,10 @@ class ParametroRequest extends FormRequest
     public const rules = [
         'boleto_codigo_fonte_recurso' => ['required', 'integer'],
         'boleto_estrutura_hierarquica' => ['required', 'max:100'],
-        'link_acompanhamento_especiais' => ['required', 'max:255', 'url', 'regex:/^(http:\/\/|https:\/\/)/'],
+        'link_acompanhamento_especiais' => ['nullable', 'max:255', 'url', 'regex:/^(http:\/\/|https:\/\/)/'],
         'max_disciplinas_aluno_especial' => ['nullable', 'integer'],
         'email_servicoposgraduacao' => ['required', 'max:255', 'email'],
-        'email_secaoinformatica' => ['required', 'max:255', 'email'],
+        'email_secaoinformatica' => ['nullable', 'max:255', 'email'],
         'email_gerenciamentosite' => ['nullable', 'max:255', 'email'],
     ];
 
@@ -36,7 +36,6 @@ class ParametroRequest extends FormRequest
         'boleto_codigo_fonte_recurso.integer' => 'O código da fonte do recurso do boleto é inválido!',
         'boleto_estrutura_hierarquica.required' => 'A estrutura hierárquica do boleto é obrigatória!',
         'boleto_estrutura_hierarquica.max' => 'A estrutura hierárquica do boleto não pode exceder 100 caracteres!',
-        'link_acompanhamento_especiais.required' => 'O endereço no site da unidade para acompanhamento do processo pelos candidatos a alunos especiais é obrigatório!',
         'link_acompanhamento_especiais.max' => 'O endereço no site da unidade para acompanhamento do processo pelos candidatos a alunos especiais não pode exceder 255 caracteres!',
         'link_acompanhamento_especiais.url' => 'O endereço no site da unidade para acompanhamento do processo pelos candidatos a alunos especiais deve ser uma URL válida.',
         'link_acompanhamento_especiais.regex' => 'O endereço no site da unidade para acompanhamento do processo pelos candidatos a alunos especiais deve começar com http:// ou https://',
@@ -44,7 +43,6 @@ class ParametroRequest extends FormRequest
         'email_servicoposgraduacao.required' => 'O e-mail do serviço de pós-graduação é obrigatório!',
         'email_servicoposgraduacao.max' => 'O e-mail do serviço de pós-graduação não pode exceder 255 caracteres!',
         'email_servicoposgraduacao.email' => 'O e-mail do serviço de pós-graduação deve ser válido.',
-        'email_secaoinformatica.required' => 'O e-mail da seção de informática é obrigatório!',
         'email_secaoinformatica.max' => 'O e-mail da seção de informática não pode exceder 255 caracteres!',
         'email_secaoinformatica.email' => 'O e-mail da seção de informática deve ser válido.',
         'email_gerenciamentosite.max' => 'O e-mail da equipe de gerenciamento do site não pode exceder 255 caracteres!',
