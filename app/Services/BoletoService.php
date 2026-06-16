@@ -26,7 +26,7 @@ class BoletoService
             'codigoUnidadeDespesa' => getenv('REPLICADO_CODUNDCLG'),
             'codigoFonteRecurso' => $parametros->boleto_codigo_fonte_recurso,
             'estruturaHierarquica' => $parametros->boleto_estrutura_hierarquica,
-            'dataVencimentoBoleto' => ($inscricao->selecao->fluxocontinuo ? addWorkingDays(now(), $inscricao->selecao->boleto_offset_vencimento) : $inscricao->selecao->boleto_data_vencimento),
+            'dataVencimentoBoleto' => ($inscricao->selecao->fluxo_continuo ? addWorkingDays(now(), $inscricao->selecao->boleto_offset_vencimento) : $inscricao->selecao->boleto_data_vencimento),
             'valorDocumento' => $inscricao->selecao->boleto_valor,
             'tipoSacado' => 'PF',
             'cpfCnpj' => $cpf,
