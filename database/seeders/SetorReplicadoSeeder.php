@@ -15,7 +15,7 @@ class SetorReplicadoSeeder extends Seeder
      */
     public function run()
     {
-        $cod_unidade = getenv('REPLICADO_CODUNDCLG');
+        $cod_unidade = config('replicado.codundclg');
 
         # a lista de setores já vem ordenado de forma a criar os setores pai antes dos filhos
         $setores_repl = \Uspdev\Replicado\Estrutura::listarSetores();

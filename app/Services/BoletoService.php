@@ -23,7 +23,7 @@ class BoletoService
 
         $boleto = new Boleto(config('inscricoes-selecoes-pos.ws_boleto_usuario'), config('inscricoes-selecoes-pos.ws_boleto_senha'));
         $data = array(
-            'codigoUnidadeDespesa' => getenv('REPLICADO_CODUNDCLG'),
+            'codigoUnidadeDespesa' => config('replicado.codundclg'),
             'codigoFonteRecurso' => $parametros->boleto_codigo_fonte_recurso,
             'estruturaHierarquica' => $parametros->boleto_estrutura_hierarquica,
             'dataVencimentoBoleto' => ($inscricao->selecao->fluxo_continuo ? addWorkingDays(now(), $inscricao->selecao->boleto_offset_vencimento) : $inscricao->selecao->boleto_data_vencimento),
