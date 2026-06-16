@@ -57,7 +57,7 @@ class InscricaoMail extends Mailable
                         'nome_original' => $data_arquivo['nome_original'],
                         'conteudo' => $data_arquivo['conteudo'],
                         'erro' => (!empty($data_arquivo['conteudo']) ? '' : 'Ocorreu um erro na geração do boleto "' . $data_arquivo['nome_original'] . '".<br />' . PHP_EOL .
-                            'Por favor, entre em contato conosco em ' . $data['email_secaoinformatica'] . ', informando-nos sobre esse problema.<br />' . PHP_EOL),
+                                                                            (!empty($data['email_secaoinformatica']) ? 'Por favor, entre em contato conosco em ' . $data['email_secaoinformatica'] . ', informando-nos sobre esse problema.<br />' . PHP_EOL : '')),
                     ];
                 break;
 
