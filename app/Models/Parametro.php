@@ -33,7 +33,7 @@ class Parametro extends Model
         ],
         [
             'name' => 'link_acompanhamento_especiais',
-            'label' => 'Link de Acompanhamento para Alunos Especiais',
+            'label' => 'Endereço no Site da Unidade para Acompanhamento do Processo pelos Candidatos',
         ],
         [
             'name' => 'max_disciplinas_aluno_especial',
@@ -50,7 +50,7 @@ class Parametro extends Model
         ],
         [
             'name' => 'email_gerenciamentosite',
-            'label' => 'E-mail do Gerenciamento do Site',
+            'label' => 'E-mail da Equipe de Gerenciamento do Site da Unidade',
         ],
     ];
 

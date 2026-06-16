@@ -38,8 +38,8 @@ class ProgramaRequest extends FormRequest
         'descricao.max' => 'A descrição do programa não pode exceder 255 caracteres!',
         'email_secretaria.max' => 'O e-mail da secretaria não pode exceder 255 caracteres!',
         'email_secretaria.email' => 'O e-mail da secretaria deve ser válido.',
-        'link_acompanhamento.max' => 'O link de acompanhamento não pode exceder 255 caracteres!',
-        'link_acompanhamento.url' => 'O link de acompanhamento deve ser uma URL válida.',
-        'link_acompanhamento.regex' => 'O link de acompanhamento deve começar com http:// ou https://',
+        'link_acompanhamento.max' => 'O endereço no site da unidade para acompanhamento do processo pelos candidatos não pode exceder 255 caracteres!',
+        'link_acompanhamento.url' => 'O endereço no site da unidade para acompanhamento do processo pelos candidatos deve ser uma URL válida.',
+        'link_acompanhamento.regex' => 'O endereço no site da unidade para acompanhamento do processo pelos candidatos deve começar com http:// ou https://',
     ];
 }
