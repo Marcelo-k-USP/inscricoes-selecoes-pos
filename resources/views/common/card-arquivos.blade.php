@@ -41,10 +41,8 @@
         $i = 0;
       @endphp
       @foreach ($objeto->tiposarquivo->where('classe_nome', $tipoarquivo_classe_nome_plural_acentuado) as $tipoarquivo)
-        @if (($tipoarquivo['nome'] !== 'Boleto(s) de Pagamento - Disciplinas Removidas') ||
-             ($objeto->arquivos->where('pivot.tipo', $tipoarquivo['nome'])->count() > 0))
-          @if (!($solicitacaoisencaotaxa_aprovada ?? false) ||
-               !str_starts_with($tipoarquivo['nome'], 'Boleto(s) de Pagamento'))
+        @if (($tipoarquivo['nome'] !== 'Boleto(s) de Pagamento - Disciplinas Removidas') || ($objeto->arquivos->where('pivot.tipo', $tipoarquivo['nome'])->count() > 0))    {{-- desconsidera o tipo de documento de boletos para disciplinas removidas quando não há nenhum boleto para disciplina removida --}}
+          @if (!($solicitacaoisencaotaxa_aprovada ?? false) || !str_starts_with($tipoarquivo['nome'], 'Boleto(s) de Pagamento'))    {{-- desconsidera os tipos de documento de boletos caso haja solicitação de isenção de taxa aprovada --}}
             <div class="arquivos-lista">
               {{ $tipoarquivo['nome'] }} {!! ((isset($tipoarquivo['obrigatorio']) && $tipoarquivo['obrigatorio']) ? '<small class="text-required">(*)</small>' : '') !!}
               @php
@@ -61,13 +59,12 @@
                 </label>
               @endif
               @canany(['perfiladmin', 'perfilgerente'])
-                @if (($tipoarquivo['nome'] === 'Boleto(s) de Pagamento') &&
-                    ($inscricao->estado !== 'Aguardando Envio'))
-                  @if (($inscricao->selecao->categoria->nome !== 'Aluno Especial') && ($inscricao->arquivos->where('pivot.tipo', 'Boleto(s) de Pagamento')->count() == 0))
+                @if (($tipoarquivo['nome'] === 'Boleto(s) de Pagamento') && ($inscricao->estado !== 'Aguardando Envio'))    {{-- se o tipo de documento é boleto e a inscrição já foi enviada --}}
+                  @if (($inscricao->selecao->categoria->nome !== 'Aluno Especial') && ($inscricao->arquivos->where('pivot.tipo', 'Boleto(s) de Pagamento')->count() == 0))    {{-- se é aluno regular e não tem o devido boleto --}}
                     <a onclick="gerar_boletos({{ $inscricao->id }}); return false;" class="btn btn-sm btn-light text-primary ml-2">
                       <i class="fas fa-plus"></i> Gerar
                     </a>
-                  @elseif (($inscricao->selecao->categoria->nome == 'Aluno Especial') && (count($inscricao->disciplinas_sem_boleto) > 0))
+                  @elseif (($inscricao->selecao->categoria->nome == 'Aluno Especial') && (count($inscricao->disciplinas_sem_boleto) > 0))    {{-- se é aluno especial e há boleto(s) a ser(em) gerado(s) para sua(s) disciplina(s) --}}
                     @include('disciplinas.partials.modal-boletos', ['inclusor_url' => request()->segment(1) . '/geraboletos/' . $inscricao->id])
                   @endif
                 @endif
