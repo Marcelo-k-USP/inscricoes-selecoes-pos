@@ -616,21 +616,22 @@ class Selecao extends Model
         [
             'name' => 'ingresso_semestre',
             'label' => 'Semestre de Ingresso',
-            'type' => 'select',
-            'data' => ['0' => '-', '1' => '1º', '2' => '2º'],
+            'type' => 'radio',
+            'data' => ['0' => 'Não definido', '1' => '1º', '2' => '2º'],
         ],
         [
             'name' => 'ingresso_ano',
             'label' => 'Ano de Ingresso',
-            'type' => 'integer',
-        ],
+            'type' => 'select',
+            'data' => [],
+            ],
         [
             'name' => 'descricao',
             'label' => 'Descrição',
         ],
         [
             'name' => 'fluxo_continuo',
-            'label' => 'Fluxo Contínuo',
+            'label' => 'Fluxo Contínuo (solicitações de isenção de taxa e inscrições ocorrem no mesmo período)',
             'type' => 'checkbox',
         ],
         [
@@ -675,15 +676,15 @@ class Selecao extends Model
         ],
         [
             'name' => 'boleto_texto',
-            'label' => 'Informações Adicionais no Boleto',
+            'label' => 'Eventuais Informações Adicionais no Boleto',
         ],
         [
             'name' => 'email_inscricaoaprovacao_texto',
-            'label' => 'Informações Adicionais no E-mail de Aprovação da Inscrição',
+            'label' => 'Eventuais Informações Adicionais no E-mail de Aprovação da Inscrição',
         ],
         [
             'name' => 'email_inscricaorejeicao_texto',
-            'label' => 'Informações Adicionais no E-mail de Rejeição da Inscrição',
+            'label' => 'Eventuais Informações Adicionais no E-mail de Rejeição da Inscrição',
         ],
     ];
 
@@ -705,6 +706,9 @@ class Selecao extends Model
             if (substr($field['name'], -3) == '_id') {
                 $class = '\\App\\Models\\' . $field['model'];
                 $field['data'] = $class::allToSelect();
+            } elseif ($field['name'] == 'ingresso_ano') {
+                $anoAtual = date('Y');
+                $field['data'] = array_combine(range($anoAtual, $anoAtual + 3), range($anoAtual, $anoAtual + 3));
             }
         return $fields;
     }
