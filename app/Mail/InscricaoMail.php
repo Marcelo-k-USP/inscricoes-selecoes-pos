@@ -93,10 +93,11 @@ class InscricaoMail extends Mailable
      */
     public function build()
     {
+        $inscricao_ou_matricula_maiusculo = ($this->inscricao->selecao->isMatricula() ? 'Matrícula' : 'Inscrição');
         switch ($this->passo) {
             case 'início':
                 return $this
-                    ->subject('[' . config('app.name') . '] Inscrição Pendente de Envio')
+                    ->subject('[' . config('app.name') . '] ' . $inscricao_ou_matricula_maiusculo . ' Pendente de Envio')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_inicio')
                     ->with([
@@ -111,7 +112,7 @@ class InscricaoMail extends Mailable
                 foreach ($this->arquivos as $arquivo)
                     $arquivos_erro[] = $arquivo['erro'];
                 $mail = $this
-                    ->subject('[' . config('app.name') . '] Inscrição Enviada')
+                    ->subject('[' . config('app.name') . '] ' . $inscricao_ou_matricula_maiusculo . ' Enviada')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_enviodeboletos' . (($this->passo == 'boleto(s) - disciplinas alteradas') ? 'disciplinasalteradas' : ''))
                     ->with([
@@ -140,7 +141,7 @@ class InscricaoMail extends Mailable
 
             case 'realização':
                 return $this
-                    ->subject('[' . config('app.name') . '] Realização de Inscrição')
+                    ->subject('[' . config('app.name') . '] Realização de ' . $inscricao_ou_matricula_maiusculo)
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_realizacao')
                     ->with([
@@ -150,7 +151,7 @@ class InscricaoMail extends Mailable
 
             case 'pré-aprovação':
                 return $this
-                    ->subject('[' . config('app.name') . '] Acompanhamento de Inscrição')
+                    ->subject('[' . config('app.name') . '] Acompanhamento de ' . $inscricao_ou_matricula_maiusculo)
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_preaprovacao')
                     ->with([
@@ -161,7 +162,7 @@ class InscricaoMail extends Mailable
 
             case 'pré-rejeição':
                 return $this
-                    ->subject('[' . config('app.name') . '] Rejeição de Inscrição')
+                    ->subject('[' . config('app.name') . '] Rejeição de ' . $inscricao_ou_matricula_maiusculo)
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_prerejeicao')
                     ->with([
@@ -171,7 +172,7 @@ class InscricaoMail extends Mailable
 
             case 'aprovação':
                 return $this
-                    ->subject('[' . config('app.name') . '] Aprovação de Inscrição')
+                    ->subject('[' . config('app.name') . '] Aprovação de ' . $inscricao_ou_matricula_maiusculo)
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_aprovacao')
                     ->with([
@@ -181,7 +182,7 @@ class InscricaoMail extends Mailable
 
             case 'rejeição':
                 return $this
-                    ->subject('[' . config('app.name') . '] Rejeição de Inscrição')
+                    ->subject('[' . config('app.name') . '] Rejeição de ' . $inscricao_ou_matricula_maiusculo)
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_rejeicao')
                     ->with([
