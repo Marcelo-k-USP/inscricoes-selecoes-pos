@@ -81,6 +81,16 @@
         var element = $('a[name="card_{{ $scroll }}"]');
         if (element.length)
           element.get(0).scrollIntoView({ behavior: 'smooth' });
+
+        var selecao = {!! json_encode($selecao) !!};
+        var inputs = $("#form_principal :input").not(":input[type=button], :input[type=submit], :input[type=reset], input[name^='_']");
+
+        inputs.each(function() {
+          if ($(this).attr('type') === 'radio') {
+              if ($(this).val() === String(selecao[this.name]))
+                  $(this).prop('checked', true);
+          }
+        });
       });
     </script>
   @endsection

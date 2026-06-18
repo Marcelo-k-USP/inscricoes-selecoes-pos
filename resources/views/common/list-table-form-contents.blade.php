@@ -15,5 +15,7 @@
     @include('common.list-table-form-select')
   @elseif ($col['type'] == 'checkbox')
     @include('common.list-table-form-checkbox')
+  @elseif ($col['type'] == 'radio')
+    @include('common.list-table-form-radio')
   @endif
 @endforeach
