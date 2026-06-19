@@ -23,7 +23,7 @@
           <div class="card-title form-inline my-0">
             @if ($modo == 'edit')
               <div style="display: flex; align-items: center; white-space: nowrap;">
-                <a href="selecoes">Seleções</a> <i class="fas fa-angle-right mx-2"></i> {{ $selecao->nome }}
+                <a href="selecoes">Seleções</a> <i class="fas fa-angle-right mx-2"></i> Seleção nº {{ $selecao->id }}
                 &nbsp; | &nbsp;
                 @include('selecoes.partials.btn-enable-disable')
               </div>
