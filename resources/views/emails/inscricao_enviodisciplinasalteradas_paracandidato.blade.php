@@ -2,15 +2,13 @@
 
 Olá {{ $user->name }},<br />
 <br />
-Sua {{ $inscricao_ou_matricula }} para {{ $objetivo }} foi aceita.<br />
-@if ($boleto_momento_envio == 'Aprovação da Inscrição')
+Você reenviou sua matrícula para {{ $objetivo }}.<br />
+@if ($boleto_momento_envio == 'Envio da Inscrição')
+  Pelo fato de você ter incluído e/ou removido disciplinas, o sistema gerou novo(s) boleto(s) para pagamento.<br />
   Não deixe de pagar {{ ($arquivos_count == 1) ? 'o boleto que segue' : 'os boletos que seguem' }} em anexo.<br />
 @endif
 <br />
 @foreach ($arquivos_erro as $arquivo_erro)
   {!! $arquivo_erro !!}<br />
 @endforeach
-<br />
-{{ $inscricao->selecao->email_inscricaoaprovacao_texto }}
-<br />
 @include('emails.rodape')

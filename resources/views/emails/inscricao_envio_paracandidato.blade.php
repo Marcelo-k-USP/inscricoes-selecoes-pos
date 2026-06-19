@@ -3,7 +3,9 @@
 Olá {{ $user->name }},<br />
 <br />
 Você completou sua {{ $inscricao_ou_matricula }} para {{ $objetivo }}.<br />
-Não deixe de pagar {{ ($arquivos_count == 1) ? 'o boleto que segue' : 'os boletos que seguem' }} em anexo.<br />
+@if ($boleto_momento_envio == 'Envio da Inscrição')
+  Não deixe de pagar {{ ($arquivos_count == 1) ? 'o boleto que segue' : 'os boletos que seguem' }} em anexo.<br />
+@endif
 <br />
 @foreach ($arquivos_erro as $arquivo_erro)
   {!! $arquivo_erro !!}<br />

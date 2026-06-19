@@ -60,31 +60,35 @@ class InscricaoObserver
     public function updated(Inscricao $inscricao)
     {
         $user = $inscricao->pessoas('Autor');
+        $extras = json_decode($inscricao->extras, true);
+        $arquivos = [];
+        $boleto_momento_envio = Parametro::first()->boleto_momento_envio;
+        $email_secaoinformatica = Parametro::first()->email_secaoinformatica;
 
         if ($inscricao->isDirty('estado')) {                                    // se a alteração na inscrição foi no estado
             if (($inscricao->getOriginal('estado') == 'Aguardando Envio') &&    // se o estado anterior era Aguardando Envio
                 ($inscricao->estado == 'Enviada')) {                            // se o novo estado é Enviada
+                // trata-se do envio da inscrição/matrícula
 
                 // verifica se a seleção tem taxa e se o candidato não tem isenção de taxa aprovada
-                $extras = json_decode($inscricao->extras, true);
                 if ($inscricao->selecao->tem_taxa && !SolicitacaoIsencaoTaxa::where('extras->cpf', $extras['cpf'] ?? null)
                                                                             ->where('selecao_id', $inscricao->selecao->id)
                                                                             ->where('estado', 'LIKE', 'Isenção de Taxa Aprovada%')->exists()) {
-                    $passo = 'boleto(s)';
-                    $arquivos = [];
-                    $email_secaoinformatica = Parametro::first()->email_secaoinformatica;
+                    $passo = 'envio - para candidato';
                     if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
-                        $arquivos = [$this->boletoService->gerarBoleto($inscricao)];
+                        if ($boleto_momento_envio == 'Envio da Inscrição')
+                            $arquivos = [$this->boletoService->gerarBoleto($inscricao)];
 
-                        // envia e-mail para o candidato com o(s) boleto(s)
+                        // envia e-mail para o candidato reconhecendo que ele enviou a inscrição/matrícula
                         // envio do e-mail "8" do README.md
                         \Mail::to($user->email)
                             ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'arquivos', 'email_secaoinformatica')));
-                    } else
+
+                    } elseif ($boleto_momento_envio == 'Envio da Inscrição')
                         $this->processa_disciplinas_alteradas($inscricao, $user, $email_secaoinformatica);
                 }
 
-                $passo = 'realização';
+                $passo = 'envio - para gestores';
                 if (!$inscricao->selecao->isMatricula()) {
                     // envia e-mail avisando a secretaria do programa da seleção da inscrição/matrícula sobre a realização da inscrição/matrícula
                     // envio do e-mail "9" do README.md
@@ -110,6 +114,7 @@ class InscricaoObserver
                 }
             } elseif (($inscricao->getOriginal('estado') == 'Em Pré-Avaliação') &&    // se o estado anterior era Em Pré-Avaliação
                       ($inscricao->estado == 'Pré-Aprovada')) {                       // se o novo estado é Pré-Aprovada
+                // trata-se da pré-aprovação da inscrição/matrícula
 
                 // envia e-mail avisando o candidato da pré-aprovação da inscrição/matrícula
                 // envio do e-mail "14" do README.md
@@ -120,6 +125,7 @@ class InscricaoObserver
 
             } elseif (($inscricao->getOriginal('estado') == 'Em Pré-Avaliação') &&    // se o estado anterior era Em Pré-Avaliação
                       ($inscricao->estado == 'Pré-Rejeitada')) {                      // se o novo estado é Pré-Rejeitada
+                // trata-se da pré-rejeição da inscrição/matrícula
 
                 // envia e-mail avisando o candidato da pré-rejeição da inscrição/matrícula
                 // envio do e-mail "15" do README.md
@@ -128,11 +134,38 @@ class InscricaoObserver
                     ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
 
             } elseif (($inscricao->getOriginal('estado') == 'Em Avaliação') &&        // se o estado anterior era Em Avaliação
-                      (in_array($inscricao->estado, ['Aprovada', 'Rejeitada']))) {    // se o novo estado é Aprovada ou Rejeitada
+                      ($inscricao->estado == 'Aprovada')) {                           // se o novo estado é Aprovada
+                // trata-se da aprovação da inscrição/matrícula
 
-                // envia e-mail avisando o candidato da aprovação/rejeição da inscrição/matrícula
+                // verifica se a seleção tem taxa e se o candidato não tem isenção de taxa aprovada
+                if ($inscricao->selecao->tem_taxa && !SolicitacaoIsencaoTaxa::where('extras->cpf', $extras['cpf'] ?? null)
+                                                                            ->where('selecao_id', $inscricao->selecao->id)
+                                                                            ->where('estado', 'LIKE', 'Isenção de Taxa Aprovada%')->exists())
+                    if ($boleto_momento_envio == 'Aprovação da Inscrição')
+                        // gera boletos para a(s) disciplina(s)
+                        if ($inscricao->selecao->categoria->nome !== 'Aluno Especial')
+                            $arquivos = [$this->boletoService->gerarBoleto($inscricao)];
+                        else {
+                            $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
+                            foreach ($disciplinas_id as $disciplina_id) {
+                                $disciplina = Disciplina::find($disciplina_id);
+                                $arquivos[] = $this->boletoService->gerarBoleto($inscricao, $disciplina->sigla);
+                            }
+                        }
+
+                // envia e-mail avisando o candidato da aprovação da inscrição/matrícula
                 // envio do e-mail "16" do README.md
-                $passo = (($inscricao->estado == 'Aprovada') ? 'aprovação' : 'rejeição');
+                $passo = 'aprovação';
+                \Mail::to($user->email)
+                    ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'arquivos', 'email_secaoinformatica')));
+
+            } elseif (($inscricao->getOriginal('estado') == 'Em Avaliação') &&        // se o estado anterior era Em Avaliação
+                      ($inscricao->estado == 'Rejeitada')) {                          // se o novo estado é Rejeitada
+                // trata-se da rejeição da inscrição/matrícula
+
+                // envia e-mail avisando o candidato da rejeição da inscrição/matrícula
+                // envio do e-mail "17" do README.md
+                $passo = 'rejeição';
                 \Mail::to($user->email)
                     ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user')));
             }
@@ -178,13 +211,14 @@ class InscricaoObserver
 
         if (!empty($arquivos)) {
             if (empty($disciplinas_id_anterior))
-                // envia e-mail para o candidato com o(s) boleto(s)
+                // envia e-mail para o candidato reconhecendo que ele enviou a inscrição/matrícula
                 // envio do e-mail "8" do README.md
-                $passo = 'boleto(s)';
+                $passo = 'envio - para candidato';
             else
                 // envia e-mail para o candidato com o(s) boleto(s)
                 // envio do e-mail "12" do README.md
-                $passo = 'boleto(s) - disciplinas alteradas';
+                $passo = 'envio disciplinas alteradas - para candidato';
+
             \Mail::to($user->email)
                 ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'arquivos', 'email_secaoinformatica')));
         }

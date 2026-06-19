@@ -16,14 +16,14 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
     protected $solicitacaoisencaotaxa;
     protected $user;
 
-    // campos adicionais para isenção de taxa solicitada
+    // campos adicionais para 'envio'
     protected $servicoposgraduacao_nome;
 
-    // campos adicionais para solicitação de isenção de taxa aprovada
+    // campos adicionais para 'aprovação'
 
-    // campos adicionais para solicitação de isenção de taxa reprovada
+    // campos adicionais para 'rejeição'
 
-    // campos adicionais para solicitação de isenção de taxa aprovada após recurso
+    // campos adicionais para 'aprovação após recurso'
 
     /**
      * Create a new message instance.
@@ -40,7 +40,7 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
             case 'início':
                 break;
 
-            case 'realização':
+            case 'envio':
                 $this->servicoposgraduacao_nome = $data['servicoposgraduacao_nome'];
                 break;
 
@@ -72,11 +72,11 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
                         'user' => $this->user,
                     ]);
 
-            case 'realização':
+            case 'envio':
                 return $this
                     ->subject('[' . config('app.name') . '] Isenção de Taxa Solicitada')
                     ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.solicitacaoisencaotaxa_realizacao')
+                    ->view('emails.solicitacaoisencaotaxa_envio')
                     ->with([
                         'solicitacaoisencaotaxa' => $this->solicitacaoisencaotaxa,
                         'servicoposgraduacao_nome' => $this->servicoposgraduacao_nome,
