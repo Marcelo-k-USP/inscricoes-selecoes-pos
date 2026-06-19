@@ -139,7 +139,7 @@ class InscricaoObserver
         }
     }
 
-    private function processa_disciplinas_alteradas(Inscricao $inscricao, User $user, string $email_secaoinformatica)
+    private function processa_disciplinas_alteradas(Inscricao $inscricao, User $user, ?string $email_secaoinformatica)
     {
         $extras = json_decode($inscricao->extras, true);
         $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
