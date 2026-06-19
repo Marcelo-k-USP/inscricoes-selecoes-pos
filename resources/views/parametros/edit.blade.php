@@ -59,6 +59,8 @@
                   @include('common.list-table-form-number')
                 @elseif ($col['type'] == 'integer')
                   @include('common.list-table-form-integer')
+                @elseif ($col['type'] == 'radio')
+                  @include('common.list-table-form-radio')
                 @endif
               @endforeach
               <div class="text-right">
@@ -89,9 +91,14 @@
             return; // pula para o próximo input
 
         if (parametros[this.name] !== undefined) {
-          $(this).val(parametros[this.name]);
-          if ($(this).attr('oninput') == 'validateNumber(this)')
-            $(this).val(formatarDecimal($(this).val()));
+          if ($(this).attr('type') === 'radio') {
+              if ($(this).val() === String(parametros[this.name]))
+                  $(this).prop('checked', true);
+          } else {
+            $(this).val(parametros[this.name]);
+            if ($(this).attr('oninput') == 'validateNumber(this)')
+              $(this).val(formatarDecimal($(this).val()));
+          }
         }
       });
     });

@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Inscricao;
+use App\Models\Parametro;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -15,24 +16,23 @@ class InscricaoMail extends Mailable
     protected $passo;
     protected $inscricao;
     protected $user;
+    protected $boleto_momento_envio;
 
-    // campos adicionais para boleto(s) e boleto(s) - disciplinas alteradas
+    // campos adicionais para 'envio - para candidato', 'envio disciplinas alteradas - para candidato' e 'aprovação'
     protected $arquivos;
 
-    // campos adicionais para boleto - envio manual
+    // campos adicionais para 'boleto - envio manual'
     protected $arquivo;
 
-    // campos adicionais para inscrição/matrícula enviada
+    // campos adicionais para 'envio - para gestores'
     protected $responsavel_nome;
 
-    // campos adicionais para inscrição/matrícula pré-aprovada
+    // campos adicionais para 'pré-aprovação'
     protected $link_acompanhamento;
 
-    // campos adicionais para inscrição/matrícula pré-rejeitada
+    // campos adicionais para 'pré-rejeição'
 
-    // campos adicionais para inscrição/matrícula aprovada
-
-    // campos adicionais para inscrição/matrícula reprovada
+    // campos adicionais para 'rejeição'
 
     /**
      * Create a new message instance.
@@ -44,20 +44,22 @@ class InscricaoMail extends Mailable
         $this->passo = $data['passo'];
         $this->inscricao = $data['inscricao'];
         $this->user = $data['user'];
+        $this->boleto_momento_envio = Parametro::first()->boleto_momento_envio;
 
         switch ($this->passo) {
             case 'início':
                 break;
 
-            case 'boleto(s)':
-            case 'boleto(s) - disciplinas alteradas':
+            case 'envio - para candidato':
+            case 'envio disciplinas alteradas - para candidato':
                 $this->arquivos = [];
-                foreach ($data['arquivos'] as $data_arquivo)
-                    $this->arquivos[] = [
-                        'nome_original' => $data_arquivo['nome_original'],
-                        'conteudo' => $data_arquivo['conteudo'],
-                        'erro' => (!empty($data_arquivo['conteudo']) ? '' : 'Ocorreu um erro na geração do boleto "' . $data_arquivo['nome_original'] . '".<br />' . PHP_EOL .
-                                                                            (!empty($data['email_secaoinformatica']) ? 'Por favor, entre em contato conosco em ' . $data['email_secaoinformatica'] . ', informando-nos sobre esse problema.<br />' . PHP_EOL : '')),
+                if ($this->boleto_momento_envio == 'Envio da Inscrição')
+                    foreach ($data['arquivos'] as $data_arquivo)
+                        $this->arquivos[] = [
+                            'nome_original' => $data_arquivo['nome_original'],
+                            'conteudo' => $data_arquivo['conteudo'],
+                            'erro' => (!empty($data_arquivo['conteudo']) ? '' : 'Ocorreu um erro na geração do boleto "' . $data_arquivo['nome_original'] . '".<br />' . PHP_EOL .
+                                                                                (!empty($data['email_secaoinformatica']) ? 'Por favor, entre em contato conosco em ' . $data['email_secaoinformatica'] . ', informando-nos sobre esse problema.<br />' . PHP_EOL : '')),
                     ];
                 break;
 
@@ -68,7 +70,7 @@ class InscricaoMail extends Mailable
                 ];
                 break;
 
-            case 'realização':
+            case 'envio - para gestores':
                 $this->responsavel_nome = $data['responsavel_nome'];
                 break;
 
@@ -80,6 +82,15 @@ class InscricaoMail extends Mailable
                 break;
 
             case 'aprovação':
+                $this->arquivos = [];
+                if ($this->boleto_momento_envio == 'Aprovação da Inscrição')
+                    foreach ($data['arquivos'] as $data_arquivo)
+                        $this->arquivos[] = [
+                            'nome_original' => $data_arquivo['nome_original'],
+                            'conteudo' => $data_arquivo['conteudo'],
+                            'erro' => (!empty($data_arquivo['conteudo']) ? '' : 'Ocorreu um erro na geração do boleto "' . $data_arquivo['nome_original'] . '".<br />' . PHP_EOL .
+                                                                                (!empty($data['email_secaoinformatica']) ? 'Por favor, entre em contato conosco em ' . $data['email_secaoinformatica'] . ', informando-nos sobre esse problema.<br />' . PHP_EOL : '')),
+                    ];
                 break;
 
             case 'rejeição':
@@ -106,20 +117,21 @@ class InscricaoMail extends Mailable
                         'rota' => ($this->inscricao->selecao->isMatricula() ? 'matriculas' : 'inscricoes'),
                     ]);
 
-            case 'boleto(s)':
-            case 'boleto(s) - disciplinas alteradas':
+            case 'envio - para candidato':
+            case 'envio disciplinas alteradas - para candidato':
                 $arquivos_erro = [];
                 foreach ($this->arquivos as $arquivo)
                     $arquivos_erro[] = $arquivo['erro'];
                 $mail = $this
                     ->subject('[' . config('app.name') . '] ' . $inscricao_ou_matricula_maiusculo . ' Enviada')
                     ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.inscricao_enviodeboletos' . (($this->passo == 'boleto(s) - disciplinas alteradas') ? 'disciplinasalteradas' : ''))
+                    ->view('emails.inscricao_envio' . (($this->passo == 'envio disciplinas alteradas - para candidato') ? 'disciplinasalteradas' : '') . '_paracandidato')
                     ->with([
                         'inscricao' => $this->inscricao,
                         'user' => $this->user,
                         'arquivos_count' => count($this->arquivos),
                         'arquivos_erro' => $arquivos_erro,
+                        'boleto_momento_envio' => $this->boleto_momento_envio,
                     ]);
                 foreach ($this->arquivos as $arquivo)
                     if (!empty($arquivo['conteudo']))
@@ -139,11 +151,11 @@ class InscricaoMail extends Mailable
                     $mail->attachData(base64_decode($this->arquivo['conteudo']), $this->arquivo['nome_original'], ['mime' => 'application/pdf']);
                 return $mail;
 
-            case 'realização':
+            case 'envio - para gestores':
                 return $this
                     ->subject('[' . config('app.name') . '] Realização de ' . $inscricao_ou_matricula_maiusculo)
                     ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.inscricao_realizacao')
+                    ->view('emails.inscricao_envio_paragestores')
                     ->with([
                         'inscricao' => $this->inscricao,
                         'responsavel_nome' => $this->responsavel_nome,
@@ -171,14 +183,24 @@ class InscricaoMail extends Mailable
                     ]);
 
             case 'aprovação':
-                return $this
-                    ->subject('[' . config('app.name') . '] Aprovação de ' . $inscricao_ou_matricula_maiusculo)
+                $arquivos_erro = [];
+                foreach ($this->arquivos as $arquivo)
+                    $arquivos_erro[] = $arquivo['erro'];
+                $mail = $this
+                    ->subject('[' . config('app.name') . '] Aprovação de Inscrição')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.inscricao_aprovacao')
                     ->with([
                         'inscricao' => $this->inscricao,
                         'user' => $this->user,
+                        'arquivos_count' => count($this->arquivos),
+                        'arquivos_erro' => $arquivos_erro,
+                        'boleto_momento_envio' => $this->boleto_momento_envio,
                     ]);
+                foreach ($this->arquivos as $arquivo)
+                    if (!empty($arquivo['conteudo']))
+                        $mail->attachData(base64_decode($arquivo['conteudo']), $arquivo['nome_original'], ['mime' => 'application/pdf']);
+                return $mail;
 
             case 'rejeição':
                 return $this

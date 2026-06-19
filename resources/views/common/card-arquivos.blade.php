@@ -59,7 +59,10 @@
                 </label>
               @endif
               @canany(['perfiladmin', 'perfilgerente'])
-                @if (($tipoarquivo['nome'] === 'Boleto(s) de Pagamento') && ($inscricao->estado !== 'Aguardando Envio'))    {{-- se o tipo de documento é boleto e a inscrição já foi enviada --}}
+                @if (($tipoarquivo['nome'] === 'Boleto(s) de Pagamento') && (
+                  (($boleto_momento_envio === 'Envio da Inscrição') && ($inscricao->estado !== 'Aguardando Envio')) ||
+                  (($boleto_momento_envio === 'Aprovação da Inscrição') && ($inscricao->estado === 'Aprovada'))
+                ))    {{-- se o tipo de documento é boleto e ele(s) já deve(m) ter sido gerado(s) e enviado(s) --}}
                   @if (($inscricao->selecao->categoria->nome !== 'Aluno Especial') && ($inscricao->arquivos->where('pivot.tipo', 'Boleto(s) de Pagamento')->count() == 0))    {{-- se é aluno regular e não tem o devido boleto --}}
                     <a onclick="gerar_boletos({{ $inscricao->id }}); return false;" class="btn btn-sm btn-light text-primary ml-2">
                       <i class="fas fa-plus"></i> Gerar

@@ -231,8 +231,9 @@ class InscricaoController extends Controller
 
                         $info_adicional = '';
                         $user = \Auth::user();
-                        if ($inscricao->selecao->tem_taxa && !$user->solicitacoesIsencaoTaxa()->where('selecao_id', $inscricao->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->exists())
-                            $info_adicional = ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ((count($disciplinas_id) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los'));
+                        if ($inscricao->selecao->tem_taxa && !SolicitacaoIsencaoTaxa::where('extras->cpf', $cpf ?? null)->where('selecao_id', $inscricao->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->exists())
+                            if (Parametro::first()->boleto_momento_envio == 'Envio da Inscrição')
+                                $info_adicional = ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ((count($disciplinas_id) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los'));
 
                         $request->session()->flash('alert-success', 'Sua ' . Nomenclatura::InscricaoOuMatricula() . ' foi enviada' . $info_adicional);
                         \UspTheme::activeUrl(request()->segment(1));
@@ -308,11 +309,12 @@ class InscricaoController extends Controller
                 $extras['disciplinas'][] = $request->id;
                 $inscricao->extras = json_encode($extras);
 
-                // se já havia enviado a inscrição, avisa para reenviá-la
-                if ($inscricao->estado == 'Enviada') {
-                    $inscricao->estado = 'Aguardando Envio';
-                    $info_adicional = '<br />Reenvie esta matrícula para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
-                }
+                if (Parametro::first()->boleto_momento_envio == 'Envio da Inscrição')
+                    // se já havia enviado a inscrição, avisa para reenviá-la
+                    if ($inscricao->estado == 'Enviada') {
+                        $inscricao->estado = 'Aguardando Envio';
+                        $info_adicional = '<br />Reenvie esta matrícula para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
+                    }
 
                 $inscricao->save();
             }
@@ -346,11 +348,12 @@ class InscricaoController extends Controller
             unset($extras['disciplinas'][$indice]);
             $inscricao->extras = json_encode($extras);
 
-            // se já havia enviado a matrícula, avisa para reenviá-la
-            if ($inscricao->estado == 'Enviada') {
-                $inscricao->estado = 'Aguardando Envio';
-                $info_adicional = '<br />Reenvie esta matrícula para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
-            }
+            if (Parametro::first()->boleto_momento_envio == 'Envio da Inscrição')
+                // se já havia enviado a matrícula, avisa para reenviá-la
+                if ($inscricao->estado == 'Enviada') {
+                    $inscricao->estado = 'Aguardando Envio';
+                    $info_adicional = '<br />Reenvie esta matrícula para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
+                }
 
             $inscricao->save();
         }
@@ -467,8 +470,9 @@ class InscricaoController extends Controller
                 if ($inscricao->arquivos->filter(fn($a) => ($a->pivot->tipo == 'Boleto(s) de Pagamento') && str_contains(strtolower($a->nome_original), strtolower($disciplina->sigla)))->count() == 0)
                     $disciplinas_sem_boleto[] = $disciplina;
         $inscricao->disciplinas_sem_boleto = $disciplinas_sem_boleto;
+        $boleto_momento_envio = Parametro::first()->boleto_momento_envio;
         $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'nivel', 'tiposarquivo_selecao', 'solicitacaoisencaotaxa_aprovada', 'max_upload_size', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'nivel', 'tiposarquivo_selecao', 'solicitacaoisencaotaxa_aprovada', 'boleto_momento_envio', 'max_upload_size', 'scroll');
     }
 }

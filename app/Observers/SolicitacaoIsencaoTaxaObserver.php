@@ -46,10 +46,11 @@ class SolicitacaoIsencaoTaxaObserver
         if ($solicitacaoisencaotaxa->isDirty('estado')) {                                    // se a alteração na solicitação de isenção de taxa foi no estado
             if (($solicitacaoisencaotaxa->getOriginal('estado') == 'Aguardando Envio') &&    // se o estado anterior era Aguardando Envio
                 ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Solicitada')) {         // se o novo estado é Isenção de Taxa Solicitada
+                // trata-se do envio da solicitação de isenção de taxa
 
                 // envia e-mail avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
                 // envio do e-mail "5" do README.md
-                $passo = 'realização';
+                $passo = 'envio';
                 $user = $solicitacaoisencaotaxa->pessoas('Autor');
                 $servicoposgraduacao_nome = 'Prezados(as) Srs(as). do Serviço de Pós-Graduação';
                 \Mail::to(Parametro::first()->email_servicoposgraduacao)
@@ -57,6 +58,7 @@ class SolicitacaoIsencaoTaxaObserver
 
             } elseif (($solicitacaoisencaotaxa->getOriginal('estado') == 'Isenção de Taxa em Avaliação') &&                      // se o estado anterior era Isenção de Taxa em Avaliação
                       in_array($solicitacaoisencaotaxa->estado, ['Isenção de Taxa Aprovada', 'Isenção de Taxa Rejeitada'])) {    // se o novo estado é Isenção de Taxa Aprovada ou Isenção de Taxa Rejeitada
+                // trata-se da aprovação ou rejeição da solicitação de isenção de taxa
 
                 // envia e-mail avisando o candidato da aprovação/rejeição da solicitação de isenção de taxa
                 // envio do e-mail "6" do README.md
@@ -67,6 +69,7 @@ class SolicitacaoIsencaoTaxaObserver
 
             } elseif (($solicitacaoisencaotaxa->getOriginal('estado') == 'Isenção de Taxa Rejeitada') &&    // se o estado anterior era Isenção de Taxa Rejeitada
                       ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada Após Recurso')) {       // se o novo estado é Isenção de Taxa Aprovada Após Recurso
+                // trata-se da aprovação da solicitação de isenção de taxa após recurso
 
                 // envia e-mail avisando o candidato da aprovação da solicitação de isenção de taxa após recurso
                 // envio do e-mail "6" do README.md

@@ -13,6 +13,7 @@ class Parametro extends Model
     protected $fillable = [
         'boleto_codigo_fonte_recurso',
         'boleto_estrutura_hierarquica',
+        'boleto_momento_envio',
         'link_acompanhamento_especiais',
         'max_disciplinas_aluno_especial',
         'email_servicoposgraduacao',
@@ -30,6 +31,12 @@ class Parametro extends Model
         [
             'name' => 'boleto_estrutura_hierarquica',
             'label' => 'Estrutura Hierárquica para Boleto',
+        ],
+        [
+            'name' => 'boleto_momento_envio',
+            'label' => 'Momento de Geração e Envio do Boleto',
+            'type' => 'radio',
+            'data' => ['Envio da Inscrição' => 'Envio da Inscrição', 'Aprovação da Inscrição' => 'Aprovação da Inscrição'],
         ],
         [
             'name' => 'link_acompanhamento_especiais',

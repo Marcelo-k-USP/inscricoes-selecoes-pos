@@ -50,15 +50,15 @@ Para as disciplinas, os acessos são abertos: qualquer gerente pode acessar disc
 
 Cada seleção contém informativos (edital, etc.), que são documentos que o candidato pode consultar.
 Além disso, em cada seleção o gerente também define quais documentos o candidato pode (ou deve) subir quando da solicitação de isenção de taxa e quando da inscrição/matrícula.
-O tipo de documento de boletos não é removível nem renomeável. O candidato não sobe documento desse tipo, pois ele é gerado quando do envio da inscrição/matrícula.
+O tipo de documento de boletos não é removível nem renomeável. O candidato não sobe documento desse tipo, pois ele é gerado quando do envio ou aprovação da inscrição/matrícula, dependendo de como o sistema está configurado.
 Inscrições/matrículas para programas podem ser de três níveis diferentes (mestrado, doutorado ou doutorado direto) e os tipos de documento dessas inscrições podem variar conforme o nível e o programa. Tipos de documento com diferenciação por níveis e programas é algo que só faz sentido nas inscrições/matrículas. Para que um tipo de documento apareça na solicitação de isenção de taxa ou inscrição/matrícula, devemos cadastrá-lo na relação de Tipos de Documento; devemos também cadastrar suas relações com combinações de nível com tipo de programa; por fim, devemos cadastrá-lo também na seleção em questão (como tipo de documento para solicitação de isenção de taxa ou inscrição/matrícula).
 
 Para completar a inscrição/matrícula, o candidato deve clicar em Enviar Inscrição/Matrícula.
-Se houver cobrança de taxa de inscrição/matrícula para a seleção em questão, é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição/matrícula.
+Se houver cobrança de taxa de inscrição/matrícula para a seleção em questão, é gerado um boleto e enviado por e-mail para o candidato pagar a taxa de inscrição/matrícula. A geração e envio do boleto ocorre no envio ou aprovação da inscrição/matrícula, conforme o sistema estiver configurado.
 No caso de aluno regular, é gerado um único boleto.
 No caso de aluno especial, é gerado um boleto para cada disciplina na qual ele se inscreveu, e enviado para o candidato um único e-mail com todos esses boletos anexados.
 Algumas informações necessárias para a geração de boletos se encontram na tabela "parametros", que é editável pelos admins em tela.
-Caso um candidato reenvie sua matrícula, e ela seja para uma seleção de categoria aluno especial, e as disciplinas para as quais ele está se matriculando tenham sido alteradas em relação ao envio anterior, o sistema irá gerar e enviar boletos para as novas disciplinas, além de marcar como boletos referentes a disciplinas removidas aqueles boletos que haviam sido gerados anteriormente e cujas disciplinas o candidato removeu nesse reenvio da matrícula.
+Quando o sistema está configurado para gerar e enviar boleto no momento do envio da inscrição/matrícula, caso um candidato reenvie sua matrícula, e ela seja para uma seleção de categoria aluno especial, e as disciplinas para as quais ele está se matriculando tenham sido alteradas em relação ao envio anterior, o sistema irá gerar e enviar boletos para as novas disciplinas, além de marcar como boletos referentes a disciplinas removidas aqueles boletos que haviam sido gerados anteriormente e cujas disciplinas o candidato removeu nesse reenvio da matrícula.
 
 A lei 14.534/2023 estabeleceu que estrangeiros devem possuir CPF para cursar pós-graduação. Com base nisso, passamos a utilizar o CPF como identificador único de pessoas nas situações em que precisamos identificar a mesma pessoa tendo realizado ações em momentos diferentes. Antes nos baseávamos no usuário autor, o que poderia levar a erros caso um usuário realizasse solicitação de isenção de taxa/inscrição/matrícula para outro candidato.
 
@@ -71,18 +71,19 @@ A lei 14.534/2023 estabeleceu que estrangeiros devem possuir CPF para cursar pó
 5) quando um candidato envia sua solicitação de isenção de taxa, o sistema envia um e-mail para o serviço de pós-graduação avisando sobre a solicitação de isenção de taxa;
 6) quando um gerente aprova/rejeita uma solicitação de isenção de taxa, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
 7) quando um candidato inicia sua inscrição/matrícula (clicando em "Prosseguir" mas ainda não em "Enviar Inscrição/Matrícula"), o sistema lhe envia um e-mail avisando sobre a necessidade de subir os documentos obrigatórios e de enviar a inscrição/matrícula;
-8) quando um candidato envia sua inscrição/matrícula, o sistema lhe envia um e-mail com o(s) boleto(s) a ser(em) pago(s);
+8) quando um candidato envia sua inscrição/matrícula e o sistema está configurado para enviar boleto no envio da inscrição/matrícula, o sistema lhe envia um e-mail com o(s) boleto(s) a ser(em) pago(s);
 9) ainda quando um candidato envia sua inscrição (não matrícula!), o sistema também envia um e-mail para a secretaria do programa avisando sobre a inscrição;
 10) ainda quando um candidato envia sua inscrição (não matrícula!), o sistema também envia um e-mail para cada coordenador do programa avisando sobre a inscrição;
 11) ainda quando um candidato envia sua matrícula (não inscrição!), o sistema também envia um e-mail para cada pessoa do serviço de pós-graduação avisando sobre a matrícula;
-12) quando um candidato reenvia sua matrícula alterando as disciplinas para as quais se inscreveu, o sistema lhe envia um e-mail com o(s) boleto(s) da(s) nova(s) disciplina(s);
+12) quando um candidato reenvia sua matrícula alterando as disciplinas para as quais se inscreveu e o sistema está configurado para enviar boleto no envio da inscrição/matrícula, o sistema lhe envia um e-mail com o(s) boleto(s) da(s) nova(s) disciplina(s);
 13) quando um gerente clica em enviar um boleto de uma inscrição/matrícula, o sistema envia um e-mail para o candidato enviando o boleto (isso é interessante para o caso de eventualmente o envio do boleto ter falhado quando o candidato enviou sua inscrição/matrícula);
 14) quando um gerente pré-aprova uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da pré-aprovação;
 15) quando um gerente pré-reprova uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da pré-rejeição;
-16) quando um gerente aprova/rejeita uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da aprovação/rejeição;
-17) quando um gerente sobe um documento dos tipos "Errata" ou "Resultado" em uma seleção, o sistema envia e-mails para cada candidato avisando a respeito desses novos informativos;
-18) quando nos aproximamos do término do período de solicitações de isenção de taxa de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua solicitação de isenção de taxa;
-19) quando nos aproximamos do término do período de inscrições/matrículas de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição/matrícula.
+16) quando um gerente aprova uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da aprovação e, quando o sistema está configurado para enviar boleto na aprovação da inscrição/matrícula, esse e-mail para o candidato vai com o(s) boleto(s) a ser(em) pago(s);
+17) quando um gerente rejeita uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da rejeição; 
+18) quando um gerente sobe um documento dos tipos "Errata" ou "Resultado" em uma seleção, o sistema envia e-mails para cada candidato avisando a respeito desses novos informativos;
+19) quando nos aproximamos do término do período de solicitações de isenção de taxa de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua solicitação de isenção de taxa;
+20) quando nos aproximamos do término do período de inscrições/matrículas de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição/matrícula.
 
 Todo e qualquer e-mail enviado pelo sistema pode ser copiado (em cópia oculta) para o e-mail de envio do sistema. O endereço de envio de e-mail do sistema está definido no .env, e também está no .env essa configuração de copiar para esse remetente ou não.
 Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema, embora na caixa de entrada ao invés de na caixa de enviados.
@@ -99,26 +100,26 @@ Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema
 # (para aluno regular)
 
 1) o candidato envia a inscrição;
-2) um e-mail é enviado ao candidato com o(s) eventual(is) boleto(s) da taxa de inscrição a pagar;
+2) um e-mail é enviado ao candidato reconhecendo o envio da inscrição e, caso o sistema esteja configurado para enviar boleto no envio da inscrição, ele recebe junto o(s) eventual(is) boleto(s) da taxa de inscrição a pagar;
 3) um e-mail é enviado à secretaria do programa e aos coordenadores do programa para pré-avaliar a inscrição;
 4) a secretaria do programa ou os coordenadores do programa colocam a inscrição em pré-avaliação e depois a pré-aprovam ou pré-rejeitam;
 5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o endereço no site da unidade para acompanhamento do processo pelos candidatos, na seção do programa correspondente;
 6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
 7) a secretaria do programa coloca a inscrição em avaliação e depois a aprova ou rejeita;
-8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição.
+9) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da inscrição e, caso seja aprovação, e caso o sistema esteja configurado para enviar boleto na aprovação da inscrição, ele recebe junto o(s) eventual(is) boleto(s) da taxa de inscrição a pagar.
 
 # Fluxo de matrícula
 # (para aluno regular de programa configurado para atuar com matrícula ao invés de inscrição
 # e para aluno especial)
 
 1) o candidato envia a matrícula;
-2) um e-mail é enviado ao candidato com o(s) eventual(is) boleto(s) da taxa de matrícula a pagar;
+2) um e-mail é enviado ao candidato reconhecendo o envio da matrícula e, caso o sistema esteja configurado para enviar boleto no envio da matrícula, ele recebe junto o(s) eventual(is) boleto(s) da taxa de matrícula a pagar;
 3) um e-mail é enviado ao serviço de pós-graduação para pré-avaliar a matrícula;
 4) o serviço de pós-graduação coloca a matrícula em pré-avaliação e depois a pré-aprova ou pré-rejeita;
 5) em caso de pré-aprovação, um e-mail é enviado ao candidato compartilhando o endereço no site da unidade para acompanhamento do processo pelos candidatos, na seção de alunos especiais;
 6) em caso de pré-rejeição, um e-mail é enviado ao candidato avisando-o da pré-rejeição;
 7) o serviço de pós-graduação coloca a matrícula em avaliação e depois a aprova ou rejeita;
-8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da matrícula.
+8) um e-mail é enviado ao candidato avisando da aprovação ou rejeição da matrícula e, caso seja aprovação, e caso o sistema esteja configurado para enviar boleto na aprovação da matrícula, ele recebe junto o(s) eventual(is) boleto(s) da taxa de matrícula a pagar.
 
 ## Changelog
 
