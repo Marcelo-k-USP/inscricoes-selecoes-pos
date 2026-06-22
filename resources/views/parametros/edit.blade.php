@@ -79,7 +79,7 @@
   <script src="js/functions.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
-      $(this).find(':input[type=text]').filter(':visible:first').focus();
+      $(this).find(':input[type=text], :input[type=number]').filter(':visible:first').focus();
 
       var parametros = {!! json_encode($parametros) !!};
       var inputs = $("#form_parametros :input").not(":input[type=button], :input[type=submit], :input[type=reset], input[name^='_']");
