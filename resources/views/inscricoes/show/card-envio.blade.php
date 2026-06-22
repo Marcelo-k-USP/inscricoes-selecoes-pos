@@ -8,6 +8,19 @@
   </style>
 @endsection
 
+@php
+  // grava o log APENAS se o código for cair no 'else' do ternário e a variável não existir
+  if (!in_array(request()->segment(1), ['inscricoes', 'matriculas']) && !isset($solicitacaoisencaotaxa)) {
+    \Illuminate\Support\Facades\Log::error('Falha isenção de taxa - Variavel ausente no Blade', [
+      'url_completa'      => request()->fullUrl(),
+      'segmento_url'      => request()->segment(1),
+      'inscricao_isset'   => isset($inscricao) ? 'Definida' : 'NÃO DEFINIDA',
+      'solicitacao_isset' => 'NÃO DEFINIDA',    // já sabemos que não está, pois entrou neste if
+      'request_data'      => request()->all()
+    ]);
+  }
+@endphp
+
 @nomenclatura(['selecao' => (in_array(request()->segment(1), ['inscricoes', 'matriculas']) ? $inscricao->selecao : $solicitacaoisencaotaxa->selecao)])
 
 @php
