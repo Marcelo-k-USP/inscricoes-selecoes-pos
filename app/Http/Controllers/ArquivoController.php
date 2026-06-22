@@ -87,7 +87,7 @@ class ArquivoController extends Controller
         ]);
         if ($validator->fails()) {
             \UspTheme::activeUrl($classe_nome_plural);
-            return view($classe_nome_plural . '.edit', array_merge($this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit'), ['errors' => $validator->errors()]));
+            return redirect()->to(url($segmento_rota . '/edit/' . $objeto->id))->with($this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'))->withErrors($validator)->withInput();    // se fosse return view, cairia em URL arquivos e perderia da URL o segmento que diz se é solicitações de isenção de taxa, inscrições ou matrículas
         }
         Gate::authorize('arquivos.create', [$objeto, $classe_nome]);
 
