@@ -182,7 +182,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
             } else {
                 $request->session()->flash('alert-success', 'É necessário antes enviar todos os documentos exigidos');
                 \UspTheme::activeUrl('solicitacoesisencaotaxa');
-                return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit'));
+                return view('solicitacoesisencaotaxa.edit', $this->monta_compact($solicitacaoisencaotaxa, 'edit', 'arquivos'));
             }
         }
 

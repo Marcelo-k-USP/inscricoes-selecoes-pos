@@ -420,7 +420,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-info', 'As combinações níveis com linhas de pesquisa/temas foram alteradas nessa seleção.');
         \UspTheme::activeUrl('selecoes');
-        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'niveislinhaspesquisa'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -440,7 +440,7 @@ class SelecaoController extends Controller
 
         $request->session()->flash('alert-success', 'A combinação nível ' . $nivellinhapesquisa->nivel->nome . ' com a linha de pesquisa/tema ' . $nivellinhapesquisa->linhapesquisa->nome . ' foi removida dessa seleção.');
         \UspTheme::activeUrl('selecoes');
-        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'niveislinhaspesquisa'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
