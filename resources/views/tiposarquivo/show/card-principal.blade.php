@@ -45,6 +45,7 @@
       @endif
 
       $('#form_principal').find('input, select').filter(':visible').not(':disabled').first().focus();
+      updateObrigatorio();
       updateMinimo();
     });
 
@@ -56,16 +57,42 @@
       $('#classe_nome_hidden').attr('id', 'classe_nome');
     });
 
-    $('#obrigatorio').on('click', function () {
+    $('#classe_nome').on('change', function () {
+      updateObrigatorio();
+    });
+
+    $('#obrigatorio').on('change', function () {
       updateMinimo();
     });
 
+    function updateObrigatorio() {
+      if ($('#classe_nome').val() === 'Seleções' || $('#classe_nome option:selected').text() === 'Seleções') {
+        if ($('#obrigatorio').val() === 'Condicional')    // se a opção 'Condicional' estava selecionada...
+          $('#obrigatorio').val('').trigger('change');    // ... forçamos a mudança para 'Não'
+        $('#obrigatorio option[value="Condicional"]').attr('disabled', true).hide();
+      } else
+        $('#obrigatorio option[value="Condicional"]').removeAttr('disabled').show();
+    }
+
     function updateMinimo() {
-      if (!$('#obrigatorio').prop('checked')) {
+      if ($('#obrigatorio').val() === 'Sim') {
+        $('#obrigatorio_condicao_campo').val('');
+        $('#obrigatorio_condicao_campo').parents('div').eq(1).hide();
+        $('#obrigatorio_condicao_valor').val('');
+        $('#obrigatorio_condicao_valor').parents('div').eq(1).hide();
+        $('#minimo').parents('div').eq(1).show();
+      } else if ($('#obrigatorio').val() === 'Condicional') {
+        $('#obrigatorio_condicao_campo').parents('div').eq(1).show();
+        $('#obrigatorio_condicao_valor').parents('div').eq(1).show();
+        $('#minimo').parents('div').eq(1).show();
+      } else {
+        $('#obrigatorio_condicao_campo').val('');
+        $('#obrigatorio_condicao_campo').parents('div').eq(1).hide();
+        $('#obrigatorio_condicao_valor').val('');
+        $('#obrigatorio_condicao_valor').parents('div').eq(1).hide();
         $('#minimo').val('');
         $('#minimo').parents('div').eq(1).hide();
-      } else
-        $('#minimo').parents('div').eq(1).show();
+      }
     }
   </script>
 @endsection
