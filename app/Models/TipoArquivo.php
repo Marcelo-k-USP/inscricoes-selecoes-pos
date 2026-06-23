@@ -20,6 +20,8 @@ class TipoArquivo extends Model
         'nome',
         'abreviacao',
         'obrigatorio',
+        'obrigatorio_condicao_campo',
+        'obrigatorio_condicao_valor',
         'minimo',
     ];
 
@@ -42,7 +44,16 @@ class TipoArquivo extends Model
         [
             'name' => 'obrigatorio',
             'label' => 'Obrigatório?',
-            'type' => 'checkbox',
+            'type' => 'select',
+            'data' => ['Sim' => 'Sim', 'Condicional' => 'Condicional', 'Não' => 'Não'],
+        ],
+        [
+            'name' => 'obrigatorio_condicao_campo',
+            'label' => 'Campo',
+        ],
+        [
+            'name' => 'obrigatorio_condicao_valor',
+            'label' => 'Valor',
         ],
         [
             'name' => 'minimo',
@@ -76,6 +87,69 @@ class TipoArquivo extends Model
             if (Gate::allows('tiposarquivo.view', $linhapesquisa))
                 $ret[$tipoarquivo->id] = $tipoarquivo->nome;
         return $ret;
+    }
+
+    /**
+     * MUTATOR: intercepta antes de salvar no banco
+     * se vier 'Sim' ou 'Condicional', grava 1; senão, grava 0
+     */
+    public function setObrigatorioAttribute($value)
+    {
+        $this->attributes['obrigatorio'] = (($value === 'Sim') || ($value === 'Condicional')) ? 1 : 0;
+    }
+
+    /**
+     * ACCESSOR: intercepta quando lê do banco para a tela
+     * se for 1 e o campo de condição estiver preenchido, devolve 'Condicional' para o <select> marcar certo
+     */
+    public function getObrigatorioAttribute($value)
+    {
+        if ($value == 1)
+            return !empty($this->obrigatorio_condicao_campo) ? 'Condicional' : 'Sim';
+
+        return 'Não';
+    }
+
+    /**
+     * Verifica se o tipo de arquivo é obrigatório, considerando tanto a obrigatoriedade incondicional quanto uma eventual obrigatoriedade condicional (baseada no JSON do campo extras)
+     */
+    public function isObrigatorio($extras)
+    {
+        switch ($this->obrigatorio) {
+            case 'Sim':
+                return true;
+
+            case 'Condicional':
+                $extras = array_change_key_case(json_decode($extras, true) ?? [], CASE_LOWER);
+                $obrigatorio_condicao_campo = mb_strtolower($this->obrigatorio_condicao_campo, 'UTF-8');
+                $obrigatorio_condicao_valor = mb_strtolower($this->obrigatorio_condicao_valor, 'UTF-8');
+
+                return (isset($extras[$obrigatorio_condicao_campo]) &&
+                        (mb_strtolower($extras[$obrigatorio_condicao_campo], 'UTF-8') == $obrigatorio_condicao_valor));    // retorna se satisfaz a condição de obrigatoriedade condicional
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Retorna os tipos de arquivo obrigatórios para um determinado objeto, considerando tanto a obrigatoriedade incondicional quanto uma eventual obrigatoriedade condicional (baseada no JSON do campo extras)
+     */
+    public static function obterTiposArquivoObrigatorios(object $objeto, string $classe_nome)
+    {
+        $extras = array_change_key_case(json_decode($objeto->extras, true) ?? [], CASE_LOWER);
+
+        return $objeto->selecao->tiposarquivo()->where('classe_nome', $classe_nome)->where('obrigatorio', 1)->get()
+            ->filter(function ($tipo) use ($extras) {
+                if (empty($tipo->obrigatorio_condicao_campo))
+                    return true;    // se não foi definido campo de condicionalidade da obrigatoriedade, retorna todos os obrigatórios
+
+                $obrigatorio_condicao_campo = mb_strtolower($tipo->obrigatorio_condicao_campo, 'UTF-8');
+                $obrigatorio_condicao_valor = mb_strtolower($tipo->obrigatorio_condicao_valor, 'UTF-8');
+                return (isset($extras[$obrigatorio_condicao_campo]) &&
+                        (mb_strtolower($extras[$obrigatorio_condicao_campo], 'UTF-8') == $obrigatorio_condicao_valor));    // retorna os que satisfazem a condição de obrigatoriedade condicional
+
+            })->values();
     }
 
     public static function obterTiposArquivoPossiveis(string $classe_nome, $niveis, ?int $programa_id)

@@ -25,7 +25,10 @@ class TipoArquivoRequest extends FormRequest
         'classe_nome' => ['required'],
         'nome' => ['required', 'max:100'],
         'abreviacao' => ['required', 'max:20'],
-        'obrigatorio' => [],
+        'obrigatorio' => ['required'],
+        'obrigatorio_condicao_campo' => ['nullable', 'required_if:obrigatorio,Condicional'],
+        'obrigatorio_condicao_valor' => ['nullable', 'required_if:obrigatorio,Condicional'],
+        'minimo' => ['nullable', 'integer'],
     ];
 
     public const messages = [
@@ -34,5 +37,9 @@ class TipoArquivoRequest extends FormRequest
         'nome.max' => 'O nome do tipo de documento não pode exceder 100 caracteres!',
         'abreviacao.required' => 'A abreviação do tipo de documento é obrigatória!',
         'abreviacao.max' => 'A abreviação do tipo de documento não pode exceder 20 caracteres!',
+        'obrigatorio.required' => 'O preenchimento da obrigatoriedade é obrigatório!',
+        'obrigatorio_condicao_campo.required_if' => 'O campo da condição de obrigatoriedade é obrigatório quando ela for "Condicional"!',
+        'obrigatorio_condicao_valor.required_if' => 'O valor da condição de obrigatoriedade é obrigatório quando ela for "Condicional"!',
+        'minimo.integer' => 'A quantidade mínima deve ser um número inteiro!',
     ];
 }

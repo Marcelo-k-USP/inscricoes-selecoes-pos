@@ -181,12 +181,11 @@ class Inscricao extends Model
     public function todosArquivosRequeridosPresentes(?int $nivel_id = null)
     {
         // obtém os tipos de arquivo requeridos
-        $tiposarquivo_requeridos = $this->selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where('obrigatorio', true);
+        $tiposarquivo_requeridos = TipoArquivo::obterTiposArquivoObrigatorios($this, 'Inscrições');
         if (!is_null($nivel_id))
-            $tiposarquivo_requeridos->whereHas('niveisprogramas', function ($query) use ($nivel_id) {
-                $query->where('nivel_id', $nivel_id)->where('programa_id', $this->selecao->programa_id);
+            $tiposarquivo_requeridos = $tiposarquivo_requeridos->filter(function ($tipoarquivo) use ($nivel_id) {
+                return $tipoarquivo->niveisprogramas()->where('nivel_id', $nivel_id)->where('programa_id', $this->selecao->programa_id)->exists();
             });
-        $tiposarquivo_requeridos = $tiposarquivo_requeridos->get();
 
         // obtém os tipos de arquivo da inscrição/matrícula
         $arquivos_inscricao = $this->arquivos->pluck('pivot.tipo')->countBy()->all();

@@ -75,9 +75,6 @@ class TipoArquivoController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // acerta os valores dos campos tipo checkbox (pois, se o usuário deixou false, os campos não vêm no $request e, se o usuário deixou true, ele vêm mas com valor null)
-        $request->merge(['obrigatorio' => $request->has('obrigatorio')]);
-
         // transaction para não ter problema de inconsistência do DB
         $tipoarquivo = DB::transaction(function () use ($request) {
 
@@ -130,12 +127,11 @@ class TipoArquivoController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // acerta os valores dos campos tipo checkbox (pois, se o usuário deixou false, os campos não vêm no $request e, se o usuário deixou true, ele vêm mas com valor null)
-        $request->merge(['obrigatorio' => $request->has('obrigatorio')]);
-
         $tipoarquivo->nome = $request->nome;
         $tipoarquivo->abreviacao = $request->abreviacao;
         $tipoarquivo->obrigatorio = $request->obrigatorio;
+        $tipoarquivo->obrigatorio_condicao_campo = $request->obrigatorio_condicao_campo;
+        $tipoarquivo->obrigatorio_condicao_valor = $request->obrigatorio_condicao_valor;
         $tipoarquivo->minimo = $request->minimo;
         $tipoarquivo->save();
 

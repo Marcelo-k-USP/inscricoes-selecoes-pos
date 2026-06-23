@@ -167,7 +167,7 @@ class SolicitacaoIsencaoTaxa extends Model
     public function todosArquivosRequeridosPresentes()
     {
         // obtém os tipos de arquivo requeridos
-        $tiposarquivo_requeridos = $this->selecao->tiposarquivo()->where('classe_nome', 'Solicitações de Isenção de Taxa')->where('obrigatorio', true)->get();
+        $tiposarquivo_requeridos = TipoArquivo::obterTiposArquivoObrigatorios($this, 'Solicitações de Isenção de Taxa');
 
         // obtém os tipos de arquivo da solicitação de isenção de taxa
         $arquivos_solicitacaoisencaotaxa = $this->arquivos->pluck('pivot.tipo')->countBy()->all();
