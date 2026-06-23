@@ -241,17 +241,17 @@ class InscricaoController extends Controller
                     } else {
                         $request->session()->flash('alert-danger', 'Você pode se matricular em no máximo ' . Parametro::first()->max_disciplinas_aluno_especial . ' disciplina(s) como aluno especial');
                         \UspTheme::activeUrl(request()->segment(1));
-                        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+                        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
                     }
                 } else {
                     $request->session()->flash('alert-danger', 'É necessário antes escolher a(s) disciplina(s)');
                     \UspTheme::activeUrl(request()->segment(1));
-                    return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+                    return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
                 }
             } else {
                 $request->session()->flash('alert-danger', 'É necessário antes enviar todos os documentos exigidos');
                 \UspTheme::activeUrl(request()->segment(1));
-                return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
+                return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'arquivos'));
             }
         }
 
