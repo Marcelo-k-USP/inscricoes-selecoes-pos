@@ -16,6 +16,7 @@ use App\Models\SolicitacaoIsencaoTaxa;
 use App\Models\TipoArquivo;
 use App\Models\User;
 use App\Services\ZipService;
+use App\Utils\ClasseUtils;
 use App\Utils\JSONForms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -72,12 +73,12 @@ class ArquivoController extends Controller
     public function store(Request $request)
     {
         $classe_nome = fixJson($request->classe_nome);
-        $classe_nome_plural = $this->obterClasseNomePlural($classe_nome);
-        $classe = $this->obterClasse($classe_nome);
+        $classe_nome_plural = ClasseUtils::obterClasseNomePlural($classe_nome);
+        $classe = ClasseUtils::obterClasse($classe_nome);
         $objeto = $classe::find($request->objeto_id);
         $segmento_rota = ($classe_nome === 'Inscricao' && $objeto->selecao->isMatricula()) ? 'matriculas' : $classe_nome_plural;
-        $classe_nome_plural_acentuado = $this->obterClasseNomePluralAcentuado($classe_nome);
-        $classe_nome_abreviada = $this->obterClasseNomeAbreviada($classe_nome, ($classe_nome == 'Inscricao' ? $objeto->selecao : null));
+        $classe_nome_plural_acentuado = ClasseUtils::obterClasseNomePluralAcentuado($classe_nome);
+        $classe_nome_abreviada = ClasseUtils::obterClasseNomeAbreviada($classe_nome, ($classe_nome == 'Inscricao' ? $objeto->selecao : null));
         $form = $this->obterForm($classe_nome, $objeto);
         $tipoarquivo = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipoarquivo)->first();
 
@@ -115,7 +116,7 @@ class ArquivoController extends Controller
 
                 $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso<br />');
             } else {
-                $classe_nome_formatada = ($classe_nome === 'Inscricao' && $objeto->selecao->isMatricula()) ? 'matrícula' : $this->obterClasseNomeFormatada($classe_nome);
+                $classe_nome_formatada = ($classe_nome === 'Inscricao' && $objeto->selecao->isMatricula()) ? 'matrícula' : ClasseUtils::obterClasseNomeFormatada($classe_nome);
                 $nome_botao = ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'Solicitação' : (($classe_nome === 'Inscricao' && $objeto->selecao->isMatricula()) ? 'Matrícula' : 'Inscrição'));
                 $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso<br />' .
                     'Se não houver mais arquivos a enviar, clique no botão "Enviar ' . $nome_botao . '" abaixo para efetivar sua ' . $classe_nome_formatada . '<br />' .
@@ -142,8 +143,8 @@ class ArquivoController extends Controller
     public function destroy(Request $request, Arquivo $arquivo)
     {
         $classe_nome = fixJson($request->classe_nome);
-        $classe_nome_plural = $this->obterClasseNomePlural($classe_nome);
-        $classe = $this->obterClasse($classe_nome);
+        $classe_nome_plural = ClasseUtils::obterClasseNomePlural($classe_nome);
+        $classe = ClasseUtils::obterClasse($classe_nome);
         $objeto = $classe::find($request->objeto_id);
         $segmento_rota = ($classe_nome === 'Inscricao' && $objeto->selecao->isMatricula()) ? 'matriculas' : $classe_nome_plural;
         $form = $this->obterForm($classe_nome, $objeto);
@@ -181,10 +182,10 @@ class ArquivoController extends Controller
      */
     public function zipTodosDoObjeto(string $classe_nome, int $objeto_id)
     {
-        $objeto = $this->obterClasse($classe_nome)::findOrFail($objeto_id);
+        $objeto = ClasseUtils::obterClasse($classe_nome)::findOrFail($objeto_id);
         Gate::authorize('viewAny', [$objeto, $classe_nome]);
 
-        $zip_name = $this->obterClasseNomeAbreviada($classe_nome, ($classe_nome == 'Inscricao' ? $objeto->selecao : null)) . $objeto->id . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
+        $zip_name = ClasseUtils::obterClasseNomeAbreviada($classe_nome, ($classe_nome == 'Inscricao' ? $objeto->selecao : null)) . $objeto->id . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
         return $this->zip($objeto->arquivos, $zip_name);
     }
 
@@ -198,7 +199,7 @@ class ArquivoController extends Controller
      */
     public function downloadTodosDoObjeto(string $classe_nome, int $objeto_id, Request $request)
     {
-        $objeto = $this->obterClasse($classe_nome)::findOrFail($objeto_id);
+        $objeto = ClasseUtils::obterClasse($classe_nome)::findOrFail($objeto_id);
         Gate::authorize('viewAny', [$objeto, $classe_nome]);
 
         return $this->downloadZip($request->query('zip_name'));
@@ -215,7 +216,7 @@ class ArquivoController extends Controller
     {
         Gate::authorize('selecoes.view', $selecao);
 
-        $zip_name = $this->obterClasseNomeAbreviada('Selecao') . $selecao->id . '_' . $this->obterClasseNomeAbreviadaPlural($classe_nome, $selecao) . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
+        $zip_name = ClasseUtils::obterClasseNomeAbreviada('Selecao') . $selecao->id . '_' . ClasseUtils::obterClasseNomeAbreviadaPlural($classe_nome, $selecao) . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
         $arquivos = collect();
         switch ($classe_nome) {
             case 'SolicitacaoIsencaoTaxa':
@@ -273,68 +274,6 @@ class ArquivoController extends Controller
     {
         $filesize = $filesize / (1024 * 1024 * 1024);    // tamanho do arquivo em Gb
         return max(60, ceil($filesize * env('inscricoes-selecoes-pos.timeout_por_gb')));    // o tempo máximo será de no mínimo 60 segundos
-    }
-
-    private function obterClasseNomeFormatada(string $classe_nome) {
-        switch ($classe_nome) {
-            case 'Selecao':
-                return 'seleção';
-            case 'SolicitacaoIsencaoTaxa':
-                return 'solicitação de isenção de taxa';
-            case 'Inscricao':
-                return 'inscrição';
-        }
-    }
-
-    private function obterClasseNomePlural(string $classe_nome) {
-        switch ($classe_nome) {
-            case 'Selecao':
-                return 'selecoes';
-            case 'SolicitacaoIsencaoTaxa':
-                return 'solicitacoesisencaotaxa';
-            case 'Inscricao':
-                return 'inscricoes';
-        }
-    }
-
-    private function obterClasseNomePluralAcentuado(string $classe_nome) {
-        switch ($classe_nome) {
-            case 'Selecao':
-                return 'Seleções';
-            case 'SolicitacaoIsencaoTaxa':
-                return 'Solicitações de Isenção de Taxa';
-            case 'Inscricao':
-                return 'Inscrições';
-        }
-    }
-
-    private function obterClasseNomeAbreviada(string $classe_nome, ?Selecao $selecao = null) {
-        switch ($classe_nome) {
-            case 'Selecao':
-                return 'Sel';
-            case 'SolicitacaoIsencaoTaxa':
-                return 'SolicIsenc';
-            case 'Inscricao':
-                return ((($selecao->categoria->nome != 'Aluno Especial') && !$selecao->isMatricula()) ? 'Insc' : 'Matr');
-        }
-    }
-
-    private function obterClasseNomeAbreviadaPlural(string $classe_nome, ?Selecao $selecao = null) {
-        if ($classe_nome == 'SolicitacaoIsencaoTaxa')
-                return 'SolicsIsenc';
-
-        return $this->obterClasseNomeAbreviada($classe_nome, $selecao) . 's';
-    }
-
-    private function obterClasse(string $classe_nome) {
-        switch ($classe_nome) {
-            case 'Selecao':
-                return Selecao::class;
-            case 'SolicitacaoIsencaoTaxa':
-                return SolicitacaoIsencaoTaxa::class;
-            case 'Inscricao':
-                return Inscricao::class;
-        }
     }
 
     private function obterForm(string $classe_nome, object $objeto) {
