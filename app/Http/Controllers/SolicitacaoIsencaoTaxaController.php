@@ -135,6 +135,8 @@ class SolicitacaoIsencaoTaxaController extends Controller
         // agora sim vamos disparar o evento (necessário porque acima salvamos com saveQuietly)
         event('eloquent.created: App\Models\SolicitacaoIsencaoTaxa', $solicitacaoisencaotaxa);
 
+        $solicitacaoisencaotaxa->agendarTarefa();
+
         $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua solicitação<br />' .
             'Sem eles, sua solicitação não será avaliada!');
 

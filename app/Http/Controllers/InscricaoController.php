@@ -172,6 +172,8 @@ class InscricaoController extends Controller
         // agora sim vamos disparar o evento (necessário porque acima salvamos com saveQuietly)
         event('eloquent.created: App\Models\Inscricao', $inscricao);
 
+        $inscricao->agendarTarefa();
+
         $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua ' . Nomenclatura::InscricaoOuMatricula() . '<br />' .
             'Sem eles, sua ' . Nomenclatura::InscricaoOuMatricula() . ' não será avaliada!');
         \UspTheme::activeUrl(request()->segment(1) . '/create');

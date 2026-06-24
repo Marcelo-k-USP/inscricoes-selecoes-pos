@@ -82,8 +82,10 @@ A lei 14.534/2023 estabeleceu que estrangeiros devem possuir CPF para cursar pó
 16) quando um gerente aprova uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da aprovação e, quando o sistema está configurado para enviar boleto na aprovação da inscrição/matrícula, esse e-mail para o candidato vai com o(s) boleto(s) a ser(em) pago(s);
 17) quando um gerente rejeita uma inscrição/matrícula, o sistema envia um e-mail para o candidato avisando a respeito da rejeição; 
 18) quando um gerente sobe um documento dos tipos "Errata" ou "Resultado" em uma seleção, o sistema envia e-mails para cada candidato avisando a respeito desses novos informativos;
-19) quando nos aproximamos do término do período de solicitações de isenção de taxa de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua solicitação de isenção de taxa;
-20) quando nos aproximamos do término do período de inscrições/matrículas de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição/matrícula.
+19) uma semana após um candidato ter iniciado uma solicitação de isenção de taxa mas não tê-la concluído, no caso de seleção com fluxo contínuo, o sistema lhe envia e-mail;
+20) uma semana após um candidato ter iniciado uma inscrição mas não tê-la concluído, no caso de seleção com fluxo contínuo, o sistema lhe envia e-mail;
+21) quando nos aproximamos do término do período de solicitações de isenção de taxa de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua solicitação de isenção de taxa;
+22) quando nos aproximamos do término do período de inscrições/matrículas de uma seleção, o sistema envia e-mails para cada candidato que iniciou mas não enviou sua inscrição/matrícula.
 
 Todo e qualquer e-mail enviado pelo sistema pode ser copiado (em cópia oculta) para o e-mail de envio do sistema. O endereço de envio de e-mail do sistema está definido no .env, e também está no .env essa configuração de copiar para esse remetente ou não.
 Desta forma, podemos ter um histórico de todos os e-mails enviados pelo sistema, embora na caixa de entrada ao invés de na caixa de enviados.
