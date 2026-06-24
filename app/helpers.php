@@ -130,3 +130,21 @@ if (!function_exists('removeSpecialChars')) {
         ], '');
     }
 }
+
+if (!function_exists('obterCommandDoJob')) {
+    function obterCommandDoJob($job) {
+        $payload = json_decode($job->payload, true);
+        if (!empty($payload['data']['command']))
+            return unserialize($payload['data']['command']);    // desserializa o comando
+
+        return null;
+    }
+}
+
+if (!function_exists('obterPropriedadePrivada')) {
+    function obterPropriedadePrivada($objeto, $nome_propriedade) {
+        $property = (new \ReflectionClass($objeto))->getProperty($nome_propriedade);    // usa ReflectionClass para acessar propriedades privadas
+        $property->setAccessible(true);                                                 // torna a propriedade acessível
+        return $property->getValue($objeto);
+    }
+}

@@ -904,18 +904,15 @@ class Selecao extends Model
 
     public function reagendarTarefas()
     {
-        // este método é utilizado tanto pela criação quanto alteração de seleção
+        // este método é invocado tanto na criação quanto na alteração de seleção
         // quando o usuário altera uma seleção, eventualmente ele pode alterar as datas de fim
-        // neste caso, ao invés de alterarmos as datas/horas das jobs da seleção, simplesmente as removemos e as recriamos logo em seguida, considerando as datas de fim eventualmente alteradas
+        // neste caso, ao invés de alterarmos as datas/horas dos jobs da seleção, simplesmente os removemos e os recriamos logo em seguida, considerando as datas de fim eventualmente alteradas
 
         // remove jobs de alerta de solicitações de isenção de taxa e inscrições/matrículas não concluídas
         foreach (DB::table('jobs')->where('payload->displayName', 'App\Jobs\AlertaCandidatosIncompletude')->get() as $job) {
-            $payload = json_decode($job->payload, true);
-            if (!empty($payload['data']['command'])) {
-                $command = unserialize($payload['data']['command']);                        // desserializa o comando
-                $property = (new \ReflectionClass($command))->getProperty('selecao_id');    // usa ReflectionClass para acessar propriedades privadas
-                $property->setAccessible(true);                                             // torna a propriedade acessível
-                $selecao_id = $property->getValue($command);
+            $command = obterCommandDoJob($job);
+            if ($command) {
+                $selecao_id = obterPropriedadePrivada($command, 'selecao_id');
                 if ($selecao_id == $this->id)
                     DB::table('jobs')->where('id', $job->id)->delete();
             }

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Jobs\AlertaCandidatoIncompletude;
 use App\Observers\InscricaoObserver;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -82,6 +84,18 @@ class Inscricao extends Model
             return ['Autor' => 'Autor'];
         else
             return ['Autor'];
+    }
+
+    public function agendarTarefa()
+    {
+        // este método é invocado na criação de uma inscrição/matrícula
+
+        if ($this->selecao->fluxo_continuo) {
+            // agenda job de alerta de inscrição/matrícula não concluída
+            $job_datahora = now()->addDays(7);
+            if ($job_datahora < Carbon::parse($this->selecao->inscricoes_datahora_fim)->subHours(24))
+                AlertaCandidatoIncompletude::dispatch($this->id, 'Inscricao')->delay($job_datahora);
+        }
     }
 
     /**
