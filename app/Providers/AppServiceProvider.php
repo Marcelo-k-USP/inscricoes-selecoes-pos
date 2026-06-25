@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
-        if(config('inscricoes-selecoes-pos.forcar_https'))
+        if(config('selecoes-pos.forcar_https'))
             \URL::forceScheme('https');
 
         if (config('mail.copiarRemetente'))

@@ -28,7 +28,7 @@ class ParametroController extends Controller
         Gate::authorize('parametros.update');
         \UspTheme::activeUrl('parametros');
 
-        if (config('inscricoes-selecoes-pos.usar_parametro_unico'))
+        if (config('selecoes-pos.usar_parametro_unico'))
             return view('parametros.edit', $this->monta_compact($id));
 
         if (request()->has('programa_id')) {
@@ -57,7 +57,7 @@ class ParametroController extends Controller
             return back()->withErrors($validator)->withInput();
 
         $id_global = Parametro::orderBy('id', 'asc')->first()->id ?? null;
-        if (!config('inscricoes-selecoes-pos.usar_parametro_unico') && $request->filled('programa_id')) {
+        if (!config('selecoes-pos.usar_parametro_unico') && $request->filled('programa_id')) {
             $programa = Programa::find($request->programa_id);
             if (!$programa->parametro_id || $programa->parametro_id == $id_global)
                 $parametro = new Parametro;
@@ -84,7 +84,7 @@ class ParametroController extends Controller
 
         $request->session()->flash('alert-success', 'Dados salvos com sucesso');
 
-        if (!config('inscricoes-selecoes-pos.usar_parametro_unico'))
+        if (!config('selecoes-pos.usar_parametro_unico'))
             return redirect()->route('parametros.edit');    // retorna para o index/tabela
 
         \UspTheme::activeUrl('parametros');
@@ -97,7 +97,7 @@ class ParametroController extends Controller
         $parametros = $id ? Parametro::find($id) : (Parametro::first() ?: new Parametro);
         $fields = Parametro::getFields();
         $rules = ParametroRequest::rules;
-        $programasParaSelect = !config('inscricoes-selecoes-pos.usar_parametro_unico') ? Programa::all() : collect();
+        $programasParaSelect = !config('selecoes-pos.usar_parametro_unico') ? Programa::all() : collect();
 
         return compact('parametros', 'fields', 'rules', 'programasParaSelect', 'programa_id');
     }

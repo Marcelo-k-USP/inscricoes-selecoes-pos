@@ -124,7 +124,7 @@ class LocalUserController extends Controller
             return $this->processa_erro_login('Este link é inválido');
 
         // verifica se o token recebido expirou
-        if (Carbon::parse($password_reset->created_at)->addMinutes(config('inscricoes-selecoes-pos.password_reset_link_expiry_time'))->isPast())
+        if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast())
             return $this->processa_erro_login('Este link expirou');
 
         $email = $password_reset->email;
@@ -150,7 +150,7 @@ class LocalUserController extends Controller
             return $this->processa_erro_login('Este link é inválido');
 
         // verifica se o token recebido expirou
-        if (Carbon::parse($password_reset->created_at)->addMinutes(config('inscricoes-selecoes-pos.password_reset_link_expiry_time'))->isPast())
+        if (Carbon::parse($password_reset->created_at)->addMinutes(config('selecoes-pos.password_reset_link_expiry_time'))->isPast())
             return $this->processa_erro_login('Este link expirou');
 
         // verifica se o usuário existe

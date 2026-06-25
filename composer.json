@@ -1,7 +1,7 @@
 {
-    "name": "uspdev/inscricoes-selecoes-pos",
+    "name": "uspdev/selecoes-pos",
     "type": "project",
-    "description": "Inscrições para Seleções Pós",
+    "description": "Seleções Pós",
     "authors": [
         {
             "name": "Marcelo k",
@@ -11,7 +11,7 @@
     ],
     "keywords": [
         "uspdev",
-        "inscricoes-selecoes-pos"
+        "selecoes-pos"
     ],
     "license": "MIT",
     "require": {

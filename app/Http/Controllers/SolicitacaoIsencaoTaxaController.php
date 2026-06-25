@@ -220,7 +220,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $data = self::$data;
         $objetos = SolicitacaoIsencaoTaxa::listarSolicitacoesIsencaoTaxa();
         $classe_nome = 'SolicitacaoIsencaoTaxa';
-        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objetos', 'classe_nome', 'max_upload_size');
     }
@@ -236,7 +236,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
         $responsaveis = $objeto->selecao->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
         $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $objeto->selecao);
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id);
-        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'tiposarquivo_selecao', 'max_upload_size', 'scroll');
     }

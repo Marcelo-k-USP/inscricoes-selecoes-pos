@@ -62,7 +62,7 @@ class SelecaoController extends Controller
         $data = self::$data;
         $objetos = Selecao::listarSelecoes();
         $classe_nome = 'Selecao';
-        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
         return view('selecoes.index', compact('data', 'objetos', 'classe_nome', 'max_upload_size'));
     }
 
@@ -774,7 +774,7 @@ class SelecaoController extends Controller
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
         $programas = Programa::all();
-        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'niveislinhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'programas', 'max_upload_size', 'rules', 'scroll');
     }
