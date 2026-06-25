@@ -317,7 +317,7 @@ class SelecaoController extends Controller
         // trata campo do tipo select
         foreach ($template as $campo => $atributo)
             if (($atributo['type'] == 'select') || ($atributo['type'] == 'radio'))
-                $template[$campo]['value'] = json_decode($atributo['value'], true);
+                $template[$campo]['value'] = isset($atributo['value']) ? json_decode($atributo['value'], true) : [];
         // adiciona campo novo
         $new = (!is_null($request->new)) ? array_filter($request->new, 'strlen') : null;
         if (isset($new['label']))
