@@ -28,8 +28,17 @@
     <div class="ml-2 truncate-text">
       <strong>&nbsp; &nbsp; (tipo) Label</strong><br />
       @foreach (json_decode($selecao->template) as $field => $value)
-        @if (isset($value->validate) && ($value->validate == 'required'))
-          <small class="text-required">(*)</small>
+        @php
+          $isRequired = (isset($value->validate) && $value->validate == 'required');
+          $isConditional = !empty($value->visible_campo);
+        @endphp
+        @if ($isRequired || $isConditional)
+          @if ($isRequired)
+            <small class="text-required">(*)</small>
+          @endif
+          @if ($isConditional)
+            <small class="text-warning">(c)</small>
+          @endif
         @else
           &nbsp; &nbsp;
         @endif

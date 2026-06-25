@@ -28,6 +28,7 @@ class Selecao extends Model
     ];
 
     # valores default na criação de nova seleção
+    # (o campo template de $attributes contém um modelo padrão para o formulário de inscrição da seleção)
     protected $attributes = [
         'estado' => 'Em Elaboração',
         'template' => '{
@@ -719,7 +720,7 @@ class Selecao extends Model
      */
     public static function getTemplateFields()
     {
-        return ['label', 'type', 'can', 'help', 'value', 'validate'];
+        return ['label', 'type', 'can', 'visible_campo', 'visible_valor', 'help', 'value', 'validate'];
     }
 
     /**
