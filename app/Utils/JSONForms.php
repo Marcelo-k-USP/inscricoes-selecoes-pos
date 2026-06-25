@@ -71,8 +71,8 @@ class JSONForms
                         $html_string .=   '<div class="col-sm-9">' . PHP_EOL .
                                             '<select class="form-control w-100" name="extras[' . $key . ']" id="extras[' . $key . ']"' . $required_attrib . '>' . PHP_EOL .
                                             '<option value="" disabled selected>Selecione...</option>' . PHP_EOL;
-                        foreach ($json->value as $key => $option)
-                            $html_string .=   '<option value="' . $key . '"' . ($key == $value ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
+                        foreach ($json->value as $key2 => $option)    // não posso reaproveitar $key aqui, pois ele será utilizado mais abaixo
+                            $html_string .=   '<option value="' . $key2 . '"' . ($key2 == $value ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
                         $html_string .=     '</select>' . PHP_EOL .
                                           '</div>' . PHP_EOL;
                         break;
@@ -84,18 +84,17 @@ class JSONForms
                         break;
 
                     case 'radio':
-                        $key0 = $key;
                         $json->value = JSONForms::simplifyTemplate($json->value);
                         $html_string  =   '<div class="col-sm-12 d-flex flex-column" style="gap: 10px;">' . PHP_EOL .
                                             '<div class="d-flex align-items-center">' . PHP_EOL .
                                             $label . '&nbsp;' . $required_string . PHP_EOL .
                                             '</div>' . PHP_EOL;
                         $primeiro_item = true;
-                        foreach ($json->value as $key => $option) {
+                        foreach ($json->value as $key2 => $option) {    // não posso reaproveitar $key aqui, pois ele será utilizado mais abaixo
                             $html_string .= '<div class="d-flex align-items-center gap-2">' . PHP_EOL .
                                             '&nbsp; &nbsp;' . PHP_EOL .
-                                            '<input style="margin: 0; position: relative; top: -1px;" name="extras[' . $key0 . ']" id="extras[' . $key0 . '_' . $key . ']" value="' . $key . '" type="radio"' . ($key == $value ? ' checked' : '') . ($primeiro_item ? $required_attrib : '') . '>' . PHP_EOL .
-                                            '<label style="margin: 0; padding-left: 5px; position: relative; top: -2px;" for="extras[' . $key0 . '_' . $key . ']">' . $option . '</label>' . PHP_EOL .
+                                            '<input style="margin: 0; position: relative; top: -1px;" name="extras[' . $key . ']" id="extras[' . $key . '_' . $key2 . ']" value="' . $key2 . '" type="radio"' . ($key2 == $value ? ' checked' : '') . ($primeiro_item ? $required_attrib : '') . '>' . PHP_EOL .
+                                            '<label style="margin: 0; padding-left: 5px; position: relative; top: -2px;" for="extras[' . $key . '_' . $key2 . ']">' . $option . '</label>' . PHP_EOL .
                                             '</div>' . PHP_EOL;
                             $primeiro_item = false;
                         }
@@ -175,12 +174,67 @@ class JSONForms
                 if ($html_string_motivoisencaotaxa != '')
                     $form[] = [new HtmlString($html_string_motivoisencaotaxa)];
 
+                // se a visibilidade do campo for condicional...
+                if (!empty($json->visible_campo)) {
+                    $html_string .= PHP_EOL .
+                                    '<script type="text/javascript">' . PHP_EOL;
+
+                    // ... gero um código javascript para exibí-lo/ocultá-lo
+                    $html_string .= ('document.addEventListener("DOMContentLoaded", function () {' . PHP_EOL .    // este addEventListener faz com que se aguarde a carga completa da página para executar o código a seguir... se não fizéssemos isso, tentaria executar imediatamente, dando erro, pois as bibliotecas do jQuery são carregadas ao final da página
+                                     '    var condicionante_campo, condicionante_valor, condicional_campo;' . PHP_EOL .
+                                     '    condicionante_campo = $(\'[name="extras[' . $json->visible_campo . ']"]\');' . PHP_EOL .
+                                     '    condicional_campo = $(\'[name="extras[' . $key . ']"]\');' . PHP_EOL .
+                                     '    function atualizaVisibilidade_' . $key . '() {' . PHP_EOL .
+                                     '        if (condicionante_campo.is(\':checkbox\'))' . PHP_EOL .
+                                     '            condicionante_valor = condicionante_campo.is(\':checked\') ? \'true\' : \'false\';' . PHP_EOL .
+                                     '        else if (condicionante_campo.is(\':radio\'))' . PHP_EOL .
+                                     '            condicionante_valor = condicionante_campo.filter(\':checked\').val();' . PHP_EOL .
+                                     '        else' . PHP_EOL .
+                                     '            condicionante_valor = condicionante_campo.val();' . PHP_EOL .
+                                     '        if (condicional_campo.data(\'was_required\') === undefined)' . PHP_EOL .
+                                     '            condicional_campo.data(\'was_required\', condicional_campo.prop(\'required\'));' . PHP_EOL .
+                                     '        if (condicionante_valor == \'' . $json->visible_valor . '\') {' . PHP_EOL .
+                                     '            condicional_campo.closest(\'.form-group\').show();' . PHP_EOL .
+                                     '            if (condicional_campo.data(\'was_required\'))' . PHP_EOL .
+                                     '                condicional_campo.prop(\'required\', true);' . PHP_EOL .
+                                     '        } else {' . PHP_EOL .
+                                     '            if (condicional_campo.is(\':checkbox, :radio\'))' . PHP_EOL .
+                                     '                condicional_campo.prop(\'checked\', false);' . PHP_EOL .
+                                     '            else if (condicional_campo.is(\'select\'))' . PHP_EOL .
+                                     '                condicional_campo.prop(\'selectedIndex\', 0);' . PHP_EOL .
+                                     '            else' . PHP_EOL .
+                                     '                condicional_campo.val(\'\');' . PHP_EOL .
+                                     '            condicional_campo.prop(\'required\', false);' . PHP_EOL .
+                                     '            condicional_campo.closest(\'.form-group\').hide();' . PHP_EOL .
+                                     '        }' . PHP_EOL .
+                                     '    }' . PHP_EOL);
+
+                    // ... gero um código javascript para alterar sua visibilidade quando da carga da página
+                    $html_string .= ('    atualizaVisibilidade_' . $key . '();' . PHP_EOL);
+
+                    // ... gero um código javascript para alterar sua visibilidade quando da alteração do valor do campo que dá a condicionalidade
+                    $html_string .= ('    function aplicarEvento(elemento) {' . PHP_EOL .
+                                     '        if (elemento.is(\'select, :radio\'))' . PHP_EOL .
+                                     '            return \'change\';' . PHP_EOL .
+                                     '        else if (elemento.is(\':checkbox\'))' . PHP_EOL .
+                                     '            return \'change click\';' . PHP_EOL .
+                                     '        else' . PHP_EOL .
+                                     '            return \'input change\';' . PHP_EOL .
+                                     '    }' . PHP_EOL .
+                                     '    condicionante_campo.on(aplicarEvento(condicionante_campo), function() {' . PHP_EOL .
+                                     '        atualizaVisibilidade_' . $key . '();' . PHP_EOL .
+                                     '    });' . PHP_EOL .
+                                     '});' . PHP_EOL);
+
+                    $html_string .= '</script>' . PHP_EOL;
+                }
+
                 // fluxo normal: prepara para incluir o campo propriamente dito
                 $input[] = new HtmlString($html_string);
 
                 // fluxo normal: prepara para incluir help
                 if (isset($json->help)) {
-                    $html_string =        '<div class="col-sm-3">&nbsp;</div>' . PHP_EOL .
+                    $html_string =      '<div class="col-sm-3">&nbsp;</div>' . PHP_EOL .
                                         '<div class="col-sm-9">' . PHP_EOL .
                                             '<small class="form-text text-muted">' . $json->help . '</small>' . PHP_EOL .
                                         '</div>' . PHP_EOL;

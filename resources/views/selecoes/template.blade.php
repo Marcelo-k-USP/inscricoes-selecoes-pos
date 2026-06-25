@@ -34,7 +34,7 @@
                         @foreach ($selecao->getTemplateFields() as $field)
                           <div class="col"><strong>{{ ucfirst($field) }}</strong></div>
                         @endforeach
-                        <div class="col"></div>
+                        <div style="flex: 0 0 170px; max-width: 170px;"></div>
                       </div>
                       @php
                         $i = 0;
@@ -126,7 +126,7 @@
                               @endif
                             </div>
                           @endforeach
-                          <div class="col">
+                          <div class="text-right text-nowrap" style="flex: 0 0 170px; max-width: 170px;">
                             @if (!$condicao_iniciada)
                               <button class="btn btn-danger" type="button" onclick="apaga_campo(this)"{{ $disable_functions }}>Apagar</button>
                             @endif
@@ -151,10 +151,10 @@
                   </div>
                 </div>
               </div>
-            {{ html()->form()->close() }}
+            </div>
           </div>
         </div>
-      </div>
+      {{ html()->form()->close() }}
     </div>
   </div>
 @endsection
