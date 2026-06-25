@@ -24,7 +24,7 @@
       </div>
       <div class="form-group row">
         <div class="col-sm-12">
-          <div class="g-recaptcha" data-sitekey="{{ config('inscricoes-selecoes-pos.recaptcha_site_key') }}"></div> &nbsp; &nbsp;
+          <div class="g-recaptcha" data-sitekey="{{ config('selecoes-pos.recaptcha_site_key') }}"></div> &nbsp; &nbsp;
         </div>
       </div>
       <div class="text-right">

@@ -16,8 +16,8 @@ class ProgramaSeeder extends Seeder
      */
     public function run()
     {
-        $isIntegrado = config('inscricoes-selecoes-pos.integracao-cadastros-auxiliares');
-        
+        $isIntegrado = config('selecoes-pos.integracao-cadastros-auxiliares');
+
         if(!$isIntegrado) {
             $programas = Posgraduacao::listarProgramas();
             foreach ($programas as $programa) {
@@ -26,7 +26,7 @@ class ProgramaSeeder extends Seeder
 
                 Programa::updateOrCreate(
                     ['nome' => $nome],
-                    ['descricao' => $descricao] 
+                    ['descricao' => $descricao]
                 );
             }
         }
@@ -38,7 +38,7 @@ class ProgramaSeeder extends Seeder
 
                 Programa::updateOrCreate(
                     ['nome' => $nome],
-                    ['descricao' => $descricao] 
+                    ['descricao' => $descricao]
                 );
             }
         }

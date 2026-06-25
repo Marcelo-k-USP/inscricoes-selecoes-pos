@@ -21,7 +21,7 @@ class BoletoService
         $cpf = str_replace(['-', '.'], '', $extras['cpf']);    // a lei 14.534/2023 estabeleceu que estrangeiros devem possuir CPF para cursar pós-graduação
         $parametros = Parametro::first();
 
-        $boleto = new Boleto(config('inscricoes-selecoes-pos.ws_boleto_usuario'), config('inscricoes-selecoes-pos.ws_boleto_senha'));
+        $boleto = new Boleto(config('selecoes-pos.ws_boleto_usuario'), config('selecoes-pos.ws_boleto_senha'));
         $data = array(
             'codigoUnidadeDespesa' => config('replicado.codundclg'),
             'codigoFonteRecurso' => $parametros->boleto_codigo_fonte_recurso,
@@ -67,7 +67,7 @@ class BoletoService
                     'disciplina' => $disciplina_sigla
                 ]);
 
-                if (App::environment('local') || config('inscricoes-selecoes-pos.ws_boleto_cancelar')) {
+                if (App::environment('local') || config('selecoes-pos.ws_boleto_cancelar')) {
 
                     // cancela o boleto em ambiente de desenvolvimento, ou também em produção se ligamos a chave WS_BOLETO_CANCELAR
                     config('app.debug') && Log::info('Cancelando o boleto...');

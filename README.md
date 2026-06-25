@@ -158,8 +158,8 @@ Também deve observar no [changelog](docs/changelog.md) se tem alguma outra cois
 ## Instalação
 
     cd /var/www/html
-    git clone git@github.com:USPdev/inscricoes-selecoes-pos
-    cd inscricoes-selecoes-pos
+    git clone git@github.com:USPdev/selecoes-pos
+    cd selecoes-pos
     composer install
     cp .env.example .env
     php artisan key:generate
@@ -167,9 +167,9 @@ Também deve observar no [changelog](docs/changelog.md) se tem alguma outra cois
 Criar user e banco de dados (em mysql):
 
     sudo mysql
-    create database inscricoesselecoespos;
-    create user 'inscricoesselecoespos'@'%' identified by '<<password here>>';    # nunca utilizar @ dentro da senha, pois dá erro no servidor de produção ao acessar o banco
-    grant all privileges on inscricoesselecoespos.* to 'inscricoesselecoespos'@'%';
+    create database selecoespos;
+    create user 'selecoespos'@'%' identified by '<<password here>>';    # nunca utilizar @ dentro da senha, pois dá erro no servidor de produção ao acessar o banco
+    grant all privileges on selecoespos.* to 'selecoespos'@'%';
     flush privileges;
 
 #### ################################ ####
@@ -193,9 +193,9 @@ Configurar a conta de e-mail para acesso menos seguro pois a conexão é via smt
 
 ### Configurar o apache ou nginx
 
-Criar novo arquivo inscricoes-selecoes-pos.conf em /etc/apache2/sites-available; nele, dentro da tag VirtualHost, o DocumentRoot deve apontar para /var/www/html/inscricoes-selecoes-pos/public. E para que as rotas funcionem, adicionar, ainda dentro dessa tag, a seguinte configuração:
+Criar novo arquivo selecoes-pos.conf em /etc/apache2/sites-available; nele, dentro da tag VirtualHost, o DocumentRoot deve apontar para /var/www/html/selecoes-pos/public. E para que as rotas funcionem, adicionar, ainda dentro dessa tag, a seguinte configuração:
 
-    <Directory /var/www/html/inscricoes-selecoes-pos/public>
+    <Directory /var/www/html/selecoes-pos/public>
         AllowOverride All
     </Directory>
 
@@ -210,7 +210,7 @@ No Apache é possivel utilizar a extensão MPM-ITK (http://mpm-itk.sesse.net/) q
     sudo a2enmod mpm_itk                        # habilita o módulo
     sudo service apache2 restart
 
-Dentro do inscricoes-selecoes-pos.conf, dentro da tag VirtualHost coloque:
+Dentro do selecoes-pos.conf, dentro da tag VirtualHost coloque:
 
     <IfModule mpm_itk_module>
         AssignUserId nome_do_usuario nome_do_grupo
@@ -263,10 +263,10 @@ Para as filas de envio de e-mail, o sistema precisa de um gerenciador que manten
 
     sudo apt install supervisor
 
-Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/supervisor/conf.d/inscricoes_selecoes_pos_queue_worker_default.conf` com o conteúdo abaixo:
+Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/supervisor/conf.d/selecoes_pos_queue_worker_default.conf` com o conteúdo abaixo:
 
-    [program:inscricoes_selecoes_pos_queue_worker_default]
-    command=/usr/bin/php /var/www/html/inscricoes-selecoes-pos/artisan queue:listen --queue=default --tries=3 --timeout=60
+    [program:selecoes_pos_queue_worker_default]
+    command=/usr/bin/php /var/www/html/selecoes-pos/artisan queue:listen --queue=default --tries=3 --timeout=60
     process_num=1
     username=www-data
     numprocs=1
@@ -276,12 +276,12 @@ Modelo de arquivo de configuração. Como **`root`**, crie o arquivo `/etc/super
     autorestart=unexpected
     startretries=3
     stopsignal=QUIT
-    stderr_logfile=/var/www/html/inscricoes-selecoes-pos/storage/logs/inscricoes_selecoes_pos_queue_worker_default.log
+    stderr_logfile=/var/www/html/selecoes-pos/storage/logs/selecoes_pos_queue_worker_default.log
 
 Ajustes necessários:
 
     command=<ajuste o caminho da aplicação>
-    username=<nome do usuário do processo do inscricoes-selecoes-pos>
+    username=<nome do usuário do processo do selecoes-pos>
     stderr_logfile = <aplicacao>/storage/logs/<seu arquivo de log>
 
 Reinicie o **Supervisor**
@@ -295,8 +295,8 @@ Reinicie o **Supervisor**
 É necessária essa permissão, pois o site utiliza sessões, que são gravadas em storage/framework/sessions.
 E se ligarmos o modo debug, o site também quer gravar em storage/logs.
 
-    sudo chown -R www-data:www-data /var/www/html/inscricoes-selecoes-pos/storage
-    sudo chmod -R 755               /var/www/html/inscricoes-selecoes-pos/storage
+    sudo chown -R www-data:www-data /var/www/html/selecoes-pos/storage
+    sudo chmod -R 755               /var/www/html/selecoes-pos/storage
     sudo service apache2 restart
 
 #### ################### ####
@@ -305,7 +305,7 @@ E se ligarmos o modo debug, o site também quer gravar em storage/logs.
 
 Para receber as últimas atualizações do sistema rode:
 
-    cd /var/www/html/inscricoes-selecoes-pos
+    cd /var/www/html/selecoes-pos
     git pull
     composer install --no-dev
     php artisan migrate

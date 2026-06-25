@@ -83,7 +83,7 @@ class ArquivoController extends Controller
         $tipoarquivo = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipoarquivo)->first();
 
         $validator = \Validator::make($request->all(), [
-            'arquivo.*' => 'required|mimes:pdf|max:' . config('inscricoes-selecoes-pos.upload_max_filesize'),
+            'arquivo.*' => 'required|mimes:pdf|max:' . config('selecoes-pos.upload_max_filesize'),
             'objeto_id' => 'required|integer|exists:' . $classe_nome_plural . ',id',
         ]);
         if ($validator->fails()) {
@@ -273,7 +273,7 @@ class ArquivoController extends Controller
     private function obterTimeoutMaximo($filesize)
     {
         $filesize = $filesize / (1024 * 1024 * 1024);    // tamanho do arquivo em Gb
-        return max(60, ceil($filesize * env('inscricoes-selecoes-pos.timeout_por_gb')));    // o tempo máximo será de no mínimo 60 segundos
+        return max(60, ceil($filesize * env('selecoes-pos.timeout_por_gb')));    // o tempo máximo será de no mínimo 60 segundos
     }
 
     private function obterForm(string $classe_nome, object $objeto) {
@@ -321,7 +321,7 @@ class ArquivoController extends Controller
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
         $boleto_momento_envio = Parametro::first()->boleto_momento_envio;
-        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'niveislinhaspesquisa', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'boleto_momento_envio', 'max_upload_size', 'scroll');
     }

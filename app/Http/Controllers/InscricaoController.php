@@ -439,7 +439,7 @@ class InscricaoController extends Controller
             })->implode(',<br />')) : null);
         }
         $classe_nome = 'Inscricao';
-        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
         $niveis = Nivel::all();
 
         return compact('data', 'objetos', 'classe_nome', 'max_upload_size', 'niveis');
@@ -473,7 +473,7 @@ class InscricaoController extends Controller
                     $disciplinas_sem_boleto[] = $disciplina;
         $inscricao->disciplinas_sem_boleto = $disciplinas_sem_boleto;
         $boleto_momento_envio = Parametro::first()->boleto_momento_envio;
-        $max_upload_size = config('inscricoes-selecoes-pos.upload_max_filesize');
+        $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
         return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'nivel', 'tiposarquivo_selecao', 'solicitacaoisencaotaxa_aprovada', 'boleto_momento_envio', 'max_upload_size', 'scroll');
     }

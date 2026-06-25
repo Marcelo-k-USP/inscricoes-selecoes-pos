@@ -8,5 +8,5 @@ Para redefinir sua senha, clique <a href="{{ $password_reset_url }}">aqui</a>.<b
 Caso o link não funcione, copie e cole o endereço abaixo no seu navegador:<br />
 {{ $password_reset_url }}<br />
 <br />
-Este link é válido por {{ config('inscricoes-selecoes-pos.password_reset_link_expiry_time') }} minutos e só pode ser usado uma vez.<br />
+Este link é válido por {{ config('selecoes-pos.password_reset_link_expiry_time') }} minutos e só pode ser usado uma vez.<br />
 @include('emails.rodape')

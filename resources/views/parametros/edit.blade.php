@@ -25,7 +25,7 @@
           <div class="card-body">
 
             {{-- BLOCO CONDICIONAL: Só aparece se NÃO for parâmetro único --}}
-            @if (!config('inscricoes-selecoes-pos.usar_parametro_unico'))
+            @if (!config('selecoes-pos.usar_parametro_unico'))
               <div class="form-group mb-4">
                 <label for="programa_id">Programa:</label>
                 @if(isset($programa_id))

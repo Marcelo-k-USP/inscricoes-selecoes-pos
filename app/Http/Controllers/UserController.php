@@ -144,7 +144,7 @@ class UserController extends Controller
         Gate::authorize('users.viewAny');
         if ($request->term) {
             $results = [];
-            if (config('inscricoes-selecoes-pos.usar_replicado')) {
+            if (config('selecoes-pos.usar_replicado')) {
                 $pessoas = \Uspdev\Replicado\Pessoa::procurarPorNome($request->term, true, true, 'SERVIDOR', config('replicado.codundclg'), $request->tipvinext);
                 // limitando a resposta em 50 elementos
                 $pessoas = array_slice($pessoas, 0, 50);
@@ -185,7 +185,7 @@ class UserController extends Controller
         Gate::authorize('usuario');
         if ($request->term) {
             $results = [];
-            if (config('inscricoes-selecoes-pos.usar_replicado')) {
+            if (config('selecoes-pos.usar_replicado')) {
                 $pessoas = \Uspdev\Replicado\Pessoa::procurarPorCodigoOuNome($request->term, true);
                 // limitando a resposta em 50 elementos
                 $pessoas = array_slice($pessoas, 0, 50);
