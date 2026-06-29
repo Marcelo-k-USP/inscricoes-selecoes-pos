@@ -226,7 +226,7 @@ class InscricaoController extends Controller
 
                     // verifica se ultrapassou o máximo de disciplinas para aluno especial
                     $cpf = $extras['cpf'];
-                    $qtde_disciplinas_matriculas_anteriores = Inscricao::where('selecao_id', $inscricao->selecao->id)->where('estado', 'Enviada')->sum(DB::raw('JSON_LENGTH(extras->"$.disciplinas")'));
+                    $qtde_disciplinas_matriculas_anteriores = Inscricao::where('extras->cpf', $cpf)->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Enviada')->sum(DB::raw('JSON_LENGTH(extras->"$.disciplinas")'));
                     if (count($disciplinas_id) + $qtde_disciplinas_matriculas_anteriores <= (Parametro::first()?->max_disciplinas_aluno_especial ?: PHP_INT_MAX)) {
                         $inscricao->estado = 'Enviada';
                         $inscricao->save();
