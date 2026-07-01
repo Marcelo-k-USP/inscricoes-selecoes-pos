@@ -80,7 +80,7 @@ class TipoArquivoController extends Controller
 
             $tipoarquivo = TipoArquivo::create($request->all());
 
-            if ($tipoarquivo->classe_nome == 'Inscrições') {
+            if (in_array($tipoarquivo->classe_nome, ['Inscrições', 'Matrículas'])) {
                 foreach (Categoria::all() as $categoria)            // cadastra automaticamente todas as categorias como possíveis para este tipo de arquivo
                     $tipoarquivo->categorias()->attach($categoria->id);
                 foreach (NivelPrograma::all() as $nivelprograma)    // cadastra automaticamente todas as combinações de níveis com programas como possíveis para este tipo de arquivo
@@ -277,7 +277,8 @@ class TipoArquivoController extends Controller
                 WHEN classe_nome = 'Seleções'                        THEN 1
                 WHEN classe_nome = 'Solicitações de Isenção de Taxa' THEN 2
                 WHEN classe_nome = 'Inscrições'                      THEN 3
-                ELSE 4
+                WHEN classe_nome = 'Matrículas'                      THEN 4
+                ELSE 5
             END
         ")->orderBy('id')->get();
         $fields = TipoArquivo::getFields();

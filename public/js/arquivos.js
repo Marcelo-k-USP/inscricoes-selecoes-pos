@@ -66,12 +66,12 @@ function excluir_arquivo(arquivo_id, arquivo_nome) {
     submete_form('arquivos/' + arquivo_id, 'delete');
 }
 
-function gerar_boletos(inscricao_id) {
-  submete_form(inscricao_ou_matricula + '/geraboletos/' + inscricao_id, 'post');
+function gerar_boletos(objeto_id) {
+  submete_form(classe_nome_plural + '/geraboletos/' + objeto_id, 'post');
 }
 
-function enviar_boleto(inscricao_id, arquivo_id) {
-  submete_form(inscricao_ou_matricula + '/' + inscricao_id + '/enviaboleto/' + arquivo_id, 'post');
+function enviar_boleto(objeto_id, arquivo_id) {
+  submete_form(classe_nome_plural + '/' + objeto_id + '/enviaboleto/' + arquivo_id, 'post');
 }
 
 function submete_form(acao, metodo, i_tipoarquivo) {

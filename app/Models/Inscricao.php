@@ -15,7 +15,7 @@ class Inscricao extends Model
 {
     use HasFactory;
 
-    # inscrições/matrículas não segue convenção do laravel para nomes de tabela
+    # inscrições não segue convenção do laravel para nomes de tabela
     protected $table = 'inscricoes';
 
     protected $fillable = [
@@ -69,8 +69,8 @@ class Inscricao extends Model
     {
         return [
             'Aguardando Envio', 'Enviada',                          // decorrem de ações do candidato
-            'Em Pré-Avaliação', 'Pré-Aprovada', 'Pré-Rejeitada',    // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição/matrícula
-            'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição/matrícula
+            'Em Pré-Avaliação', 'Pré-Aprovada', 'Pré-Rejeitada',    // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição
+            'Em Avaliação', 'Aprovada', 'Rejeitada'                 // decorrem de ações dos(as) secretários(as) do programa da seleção da inscrição
         ];
     }
 
@@ -88,18 +88,18 @@ class Inscricao extends Model
 
     public function agendarTarefa()
     {
-        // este método é invocado na criação de uma inscrição/matrícula
+        // este método é invocado na criação de uma inscrição
 
         if ($this->selecao->fluxo_continuo) {
-            // agenda job de alerta de inscrição/matrícula não concluída
+            // agenda job de alerta de inscrição não concluída
             $job_datahora = now()->addDays(7);
-            if ($job_datahora < Carbon::parse($this->selecao->inscricoes_datahora_fim)->subHours(24))
+            if ($job_datahora < Carbon::parse($this->selecao->inscricoesmatriculas_datahora_fim)->subHours(24))
                 AlertaCandidatoIncompletude::dispatch($this->id, 'Inscricao')->delay($job_datahora);
         }
     }
 
     /**
-     * Retorna a contagem de inscrições/matrículas por ano
+     * Retorna a contagem de inscrições por ano
      *
      * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
      *
@@ -115,7 +115,7 @@ class Inscricao extends Model
     }
 
     /**
-     * Retorna a contagem de inscrições/matrículas por mês de determinado ano
+     * Retorna a contagem de inscrições por mês de determinado ano
      *
      * Se passar $selecao a contagem é somente da seleção, se não é de todo o sistema
      *
@@ -142,15 +142,14 @@ class Inscricao extends Model
     }
 
     /**
-     * Lista as inscrições/matrículas autorizadas para o usuário
+     * Lista as inscrições autorizadas para o usuário
      *
-     * Se perfiladmin mostra todas as inscrições/matrículas
-     * Se perfilusuario mostra as inscrições/matrículas que ele está cadastrado como criador
+     * Se perfiladmin mostra todas as inscrições
+     * Se perfilusuario mostra as inscrições que ele está cadastrado como criador
      *
-     * @param  string  $inscricao_ou_matricula
      * @return Collection
      */
-    public static function listarInscricoes(string $inscricao_ou_matricula)
+    public static function listarInscricoes()
     {
         switch (session('perfil')) {
             case 'admin':
@@ -180,7 +179,7 @@ class Inscricao extends Model
                 $inscricoes = Auth::user()->inscricoes()->with('selecao')->wherePivotIn('papel', ['Autor'])->get();
         }
 
-        return $inscricoes->filter(fn($inscricao) => ($inscricao->selecao->isMatricula() == ($inscricao_ou_matricula == 'matriculas')));
+        return $inscricoes->filter(fn($inscricao) => !$inscricao->selecao->isMatricula());
     }
 
     public static function listarInscricoesPorSelecao(Selecao $selecao, int $ano)
@@ -189,8 +188,8 @@ class Inscricao extends Model
     }
 
     /**
-     * Verifica se todos os arquivos requeridos da inscrição/matrícula estão presentes
-     * Conforme for o caso, altera o estado da inscrição/matrícula
+     * Verifica se todos os arquivos requeridos da inscrição estão presentes
+     * Conforme for o caso, altera o estado da inscrição
      */
     public function todosArquivosRequeridosPresentes(?int $nivel_id = null)
     {
@@ -201,10 +200,10 @@ class Inscricao extends Model
                 return $tipoarquivo->niveisprogramas()->where('nivel_id', $nivel_id)->where('programa_id', $this->selecao->programa_id)->exists();
             });
 
-        // obtém os tipos de arquivo da inscrição/matrícula
+        // obtém os tipos de arquivo da inscrição
         $arquivos_inscricao = $this->arquivos->pluck('pivot.tipo')->countBy()->all();
 
-        // verifica se todos os tipos requeridos estão presentes nos arquivos da inscrição/matrícula
+        // verifica se todos os tipos requeridos estão presentes nos arquivos da inscrição
         $todos_requeridos_presentes = function() use ($tiposarquivo_requeridos, $arquivos_inscricao) {
             foreach ($tiposarquivo_requeridos as $tipoarquivo_requerido) {
                 $tipo_nome = $tipoarquivo_requerido['nome'];
@@ -217,22 +216,12 @@ class Inscricao extends Model
         return $todos_requeridos_presentes();
     }
 
-    public function InscricaoOuMatricula()
-    {
-        return $this->selecao->isMatricula() ? 'matrícula' : 'inscrição';
-    }
-
-    public function InscricaoOuMatriculaAbrev()
-    {
-        return $this->selecao->isMatricula() ? 'Matr' : 'Insc';
-    }
-
     /**
-     * Mostra as pessoas que têm vínculo com a inscrição/matrícula
+     * Mostra as pessoas que têm vínculo com a inscrição
      *
      * Se informado $pivot, retorna somente o primeiro usuário, senão retorna a lista completa
      *
-     * @param  $pivot Papel da pessoa na inscrição/matrícula (autor, null = todos)
+     * @param  $pivot Papel da pessoa na inscrição (autor, null = todos)
      * @return App\Models\User|Collection
      */
     public function pessoas($pivot = null)
@@ -248,7 +237,7 @@ class Inscricao extends Model
      */
     public function arquivos()
     {
-        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_inscricao')->withPivot('tipo')->withTimestamps();
+        return $this->belongsToMany('App\Models\Arquivo', 'arquivo_inscricao')->withPivot('tipo', 'disciplina')->withTimestamps();
     }
 
     /**

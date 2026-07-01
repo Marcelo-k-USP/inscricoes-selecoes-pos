@@ -48,7 +48,7 @@
                   @include('selecoes.show.card-disciplinas')                         {{-- Disciplinas --}}
                 @endif
                 @include('selecoes.show.card-motivosisencaotaxa')                    {{-- Motivos de Isenção de Taxa --}}
-                @include('common.card-arquivos', [                                   {{-- Arquivos --}}
+                @include('common.show.card-arquivos', [                              {{-- Arquivos --}}
                   'tipoarquivo_classe_nome_plural_acentuado' => 'Seleções',
                 ])
                 @include('selecoes.show.card-tiposarquivo', [                        {{-- Tipos de Arquivo nas Solicitações de Isenção de Taxa --}}
@@ -56,13 +56,25 @@
                   'tipoarquivo_classe_nome' => 'SolicitacaoIsencaoTaxa',
                   'tiposarquivo' => $tiposarquivo_solicitacaoisencaotaxa
                 ])
-                @include('selecoes.show.card-tiposarquivo', [                        {{-- Tipos de Arquivo nas Inscrições --}}
-                  'tipoarquivo_classe_nome_plural_acentuado' => 'Inscrições',
-                  'tipoarquivo_classe_nome' => 'Inscricao',
-                  'tiposarquivo' => $tiposarquivo_inscricao
-                ])
+                @if (!$selecao->isMatricula())
+                  @include('selecoes.show.card-tiposarquivo', [                        {{-- Tipos de Arquivo nas Inscrições --}}
+                    'tipoarquivo_classe_nome_plural_acentuado' => 'Inscrições',
+                    'tipoarquivo_classe_nome' => 'Inscricao',
+                    'tiposarquivo' => $tiposarquivo_inscricao
+                  ])
+                @else
+                  @include('selecoes.show.card-tiposarquivo', [                        {{-- Tipos de Arquivo nas Matrículas --}}
+                    'tipoarquivo_classe_nome_plural_acentuado' => 'Matrículas',
+                    'tipoarquivo_classe_nome' => 'Matricula',
+                    'tiposarquivo' => $tiposarquivo_matricula
+                  ])
+                @endif
                 @include('selecoes.show.card-solicitacoesisencaotaxa')               {{-- Solicitações de Isenção de Taxa --}}
-                @include('selecoes.show.card-inscricoes')                            {{-- Inscrições --}}
+                @if (!$selecao->isMatricula())
+                  @include('selecoes.show.card-inscricoes')                            {{-- Inscrições --}}
+                @else
+                  @include('selecoes.show.card-matriculas')                            {{-- Matrículas --}}
+                @endif
               @endif
             </div>
           </div>

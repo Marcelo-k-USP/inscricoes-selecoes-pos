@@ -285,7 +285,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Relacionamento n:n com inscrição:
+     * Relacionamento n:n com solicitação de isenção de taxa:
      */
     public function solicitacoesisencaotaxa()
     {
@@ -298,6 +298,14 @@ class User extends Authenticatable
     public function inscricoes()
     {
         return $this->belongsToMany('App\Models\Inscricao', 'user_inscricao')->withTimestamps();
+    }
+
+    /**
+     * Relacionamento n:n com matrícula:
+     */
+    public function matriculas()
+    {
+        return $this->belongsToMany('App\Models\Matricula', 'user_matricula')->withTimestamps();
     }
 
     /**

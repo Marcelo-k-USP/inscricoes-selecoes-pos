@@ -1,0 +1,130 @@
+@extends('layouts.app')
+
+@section('content')
+@parent
+  <div class="row">
+    <div class="col-md-12 form-inline">
+      <div class="d-none d-sm-block h4 mt-2">
+        Matrículas
+      </div>
+      <div class="d-block d-sm-none h4 mt-2">
+        {{-- vai mostrar no mobile --}}
+        <i class="fas fa-filter"></i>
+      </div>
+      <div class="h4 mt-1 ml-2">
+        <span class="badge badge-pill badge-primary datatable-counter">-</span>
+      </div>
+      @include('partials.datatable-filter-box', ['otable' => 'oTable'])
+    </div>
+  </div>
+
+  @if (isset($objetos) && ($objetos->count() > 0))
+    <table class="table table-striped tabela-matriculas display responsive" style="width:100%">
+      <thead>
+        <tr>
+          <th>Nro</th>
+          <th></th>
+          <th>Candidato</th>
+          <th>Seleção</th>
+          <th>Nível com Linha de Pesquisa/Tema ou Disciplina(s)</th>
+          <th width="10%">Criada em</th>
+          <th width="10%">Atualização</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach ($objetos as $matricula)
+          <tr>
+            <td>
+              <a href="matriculas/edit/{{ $matricula->id }}">{{ $matricula->id }}</a>
+            </td>
+            <td>
+              @include('matriculas.partials.status-small')
+            </td>
+            <td>
+              @php
+                $nome = null;
+                $extras = null;
+                if (!is_null($matricula->extras)) {
+                  $extras = json_decode($matricula->extras);
+                  if ($extras && property_exists($extras, 'nome'))
+                    $nome = Str::limit($extras->nome, 32);
+                }
+              @endphp
+              {{ $nome }}
+              @include('matriculas.partials.status-muted')
+            </td>
+            <td>
+              {{ $matricula->selecao->nome }} ({{ $matricula->selecao->categoria->nome }})
+            </td>
+            <td>
+              @if (!is_null($matricula->linha_pesquisa))
+                {{ $matricula->linha_pesquisa }}
+              @else
+                {!! $matricula->disciplinas !!}
+              @endif
+            </td>
+            <td class="text-right">
+              <span class="d-none">{{ $matricula->created_at }}</span>
+              {{ formatarDataHora($matricula->created_at) }}
+            </td>
+            <td class="text-right">
+              <span class="d-none">{{ $matricula->updated_at }}</span>
+              {{ formatarDataHora($matricula->updated_at) }}
+            </td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
+  @else
+    <br />
+    Não há nenhuma matrícula {{ auth()->user()->canAny(['perfiladmin', 'perfilgerente', 'perfildocente']) ? '' : 'sua' }} a ser consultada.
+  @endif
+@stop
+
+@php
+  $paginar = (isset($objetos) && ($objetos->count() > 10));
+@endphp
+
+@section('javascripts_bottom')
+@parent
+  <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.8/css/fixedHeader.dataTables.min.css">
+  <script src="https://cdn.datatables.net/fixedheader/3.1.8/js/dataTables.fixedHeader.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+      oTable = $('.tabela-matriculas').DataTable({
+        dom:
+          't{{ $paginar ? 'p' : '' }}',
+          'paging': {{ $paginar ? 'true' : 'false' }},
+          'sort': true,
+          'order': [
+            [6, 'desc']    // ordenado por data de atualização descrescente
+          ],
+          'fixedHeader': true,
+          columnDefs: [{
+            targets: 1,
+            orderable: false
+          }],
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json'
+          }
+      });
+
+      // recuperando o storage local
+      var datatableFilter = localStorage.getItem('datatableFilter');
+      $('#dt-search').val(datatableFilter);
+
+      // vamos aplicar o filtro
+      oTable.search($('#dt-search').val()).draw();
+
+      // vamos renderizar o contador de linhas
+      $('.datatable-counter').html(oTable.page.info().recordsDisplay);
+
+      // vamos guardar no storage à medida que digita
+      $('#dt-search').keyup(function() {
+        localStorage.setItem('datatableFilter', $(this).val())
+      });
+    });
+  </script>
+@endsection

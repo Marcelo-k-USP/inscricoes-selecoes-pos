@@ -5,7 +5,7 @@
   <div class="row">
     <div class="col-md-12 form-inline">
       <div class="d-none d-sm-block h4 mt-2">
-        {{ (request()->segment(1) == 'inscricoes') ? 'Inscrições' : 'Matrículas' }}
+        Inscrições
       </div>
       <div class="d-block d-sm-none h4 mt-2">
         {{-- vai mostrar no mobile --}}
@@ -35,7 +35,7 @@
         @foreach ($objetos as $inscricao)
           <tr>
             <td>
-              <a href="{{ request()->segment(1) }}/edit/{{ $inscricao->id }}">{{ $inscricao->id }}</a>
+              <a href="inscricoes/edit/{{ $inscricao->id }}">{{ $inscricao->id }}</a>
             </td>
             <td>
               @include('inscricoes.partials.status-small')
@@ -89,7 +89,7 @@
     </table>
   @else
     <br />
-    Não há nenhuma {{ \App\Utils\Nomenclatura::InscricaoOuMatricula() }} {{ auth()->user()->canAny(['perfiladmin', 'perfilgerente', 'perfildocente']) ? '' : 'sua' }} a ser consultada.
+    Não há nenhuma inscrição {{ auth()->user()->canAny(['perfiladmin', 'perfilgerente', 'perfildocente']) ? '' : 'sua' }} a ser consultada.
   @endif
 @stop
 

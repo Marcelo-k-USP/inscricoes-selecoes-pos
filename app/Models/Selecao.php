@@ -584,14 +584,14 @@ class Selecao extends Model
         'tem_taxa',
         'solicitacoesisencaotaxa_datahora_inicio',
         'solicitacoesisencaotaxa_datahora_fim',
-        'inscricoes_datahora_inicio',
-        'inscricoes_datahora_fim',
+        'inscricoesmatriculas_datahora_inicio',
+        'inscricoesmatriculas_datahora_fim',
         'boleto_valor',
         'boleto_texto',
         'boleto_data_vencimento',
         'boleto_offset_vencimento',
-        'email_inscricaoaprovacao_texto',
-        'email_inscricaorejeicao_texto',
+        'email_inscricaomatriculaaprovacao_texto',
+        'email_inscricaomatricularejeicao_texto',
         'categoria_id',
         'programa_id',
         'estado',
@@ -632,12 +632,12 @@ class Selecao extends Model
         ],
         [
             'name' => 'fluxo_continuo',
-            'label' => 'Fluxo Contínuo (solicitações de isenção de taxa e inscrições ocorrem no mesmo período)',
+            'label' => 'Fluxo Contínuo (solicitações de isenção de taxa e inscrições/matrículas ocorrem no mesmo período)',    // a view altera este label dinamicamente
             'type' => 'checkbox',
         ],
         [
             'name' => 'tem_taxa',
-            'label' => 'Taxa de Inscrição para a Seleção',
+            'label' => 'Taxa de Inscrição/Matrícula para a Seleção',    // a view altera este label dinamicamente
             'type' => 'checkbox',
         ],
         [
@@ -651,13 +651,13 @@ class Selecao extends Model
             'type' => 'datetime',
         ],
         [
-            'name' => 'inscricoes_datahora_inicio',
-            'label' => 'Início das Inscrições',
+            'name' => 'inscricoesmatriculas_datahora_inicio',
+            'label' => 'Início das Inscrições/Matrículas',    // a view altera este label dinamicamente
             'type' => 'datetime',
         ],
         [
-            'name' => 'inscricoes_datahora_fim',
-            'label' => 'Fim das Inscrições',
+            'name' => 'inscricoesmatriculas_datahora_fim',
+            'label' => 'Fim das Inscrições/Matrículas',    // a view altera este label dinamicamente
             'type' => 'datetime',
         ],
         [
@@ -680,12 +680,12 @@ class Selecao extends Model
             'label' => 'Eventuais Informações Adicionais no Boleto',
         ],
         [
-            'name' => 'email_inscricaoaprovacao_texto',
-            'label' => 'Eventuais Informações Adicionais no E-mail de Aprovação da Inscrição',
+            'name' => 'email_inscricaomatriculaaprovacao_texto',
+            'label' => 'Eventuais Informações Adicionais no E-mail de Aprovação da Inscrição/Matrícula',    // a view altera este label dinamicamente
         ],
         [
-            'name' => 'email_inscricaorejeicao_texto',
-            'label' => 'Eventuais Informações Adicionais no E-mail de Rejeição da Inscrição',
+            'name' => 'email_inscricaomatricularejeicao_texto',
+            'label' => 'Eventuais Informações Adicionais no E-mail de Rejeição da Inscrição/Matrícula',    // a view altera este label dinamicamente
         ],
     ];
 
@@ -742,10 +742,12 @@ class Selecao extends Model
      */
     public static function estados()
     {
+        // nos estados, quando se diz "Inscrições", pode ser na verdade "Matrículas"
+        // mantemos "Inscrições" pois as views trocam o texto para "Matrículas" quando for o caso
         return ['Em Elaboração',
-                'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições', 'Período de Solicitações de Isenção de Taxa e de Inscrições',    // usados nos casos de fluxo contínuo com taxa
-                'Aguardando Início das Solicitações de Isenção de Taxa', 'Período de Solicitações de Isenção de Taxa',                                     // usados nos casos de fluxo normal com taxa
-                'Aguardando Início das Inscrições', 'Periodo de Inscrições',                                                                               // usados nos casos sem taxa
+                'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições/Matrículas', 'Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas',    // usados nos casos de fluxo contínuo com taxa
+                'Aguardando Início das Solicitações de Isenção de Taxa', 'Período de Solicitações de Isenção de Taxa',                                                           // usados nos casos de fluxo normal com taxa
+                'Aguardando Início das Inscrições/Matrículas', 'Periodo de Inscrições/Matrículas',                                                                               // usados nos casos sem taxa
                 'Encerrada'];
     }
 
@@ -818,12 +820,12 @@ class Selecao extends Model
      *
      * @return \Illuminate\Http\Response
      */
-    public static function listarSelecoesParaSolicitacaoIsencaoTaxa()
+    public static function listarSelecoesParaNovaSolicitacaoIsencaoTaxa()
     {
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
-            $selecoes = $selecoes->filter(fn($selecao) => in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Solicitações de Isenção de Taxa']));    // só aceita as seleções que estejam em período de solicitações de isenção de taxa
+            $selecoes = $selecoes->filter(fn($selecao) => in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Solicitações de Isenção de Taxa']));    // só aceita as seleções que estejam em período de solicitações de isenção de taxa
             $categoria->selecoes = $selecoes;
         }
         return $categorias;                                              // retorna as seleções dentro de categorias
@@ -831,19 +833,40 @@ class Selecao extends Model
 
     /**
      * Mostra lista de categorias e respectivas seleções
-     * para selecionar e criar nova inscrição/matrícula
+     * para selecionar e criar nova inscrição
      *
-     * @param  string  $inscricao_ou_matricula
      * @return \Illuminate\Http\Response
      */
-    public static function listarSelecoesParaNovaInscricao(string $inscricao_ou_matricula)
+    public static function listarSelecoesParaNovaInscricao()
     {
         $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
         foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
             $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
             $selecoes = $selecoes->filter(fn($selecao) =>
-                in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições'])    // só aceita as seleções que estejam em período de inscrições/matrículas
-                && ($selecao->isMatricula() === ($inscricao_ou_matricula == 'matriculas'))
+                in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Inscrições/Matrículas'])    // só aceita as seleções que estejam em período de inscrições
+                && !$selecao->isMatricula()
+            );
+            foreach ($selecoes as $selecao)
+                $selecao->niveis = $selecao->niveislinhaspesquisa->sortBy('nivel_id')->pluck('nivel')->unique();
+            $categoria->selecoes = $selecoes;
+        }
+        return $categorias;                                              // retorna as seleções dentro de categorias
+    }
+
+    /**
+     * Mostra lista de categorias e respectivas seleções
+     * para selecionar e criar nova matrícula
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public static function listarSelecoesParaNovaMatricula()
+    {
+        $categorias = Categoria::get();                                  // primeiro vamos pegar todas as seleções
+        foreach ($categorias as $categoria) {                            // e depois filtrar as que não pode
+            $selecoes = $categoria->selecoes;                            // primeiro vamos pegar todas as seleções
+            $selecoes = $selecoes->filter(fn($selecao) =>
+                in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Inscrições/Matrículas'])    // só aceita as seleções que estejam em período de matrículas
+                && $selecao->isMatricula()
             );
             foreach ($selecoes as $selecao)
                 $selecao->niveis = $selecao->niveislinhaspesquisa->sortBy('nivel_id')->pluck('nivel')->unique();
@@ -880,25 +903,25 @@ class Selecao extends Model
                         $this->update(['estado' => 'Aguardando Início das Solicitações de Isenção de Taxa']);
                     elseif (($this->solicitacoesisencaotaxa_datahora_inicio <= $agora) && ($agora <= $this->solicitacoesisencaotaxa_datahora_fim))
                         $this->update(['estado' => 'Período de Solicitações de Isenção de Taxa']);
-                    elseif (($this->solicitacoesisencaotaxa_datahora_fim < $agora) && ($agora < $this->inscricoes_datahora_inicio))
-                        $this->update(['estado' => 'Aguardando Início das Inscrições']);
-                    elseif (($this->inscricoes_datahora_inicio <= $agora) && ($agora <= $this->inscricoes_datahora_fim))
-                        $this->update(['estado' => 'Período de Inscrições']);
+                    elseif (($this->solicitacoesisencaotaxa_datahora_fim < $agora) && ($agora < $this->inscricoesmatriculas_datahora_inicio))
+                        $this->update(['estado' => 'Aguardando Início das Inscrições/Matrículas']);
+                    elseif (($this->inscricoesmatriculas_datahora_inicio <= $agora) && ($agora <= $this->inscricoesmatriculas_datahora_fim))
+                        $this->update(['estado' => 'Período de Inscrições/Matrículas']);
                 } else {
                     // fluxo contínuo com taxa
-                    if ($agora < $this->inscricoes_datahora_inicio)
-                        $this->update(['estado' => 'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições']);
-                    elseif (($this->inscricoes_datahora_inicio <= $agora) && ($agora <= $this->inscricoes_datahora_fim))
-                        $this->update(['estado' => 'Período de Solicitações de Isenção de Taxa e de Inscrições']);
+                    if ($agora < $this->inscricoesmatriculas_datahora_inicio)
+                        $this->update(['estado' => 'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições/Matrículas']);
+                    elseif (($this->inscricoesmatriculas_datahora_inicio <= $agora) && ($agora <= $this->inscricoesmatriculas_datahora_fim))
+                        $this->update(['estado' => 'Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas']);
                 }
             } else
                 // sem taxa
-                if ($agora < $this->inscricoes_datahora_inicio)
-                    $this->update(['estado' => 'Aguardando Início das Inscrições']);
-                elseif (($this->inscricoes_datahora_inicio <= $agora) && ($agora <= $this->inscricoes_datahora_fim))
-                    $this->update(['estado' => 'Período de Inscrições']);
+                if ($agora < $this->inscricoesmatriculas_datahora_inicio)
+                    $this->update(['estado' => 'Aguardando Início das Inscrições/Matrículas']);
+                elseif (($this->inscricoesmatriculas_datahora_inicio <= $agora) && ($agora <= $this->inscricoesmatriculas_datahora_fim))
+                    $this->update(['estado' => 'Período de Inscrições/Matrículas']);
 
-            if ($this->inscricoes_datahora_fim < $agora)
+            if ($this->inscricoesmatriculas_datahora_fim < $agora)
                 $this->update(['estado' => 'Encerrada']);
         }
     }
@@ -909,7 +932,7 @@ class Selecao extends Model
         // quando o usuário altera uma seleção, eventualmente ele pode alterar as datas de fim
         // neste caso, ao invés de alterarmos as datas/horas dos jobs da seleção, simplesmente os removemos e os recriamos logo em seguida, considerando as datas de fim eventualmente alteradas
 
-        // remove jobs de alerta de solicitações de isenção de taxa e inscrições/matrículas não concluídas
+        // remove jobs de alerta de solicitações de isenção de taxa, inscrições e matrículas não concluídas
         foreach (DB::table('jobs')->where('payload->displayName', 'App\Jobs\AlertaCandidatosIncompletude')->get() as $job) {
             $command = obterCommandDoJob($job);
             if ($command) {
@@ -926,10 +949,17 @@ class Selecao extends Model
                 AlertaCandidatosIncompletude::dispatch($this->id, 'SolicitacaoIsencaoTaxa')->delay($job_datahora);
         }
 
-        // (re)agenda job de alerta de inscrições/matrículas não concluídas
-        $job_datahora = Carbon::parse($this->inscricoes_datahora_fim)->subHours(24);
-        if ($job_datahora > now())
-            AlertaCandidatosIncompletude::dispatch($this->id, 'Inscricao')->delay($job_datahora);
+        if (!$this->isMatricula()) {
+            // (re)agenda job de alerta de inscrições não concluídas
+            $job_datahora = Carbon::parse($this->inscricoesmatriculas_datahora_fim)->subHours(24);
+            if ($job_datahora > now())
+                AlertaCandidatosIncompletude::dispatch($this->id, 'Inscricao')->delay($job_datahora);
+        } else {
+            // (re)agenda job de alerta de matrículas não concluídas
+            $job_datahora = Carbon::parse($this->inscricoesmatriculas_datahora_fim)->subHours(24);
+            if ($job_datahora > now())
+                AlertaCandidatosIncompletude::dispatch($this->id, 'Matricula')->delay($job_datahora);
+        }
     }
 
     public function contarSolicitacoesIsencaoTaxaPorAno()
@@ -950,6 +980,16 @@ class Selecao extends Model
     public function contarInscricoesPorMes(int $ano)
     {
         return Inscricao::contarInscricoesPorMes($ano, $this);
+    }
+
+    public function contarMatriculasPorAno()
+    {
+        return Matricula::contarMatriculasPorAno($this);
+    }
+
+    public function contarMatriculasPorMes(int $ano)
+    {
+        return Matricula::contarMatriculasPorMes($ano, $this);
     }
 
     // função para generalizar o nome da unidade, baseando-se no valor do .env
@@ -990,11 +1030,19 @@ class Selecao extends Model
     }
 
     /**
-     * Seleção possui Inscrições/matrículas
+     * Seleção possui Inscrições
      */
     public function inscricoes()
     {
         return $this->hasMany('App\Models\Inscricao');
+    }
+
+    /**
+     * Seleção possui Matrículas
+     */
+    public function matriculas()
+    {
+        return $this->hasMany('App\Models\Matricula');
     }
 
     /**

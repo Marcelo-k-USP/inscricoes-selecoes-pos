@@ -31,12 +31,12 @@
           <div class="card-title my-0">
             @if ($modo == 'edit')
               <div style="display: flex; align-items: center; white-space: nowrap;">
-                <a href="{{ request()->segment(1) }}">{{ ucfirst($inscricao_ou_matricula_plural) }}</a> <i class="fas fa-angle-right mx-2"></i> {{ ucfirst($inscricao_ou_matricula) }} nº {{ $inscricao->id }}
+                <a href="inscricoes">Inscrições</a> <i class="fas fa-angle-right mx-2"></i> Inscrição nº {{ $inscricao->id }}
                 &nbsp; | &nbsp;
                 @include('inscricoes.partials.btn-enable-disable')
               </div>
             @else
-              Nova {{ ucfirst($inscricao_ou_matricula) }}
+              Nova Inscrição
             @endif
             para {{ $inscricao->selecao->nome }} ({{ $inscricao->selecao->categoria->nome }})
             @if ($inscricao->selecao->categoria->nome !== 'Aluno Especial')
@@ -46,12 +46,12 @@
             <span class="text-muted">{{ $inscricao->selecao->descricao }}</span><br />
           </div>
         </div>
-        @include('inscricoes.partials.badge-instrucoes-da-selecao')
+        @include('common.partials.badge-instrucoes-da-selecao')
         @include('inscricoes.partials.instrucoes-da-selecao')
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @if (!in_array($inscricao->selecao->estado, ['Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições', 'Aguardando Início das Inscrições']))
+              @if (!in_array($inscricao->selecao->estado, ['Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições/Matrículas', 'Aguardando Início das Inscrições/Matrículas']))
                 @include('inscricoes.show.card-principal', [    {{-- Principal --}}
                   'selecao' => $inscricao->selecao
                 ])
@@ -60,23 +60,22 @@
               @endif
             </div>
             <div class="col-md-5">
-              @if (($inscricao->selecao->categoria->nome == 'Aluno Especial') &&
-                   (($modo == 'edit') || ($inscricao->selecao->estado == 'Encerrada')))
+              @if (($inscricao->selecao->categoria->nome == 'Aluno Especial') && ($modo == 'edit'))
                 @include('inscricoes.show.card-disciplinas')    {{-- Disciplinas --}}
               @endif
-              @include('inscricoes.show.card-responsaveis', [   {{-- Responsáveis --}}
+              @include('common.show.card-responsaveis', [       {{-- Responsáveis --}}
                 'selecao' => $inscricao->selecao
               ])
-              @include('inscricoes.show.card-informativos', [   {{-- Informativos --}}
+              @include('common.show.card-informativos', [       {{-- Informativos --}}
                 'selecao' => $inscricao->selecao
               ])
               @if ($modo == 'edit')
-                @include('common.card-arquivos', [              {{-- Arquivos --}}
+                @include('common.show.card-arquivos', [         {{-- Arquivos --}}
                   'selecao' => $inscricao->selecao,
                   'tipoarquivo_classe_nome_plural_acentuado' => 'Inscrições',
                 ])
-                @if (in_array($inscricao->selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']) && (session('perfil') == 'usuario'))
-                  @include('inscricoes.show.card-envio')        {{-- Envio --}}
+                @if (in_array($inscricao->selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Inscrições/Matrículas']) && (session('perfil') == 'usuario'))
+                  @include('common.show.card-envio')            {{-- Envio --}}
                 @endif
               @endif
             </div>

@@ -12,7 +12,7 @@
 
 <div class="card mb-3" id="card-selecao-inscricoes">
   <div class="card-header">
-    <i class="fas fa-chart-line"></i> {{ ucfirst($inscricao_ou_matricula_plural) }}
+    <i class="fas fa-chart-line"></i> Inscrições
   </div>
   <div class="card-body">
     <ul class="list-unstyled">

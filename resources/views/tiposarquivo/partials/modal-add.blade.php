@@ -7,7 +7,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Adicionar Tipo de Documento nas {{ ($tipoarquivo_classe_nome_plural_acentuado == 'Inscrições' && $selecao->isMatricula()) ? 'Matrículas' : $tipoarquivo_classe_nome_plural_acentuado }}</h5>
+        <h5 class="modal-title">Adicionar Tipo de Documento nas {{ $tipoarquivo_classe_nome_plural_acentuado }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

@@ -41,7 +41,15 @@ class Arquivo extends Model
      */
     public function inscricoes()
     {
-        return $this->belongsToMany('App\Models\Inscricao', 'arquivo_inscricao')->withPivot('tipo')->withTimestamps();
+        return $this->belongsToMany('App\Models\Inscricao', 'arquivo_inscricao')->withPivot('tipo', 'disciplina')->withTimestamps();
+    }
+
+    /**
+     * relacionamento com matrícula
+     */
+    public function matriculas()
+    {
+        return $this->belongsToMany('App\Models\Matricula', 'arquivo_matricula')->withPivot('tipo', 'disciplina')->withTimestamps();
     }
 
     /**

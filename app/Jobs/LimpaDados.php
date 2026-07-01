@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Arquivo;
 use App\Models\Inscricao;
+use App\Models\Matricula;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
 use Carbon\Carbon;
@@ -42,6 +43,13 @@ class LimpaDados implements ShouldQueue
 
         // transaction para não ter problema de inconsistência do DB
         $db_transaction = DB::transaction(function () use ($data_limite) {
+
+            // apaga todas as matrículas gravadas no banco de dados até essa data
+            foreach (Matricula::where('created_at', '<=', $data_limite)->get() as $matricula) {
+                $matricula->arquivos()->detach();
+                $matricula->pessoas()->detach();
+                $matricula->delete();
+            }
 
             // apaga todas as inscrições gravadas no banco de dados até essa data
             foreach (Inscricao::where('created_at', '<=', $data_limite)->get() as $inscricao) {

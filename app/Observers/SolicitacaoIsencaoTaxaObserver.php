@@ -48,9 +48,16 @@ class SolicitacaoIsencaoTaxaObserver
                 ($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Solicitada')) {         // se o novo estado é Isenção de Taxa Solicitada
                 // trata-se do envio da solicitação de isenção de taxa
 
-                // envia e-mail avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
+                // envia e-mail para o candidato reconhecendo que ele enviou a solicitação de isenção de taxa
                 // envio do e-mail "5" do README.md
-                $passo = 'envio';
+                $passo = 'envio - para candidato';
+                $user = $solicitacaoisencaotaxa->pessoas('Autor');
+                \Mail::to($user->email)
+                    ->queue(new SolicitacaoIsencaoTaxaMail(compact('passo', 'solicitacaoisencaotaxa', 'user')));
+
+                // envia e-mail avisando o serviço de pós-graduação sobre a solicitação da isenção de taxa
+                // envio do e-mail "6" do README.md
+                $passo = 'envio - para gestores';
                 $user = $solicitacaoisencaotaxa->pessoas('Autor');
                 $servicoposgraduacao_nome = 'Prezados(as) Srs(as). do Serviço de Pós-Graduação';
                 \Mail::to(Parametro::first()->email_servicoposgraduacao)
@@ -61,7 +68,7 @@ class SolicitacaoIsencaoTaxaObserver
                 // trata-se da aprovação ou rejeição da solicitação de isenção de taxa
 
                 // envia e-mail avisando o candidato da aprovação/rejeição da solicitação de isenção de taxa
-                // envio do e-mail "6" do README.md
+                // envio do e-mail "7" do README.md
                 $passo = (($solicitacaoisencaotaxa->estado == 'Isenção de Taxa Aprovada') ? 'aprovação' : 'rejeição');
                 $user = $solicitacaoisencaotaxa->pessoas('Autor');
                 \Mail::to($user->email)
@@ -72,7 +79,7 @@ class SolicitacaoIsencaoTaxaObserver
                 // trata-se da aprovação da solicitação de isenção de taxa após recurso
 
                 // envia e-mail avisando o candidato da aprovação da solicitação de isenção de taxa após recurso
-                // envio do e-mail "6" do README.md
+                // envio do e-mail "7" do README.md
                 $passo = 'aprovação após recurso';
                 $user = $solicitacaoisencaotaxa->pessoas('Autor');
                 \Mail::to($user->email)

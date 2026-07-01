@@ -76,8 +76,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::resource('disciplinas', 'App\Policies\DisciplinaPolicy');
         Gate::resource('funcoes', 'App\Policies\FuncaoPolicy');
         Gate::resource('inscricoes', 'App\Policies\InscricaoPolicy');
-        Gate::define('inscricoes.viewAny_Inscricoes', 'App\Policies\InscricaoPolicy@viewAny_Inscricoes');
-        Gate::define('inscricoes.viewAny_Matriculas', 'App\Policies\InscricaoPolicy@viewAny_Matriculas');
         Gate::define('inscricoes.viewTheir', 'App\Policies\InscricaoPolicy@viewTheir');    // Gate::resource só define policies padrão (viewAny, view, create, etc.)... portanto, para policies fora do padrão (como viewTheir), precisamos explicitamente criar os apontamentos para elas
         Gate::define('inscricoes.updateStatus', 'App\Policies\InscricaoPolicy@updateStatus');
         Gate::define('inscricoes.updateArquivos', 'App\Policies\InscricaoPolicy@updateArquivos');
@@ -88,6 +86,12 @@ class AuthServiceProvider extends ServiceProvider
         Gate::resource('linhaspesquisa', 'App\Policies\LinhaPesquisaPolicy');
         Gate::resource('localusers', 'App\Policies\LocalUserPolicy');
         Gate::define('localusers.adminConfirmEmail', 'App\Policies\LocalUserPolicy@adminConfirmEmail');
+        Gate::resource('matriculas', 'App\Policies\MatriculaPolicy');
+        Gate::define('matriculas.viewTheir', 'App\Policies\MatriculaPolicy@viewTheir');    // Gate::resource só define policies padrão (viewAny, view, create, etc.)... portanto, para policies fora do padrão (como viewTheir), precisamos explicitamente criar os apontamentos para elas
+        Gate::define('matriculas.updateStatus', 'App\Policies\MatriculaPolicy@updateStatus');
+        Gate::define('matriculas.updateArquivos', 'App\Policies\MatriculaPolicy@updateArquivos');
+        Gate::define('matriculas.geraBoletos', 'App\Policies\MatriculaPolicy@geraBoletos');
+        Gate::define('matriculas.enviaBoleto', 'App\Policies\MatriculaPolicy@enviaBoleto');
         Gate::resource('motivosisencaotaxa', 'App\Policies\MotivoIsencaoTaxaPolicy');
         Gate::resource('parametros', 'App\Policies\ParametroPolicy');
         Gate::resource('programas', 'App\Policies\ProgramaPolicy');

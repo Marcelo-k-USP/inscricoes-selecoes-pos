@@ -36,7 +36,7 @@ class Parametro extends Model
             'name' => 'boleto_momento_envio',
             'label' => 'Momento de Geração e Envio do Boleto',
             'type' => 'radio',
-            'data' => ['Envio da Inscrição' => 'Envio da Inscrição', 'Aprovação da Inscrição' => 'Aprovação da Inscrição'],
+            'data' => ['Envio da Inscrição/Matrícula' => 'Envio da Inscrição/Matrícula', 'Aprovação da Inscrição/Matrícula' => 'Aprovação da Inscrição/Matrícula'],
         ],
         [
             'name' => 'link_acompanhamento_especiais',

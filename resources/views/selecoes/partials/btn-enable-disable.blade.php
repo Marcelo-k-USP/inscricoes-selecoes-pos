@@ -24,19 +24,19 @@
         Período de Solicitações de Isenção de Taxa
       </button>
     @else
-      <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições">
+      <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições/Matrículas') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições/Matrículas">
         Aguardando Início das Solicitações de Isenção de Taxa e das {{ ucfirst($inscricao_ou_matricula_plural) }}
       </button>
-      <button class="btn btn-sm {{ ($selecao->estado == 'Período de Solicitações de Isenção de Taxa e de Inscrições') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Solicitações de Isenção de Taxa e de Inscrições">
+      <button class="btn btn-sm {{ ($selecao->estado == 'Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas">
         Período de Solicitações de Isenção de Taxa e de {{ ucfirst($inscricao_ou_matricula_plural) }}
       </button>
     @endif
   @endif
   @if (!$selecao->tem_taxa || !$selecao->fluxo_continuo)
-    <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Inscrições') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Inscrições">
+    <button class="btn btn-sm {{ ($selecao->estado == 'Aguardando Início das Inscrições/Matrículas') ? 'btn-warning' : 'btn-secondary' }}" disabled name="estado" value="Aguardando Início das Inscrições/Matrículas">
       Aguardando Início das {{ ucfirst($inscricao_ou_matricula_plural) }}
     </button>
-    <button class="btn btn-sm {{ ($selecao->estado == 'Período de Inscrições') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Inscrições">
+    <button class="btn btn-sm {{ ($selecao->estado == 'Período de Inscrições/Matrículas') ? 'btn-success' : 'btn-secondary' }}" disabled name="estado" value="Período de Inscrições/Matrículas">
       Período de {{ ucfirst($inscricao_ou_matricula_plural) }}
     </button>
   @endif

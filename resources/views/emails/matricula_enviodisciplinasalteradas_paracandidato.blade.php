@@ -1,9 +1,9 @@
-@nomenclatura(['selecao' => $inscricao->selecao])
+@nomenclatura(['selecao' => $matricula->selecao])
 
 Olá {{ $user->name }},<br />
 <br />
 Você reenviou sua matrícula para {{ $objetivo }}.<br />
-@if ($boleto_momento_envio == 'Envio da Inscrição')
+@if (($boleto_momento_envio == 'Envio da Inscrição/Matrícula') && ($arquivos_count > 0))
   Pelo fato de você ter incluído e/ou removido disciplinas, o sistema gerou novo(s) boleto(s) para pagamento.<br />
   Não deixe de pagar {{ ($arquivos_count == 1) ? 'o boleto que segue' : 'os boletos que seguem' }} em anexo.<br />
 @endif

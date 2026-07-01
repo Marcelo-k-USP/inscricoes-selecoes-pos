@@ -6,6 +6,7 @@ use App\Models\Arquivo;
 use App\Models\Inscricao;
 use App\Models\Parametro;
 use App\Models\TipoArquivo;
+use App\Utils\ClasseUtils;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
@@ -15,9 +16,9 @@ use Uspdev\Boleto;
 
 class BoletoService
 {
-    public function gerarBoleto(Inscricao $inscricao, ?string $disciplina_sigla = null)
+    public function gerarBoleto(object $objeto, string $classe_nome, ?string $disciplina_sigla = null)
     {
-        $extras = json_decode($inscricao->extras, true);
+        $extras = json_decode($objeto->extras, true);
         $cpf = str_replace(['-', '.'], '', $extras['cpf']);    // a lei 14.534/2023 estabeleceu que estrangeiros devem possuir CPF para cursar pós-graduação
         $parametros = Parametro::first();
 
@@ -26,13 +27,13 @@ class BoletoService
             'codigoUnidadeDespesa' => config('replicado.codundclg'),
             'codigoFonteRecurso' => $parametros->boleto_codigo_fonte_recurso,
             'estruturaHierarquica' => $parametros->boleto_estrutura_hierarquica,
-            'dataVencimentoBoleto' => ($inscricao->selecao->fluxo_continuo ? addWorkingDays(now(), $inscricao->selecao->boleto_offset_vencimento) : $inscricao->selecao->boleto_data_vencimento),
-            'valorDocumento' => $inscricao->selecao->boleto_valor,
+            'dataVencimentoBoleto' => ($objeto->selecao->fluxo_continuo ? addWorkingDays(now(), $objeto->selecao->boleto_offset_vencimento) : $objeto->selecao->boleto_data_vencimento),
+            'valorDocumento' => $objeto->selecao->boleto_valor,
             'tipoSacado' => 'PF',
             'cpfCnpj' => $cpf,
             'nomeSacado' => $extras['nome'],
             'codigoEmail' => $extras['e_mail'],
-            'informacoesBoletoSacado' => ($inscricao->selecao->categoria->nome == 'Aluno Especial' ? 'Matrícula para Aluno Especial - Disciplina ' . $disciplina_sigla : ($inscricao->selecao->programa->matricula ? 'Matrícula para o Programa ' . $inscricao->selecao->programa->nomeCompleto() : 'Inscrição para o Processo Seletivo ' . $inscricao->selecao->nome)),
+            'informacoesBoletoSacado' => ($objeto->selecao->categoria->nome == 'Aluno Especial' ? 'Matrícula para Aluno Especial - Disciplina ' . $disciplina_sigla : ($objeto->selecao->programa->matricula ? 'Matrícula para o Programa ' . $objeto->selecao->programa->nomeCompleto() : 'Inscrição para o Processo Seletivo ' . $objeto->selecao->nome)),
             'instrucoesObjetoCobranca' => 'Não receber após vencimento!',
         );
 
@@ -50,19 +51,19 @@ class BoletoService
                 $obter = $boleto->obter($id);
 
                 // grava o boleto como um dos arquivos da inscrição, para o candidato poder acessar no site
-                $arquivo_caminho = './arquivos/' . $inscricao->created_at->year . '/' . uniqid() . Str::random(27) . '.pdf';
+                $arquivo_caminho = './arquivos/' . $objeto->created_at->year . '/' . uniqid() . Str::random(27) . '.pdf';
                 $arquivo_conteudo = base64_decode($obter['value']);
                 Storage::put($arquivo_caminho, $arquivo_conteudo);
 
                 // grava informações do arquivo no banco de dados
                 $arquivo = new Arquivo;
                 $arquivo->user_id = \Auth::user()->id;
-                $arquivo->nome_original = $inscricao->InscricaoOuMatriculaAbrev() . $inscricao->id . '_Boleto_' . (is_null($disciplina_sigla) ? '' : strtoupper($disciplina_sigla) . '_') . formatarDataHoraAtualComMilissegundos() . '.pdf';
+                $arquivo->nome_original = ClasseUtils::obterClasseNomeAbreviada($classe_nome) . $objeto->id . '_Boleto_' . (is_null($disciplina_sigla) ? '' : strtoupper($disciplina_sigla) . '_') . formatarDataHoraAtualComMilissegundos() . '.pdf';
                 $arquivo->caminho = $arquivo_caminho;
                 $arquivo->mimeType = 'application/pdf';
-                $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', 'Inscrições')->where('nome', 'Boleto(s) de Pagamento')->first()->id;
+                $arquivo->tipoarquivo_id = TipoArquivo::where('classe_nome', ClasseUtils::obterClasseNomePluralAcentuado($classe_nome))->where('nome', 'Boleto(s) de Pagamento')->first()->id;
                 $arquivo->save();
-                $arquivo->inscricoes()->attach($inscricao->id, [
+                $arquivo->{ ClasseUtils::obterClasseNomePlural($classe_nome) }()->attach($objeto->id, [
                     'tipo' => 'Boleto(s) de Pagamento',
                     'disciplina' => $disciplina_sigla
                 ]);

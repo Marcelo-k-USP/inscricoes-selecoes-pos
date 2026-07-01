@@ -25,20 +25,9 @@ class InscricaoPolicy
     }
 
     /**
-     * Determine whether the user can view all inscrições.
-     *
-     * @param  \App\User  $user
-     * @return mixed
-     */
-    public function viewAny(User $user)
-    {
-        return Gate::any(['perfiladmin', 'perfilgerente', 'perfildocente']);
-    }
-
-    /**
      * Determine whether the user can see the Inscrições menu item.
      */
-    public function viewAny_Inscricoes(User $user)
+    public function viewAny(User $user)
     {
         if (Gate::allows('perfiladmin'))
             return true;
@@ -47,22 +36,6 @@ class InscricaoPolicy
                 return true;
             $programas = $this->obterProgramasParaMenu($user);
             return $programas->contains(fn($programa) => !$programa->matricula);
-        } else
-            return false;
-    }
-
-    /**
-     * Determine whether the user can see the Matrículas menu item.
-     */
-    public function viewAny_Matriculas(User $user)
-    {
-        if (Gate::allows('perfiladmin'))
-            return true;
-        elseif (Gate::any(['perfilgerente', 'perfildocente'])) {
-            if ($user->gerenciaProgramaFuncao('Serviço de Pós-Graduação') || $user->gerenciaProgramaFuncao('Coordenadores da Pós-Graduação'))
-                return true;
-            $programas = $this->obterProgramasParaMenu($user);
-            return $programas->contains(fn($programa) => $programa->matricula);
         } else
             return false;
     }
@@ -105,7 +78,7 @@ class InscricaoPolicy
     {
         if (!is_null($selecao)) {
             $selecao->atualizarStatus();
-            if (!in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']))
+            if (!in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Inscrições/Matrículas']))
                 return false;
         }
 
@@ -123,7 +96,7 @@ class InscricaoPolicy
     {
         $selecao = $inscricao->selecao;
         $selecao->atualizarStatus();
-        if (!in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']))
+        if (!in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Inscrições/Matrículas']))
             return false;
 
         return (Gate::allows('perfilusuario') && ($inscricao->pessoas('Autor')->id == $user->id));    // permite que apenas o usuário autor da inscrição a edite

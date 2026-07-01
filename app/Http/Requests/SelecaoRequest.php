@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Categoria;
+use App\Models\Programa;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SelecaoRequest extends FormRequest
@@ -23,16 +24,7 @@ class SelecaoRequest extends FormRequest
      * @return array
      */
     public function rules() {
-
-        // utilizamos markers para implementar o "E" lógico que o Laravel não fornece no 'required_if' (o Laravel só fornece o "OU" lógico)
-        // se utilizássemos Rule::requiredIf, ocorreria o erro "Serialization of 'Closure' is not allowed" no momento de invocar views passando $rules nos compacts
-        // não poderíamos remover as closures porque elas seriam necessárias para que as views common/list-table-form-* pudessem verificar se os campos são obrigatórios (verificando se $rule instanceof \Illuminate\Validation\Rules\RequiredIf)
-        // com esta implementação atual fica mais simples: mantemos 'required_if' nos campos e, desta forma, as views common/list-table-form-* nem precisam ser alteradas, conseguem verificar sem maiores dificuldades se os campos são obrigatórios
-        $this->merge([
-            '_solicitacaoisencaotaxa_datas_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') !== 'on') ? 1 : 0,
-            '_boleto_data_vencimento_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') !== 'on') ? 1 : 0,
-            '_boleto_offset_vencimento_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') === 'on') ? 1 : 0,
-        ]);
+        // o Laravel invoca prepareForValidation automaticamente neste ponto
 
         return [
             'categoria_id' => ['required', 'numeric'],
@@ -46,20 +38,33 @@ class SelecaoRequest extends FormRequest
             'solicitacoesisencaotaxa_hora_inicio' => ['required_if:_solicitacaoisencaotaxa_datas_required_marker,1'],
             'solicitacoesisencaotaxa_data_fim' => ['required_if:_solicitacaoisencaotaxa_datas_required_marker,1'],
             'solicitacoesisencaotaxa_hora_fim' => ['required_if:_solicitacaoisencaotaxa_datas_required_marker,1'],
-            'inscricoes_data_inicio' => ['required'],
-            'inscricoes_hora_inicio' => ['required'],
-            'inscricoes_data_fim' => ['required'],
-            'inscricoes_hora_fim' => ['required'],
+            'inscricoesmatriculas_data_inicio' => ['required'],
+            'inscricoesmatriculas_hora_inicio' => ['required'],
+            'inscricoesmatriculas_data_fim' => ['required'],
+            'inscricoesmatriculas_hora_fim' => ['required'],
             'boleto_data_vencimento' => ['required_if:_boleto_data_vencimento_required_marker,1'],
             'boleto_offset_vencimento' => ['required_if:_boleto_offset_vencimento_required_marker,1'],
             'boleto_valor' => ['required_if:tem_taxa,on', 'numeric'],
             'boleto_texto' => ['max:255'],
-            'email_inscricaoaprovacao_texto' => ['max:255'],
-            'email_inscricaorejeicao_texto' => ['max:255'],
+            'email_inscricaomatriculaaprovacao_texto' => ['max:255'],
+            'email_inscricaomatricularejeicao_texto' => ['max:255'],
         ];
     }
 
     public function messages() {
+        $classe_nome_singular = 'inscrição/matrícula';
+        $classe_nome_plural = 'inscrições/matrículas';
+        if ($this->filled('categoria_id') && Categoria::find($this->categoria_id)?->nome == 'Aluno Especial') {
+            $classe_nome_singular = 'matrícula';
+            $classe_nome_plural = 'matrículas';
+        } elseif ($this->filled('programa_id') && Programa::find($this->programa_id)?->matricula) {
+            $classe_nome_singular = 'matrícula';
+            $classe_nome_plural = 'matrículas';
+        } else {
+            $classe_nome_singular = 'inscrição';
+            $classe_nome_plural = 'inscrições';
+        }
+
         return [
             'categoria_id.required' => 'A categoria é obrigatória!',
             'categoria_id.numeric' => 'A categoria é inválida!',
@@ -69,24 +74,24 @@ class SelecaoRequest extends FormRequest
             'solicitacoesisencaotaxa_hora_inicio.required_if' => 'A hora de início das solicitações de isenção de taxa é obrigatória!',
             'solicitacoesisencaotaxa_data_fim.required_if' => 'A data de fim das solicitações de isenção de taxa é obrigatória!',
             'solicitacoesisencaotaxa_hora_fim.required_if' => 'A hora de fim das solicitações de isenção de taxa é obrigatória!',
-            'inscricoes_data_inicio.required' => 'A data de início das inscrições é obrigatória!',
-            'inscricoes_hora_inicio.required' => 'A hora de início das inscrições é obrigatória!',
-            'inscricoes_data_fim.required' => 'A data de fim das inscrições é obrigatória!',
-            'inscricoes_hora_fim.required' => 'A hora de fim das inscrições é obrigatória!',
+            'inscricoesmatriculas_data_inicio.required' => 'A data de início das ' . $classe_nome_plural . ' é obrigatória!',
+            'inscricoesmatriculas_hora_inicio.required' => 'A hora de início das ' . $classe_nome_plural . ' é obrigatória!',
+            'inscricoesmatriculas_data_fim.required' => 'A data de fim das ' . $classe_nome_plural . ' é obrigatória!',
+            'inscricoesmatriculas_hora_fim.required' => 'A hora de fim das ' . $classe_nome_plural . ' é obrigatória!',
             'boleto_data_vencimento.required_if' => 'A data de vencimento do boleto é obrigatória!',
             'boleto_offset_vencimento.required_if' => 'A quantidade de dias úteis para pagamento do boleto é obrigatória!',
             'boleto_valor.required_if' => 'O valor do boleto é obrigatório!',
             'boleto_valor.numeric' => 'O valor do boleto é inválido!',
             'boleto_texto.max' => 'As eventuais informações adicionais no boleto não podem exceder 255 caracteres!',
-            'email_inscricaoaprovacao_texto.max' => 'As eventuais informações adicionais no e-mail de aprovação da inscrição não podem exceder 255 caracteres!',
-            'email_inscricaorejeicao_texto.max' => 'As eventuais informações adicionais no e-mail de rejeição da inscrição não podem exceder 255 caracteres!',
+            'email_inscricaomatriculaaprovacao_texto.max' => 'As eventuais informações adicionais no e-mail de aprovação da ' . $classe_nome_singular . ' não podem exceder 255 caracteres!',
+            'email_inscricaomatricularejeicao_texto.max' => 'As eventuais informações adicionais no e-mail de rejeição da ' . $classe_nome_singular . ' não podem exceder 255 caracteres!',
         ];
     }
 
     protected function prepareForValidation() {
         $this->merge([
             '_solicitacaoisencaotaxa_datas_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') !== 'on') ? 1 : 0,
-            'boleto_valor' => str_replace(',', '.', $this->boleto_valor),
+            'boleto_valor' => str_replace(',', '.', (string) $this->boleto_valor),
             '_boleto_data_vencimento_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') !== 'on') ? 1 : 0,
             '_boleto_offset_vencimento_required_marker' => ($this->input('tem_taxa') === 'on' && $this->input('fluxo_continuo') === 'on') ? 1 : 0,
         ]);
