@@ -49,9 +49,9 @@
                 $editavel = (isset($tipoarquivo['editavel']) && $tipoarquivo['editavel']);
                 if (session('perfil') == 'usuario')
                   if ($classe_nome == 'SolicitacaoIsencaoTaxa')
-                    $editavel &= in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Solicitações de Isenção de Taxa']);
-                  elseif ($classe_nome == 'Inscricao')
-                    $editavel &= in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']);
+                    $editavel &= in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Solicitações de Isenção de Taxa']);
+                  elseif (in_array($classe_nome, ['Inscricao', 'Matricula']))
+                    $editavel &= in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Inscrições/Matrículas']);
               @endphp
               @if (Gate::allows($classe_nome_plural . '.updateArquivos', $objeto) && $editavel)
                 <label for="input_arquivo_{{ $i }}">
@@ -60,15 +60,15 @@
               @endif
               @canany(['perfiladmin', 'perfilgerente'])
                 @if (($tipoarquivo['nome'] === 'Boleto(s) de Pagamento') && (
-                  (($boleto_momento_envio === 'Envio da Inscrição') && ($inscricao->estado !== 'Aguardando Envio')) ||
-                  (($boleto_momento_envio === 'Aprovação da Inscrição') && ($inscricao->estado === 'Aprovada'))
+                  (($boleto_momento_envio === 'Envio da Inscrição/Matrícula') && ($objeto->estado !== 'Aguardando Envio')) ||
+                  (($boleto_momento_envio === 'Aprovação da Inscrição/Matrícula') && ($objeto->estado === 'Aprovada'))
                 ))    {{-- se o tipo de documento é boleto e ele(s) já deve(m) ter sido gerado(s) e enviado(s) --}}
-                  @if (($inscricao->selecao->categoria->nome !== 'Aluno Especial') && ($inscricao->arquivos->where('pivot.tipo', 'Boleto(s) de Pagamento')->count() == 0))    {{-- se é aluno regular e não tem o devido boleto --}}
-                    <a onclick="gerar_boletos({{ $inscricao->id }}); return false;" class="btn btn-sm btn-light text-primary ml-2">
+                  @if (($objeto->selecao->categoria->nome !== 'Aluno Especial') && ($objeto->arquivos->where('pivot.tipo', 'Boleto(s) de Pagamento')->count() == 0))    {{-- se é aluno regular e não tem o devido boleto --}}
+                    <a onclick="gerar_boletos({{ $objeto->id }}); return false;" class="btn btn-sm btn-light text-primary ml-2">
                       <i class="fas fa-plus"></i> Gerar
                     </a>
-                  @elseif (($inscricao->selecao->categoria->nome == 'Aluno Especial') && (count($inscricao->disciplinas_sem_boleto) > 0))    {{-- se é aluno especial e há boleto(s) a ser(em) gerado(s) para sua(s) disciplina(s) --}}
-                    @include('disciplinas.partials.modal-boletos', ['inclusor_url' => request()->segment(1) . '/geraboletos/' . $inscricao->id])
+                  @elseif (($objeto->selecao->categoria->nome == 'Aluno Especial') && (count($objeto->disciplinas_sem_boleto) > 0))    {{-- se é aluno especial e há boleto(s) a ser(em) gerado(s) para sua(s) disciplina(s) --}}
+                    @include('disciplinas.partials.modal-boletos', ['inclusor_url' => $classe_nome_plural . '/geraboletos/' . $objeto->id])
                   @endif
                 @endif
               @endcan
@@ -90,7 +90,7 @@
                         @canany(['perfiladmin', 'perfilgerente'])
                           @if ($tipoarquivo['nome'] === 'Boleto(s) de Pagamento')
                             <div class="arquivo-acoes uma-acao d-inline-block">
-                              <a onclick="enviar_boleto({{ $inscricao->id }}, {{ $arquivo->id }});" class="btn btn-outline-warning btn-sm btn-enviar btn-arquivo-acao">
+                              <a onclick="enviar_boleto({{ $objeto->id }}, {{ $arquivo->id }});" class="btn btn-outline-warning btn-sm btn-enviar btn-arquivo-acao">
                                 <i class="far fa-paper-plane"></i>
                               </a>
                             </div>

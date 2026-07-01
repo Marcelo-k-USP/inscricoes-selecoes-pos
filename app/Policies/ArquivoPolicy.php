@@ -107,8 +107,8 @@ class ArquivoPolicy
         elseif (Gate::allows('perfilusuario')) {
             $selecao = $objeto->selecao;
             $selecao->atualizarStatus();
-            if ((($classe_nome == 'SolicitacaoIsencaoTaxa') && !in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Solicitações de Isenção de Taxa'])) ||
-                (($classe_nome == 'Inscricao'             ) && !in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições'                     ])))
+            if ((($classe_nome == 'SolicitacaoIsencaoTaxa') && !in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Solicitações de Isenção de Taxa'])) ||
+                (($classe_nome == 'Inscricao'             ) && !in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Inscrições/Matrículas'          ])))
                 return false;
 
             $autor_inscricao = $objeto->pessoas('Autor');
@@ -154,8 +154,8 @@ class ArquivoPolicy
         elseif (Gate::allows('perfilusuario')) {
             $selecao = $objeto->selecao;
             $selecao->atualizarStatus();
-            if ((($classe_nome == 'SolicitacaoIsencaoTaxa') && !in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Solicitações de Isenção de Taxa'])) ||
-                (($classe_nome == 'Inscricao'             ) && !in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições'                     ])))
+            if ((($classe_nome == 'SolicitacaoIsencaoTaxa') && !in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Solicitações de Isenção de Taxa'])) ||
+                (($classe_nome == 'Inscricao'             ) && !in_array($selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Inscrições/Matrículas'          ])))
                 return false;
 
             $autor_arquivo_id = $arquivo->user_id;

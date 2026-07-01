@@ -18,7 +18,7 @@
     @if ($tipoarquivo->classe_nome != $classe_nome_anterior)
       <tr>
         <td colspan="2">
-          {{ $tipoarquivo->classe_nome }}{{ ($tipoarquivo->classe_nome == 'Inscrições') ? '/Matrículas' : '' }}
+          {{ $tipoarquivo->classe_nome }}
         </td>
       </tr>
       @php

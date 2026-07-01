@@ -150,11 +150,18 @@
     }
 
     function updateInscricaoMatriculaLabels(oldLabel, oldLabelPlural, newLabel, newLabelPlural) {
+      if (!$('#form_principal').data('labels-init')) {
+        // primeira chamada a este método
+        oldLabel = 'Inscrição/Matrícula';
+        oldLabelPlural = 'Inscrições/Matrículas';
+        $('#form_principal').data('labels-init', true);
+      }
+      $('label[for="fluxo_continuo"]').text($('label[for="fluxo_continuo"]').text().replace(oldLabelPlural.toLowerCase(), newLabelPlural.toLowerCase()));
       $('label[for="tem_taxa"]').text($('label[for="tem_taxa"]').text().replace(oldLabel, newLabel));
-      $('label[for="inscricoes_data_inicio"]').html($('label[for="inscricoes_data_inicio"]').html().replace(oldLabelPlural, newLabelPlural));
-      $('label[for="inscricoes_data_fim"]').html($('label[for="inscricoes_data_fim"]').html().replace(oldLabelPlural, newLabelPlural));
-      $('label[for="email_inscricaoaprovacao_texto"]').text($('label[for="email_inscricaoaprovacao_texto"]').text().replace(oldLabel, newLabel));
-      $('label[for="email_inscricaorejeicao_texto"]').text($('label[for="email_inscricaorejeicao_texto"]').text().replace(oldLabel, newLabel));
+      $('label[for="inscricoesmatriculas_data_inicio"]').html($('label[for="inscricoesmatriculas_data_inicio"]').html().replace(oldLabelPlural, newLabelPlural));
+      $('label[for="inscricoesmatriculas_data_fim"]').html($('label[for="inscricoesmatriculas_data_fim"]').html().replace(oldLabelPlural, newLabelPlural));
+      $('label[for="email_inscricaomatriculaaprovacao_texto"]').text($('label[for="email_inscricaomatriculaaprovacao_texto"]').text().replace(oldLabel, newLabel));
+      $('label[for="email_inscricaomatricularejeicao_texto"]').text($('label[for="email_inscricaomatricularejeicao_texto"]').text().replace(oldLabel, newLabel));
     }
   </script>
 @endsection

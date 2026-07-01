@@ -18,13 +18,14 @@ class ArquivoObserver
         if (($arquivo->tipoarquivo->classe_nome == 'Seleções') && (in_array($arquivo->tipoarquivo->nome, ['Errata', 'Resultado']))) {
 
             // envia e-mail para os candidatos avisando de novos documentos dos tipos Errata ou Resultado na seleção
-            // envio do e-mail "18" do README.md
+            // envio do e-mail "19" do README.md
             $passo = 'novo(s) informativo(s)';
             $selecao = $arquivo->selecoes()->first();
             $tipoarquivo = $arquivo->tipoarquivo->nome;
-            foreach ($selecao->inscricoes->map(function ($inscricao) { return json_decode($inscricao->extras, true); })
-                ->merge($selecao->solicitacoesisencaotaxa->map(function ($solicitacao) { return json_decode($solicitacao->extras, true); }))
-                ->unique('e_mail') as $candidato) {
+            foreach ($selecao->matriculas->toBase()->map(function ($matricula) { return json_decode($matricula->extras, true); })
+            ->concat($selecao->inscricoes->toBase()->map(function ($inscricao) { return json_decode($inscricao->extras, true); }))
+            ->concat($selecao->solicitacoesisencaotaxa->toBase()->map(function ($solicitacaoisencaotaxa) { return json_decode($solicitacaoisencaotaxa->extras, true); }))
+            ->unique(function ($candidato) { return strtolower(trim($candidato['e_mail'] ?? '')); }) as $candidato) {
                 $candidatonome = $candidato['nome'];
                 \Mail::to($candidato['e_mail'])
                     ->queue(new SelecaoMail(compact('passo', 'selecao', 'candidatonome', 'tipoarquivo')));

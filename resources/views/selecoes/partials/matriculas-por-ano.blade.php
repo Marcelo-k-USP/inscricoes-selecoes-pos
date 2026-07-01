@@ -1,0 +1,31 @@
+<table class="table table-bordered table-sm text-center">
+  <tr>
+    <th>Ano</th>
+    <th>Tot.</th>
+    <th>jan</th>
+    <th>fev</th>
+    <th>mar</th>
+    <th>abr</th>
+    <th>mai</th>
+    <th>jun</th>
+    <th>jul</th>
+    <th>ago</th>
+    <th>set</th>
+    <th>out</th>
+    <th>nov</th>
+    <th>dez</th>
+  </tr>
+  @foreach ($selecao->contarMatriculasPorAno() as $anual)
+    <tr>
+      <th>{{ $anual->ano }}</th>
+      <th style="white-space: nowrap;">
+        {{ $anual->count }}
+        <a href="{{ route('selecoes.downloadmatriculas', $selecao) }}?ano={{ $anual->ano }}" title="Fazer download dos dados das matrículas"><i class="fas fa-download"></i></a>
+        <a href="javascript:void(0);" onclick="baixar_todos_arquivos('arquivos/ziptodosdosobjetosdaselecao/Matricula/{{ $selecao->id }}', 'arquivos/downloadtodosdosobjetosdaselecao/Matricula/{{ $selecao->id }}', true)" title="Fazer download dos documentos das matrículas"><i class="fas fa-download" style="color: #CD5C5C;"></i></a>
+      </th>
+      @foreach ($selecao->contarMatriculasPorMes($anual->ano) as $mes)
+        <td>{{ $mes }}</td>
+      @endforeach
+    </tr>
+  @endforeach
+</table>

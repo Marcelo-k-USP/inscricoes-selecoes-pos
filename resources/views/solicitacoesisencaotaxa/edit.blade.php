@@ -41,12 +41,12 @@
             <span class="text-muted">{{ $solicitacaoisencaotaxa->selecao->descricao }}</span>
           </div>
         </div>
-        @include('solicitacoesisencaotaxa.partials.badge-instrucoes-da-selecao')
+        @include('common.partials.badge-instrucoes-da-selecao')
         @include('solicitacoesisencaotaxa.partials.instrucoes-da-selecao')
         <div class="card-body">
           <div class="row">
             <div class="col-md-7">
-              @if (!in_array($solicitacaoisencaotaxa->selecao->estado, ['Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições', 'Aguardando Início das Solicitações de Isenção de Taxa']))
+              @if (!in_array($solicitacaoisencaotaxa->selecao->estado, ['Aguardando Início das Solicitações de Isenção de Taxa e das Inscrições/Matrículas', 'Aguardando Início das Solicitações de Isenção de Taxa']))
                 @include('solicitacoesisencaotaxa.show.card-principal', [    {{-- Principal --}}
                   'selecao' => $solicitacaoisencaotaxa->selecao
                 ])
@@ -55,19 +55,19 @@
               @endif
             </div>
             <div class="col-md-5">
-              @include('inscricoes.show.card-responsaveis', [                {{-- Responsáveis --}}
+              @include('common.show.card-responsaveis', [                    {{-- Responsáveis --}}
                 'selecao' => $solicitacaoisencaotaxa->selecao
               ])
-              @include('inscricoes.show.card-informativos', [                {{-- Informativos --}}
+              @include('common.show.card-informativos', [                    {{-- Informativos --}}
                 'selecao' => $solicitacaoisencaotaxa->selecao
               ])
               @if ($modo == 'edit')
-                @include('common.card-arquivos', [                           {{-- Arquivos --}}
+                @include('common.show.card-arquivos', [                      {{-- Arquivos --}}
                   'selecao' => $solicitacaoisencaotaxa->selecao,
                   'tipoarquivo_classe_nome_plural_acentuado' => 'Solicitações de Isenção de Taxa',
                 ])
-                @if (in_array($solicitacaoisencaotaxa->selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Solicitações de Isenção de Taxa']) && (session('perfil') == 'usuario'))
-                  @include('inscricoes.show.card-envio')                     {{-- Envio --}}
+                @if (in_array($solicitacaoisencaotaxa->selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Solicitações de Isenção de Taxa']) && (session('perfil') == 'usuario'))
+                  @include('common.show.card-envio')                         {{-- Envio --}}
                 @endif
               @endif
             </div>

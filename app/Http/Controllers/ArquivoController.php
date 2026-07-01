@@ -6,6 +6,7 @@ use App\Models\Arquivo;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
+use App\Models\Matricula;
 use App\Models\MotivoIsencaoTaxa;
 use App\Models\Nivel;
 use App\Models\NivelLinhaPesquisa;
@@ -50,12 +51,14 @@ class ArquivoController extends Controller
      */
     public function show(Arquivo $arquivo)
     {
-        if (Arquivo::find($arquivo->id)->selecoes()->exists())
+        if ($arquivo->selecoes()->exists())
             $classe_nome = 'Selecao';
-        elseif (Arquivo::find($arquivo->id)->inscricoes()->exists() && in_array(Arquivo::find($arquivo->id)->inscricoes()->first()->estado, (new SolicitacaoIsencaoTaxa())->estados()))
+        elseif ($arquivo->solicitacoesisencaotaxa()->exists())
             $classe_nome = 'SolicitacaoIsencaoTaxa';
-        else
+        elseif ($arquivo->inscricoes()->exists())
             $classe_nome = 'Inscricao';
+        elseif ($arquivo->matriculas()->exists())
+            $classe_nome = 'Matricula';
         Gate::authorize('arquivos.view', [$arquivo, $classe_nome]);
 
         while (ob_get_level() > 0)    // este while é para não estourar erro quando usando docker
@@ -76,9 +79,8 @@ class ArquivoController extends Controller
         $classe_nome_plural = ClasseUtils::obterClasseNomePlural($classe_nome);
         $classe = ClasseUtils::obterClasse($classe_nome);
         $objeto = $classe::find($request->objeto_id);
-        $segmento_rota = ($classe_nome === 'Inscricao' && $objeto->selecao->isMatricula()) ? 'matriculas' : $classe_nome_plural;
         $classe_nome_plural_acentuado = ClasseUtils::obterClasseNomePluralAcentuado($classe_nome);
-        $classe_nome_abreviada = ClasseUtils::obterClasseNomeAbreviada($classe_nome, ($classe_nome == 'Inscricao' ? $objeto->selecao : null));
+        $classe_nome_abreviada = ClasseUtils::obterClasseNomeAbreviada($classe_nome);
         $form = $this->obterForm($classe_nome, $objeto);
         $tipoarquivo = TipoArquivo::where('classe_nome', $classe_nome_plural_acentuado)->where('nome', $request->tipoarquivo)->first();
 
@@ -88,7 +90,7 @@ class ArquivoController extends Controller
         ]);
         if ($validator->fails()) {
             \UspTheme::activeUrl($classe_nome_plural);
-            return redirect()->to(url($segmento_rota . '/edit/' . $objeto->id))->with($this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'))->withErrors($validator)->withInput();    // se fosse return view, cairia em URL arquivos e perderia da URL o segmento que diz se é solicitações de isenção de taxa, inscrições ou matrículas
+            return redirect()->to(url($classe_nome_plural . '/edit/' . $objeto->id))->with($this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'))->withErrors($validator)->withInput();    // se fosse return view, cairia em URL arquivos e perderia da URL o segmento que diz se é solicitações de isenção de taxa, inscrições ou matrículas
         }
         Gate::authorize('arquivos.create', [$objeto, $classe_nome]);
 
@@ -116,11 +118,9 @@ class ArquivoController extends Controller
 
                 $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso<br />');
             } else {
-                $classe_nome_formatada = ($classe_nome === 'Inscricao' && $objeto->selecao->isMatricula()) ? 'matrícula' : ClasseUtils::obterClasseNomeFormatada($classe_nome);
-                $nome_botao = ($classe_nome === 'SolicitacaoIsencaoTaxa' ? 'Solicitação' : (($classe_nome === 'Inscricao' && $objeto->selecao->isMatricula()) ? 'Matrícula' : 'Inscrição'));
                 $request->session()->flash('alert-success', 'Documento(s) adicionado(s) com sucesso<br />' .
-                    'Se não houver mais arquivos a enviar, clique no botão "Enviar ' . $nome_botao . '" abaixo para efetivar sua ' . $classe_nome_formatada . '<br />' .
-                    'Sem isso, sua ' . $classe_nome_formatada . ' não será avaliada!');
+                    'Se não houver mais arquivos a enviar, clique no botão "Enviar ' . ucfirst(explode(' ', ClasseUtils::obterClasseNomeFormatada($classe_nome))[0]) . '" abaixo para efetivá-la<br />' .
+                    'Sem isso, ela não será avaliada!');
             }
 
             return ['objeto' => $objeto, 'arquivo' => $arquivo];    // basta retornar somente o último arquivo... desta forma, o evento created logo abaixo será disparado apenas uma vez
@@ -129,8 +129,8 @@ class ArquivoController extends Controller
         // agora sim vamos disparar o evento (necessário porque acima salvamos com saveQuietly)
         event('eloquent.created: App\Models\Arquivo', $db_transaction['arquivo']);
 
-        \UspTheme::activeUrl($segmento_rota);
-        return redirect()->to(url($segmento_rota . '/edit/' . $db_transaction['objeto']->id))->with($this->monta_compact($db_transaction['objeto'], $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
+        \UspTheme::activeUrl($classe_nome_plural);
+        return redirect()->to(url($classe_nome_plural . '/edit/' . $db_transaction['objeto']->id))->with($this->monta_compact($db_transaction['objeto'], $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -146,7 +146,6 @@ class ArquivoController extends Controller
         $classe_nome_plural = ClasseUtils::obterClasseNomePlural($classe_nome);
         $classe = ClasseUtils::obterClasse($classe_nome);
         $objeto = $classe::find($request->objeto_id);
-        $segmento_rota = ($classe_nome === 'Inscricao' && $objeto->selecao->isMatricula()) ? 'matriculas' : $classe_nome_plural;
         $form = $this->obterForm($classe_nome, $objeto);
 
         Gate::authorize('arquivos.delete', [$arquivo, $objeto, $classe_nome]);
@@ -169,8 +168,8 @@ class ArquivoController extends Controller
         });
 
         $request->session()->flash('alert-success', 'Documento removido com sucesso');
-        \UspTheme::activeUrl($segmento_rota);
-        return redirect()->to(url($segmento_rota . '/edit/' . $objeto->id))->with($this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
+        \UspTheme::activeUrl($classe_nome_plural);
+        return redirect()->to(url($classe_nome_plural . '/edit/' . $objeto->id))->with($this->monta_compact($objeto, $classe_nome, $classe_nome_plural, $form, 'edit', 'arquivos'));
     }
 
     /**
@@ -183,9 +182,9 @@ class ArquivoController extends Controller
     public function zipTodosDoObjeto(string $classe_nome, int $objeto_id)
     {
         $objeto = ClasseUtils::obterClasse($classe_nome)::findOrFail($objeto_id);
-        Gate::authorize('viewAny', [$objeto, $classe_nome]);
+        Gate::authorize('arquivos.viewAny', [$objeto, $classe_nome]);
 
-        $zip_name = ClasseUtils::obterClasseNomeAbreviada($classe_nome, ($classe_nome == 'Inscricao' ? $objeto->selecao : null)) . $objeto->id . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
+        $zip_name = ClasseUtils::obterClasseNomeAbreviada($classe_nome) . $objeto->id . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
         return $this->zip($objeto->arquivos, $zip_name);
     }
 
@@ -200,7 +199,7 @@ class ArquivoController extends Controller
     public function downloadTodosDoObjeto(string $classe_nome, int $objeto_id, Request $request)
     {
         $objeto = ClasseUtils::obterClasse($classe_nome)::findOrFail($objeto_id);
-        Gate::authorize('viewAny', [$objeto, $classe_nome]);
+        Gate::authorize('arquivos.viewAny', [$objeto, $classe_nome]);
 
         return $this->downloadZip($request->query('zip_name'));
     }
@@ -216,7 +215,7 @@ class ArquivoController extends Controller
     {
         Gate::authorize('selecoes.view', $selecao);
 
-        $zip_name = ClasseUtils::obterClasseNomeAbreviada('Selecao') . $selecao->id . '_' . ClasseUtils::obterClasseNomeAbreviadaPlural($classe_nome, $selecao) . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
+        $zip_name = ClasseUtils::obterClasseNomeAbreviada('Selecao') . $selecao->id . '_' . ClasseUtils::obterClasseNomeAbreviadaPlural($classe_nome) . '_' . formatarDataHoraAtualComMilissegundos() . '.zip';
         $arquivos = collect();
         switch ($classe_nome) {
             case 'SolicitacaoIsencaoTaxa':
@@ -224,6 +223,9 @@ class ArquivoController extends Controller
                 break;
             case 'Inscricao':
                 $arquivos = $selecao->inscricoes->flatMap(function ($inscricao) { return $inscricao->arquivos; });
+                break;
+            case 'Matricula':
+                $arquivos = $selecao->matriculas->flatMap(function ($matricula) { return $matricula->arquivos; });
         }
         return $this->zip($arquivos, $zip_name);
     }
@@ -282,7 +284,8 @@ class ArquivoController extends Controller
                 return null;
             case 'SolicitacaoIsencaoTaxa':
             case 'Inscricao':
-                // ambos 'SolicitacaoIsencaoTaxa' e 'Inscricao' executam as linhas abaixo
+            case 'Matricula':
+                // 'SolicitacaoIsencaoTaxa', 'Inscricao' e 'Matricula' executam as linhas abaixo
                 $objeto->selecao->template = JSONForms::orderTemplate($objeto->selecao->template);
                 return JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         }
@@ -298,31 +301,34 @@ class ArquivoController extends Controller
         $extras = json_decode($objeto->extras, true);
         $objeto->niveislinhaspesquisa = NivelLinhaPesquisa::obterNiveisLinhasPesquisaDaSelecao($selecao);
         $niveislinhaspesquisa = NivelLinhaPesquisa::obterNiveisLinhasPesquisaPossiveis($selecao->programa_id);
-        $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
+        $matricula_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->get() : collect());
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
-        $solicitacaoisencaotaxa_aprovada = ($classe_nome == 'Inscricao') ? SolicitacaoIsencaoTaxa::where('extras->cpf', $extras['cpf'] ?? null)
-                                                                                                ->where('selecao_id', $objeto->selecao->id)
-                                                                                                ->where('estado', 'LIKE', 'Isenção de Taxa Aprovada%')->first() : null;
-        $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao($classe_nome, ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao);
+        $solicitacaoisencaotaxa_aprovada = (in_array($classe_nome, ['Inscricao', 'Matricula'])) ? SolicitacaoIsencaoTaxa::where('extras->cpf', $extras['cpf'] ?? null)
+                                                                                                                        ->where('selecao_id', $objeto->selecao->id)
+                                                                                                                        ->where('estado', 'LIKE', 'Isenção de Taxa Aprovada%')->first() : null;
+        $niveis_selecao = ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all()));
+        $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao($classe_nome, $niveis_selecao, $selecao);
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id);
         if ($classe_nome == 'Selecao') {
             $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
             $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id)
                                 ->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $selecao->tem_taxa; })
                             ->merge(TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $selecao))
-                            ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao)
+                            ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', $niveis_selecao, $selecao))
+                            ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Matricula', $niveis_selecao, $selecao)
                                 ->filter(function ($tipoarquivo) { return !str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento'); }))
                                 ->sortBy(function ($tipoarquivo) { return str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento') ? 1 : 0; });
-        } elseif ($classe_nome == 'Inscricao') {
+        } elseif (in_array($classe_nome, ['Inscricao', 'Matricula'])) {
             $objeto->tiposarquivo = $objeto->tiposarquivo->filter(function ($tipoarquivo) use ($selecao) { return (!str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento')) || $selecao->tem_taxa; })
                                                          ->sortBy(function ($tipoarquivo) { return str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento') ? 1 : 0; });
             $tiposarquivo_selecao = $tiposarquivo_selecao->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $selecao->tem_taxa; });
         }
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
+        $tiposarquivo_matricula = TipoArquivo::obterTiposArquivoPossiveis('Matricula', ($selecao->categoria->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
         $boleto_momento_envio = Parametro::first()->boleto_momento_envio;
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'niveislinhaspesquisa', 'inscricao_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'boleto_momento_envio', 'max_upload_size', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'disciplinas', 'motivosisencaotaxa', 'responsaveis', 'niveislinhaspesquisa', 'matricula_disciplinas', 'nivel', 'solicitacaoisencaotaxa_aprovada', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'tiposarquivo_matricula', 'boleto_momento_envio', 'max_upload_size', 'scroll');
     }
 }

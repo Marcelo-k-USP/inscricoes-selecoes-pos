@@ -19,7 +19,7 @@ class SelecaoMail extends Mailable
     // campos adicionais para novo(s) informativo(s)
     protected $tipoarquivo;
 
-    // campos adicionais para novo(s) informativo(s), alerta de proximidade do fim das solicitações de isenção de taxa e alerta de proximidade do fim das inscrições
+    // campos adicionais para novo(s) informativo(s), alerta de proximidade do fim das solicitações de isenção de taxa, alerta de proximidade do fim das inscrições e alerta de proximidade do fim das matrículas
     protected $candidatonome;
 
     /**
@@ -40,6 +40,7 @@ class SelecaoMail extends Mailable
 
             case 'alerta de proximidade do fim das solicitações de isenção de taxa':
             case 'alerta de proximidade do fim das inscrições':
+            case 'alerta de proximidade do fim das matrículas':
                 $this->candidatonome = $data['candidatonome'];
         }
     }
@@ -100,6 +101,16 @@ class SelecaoMail extends Mailable
                     ->subject('[' . config('app.name') . '] Inscrição não enviada')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->view('emails.selecao_inscricaonaoconcluida')
+                    ->with([
+                        'selecao' => $this->selecao,
+                        'candidatonome' => $this->candidatonome,
+                    ]);
+
+            case 'alerta de proximidade do fim das matrículas':
+                return $this
+                    ->subject('[' . config('app.name') . '] Matrícula não enviada')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.selecao_matriculanaoconcluida')
                     ->with([
                         'selecao' => $this->selecao,
                         'candidatonome' => $this->candidatonome,

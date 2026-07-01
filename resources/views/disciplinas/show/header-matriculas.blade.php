@@ -1,10 +1,10 @@
 <div class="d-flex">
   <b>
-    {{ $inscricao_disciplina->sigla }} - {{ $inscricao_disciplina->nome }}
+    {{ $matricula_disciplina->sigla }} - {{ $matricula_disciplina->nome }}
   </b>
   <div class="hidden-btn d-none ml-auto">
-    @if (in_array($inscricao->selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições', 'Período de Inscrições']) && (session('perfil') == 'usuario'))
-      @include('common.btn-delete-sm', ['action' => request()->segment(1) . "/{$inscricao->id}/disciplinas/{$inscricao_disciplina->id}"])
+    @if (in_array($matricula->selecao->estado, ['Período de Solicitações de Isenção de Taxa e de Inscrições/Matrículas', 'Período de Inscrições/Matrículas']) && (session('perfil') == 'usuario'))
+      @include('common.btn-delete-sm', ['action' => "matriculas/{$matricula->id}/disciplinas/{$matricula_disciplina->id}"])
     @endif
   </div>
 </div>

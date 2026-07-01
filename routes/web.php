@@ -12,6 +12,7 @@ use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\LimpezaDadosController;
 use App\Http\Controllers\LinhaPesquisaController;
 use App\Http\Controllers\LocalUserController;
+use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\MotivoIsencaoTaxaController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\ProgramaController;
@@ -59,19 +60,19 @@ Route::post('inscricoes/geraboletos/{inscricao}', [InscricaoController::class, '
 Route::post('inscricoes/{inscricao}/enviaboleto/{arquivo}', [InscricaoController::class, 'enviaBoleto'])->name('inscricoes.enviaboleto');
 
 // MATRÍCULAS
-Route::get('matriculas', [InscricaoController::class, 'index'])->name('matriculas.index');
-Route::get('matriculas/create', [InscricaoController::class, 'listaSelecoesParaNovaInscricao'])->name('matriculas.create');
-Route::get('matriculas/create/{selecao}/{nivel}', [InscricaoController::class, 'create']);    // define a rota mais específica antes da mais geral (na linha de baixo)
-Route::get('matriculas/create/{selecao}', [InscricaoController::class, 'create']);
-Route::post('matriculas/create', [InscricaoController::class, 'store'])->name('matriculas.store');
-Route::get('matriculas/edit/{inscricao}', [InscricaoController::class, 'edit'])->name('matriculas.edit');
-Route::put('matriculas/edit/{inscricao}', [InscricaoController::class, 'update'])->name('matriculas.update');
-Route::post('matriculas/geraboletos/{inscricao}', [InscricaoController::class, 'geraBoletos'])->name('matriculas.geraboletos');
-Route::post('matriculas/{inscricao}/enviaboleto/{arquivo}', [InscricaoController::class, 'enviaBoleto'])->name('matriculas.enviaboleto');
+Route::get('matriculas', [MatriculaController::class, 'index'])->name('matriculas.index');
+Route::get('matriculas/create', [MatriculaController::class, 'listaSelecoesParaNovaMatricula'])->name('matriculas.create');
+Route::get('matriculas/create/{selecao}/{nivel}', [MatriculaController::class, 'create']);    // define a rota mais específica antes da mais geral (na linha de baixo)
+Route::get('matriculas/create/{selecao}', [MatriculaController::class, 'create']);
+Route::post('matriculas/create', [MatriculaController::class, 'store'])->name('matriculas.store');
+Route::get('matriculas/edit/{matricula}', [MatriculaController::class, 'edit'])->name('matriculas.edit');
+Route::put('matriculas/edit/{matricula}', [MatriculaController::class, 'update'])->name('matriculas.update');
+Route::post('matriculas/geraboletos/{matricula}', [MatriculaController::class, 'geraBoletos'])->name('matriculas.geraboletos');
+Route::post('matriculas/{matricula}/enviaboleto/{arquivo}', [MatriculaController::class, 'enviaBoleto'])->name('matriculas.enviaboleto');
 
 // MATRÍCULAS > DISCIPLINAS
-Route::post('matriculas/{inscricao}/disciplinas', [InscricaoController::class, 'storeDisciplina']);
-Route::delete('matriculas/{inscricao}/disciplinas/{disciplina}', [InscricaoController::class, 'destroyDisciplina']);
+Route::post('matriculas/{matricula}/disciplinas', [MatriculaController::class, 'storeDisciplina']);
+Route::delete('matriculas/{matricula}/disciplinas/{disciplina}', [MatriculaController::class, 'destroyDisciplina']);
 
 // CONSULTA DE CEP
 Route::get('consulta-cep', [EnderecoController::class, 'consultarCep'])->name('consulta.cep');
@@ -92,6 +93,7 @@ Route::put('selecoes/edit/{selecao}', [SelecaoController::class, 'update'])->nam
 Route::put('selecoes/edit-status/{selecao}', [SelecaoController::class, 'updateStatus'])->name('selecoes.update-status');
 Route::get('selecoes/{selecao}/downloadsolicitacoesisencaotaxa', [SelecaoController::class, 'downloadSolicitacoesIsencaoTaxa'])->name('selecoes.downloadsolicitacoesisencaotaxa');
 Route::get('selecoes/{selecao}/downloadinscricoes', [SelecaoController::class, 'downloadInscricoes'])->name('selecoes.downloadinscricoes');
+Route::get('selecoes/{selecao}/downloadmatriculas', [SelecaoController::class, 'downloadMatriculas'])->name('selecoes.downloadmatriculas');
 
 // SELEÇÕES > NÍVEIS + LINHAS DE PESQUISA/TEMAS
 Route::post('selecoes/{selecao}/niveislinhaspesquisa', [SelecaoController::class, 'storeNiveisLinhasPesquisa']);
@@ -110,6 +112,8 @@ Route::post('selecoes/{selecao}/tiposarquivosolicitacaoisencaotaxa', [SelecaoCon
 Route::delete('selecoes/{selecao}/tiposarquivosolicitacaoisencaotaxa/{tipoarquivo}', [SelecaoController::class, 'destroyTipoArquivoSolicitacaoIsencaoTaxa']);
 Route::post('selecoes/{selecao}/tiposarquivoinscricao', [SelecaoController::class, 'storeTipoArquivoInscricao']);
 Route::delete('selecoes/{selecao}/tiposarquivoinscricao/{tipoarquivo}', [SelecaoController::class, 'destroyTipoArquivoInscricao']);
+Route::post('selecoes/{selecao}/tiposarquivomatricula', [SelecaoController::class, 'storeTipoArquivoMatricula']);
+Route::delete('selecoes/{selecao}/tiposarquivomatricula/{tipoarquivo}', [SelecaoController::class, 'destroyTipoArquivoMatricula']);
 
 // SELEÇÕES > FORMULÁRIO
 Route::post('selecoes/{selecao}/template_json', [SelecaoController::class, 'storeTemplateJson']);

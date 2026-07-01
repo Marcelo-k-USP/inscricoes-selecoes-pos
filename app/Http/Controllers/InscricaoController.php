@@ -6,7 +6,6 @@ use App\Http\Requests\InscricaoRequest;
 use App\Jobs\AtualizaStatusSelecoes;
 use App\Mail\InscricaoMail;
 use App\Models\Arquivo;
-use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
 use App\Models\LocalUser;
@@ -20,7 +19,6 @@ use App\Models\TipoArquivo;
 use App\Models\User;
 use App\Services\BoletoService;
 use App\Utils\JSONForms;
-use App\Utils\Nomenclatura;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -56,11 +54,6 @@ class InscricaoController extends Controller
             'store'
         ]);    // exige que o usuário esteja logado, exceto para estes métodos listados
         $this->boletoService = $boletoService;
-
-        if (request()->segment(1) == 'matriculas') {
-            self::$data['title'] = 'Matrículas';
-            self::$data['url'] = 'matriculas';
-        }
     }
 
     /**
@@ -76,13 +69,13 @@ class InscricaoController extends Controller
         else
             Gate::authorize('inscricoes.viewTheir');
 
-        \UspTheme::activeUrl(request()->segment(1));
+        \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.index', $this->monta_compact_index());
     }
 
     /**
      * Mostra lista de seleções e respectivas categorias
-     * para selecionar e criar nova inscrição/matrícula
+     * para selecionar e criar nova inscrição
      *
      * @param  \Illuminate\Http\Request   $request
      * @return \Illuminate\Http\Response
@@ -93,9 +86,9 @@ class InscricaoController extends Controller
 
         $request->validate(['filtro' => 'nullable|string']);
 
-        \UspTheme::activeUrl(request()->segment(1) . '/create');
+        \UspTheme::activeUrl('inscricoes/create');
         AtualizaStatusSelecoes::dispatch()->onConnection('sync');
-        $categorias = Selecao::listarSelecoesParaNovaInscricao(request()->segment(1));    // obtém as seleções dentro das categorias
+        $categorias = Selecao::listarSelecoesParaNovaInscricao();    // obtém as seleções dentro das categorias
         return view('inscricoes.listaselecoesparanovainscricao', compact('categorias'));
     }
 
@@ -108,7 +101,6 @@ class InscricaoController extends Controller
      */
     public function create(Selecao $selecao, ?Nivel $nivel = null)
     {
-        $this->validaRotaInscricaoOuMatricula($selecao);
         Gate::authorize('inscricoes.create', $selecao);
 
         $inscricao = new Inscricao;
@@ -136,7 +128,7 @@ class InscricaoController extends Controller
             $extras['nivel'] = $nivel->id;
         $inscricao->extras = json_encode($extras);
 
-        \UspTheme::activeUrl(request()->segment(1) . '/create');
+        \UspTheme::activeUrl('inscricoes/create');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'create'));
     }
 
@@ -149,7 +141,6 @@ class InscricaoController extends Controller
     public function store(Request $request)
     {
         $selecao = Selecao::find($request->selecao_id);
-        $this->validaRotaInscricaoOuMatricula($selecao);
         Gate::authorize('inscricoes.create', $selecao);
 
         $user = \Auth::user();
@@ -157,7 +148,7 @@ class InscricaoController extends Controller
         // transaction para não ter problema de inconsistência do DB
         $inscricao = DB::transaction(function () use ($request, $user, $selecao) {
 
-            // grava a inscrição/matrícula
+            // grava a inscrição
             $inscricao = new Inscricao;
             $inscricao->selecao_id = $selecao->id;
             $inscricao->estado = 'Aguardando Envio';
@@ -174,10 +165,10 @@ class InscricaoController extends Controller
 
         $inscricao->agendarTarefa();
 
-        $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua ' . Nomenclatura::InscricaoOuMatricula() . '<br />' .
-            'Sem eles, sua ' . Nomenclatura::InscricaoOuMatricula() . ' não será avaliada!');
-        \UspTheme::activeUrl(request()->segment(1) . '/create');
-        return redirect()->to(url(request()->segment(1) . '/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'arquivos'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
+        $request->session()->flash('alert-success', 'Envie os documentos necessários para a avaliação da sua inscrição<br />' .
+            'Sem eles, sua inscrição não será avaliada!');
+        \UspTheme::activeUrl('inscricoes/create');
+        return redirect()->to(url('inscricoes/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'arquivos'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
 
     /**
@@ -189,10 +180,9 @@ class InscricaoController extends Controller
      */
     public function edit(Request $request, Inscricao $inscricao)
     {
-        $this->validaRotaInscricaoOuMatricula($inscricao->selecao);
         Gate::authorize('inscricoes.view', $inscricao);    // este 1o passo da edição é somente um show, não chega a haver um update
 
-        \UspTheme::activeUrl(request()->segment(1));
+        \UspTheme::activeUrl('inscricoes');
         $inscricao->selecao->atualizarStatus();
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', session('scroll')));    // repassa scroll que eventualmente veio de redirect()->to(url(
     }
@@ -206,12 +196,9 @@ class InscricaoController extends Controller
      */
     public function update(Request $request, Inscricao $inscricao)
     {
-        $this->validaRotaInscricaoOuMatricula($inscricao->selecao);
-        \UspTheme::activeUrl(request()->segment(1));
-
         if ($inscricao->estado === 'Aprovada') {
             $request->session()->flash('alert-danger', 'Inscrição já aprovada não pode ser editada.');
-            \UspTheme::activeUrl(request()->segment(1));
+            \UspTheme::activeUrl('inscricoes');
             return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
         }
 
@@ -220,39 +207,22 @@ class InscricaoController extends Controller
 
             $extras = json_decode(stripslashes($inscricao->extras), true);
             if ($inscricao->todosArquivosRequeridosPresentes($extras['nivel'] ?? null)) {
+                $cpf = $extras['cpf'];
+                $inscricao->estado = 'Enviada';
+                $inscricao->save();
 
-                $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
-                if (($inscricao->selecao->categoria->nome != 'Aluno Especial') || (count($disciplinas_id) > 0)) {
+                $info_adicional = '';
+                $user = \Auth::user();
+                if ($inscricao->selecao->tem_taxa && !SolicitacaoIsencaoTaxa::where('extras->cpf', $cpf ?? null)->where('selecao_id', $inscricao->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->exists())
+                    if (Parametro::first()->boleto_momento_envio == 'Envio da Inscrição')
+                        $info_adicional = ' e seu boleto foi enviado, não deixe de pagá-lo';
 
-                    // verifica se ultrapassou o máximo de disciplinas para aluno especial
-                    $cpf = $extras['cpf'];
-                    $qtde_disciplinas_matriculas_anteriores = Inscricao::where('extras->cpf', $cpf)->where('selecao_id', $inscricao->selecao->id)->where('estado', 'Enviada')->sum(DB::raw('JSON_LENGTH(extras->"$.disciplinas")'));
-                    if (count($disciplinas_id) + $qtde_disciplinas_matriculas_anteriores <= (Parametro::first()?->max_disciplinas_aluno_especial ?: PHP_INT_MAX)) {
-                        $inscricao->estado = 'Enviada';
-                        $inscricao->save();
-
-                        $info_adicional = '';
-                        $user = \Auth::user();
-                        if ($inscricao->selecao->tem_taxa && !SolicitacaoIsencaoTaxa::where('extras->cpf', $cpf ?? null)->where('selecao_id', $inscricao->selecao->id)->whereIn('estado', ['Isenção de Taxa Aprovada', 'Isenção de Taxa Aprovada Após Recurso'])->exists())
-                            if (Parametro::first()->boleto_momento_envio == 'Envio da Inscrição')
-                                $info_adicional = ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ((count($disciplinas_id) == 1) ? ' e seu boleto foi enviado, não deixe de pagá-lo' : ' e seus boletos foram enviados, não deixe de pagá-los'));
-
-                        $request->session()->flash('alert-success', 'Sua ' . Nomenclatura::InscricaoOuMatricula() . ' foi enviada' . $info_adicional);
-                        \UspTheme::activeUrl(request()->segment(1));
-                        return redirect()->to(url(request()->segment(1)))->with($this->monta_compact_index());    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
-                    } else {
-                        $request->session()->flash('alert-danger', 'Você pode se matricular em no máximo ' . Parametro::first()->max_disciplinas_aluno_especial . ' disciplina(s) como aluno especial');
-                        \UspTheme::activeUrl(request()->segment(1));
-                        return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
-                    }
-                } else {
-                    $request->session()->flash('alert-danger', 'É necessário antes escolher a(s) disciplina(s)');
-                    \UspTheme::activeUrl(request()->segment(1));
-                    return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'disciplinas'));
-                }
+                $request->session()->flash('alert-success', 'Sua inscrição foi enviada' . $info_adicional);
+                \UspTheme::activeUrl('inscricoes');
+                return redirect()->to(url('inscricoes'))->with($this->monta_compact_index());    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
             } else {
                 $request->session()->flash('alert-danger', 'É necessário antes enviar todos os documentos exigidos');
-                \UspTheme::activeUrl(request()->segment(1));
+                \UspTheme::activeUrl('inscricoes');
                 return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit', 'arquivos'));
             }
         }
@@ -263,7 +233,7 @@ class InscricaoController extends Controller
             $inscricao->estado = $request->estado;
             $inscricao->save();
 
-            $request->session()->flash('alert-success', 'Estado da ' . Nomenclatura::InscricaoOuMatricula() . ' alterado com sucesso');
+            $request->session()->flash('alert-success', 'Estado da inscrição alterado com sucesso');
 
         } else {
             Gate::authorize('inscricoes.update', $inscricao);
@@ -274,141 +244,43 @@ class InscricaoController extends Controller
             $inscricao->extras = json_encode($request->input('extras'));
             $inscricao->save();
 
-            $request->session()->flash('alert-success', ucfirst(Nomenclatura::InscricaoOuMatricula()) . ' alterada com sucesso');
+            $request->session()->flash('alert-success', 'Inscrição alterada com sucesso');
         }
 
-        \UspTheme::activeUrl(request()->segment(1));
+        \UspTheme::activeUrl('inscricoes');
         return view('inscricoes.edit', $this->monta_compact($inscricao, 'edit'));
     }
 
     /**
-     * Adiciona uma disciplina relacionada à matrícula
-     * autorizado a qualquer um que tenha acesso à matrícula
-     */
-    public function storeDisciplina(Request $request, Inscricao $inscricao)
-    {
-        $this->validaRotaInscricaoOuMatricula($inscricao->selecao);
-        Gate::authorize('inscricoes.update', $inscricao);
-
-        $request->validate([
-            'id' => 'required',
-        ],
-        [
-            'id.required' => 'Disciplina obrigatória',
-        ]);
-
-        // transaction para não ter problema de inconsistência do DB
-        $db_transaction = DB::transaction(function () use ($request, $inscricao) {
-
-            $info_adicional = '';
-            $disciplina = Disciplina::where('id', $request->id)->first();
-
-            $extras = json_decode($inscricao->extras, true);
-            $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
-            $existia = is_array($disciplinas_id) && in_array($request->id, $disciplinas_id);
-
-            if (!$existia) {
-                $extras['disciplinas'][] = $request->id;
-                $inscricao->extras = json_encode($extras);
-
-                if (Parametro::first()->boleto_momento_envio == 'Envio da Inscrição')
-                    // se já havia enviado a inscrição, avisa para reenviá-la
-                    if ($inscricao->estado == 'Enviada') {
-                        $inscricao->estado = 'Aguardando Envio';
-                        $info_adicional = '<br />Reenvie esta matrícula para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
-                    }
-
-                $inscricao->save();
-            }
-
-            return ['disciplina' => $disciplina, 'existia' => $existia, 'info_adicional' => $info_adicional];
-        });
-
-        if (!$db_transaction['existia'])
-            $request->session()->flash('alert-success', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' foi adicionada à essa matrícula.' . $db_transaction['info_adicional']);
-        else
-            $request->session()->flash('alert-info', 'A disciplina ' . $db_transaction['disciplina']->sigla . ' - ' . $db_transaction['disciplina']->nome . ' já estava vinculada à essa matrícula.');
-        \UspTheme::activeUrl(request()->segment(1));
-        return redirect()->to(url(request()->segment(1) . '/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'disciplinas'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
-    }
-
-    /**
-     * Remove uma disciplina relacionada à matrícula
-     */
-    public function destroyDisciplina(Request $request, Inscricao $inscricao, Disciplina $disciplina)
-    {
-        $this->validaRotaInscricaoOuMatricula($inscricao->selecao);
-        Gate::authorize('inscricoes.update', $inscricao);
-
-        $info_adicional = '';
-
-        $extras = json_decode($inscricao->extras, true);
-        $disciplinas_id = (isset($extras['disciplinas']) ? $extras['disciplinas'] : []);
-        $indice = array_search($disciplina->id, $disciplinas_id);
-
-        if ($indice !== false) {
-            unset($extras['disciplinas'][$indice]);
-            $inscricao->extras = json_encode($extras);
-
-            if (Parametro::first()->boleto_momento_envio == 'Envio da Inscrição')
-                // se já havia enviado a matrícula, avisa para reenviá-la
-                if ($inscricao->estado == 'Enviada') {
-                    $inscricao->estado = 'Aguardando Envio';
-                    $info_adicional = '<br />Reenvie esta matrícula para gerar ' . ((count($extras['disciplinas']) == 1) ? 'novo boleto' : 'novos boletos');
-                }
-
-            $inscricao->save();
-        }
-
-        $request->session()->flash('alert-success', 'A disciplina ' . $disciplina->sigla . ' - '. $disciplina->nome . ' foi removida dessa matrícula.' . $info_adicional);
-        \UspTheme::activeUrl(request()->segment(1));
-        return redirect()->to(url(request()->segment(1) . '/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'disciplinas'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
-    }
-
-    /**
-     * Gera o(s) boleto(s) para a inscrição/matrícula - usado por admins para gerar manualmente o boleto, caso necessário
+     * Gera o(s) boleto(s) para a inscrição - usado por admins para gerar manualmente o(s) boleto(s), caso necessário
      */
     public function geraBoletos(Request $request, Inscricao $inscricao)
     {
-        $this->validaRotaInscricaoOuMatricula($inscricao->selecao);
+        // gera o boleto da inscrição
+        if (empty($this->boletoService->gerarBoleto($inscricao, 'Inscricao')['nome_original'])) {
+            $request->session()->flash('alert-danger', 'Não foi possível gerar o boleto para essa inscrição.');
+            \UspTheme::activeUrl('inscricoes');
+            return redirect()->to(url('inscricoes/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
+        }
 
-        if ($inscricao->selecao->categoria->nome !== 'Aluno Especial') {
-            // gera o boleto da inscrição/matrícula
-            if (empty($this->boletoService->gerarBoleto($inscricao)['nome_original'])) {
-                $request->session()->flash('alert-danger', 'Não foi possível gerar o boleto para essa ' . Nomenclatura::InscricaoOuMatricula() . '.');
-                \UspTheme::activeUrl(request()->segment(1));
-                return redirect()->to(url(request()->segment(1) . '/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
-            }
-        } else
-            // gera um boleto para cada disciplina solicitada
-            foreach ($request->disciplinas as $sigla => $valor)
-                if (empty($this->boletoService->gerarBoleto($inscricao, $sigla)['nome_original'])) {
-                    $request->session()->flash('alert-danger', 'Não foi possível gerar o boleto da disciplina ' . $sigla . ' para essa matrícula<br />' .
-                        'A geração do(s) boleto(s) foi abortada');
-                    \UspTheme::activeUrl(request()->segment(1));
-                    return redirect()->to(url(request()->segment(1) . '/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit'));
-                }
-
-        $request->session()->flash('alert-success', ($inscricao->selecao->categoria->nome !== 'Aluno Especial' ? 'O boleto foi gerado com sucesso' : 'O(s) boleto(s) foi(ram) gerado(s) com sucesso'));
-        \UspTheme::activeUrl(request()->segment(1));
-        return redirect()->to(url(request()->segment(1) . '/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'arquivos'));
+        $request->session()->flash('alert-success', 'O boleto foi gerado com sucesso');
+        \UspTheme::activeUrl('inscricoes');
+        return redirect()->to(url('inscricoes/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'arquivos'));
     }
 
     /**
-     * Envia um boleto da inscrição/matrícula
+     * Envia um boleto da inscrição
      */
     public function enviaBoleto(Request $request, Inscricao $inscricao, Arquivo $arquivo)
     {
-        $this->validaRotaInscricaoOuMatricula($inscricao->selecao);
-
         if (!$arquivo || !$arquivo->inscricoes->contains($inscricao)) {
-            $request->session()->flash('alert-danger', 'Esse documento não existe ou não pertence a essa ' . Nomenclatura::InscricaoOuMatricula());
-            \UspTheme::activeUrl(request()->segment(1));
-            return redirect()->to(url(request()->segment(1) . '/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit'));
+            $request->session()->flash('alert-danger', 'Esse documento não existe ou não pertence a essa inscrição');
+            \UspTheme::activeUrl('inscricoes');
+            return redirect()->to(url('inscricoes/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit'));
         }
 
         // envia e-mail para o candidato com o boleto
-        // envio do e-mail "13" do README.md
+        // envio do e-mail "14" do README.md
         $passo = 'boleto - envio manual';
         $user = $inscricao->pessoas('Autor');
         $arquivo->conteudo = base64_encode(Storage::get($arquivo->caminho));
@@ -416,27 +288,17 @@ class InscricaoController extends Controller
             ->queue(new InscricaoMail(compact('passo', 'inscricao', 'user', 'arquivo')));
 
         $request->session()->flash('alert-success', 'O boleto foi enviado com sucesso');
-        \UspTheme::activeUrl(request()->segment(1));
-        return redirect()->to(url(request()->segment(1) . '/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'arquivos'));
-    }
-
-    private function validaRotaInscricaoOuMatricula(Selecao $selecao)
-    {
-        $is_matricula = (($selecao->categoria->nome == 'Aluno Especial') || $selecao->programa->matricula);
-        if (((request()->segment(1) == 'inscricoes') && $is_matricula) || ((request()->segment(1) == 'matriculas') && !$is_matricula))
-            abort(403, 'A rota acessada não corresponde à classe esperada.');
+        \UspTheme::activeUrl('inscricoes');
+        return redirect()->to(url('inscricoes/edit/' . $inscricao->id))->with($this->monta_compact($inscricao, 'edit', 'arquivos'));
     }
 
     public function monta_compact_index()
     {
         $data = self::$data;
-        $objetos = Inscricao::listarInscricoes(request()->segment(1));
+        $objetos = Inscricao::listarInscricoes();
         foreach ($objetos as $objeto) {
             $extras = json_decode($objeto->extras, true);
             $objeto->linha_pesquisa = (isset($extras['linha_pesquisa']) ? (LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome ?? null) : null);
-            $objeto->disciplinas = (isset($extras['disciplinas']) ? (Disciplina::whereIn('id', $extras['disciplinas'])->orderBy('sigla')->get()->map(function ($disciplina) {
-                return $disciplina->sigla . ' - ' . $disciplina->nome;
-            })->implode(',<br />')) : null);
         }
         $classe_nome = 'Inscricao';
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
@@ -455,8 +317,6 @@ class InscricaoController extends Controller
         $form = JSONForms::generateForm($objeto->selecao, $classe_nome, $objeto);
         $responsaveis = $objeto->selecao->programa?->obterResponsaveis() ?? (new Programa())->obterResponsaveis();
         $extras = json_decode($objeto->extras, true);
-        $inscricao_disciplinas = ((isset($extras['disciplinas']) && is_array($extras['disciplinas'])) ? Disciplina::whereIn('id', $extras['disciplinas'])->orderBy('sigla')->get() : collect());
-        $disciplinas = Disciplina::obterDisciplinasPossiveis($objeto->selecao);
         $nivel = (isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '');
         $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($objeto->selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : collect([['nome' => $nivel]])), $objeto->selecao)
             ->filter(function ($tipoarquivo) use ($inscricao) { return (!str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento')) || $inscricao->selecao->tem_taxa; })
@@ -464,17 +324,11 @@ class InscricaoController extends Controller
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $objeto->selecao->programa_id)
             ->filter(function ($tipoarquivo) use ($inscricao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $inscricao->selecao->tem_taxa; });
         $solicitacaoisencaotaxa_aprovada = SolicitacaoIsencaoTaxa::where('extras->cpf', $extras['cpf'] ?? null)
-                                                                ->where('selecao_id', $objeto->selecao->id)
-                                                                ->where('estado', 'LIKE', 'Isenção de Taxa Aprovada%')->first();
-        $disciplinas_sem_boleto = [];
-        if ($inscricao->selecao->categoria->nome == 'Aluno Especial')
-            foreach ($inscricao_disciplinas as $disciplina)
-                if ($inscricao->arquivos->filter(fn($a) => ($a->pivot->tipo == 'Boleto(s) de Pagamento') && str_contains(strtolower($a->nome_original), strtolower($disciplina->sigla)))->count() == 0)
-                    $disciplinas_sem_boleto[] = $disciplina;
-        $inscricao->disciplinas_sem_boleto = $disciplinas_sem_boleto;
+                                                                 ->where('selecao_id', $objeto->selecao->id)
+                                                                 ->where('estado', 'LIKE', 'Isenção de Taxa Aprovada%')->first();
         $boleto_momento_envio = Parametro::first()->boleto_momento_envio;
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'inscricao_disciplinas', 'disciplinas', 'nivel', 'tiposarquivo_selecao', 'solicitacaoisencaotaxa_aprovada', 'boleto_momento_envio', 'max_upload_size', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'form', 'modo', 'responsaveis', 'nivel', 'tiposarquivo_selecao', 'solicitacaoisencaotaxa_aprovada', 'boleto_momento_envio', 'max_upload_size', 'scroll');
     }
 }

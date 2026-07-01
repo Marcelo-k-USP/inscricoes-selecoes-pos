@@ -8,6 +8,7 @@ use App\Models\Categoria;
 use App\Models\Disciplina;
 use App\Models\Inscricao;
 use App\Models\LinhaPesquisa;
+use App\Models\Matricula;
 use App\Models\MotivoIsencaoTaxa;
 use App\Models\Nivel;
 use App\Models\NivelLinhaPesquisa;
@@ -104,13 +105,13 @@ class SelecaoController extends Controller
         $requestData = $request->all();
         $requestData['solicitacoesisencaotaxa_datahora_inicio'] = (is_null($requestData['solicitacoesisencaotaxa_data_inicio']) || is_null($requestData['solicitacoesisencaotaxa_hora_inicio']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['solicitacoesisencaotaxa_data_inicio'] . ' ' . $requestData['solicitacoesisencaotaxa_hora_inicio']));
         $requestData['solicitacoesisencaotaxa_datahora_fim'] = (is_null($requestData['solicitacoesisencaotaxa_data_fim']) || is_null($requestData['solicitacoesisencaotaxa_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['solicitacoesisencaotaxa_data_fim'] . ' ' . $requestData['solicitacoesisencaotaxa_hora_fim']));
-        $requestData['inscricoes_datahora_inicio'] = (is_null($requestData['inscricoes_data_inicio']) || is_null($requestData['inscricoes_hora_inicio']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoes_data_inicio'] . ' ' . $requestData['inscricoes_hora_inicio']));
-        $requestData['inscricoes_datahora_fim'] = (is_null($requestData['inscricoes_data_fim']) || is_null($requestData['inscricoes_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoes_data_fim'] . ' ' . $requestData['inscricoes_hora_fim']));
+        $requestData['inscricoesmatriculas_datahora_inicio'] = (is_null($requestData['inscricoesmatriculas_data_inicio']) || is_null($requestData['inscricoesmatriculas_hora_inicio']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoesmatriculas_data_inicio'] . ' ' . $requestData['inscricoesmatriculas_hora_inicio']));
+        $requestData['inscricoesmatriculas_datahora_fim'] = (is_null($requestData['inscricoesmatriculas_data_fim']) || is_null($requestData['inscricoesmatriculas_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoesmatriculas_data_fim'] . ' ' . $requestData['inscricoesmatriculas_hora_fim']));
         $requestData['boleto_valor'] = (is_null($requestData['boleto_valor']) ? null : str_replace(',', '.', $requestData['boleto_valor']));
         $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento'])->endOfDay());
         $requestData['boleto_offset_vencimento'] = (is_null($requestData['boleto_offset_vencimento']) ? null : $requestData['boleto_offset_vencimento']);
 
-        if (!$this->validateDates($requestData['solicitacoesisencaotaxa_datahora_inicio']?->toDateTime(), $requestData['solicitacoesisencaotaxa_datahora_fim']?->toDateTime(), $requestData['inscricoes_datahora_inicio']?->toDateTime(), $requestData['inscricoes_datahora_fim']?->toDateTime(), $requestData['boleto_data_vencimento']?->toDateTime())) {
+        if (!$this->validateDates($requestData['solicitacoesisencaotaxa_datahora_inicio']?->toDateTime(), $requestData['solicitacoesisencaotaxa_datahora_fim']?->toDateTime(), $requestData['inscricoesmatriculas_datahora_inicio']?->toDateTime(), $requestData['inscricoesmatriculas_datahora_fim']?->toDateTime(), $requestData['boleto_data_vencimento']?->toDateTime())) {
             $request->session()->flash('alert-danger', 'Datas/horas de início e fim dos períodos e data de vencimento do boleto estão inconsistentes');
             \UspTheme::activeUrl('selecoes');
             return back()->withInput();
@@ -129,22 +130,21 @@ class SelecaoController extends Controller
             foreach (TipoArquivo::where('classe_nome', 'Solicitações de Isenção de Taxa')->get() as $tipoarquivo)    // cadastra automaticamente todos os tipos de arquivo para solicitações de isenção de taxa como possíveis para este processo seletivo
                 $selecao->tiposarquivo()->attach($tipoarquivo);
 
-            $is_aluno_especial = ($selecao->categoria->nome === 'Aluno Especial');
-            if ($is_aluno_especial)    // cadastra automaticamente tipos de arquivo para inscrições como possíveis para este processo seletivo
-                foreach (TipoArquivo::where('classe_nome', 'Inscrições')->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Especial'); })->get() as $tipoarquivo)
+            if ($selecao->isMatricula())    // cadastra automaticamente tipos de arquivo para matrículas como possíveis para este processo seletivo
+                foreach (TipoArquivo::where('classe_nome', 'Matrículas')->whereHas('categorias', function ($query) use ($selecao) { $query->where('nome', $selecao->categoria->nome); })->get() as $tipoarquivo)
                     $selecao->tiposarquivo()->attach($tipoarquivo);
-            else
-                foreach (TipoArquivo::where('classe_nome', 'Inscrições')->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Regular'); })->whereRelation('niveisprogramas', 'programa_id', $selecao->programa_id)->get() as $tipoarquivo)
+            else                            // cadastra automaticamente tipos de arquivo para inscrições como possíveis para este processo seletivo
+                foreach (TipoArquivo::where('classe_nome', 'Inscrições')->whereHas('categorias', function ($query) use ($selecao) { $query->where('nome', $selecao->categoria->nome); })->whereRelation('niveisprogramas', 'programa_id', $selecao->programa_id)->get() as $tipoarquivo)
                     $selecao->tiposarquivo()->attach($tipoarquivo);
 
             $selecao->reagendarTarefas();
 
-            return ['selecao' => $selecao, 'is_aluno_especial' => $is_aluno_especial];
+            return ['selecao' => $selecao];
         });
         $selecao = $db_transaction['selecao'];
 
         $request->session()->flash('alert-success', 'Seleção cadastrada com sucesso<br />' .
-            'Agora ' . (!$db_transaction['is_aluno_especial'] ? 'informe quais são as linhas de pesquisa e ' : '') . 'adicione os informativos relacionados ao processo');
+            'Agora ' . (!$selecao->isMatricula() ? 'informe quais são as linhas de pesquisa e ' : '') . 'adicione os informativos relacionados ao processo');
         \UspTheme::activeUrl('selecoes');
         return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
     }
@@ -187,11 +187,11 @@ class SelecaoController extends Controller
         $requestData = $request->all();
         $requestData['solicitacoesisencaotaxa_datahora_inicio'] = (is_null($requestData['solicitacoesisencaotaxa_data_inicio']) || is_null($requestData['solicitacoesisencaotaxa_hora_inicio']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['solicitacoesisencaotaxa_data_inicio'] . ' ' . $requestData['solicitacoesisencaotaxa_hora_inicio']));
         $requestData['solicitacoesisencaotaxa_datahora_fim'] = (is_null($requestData['solicitacoesisencaotaxa_data_fim']) || is_null($requestData['solicitacoesisencaotaxa_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['solicitacoesisencaotaxa_data_fim'] . ' ' . $requestData['solicitacoesisencaotaxa_hora_fim']));
-        $requestData['inscricoes_datahora_inicio'] = (is_null($requestData['inscricoes_data_inicio']) || is_null($requestData['inscricoes_hora_inicio']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoes_data_inicio'] . ' ' . $requestData['inscricoes_hora_inicio']));
-        $requestData['inscricoes_datahora_fim'] = (is_null($requestData['inscricoes_data_fim']) || is_null($requestData['inscricoes_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoes_data_fim'] . ' ' . $requestData['inscricoes_hora_fim']));
+        $requestData['inscricoesmatriculas_datahora_inicio'] = (is_null($requestData['inscricoesmatriculas_data_inicio']) || is_null($requestData['inscricoesmatriculas_hora_inicio']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoesmatriculas_data_inicio'] . ' ' . $requestData['inscricoesmatriculas_hora_inicio']));
+        $requestData['inscricoesmatriculas_datahora_fim'] = (is_null($requestData['inscricoesmatriculas_data_fim']) || is_null($requestData['inscricoesmatriculas_hora_fim']) ? null : Carbon::createFromFormat('d/m/Y H:i', $requestData['inscricoesmatriculas_data_fim'] . ' ' . $requestData['inscricoesmatriculas_hora_fim']));
         $requestData['boleto_data_vencimento'] = (is_null($requestData['boleto_data_vencimento']) ? null : Carbon::createFromFormat('d/m/Y', $requestData['boleto_data_vencimento'])->endOfDay());
 
-        if (!$this->validateDates($requestData['solicitacoesisencaotaxa_datahora_inicio']?->toDateTime(), $requestData['solicitacoesisencaotaxa_datahora_fim']?->toDateTime(), $requestData['inscricoes_datahora_inicio']?->toDateTime(), $requestData['inscricoes_datahora_fim']?->toDateTime(), $requestData['boleto_data_vencimento']?->toDateTime())) {
+        if (!$this->validateDates($requestData['solicitacoesisencaotaxa_datahora_inicio']?->toDateTime(), $requestData['solicitacoesisencaotaxa_datahora_fim']?->toDateTime(), $requestData['inscricoesmatriculas_datahora_inicio']?->toDateTime(), $requestData['inscricoesmatriculas_datahora_fim']?->toDateTime(), $requestData['boleto_data_vencimento']?->toDateTime())) {
             $request->session()->flash('alert-danger', 'Datas/horas de início e fim dos períodos e data de vencimento do boleto estão inconsistentes');
             \UspTheme::activeUrl('selecoes');
             return back()->withInput();
@@ -211,16 +211,16 @@ class SelecaoController extends Controller
             $this->updateField($request, $selecao, 'descricao', 'descrição', 'a');
             $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_inicio', 'data/hora início solicitações de isenção de taxa', 'a');
             $this->updateField($request, $selecao, 'solicitacoesisencaotaxa_datahora_fim', 'data/hora fim solicitações de isenção de taxa', 'a');
-            $this->updateField($request, $selecao, 'inscricoes_datahora_inicio', 'data/hora início inscrições', 'a');
-            $this->updateField($request, $selecao, 'inscricoes_datahora_fim', 'data/hora fim inscrições', 'a');
+            $this->updateField($request, $selecao, 'inscricoesmatriculas_datahora_inicio', 'data/hora início inscrições/matrículas', 'a');
+            $this->updateField($request, $selecao, 'inscricoesmatriculas_datahora_fim', 'data/hora fim inscrições/matrículas', 'a');
             $this->updateField($request, $selecao, 'fluxo_continuo', 'fluxo contínuo', 'o');
-            $this->updateField($request, $selecao, 'tem_taxa', 'taxa de inscrição', 'a');
+            $this->updateField($request, $selecao, 'tem_taxa', 'taxa de inscrição/matrícula', 'a');
             $this->updateField($request, $selecao, 'boleto_valor', 'valor do boleto', 'o');
             $this->updateField($request, $selecao, 'boleto_texto', 'eventuais informações adicionais no boleto', 'o');
             $this->updateField($request, $selecao, 'boleto_data_vencimento', 'data de vencimento do boleto', 'a');
             $this->updateField($request, $selecao, 'boleto_offset_vencimento', 'quantidade de dias úteis para pagamento do boleto', 'a');
-            $this->updateField($request, $selecao, 'email_inscricaoaprovacao_texto', 'eventuais informações adicionais no e-mail de aprovação da inscrição', 'o');
-            $this->updateField($request, $selecao, 'email_inscricaorejeicao_texto', 'eventuais informações adicionais no e-mail de rejeição da inscrição', 'o');
+            $this->updateField($request, $selecao, 'email_inscricaomatriculaaprovacao_texto', 'eventuais informações adicionais no e-mail de aprovação da inscrição/matrícula', 'o');
+            $this->updateField($request, $selecao, 'email_inscricaomatricularejeicao_texto', 'eventuais informações adicionais no e-mail de rejeição da inscrição/matrícula', 'o');
             if ($selecao->programa_id != $request->programa_id && !empty($request->programa_id)) {
                 if ($selecao->linhaspesquisa->count() > 0) {
                     $request->session()->flash('alert-danger', 'Não se pode alterar o programa, pois há linhas de pesquisa/temas do programa antigo cadastrados para esta seleção!');
@@ -244,18 +244,18 @@ class SelecaoController extends Controller
         return view('selecoes.edit', $this->monta_compact($selecao, 'edit'));
     }
 
-    private function validateDates(?\DateTime $solicitacoesisencaotaxa_datahora_inicio, ?\DateTime $solicitacoesisencaotaxa_datahora_fim, \DateTime $inscricoes_datahora_inicio, \DateTime $inscricoes_datahora_fim, ?\DateTime $boleto_data_vencimento)
+    private function validateDates(?\DateTime $solicitacoesisencaotaxa_datahora_inicio, ?\DateTime $solicitacoesisencaotaxa_datahora_fim, \DateTime $inscricoesmatriculas_datahora_inicio, \DateTime $inscricoesmatriculas_datahora_fim, ?\DateTime $boleto_data_vencimento)
     {
         $boleto_data_vencimento = $boleto_data_vencimento ?? CarbonImmutable::endOfTime();
 
         if (!is_null($solicitacoesisencaotaxa_datahora_inicio) && !is_null($solicitacoesisencaotaxa_datahora_fim))
             return ($solicitacoesisencaotaxa_datahora_inicio < $solicitacoesisencaotaxa_datahora_fim) &&
-                   ($solicitacoesisencaotaxa_datahora_fim < $inscricoes_datahora_inicio) &&
-                   ($inscricoes_datahora_inicio < $inscricoes_datahora_fim) &&
-                   ($inscricoes_datahora_fim < $boleto_data_vencimento);
+                   ($solicitacoesisencaotaxa_datahora_fim < $inscricoesmatriculas_datahora_inicio) &&
+                   ($inscricoesmatriculas_datahora_inicio < $inscricoesmatriculas_datahora_fim) &&
+                   ($inscricoesmatriculas_datahora_fim < $boleto_data_vencimento);
         else
-            return ($inscricoes_datahora_inicio < $inscricoes_datahora_fim) &&
-                   ($inscricoes_datahora_fim < $boleto_data_vencimento);
+            return ($inscricoesmatriculas_datahora_inicio < $inscricoesmatriculas_datahora_fim) &&
+                   ($inscricoesmatriculas_datahora_fim < $boleto_data_vencimento);
     }
 
     private function updateField(SelecaoRequest $request, Selecao $selecao, string $field, string $field_name, string $genero)
@@ -653,6 +653,57 @@ class SelecaoController extends Controller
     }
 
     /**
+     * Adicionar tipos de arquivo para matrículas da seleção
+     * autorizado a qualquer um que tenha acesso à seleção
+     * request->codpes = required, int
+     */
+    public function storeTipoArquivoMatricula(Request $request, Selecao $selecao)
+    {
+        Gate::authorize('selecoes.update', $selecao);
+
+        $request->validate([
+            'id' => 'required',
+        ],
+        [
+            'id.required' => 'Tipo de documento obrigatório',
+        ]);
+
+        // transaction para não ter problema de inconsistência do DB
+        $db_transaction = DB::transaction(function () use ($request, $selecao) {
+
+            $tipoarquivo = TipoArquivo::where('id', $request->id)->first();
+
+            $existia = $selecao->tiposarquivo()->detach($tipoarquivo);
+
+            $selecao->tiposarquivo()->attach($tipoarquivo);
+
+            return ['tipoarquivo' => $tipoarquivo, 'existia' => $existia];
+        });
+
+        if (!$db_transaction['existia'])
+            $request->session()->flash('alert-success', 'O tipo de documento ' . $db_transaction['tipoarquivo']->nome . ' foi adicionado à essa seleção');
+        else
+            $request->session()->flash('alert-info', 'O tipo de documento ' . $db_transaction['tipoarquivo']->nome . ' já estava vinculado à essa seleção');
+        \UspTheme::activeUrl('selecoes');
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'tiposarquivomatricula'));    // se fosse return view, um eventual F5 do usuário duplicaria o registro... POSTs devem ser com redirect
+    }
+
+    /**
+     * Remove tipos de arquivo para matrículas da seleção
+     * $user = required
+     */
+    public function destroyTipoArquivoMatricula(Request $request, Selecao $selecao, TipoArquivo $tipoarquivo)
+    {
+        Gate::authorize('selecoes.update', $selecao);
+
+        $selecao->tiposarquivo()->detach($tipoarquivo);
+
+        $request->session()->flash('alert-success', 'O tipo de documento ' . $tipoarquivo->nome . ' foi removido dessa seleção');
+        \UspTheme::activeUrl('selecoes');
+        return redirect()->to(url('selecoes/edit/' . $selecao->id))->with($this->monta_compact($selecao, 'edit', 'tiposarquivomatricula'));
+    }
+
+    /**
      * Baixa as solicitações de isenção de taxa especificadas
      *
      * @param $request->ano
@@ -720,15 +771,12 @@ class SelecaoController extends Controller
         $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
         $keys = array_keys($template);
 
-        $inscricao_ou_matricula = $selecao->isMatricula() ? 'matricula' : 'inscricao';
-        $inscricao_ou_matricula_plural = $selecao->isMatricula() ? 'matriculas' : 'inscricoes';
-
         $arr = [];
         foreach ($inscricoes as $inscricao) {
             $i = [];
 
             $extras = json_decode($inscricao->extras, true) ?? [];
-            $i['numero_' . $inscricao_ou_matricula] = $inscricao->id;
+            $i['numero_inscricao'] = $inscricao->id;
             if ($selecao->categoria->nome != 'Aluno Especial')
                 $i['programa'] = $inscricao->selecao->programa->nomeCompleto();
             $i['selecao'] = $inscricao->selecao->nome;
@@ -748,7 +796,57 @@ class SelecaoController extends Controller
             $arr[] = $i;
         }
 
-        $writer = SimpleExcelWriter::streamDownload($inscricao_ou_matricula_plural . '_' . $ano . '_selecao' . $selecao->id . '.xlsx')
+        $writer = SimpleExcelWriter::streamDownload('inscricoes_' . $ano . '_selecao' . $selecao->id . '.xlsx')
+            ->addRows($arr);
+    }
+
+    /**
+     * Baixa as matrículas especificadas
+     *
+     * @param $request->ano
+     * @param $selecao
+     * @return Stream
+     */
+    public function downloadMatriculas(Request $request, Selecao $selecao)
+    {
+        Gate::authorize('selecoes.view', $selecao);
+        $request->validate([
+            'ano' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+        ]);
+        $ano = $request->ano;
+
+        $matriculas = Matricula::listarMatriculasPorSelecao($selecao, $ano);
+
+        // vamos pegar o template da seleção para saber quais são os campos extras
+        $template = json_decode(JSONForms::orderTemplate($selecao->template), true);
+        $keys = array_keys($template);
+
+        $arr = [];
+        foreach ($matriculas as $matricula) {
+            $i = [];
+
+            $extras = json_decode($matricula->extras, true) ?? [];
+            $i['numero_matricula'] = $matricula->id;
+            if ($selecao->categoria->nome != 'Aluno Especial')
+                $i['programa'] = $matricula->selecao->programa->nomeCompleto();
+            $i['selecao'] = $matricula->selecao->nome;
+            $i['estado'] = $matricula->estado;
+            if ($selecao->categoria->nome != 'Aluno Especial') {
+                $i['nivel'] = isset($extras['nivel']) ? Nivel::where('id', $extras['nivel'])->first()->nome : '';
+                $i['linha_pesquisa'] = isset($extras['linha_pesquisa']) ? LinhaPesquisa::where('id', $extras['linha_pesquisa'])->first()->nome : '';
+            } else
+                $i['disciplinas'] = Disciplina::whereIn('id', $extras['disciplinas'] ?? [])->pluck('sigla')->implode(', ');
+            $autor = $matricula->pessoas('Autor');
+            $i['autor'] = $autor ? $autor->name : '';
+            foreach ($keys as $field)
+                $i[$field] = isset($extras[$field]) ? $extras[$field] : '';
+            $i['criado_em'] = $matricula->created_at->format('d/m/Y');
+            $i['atualizado_em'] = $matricula->updated_at->format('d/m/Y');
+
+            $arr[] = $i;
+        }
+
+        $writer = SimpleExcelWriter::streamDownload('matriculas_' . $ano . '_selecao' . $selecao->id . '.xlsx')
             ->addRows($arr);
     }
 
@@ -765,17 +863,20 @@ class SelecaoController extends Controller
         $disciplinas = Disciplina::obterDisciplinasPossiveis();
         $objeto->disciplinas = $objeto->disciplinas->sortBy('sigla');
         $motivosisencaotaxa = MotivoIsencaoTaxa::listarMotivosIsencaoTaxa();
+        $niveis_selecao = ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all()));
         $objeto->tiposarquivo = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id)
                             ->filter(function ($tipoarquivo) use ($selecao) { return ($tipoarquivo->nome !== 'Normas para Isenção de Taxa') || $selecao->tem_taxa; })
                         ->merge(TipoArquivo::obterTiposArquivoDaSelecao('SolicitacaoIsencaoTaxa', null, $selecao))
-                        ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : (!empty($nivel) ? collect([['nome' => $nivel]]) : Nivel::all())), $selecao)
+                        ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Inscricao', $niveis_selecao, $selecao)
+                        ->merge(TipoArquivo::obterTiposArquivoDaSelecao('Matricula', $niveis_selecao, $selecao))
                             ->filter(function ($tipoarquivo) { return !str_starts_with($tipoarquivo->nome, 'Boleto(s) de Pagamento'); }));
         $tiposarquivo_selecao = TipoArquivo::obterTiposArquivoPossiveis('Selecao', null, $selecao->programa_id);
         $tiposarquivo_solicitacaoisencaotaxa = TipoArquivo::obterTiposArquivoPossiveis('SolicitacaoIsencaoTaxa', null, $selecao->programa_id);
         $tiposarquivo_inscricao = TipoArquivo::obterTiposArquivoPossiveis('Inscricao', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
+        $tiposarquivo_matricula = TipoArquivo::obterTiposArquivoPossiveis('Matricula', ($selecao->categoria?->nome == 'Aluno Especial' ? new Collection() : Nivel::all()), $selecao->programa_id);
         $programas = Programa::all();
         $max_upload_size = config('selecoes-pos.upload_max_filesize');
 
-        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'niveislinhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'programas', 'max_upload_size', 'rules', 'scroll');
+        return compact('data', 'objeto', 'classe_nome', 'classe_nome_plural', 'modo', 'niveislinhaspesquisa', 'disciplinas', 'motivosisencaotaxa', 'tiposarquivo_selecao', 'tiposarquivo_solicitacaoisencaotaxa', 'tiposarquivo_inscricao', 'tiposarquivo_matricula', 'programas', 'max_upload_size', 'rules', 'scroll');
     }
 }

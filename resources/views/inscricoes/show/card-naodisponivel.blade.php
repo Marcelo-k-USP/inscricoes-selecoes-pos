@@ -16,7 +16,7 @@
   </div>
   <div class="card-body">
     <div class="list_table_div_form">
-      As {{ $inscricao_ou_matricula_plural }} para {{ $objetivo }} não estão abertas.<br />
+      As inscrições para {{ $objetivo }} não estão abertas.<br />
       Ao lado/abaixo, você pode acessar os informativos do processo.
     </div>
   </div>

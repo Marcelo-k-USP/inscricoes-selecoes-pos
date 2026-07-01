@@ -2,9 +2,10 @@
 
 namespace App\Utils;
 
+use App\Models\Inscricao;
+use App\Models\Matricula;
 use App\Models\Selecao;
 use App\Models\SolicitacaoIsencaoTaxa;
-use App\Models\Inscricao;
 
 class ClasseUtils
 {
@@ -16,6 +17,8 @@ class ClasseUtils
                 return 'solicitação de isenção de taxa';
             case 'Inscricao':
                 return 'inscrição';
+            case 'Matricula':
+                return 'matrícula';
         }
     }
 
@@ -27,6 +30,8 @@ class ClasseUtils
                 return 'solicitacoesisencaotaxa';
             case 'Inscricao':
                 return 'inscricoes';
+            case 'Matricula':
+                return 'matriculas';
         }
     }
 
@@ -38,25 +43,35 @@ class ClasseUtils
                 return 'Solicitações de Isenção de Taxa';
             case 'Inscricao':
                 return 'Inscrições';
+            case 'Matricula':
+                return 'Matrículas';
         }
     }
 
-    public static function obterClasseNomeAbreviada(string $classe_nome, ?Selecao $selecao = null) {
+    public static function obterClasseNomeAbreviada(string $classe_nome) {
         switch ($classe_nome) {
             case 'Selecao':
                 return 'Sel';
             case 'SolicitacaoIsencaoTaxa':
                 return 'SolicIsenc';
             case 'Inscricao':
-                return ((($selecao->categoria->nome != 'Aluno Especial') && !$selecao->isMatricula()) ? 'Insc' : 'Matr');
+                return 'Insc';
+            case 'Matricula':
+                return 'Matr';
         }
     }
 
-    public static function obterClasseNomeAbreviadaPlural(string $classe_nome, ?Selecao $selecao = null) {
-        if ($classe_nome == 'SolicitacaoIsencaoTaxa')
+    public static function obterClasseNomeAbreviadaPlural(string $classe_nome) {
+        switch ($classe_nome) {
+            case 'Selecao':
+                return 'Sels';
+            case 'SolicitacaoIsencaoTaxa':
                 return 'SolicsIsenc';
-
-        return self::obterClasseNomeAbreviada($classe_nome, $selecao) . 's';
+            case 'Inscricao':
+                return 'Inscs';
+            case 'Matricula':
+                return 'Matrs';
+        }
     }
 
     public static function obterClasse(string $classe_nome) {
@@ -67,6 +82,8 @@ class ClasseUtils
                 return SolicitacaoIsencaoTaxa::class;
             case 'Inscricao':
                 return Inscricao::class;
+            case 'Matricula':
+                return Matricula::class;
         }
     }
 }

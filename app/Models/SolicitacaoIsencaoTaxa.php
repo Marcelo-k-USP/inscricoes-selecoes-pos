@@ -85,7 +85,7 @@ class SolicitacaoIsencaoTaxa extends Model
         if ($this->selecao->fluxo_continuo) {
             // agenda job de alerta de solicitação de isenção de taxa não concluída
             $job_datahora = now()->addDays(7);
-            if ($job_datahora < Carbon::parse($this->selecao->inscricoes_datahora_fim)->subHours(24))
+            if ($job_datahora < Carbon::parse($this->selecao->solicitacoesisencaotaxa_datahora_fim)->subHours(24))
                 AlertaCandidatoIncompletude::dispatch($this->id, 'SolicitacaoIsencaoTaxa')->delay($job_datahora);
         }
     }

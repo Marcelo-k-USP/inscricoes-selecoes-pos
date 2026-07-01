@@ -32,7 +32,7 @@ class TipoArquivoRequest extends FormRequest
     ];
 
     public const messages = [
-        'classe_nome.required' => 'É obrigatório definir se para seleção, solicitação de isenção de taxa ou inscrição!',
+        'classe_nome.required' => 'É obrigatório definir se para seleção, solicitação de isenção de taxa, inscrição ou matrícula!',
         'nome.required' => 'O nome do tipo de documento é obrigatório!',
         'nome.max' => 'O nome do tipo de documento não pode exceder 100 caracteres!',
         'abreviacao.required' => 'A abreviação do tipo de documento é obrigatória!',

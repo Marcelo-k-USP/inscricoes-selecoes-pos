@@ -35,10 +35,6 @@
   <script src="js/functions.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
-      $('#classe_nome option').filter(function() {
-        return $(this).text() === 'Inscrições';
-      }).text('Inscrições/Matrículas');
-
       @if ($modo == 'edit')
         $('#classe_nome').attr('disabled', true);                 // quando desabilitamos um select, o campo dele não sobe no submit do form
 		    $('#classe_nome_hidden').val($('#classe_nome').val());    // então vamos jogar o valor do select para um campo hidden, e no submit renomear os campos

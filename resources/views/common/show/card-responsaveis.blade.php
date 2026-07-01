@@ -13,7 +13,7 @@
 @php
   $programa_id = $selecao->programa_id;
 @endphp
-@include('inscricoes.partials.modal-responsavel')
+@include('common.partials.modal-responsavel')
 <a name="card_responsaveis"></a>
 <div class="card bg-light mb-3 w-100" id="card-responsaveis">
   <div class="card-header form-inline">

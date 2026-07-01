@@ -31,7 +31,7 @@ class TipoArquivo extends Model
             'name' => 'classe_nome',
             'label' => 'Para',
             'type' => 'select',
-            'data' => ['Seleções' => 'Seleções', 'Solicitações de Isenção de Taxa' => 'Solicitações de Isenção de Taxa', 'Inscrições' => 'Inscrições'],    // repete chave e valor, para que no select os values das options sejam também o texto
+            'data' => ['Seleções' => 'Seleções', 'Solicitações de Isenção de Taxa' => 'Solicitações de Isenção de Taxa', 'Inscrições' => 'Inscrições', 'Matrículas' => 'Matrículas'],    // repete chave e valor, para que no select os values das options sejam também o texto
         ],
         [
             'name' => 'nome',
@@ -176,6 +176,20 @@ class TipoArquivo extends Model
                             })->where('programa_id', $programa_id);
                         })->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Regular'); });
                 })->get();
+
+            case 'Matricula':
+                // todos os tipos de arquivo possíveis para matrículas
+                return self::where('classe_nome', 'Matrículas')->where(function ($query) use ($niveis, $programa_id) {
+                    if ($niveis->isEmpty())
+                        $query->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Especial'); });
+                    else
+                        // se houver combinação de nível com programa, se restringe a ela
+                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {
+                            $query->whereIn('nivel_id', function ($query) use ($niveis) {
+                                $query->select('id')->from('niveis')->whereIn('nome', $niveis->pluck('nome'));
+                            })->where('programa_id', $programa_id);
+                        })->whereHas('categorias', function ($query) { $query->where('nome', 'Aluno Regular'); });
+                })->get();
         }
     }
 
@@ -190,6 +204,18 @@ class TipoArquivo extends Model
             case 'Inscricao':
                 // todos os tipos de arquivo para inscrições nesta seleção
                 return $selecao->tiposarquivo()->where('classe_nome', 'Inscrições')->where(function ($query) use ($niveis, $programa_id) {
+                    if (!$niveis->isEmpty())
+                        // se houver combinação de nível com programa, se restringe a ela
+                        $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {
+                            $query->whereIn('nivel_id', function ($query) use ($niveis) {
+                                $query->select('id')->from('niveis')->whereIn('nome', $niveis->pluck('nome'));
+                            })->where('programa_id', $programa_id);
+                        });
+                })->get();
+
+            case 'Matricula':
+                // todos os tipos de arquivo para matrículas nesta seleção
+                return $selecao->tiposarquivo()->where('classe_nome', 'Matrículas')->where(function ($query) use ($niveis, $programa_id) {
                     if (!$niveis->isEmpty())
                         // se houver combinação de nível com programa, se restringe a ela
                         $query->whereHas('niveisprogramas', function ($query) use ($niveis, $programa_id) {

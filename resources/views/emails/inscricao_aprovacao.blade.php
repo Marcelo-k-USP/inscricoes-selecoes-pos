@@ -2,8 +2,8 @@
 
 Olá {{ $user->name }},<br />
 <br />
-Sua {{ $inscricao_ou_matricula }} para {{ $objetivo }} foi aceita.<br />
-@if ($boleto_momento_envio == 'Aprovação da Inscrição')
+Sua inscrição para {{ $objetivo }} foi aceita.<br />
+@if (($boleto_momento_envio == 'Aprovação da Inscrição/Matrícula') && ($arquivos_count > 0))
   Não deixe de pagar {{ ($arquivos_count == 1) ? 'o boleto que segue' : 'os boletos que seguem' }} em anexo.<br />
 @endif
 <br />
@@ -11,6 +11,6 @@ Sua {{ $inscricao_ou_matricula }} para {{ $objetivo }} foi aceita.<br />
   {!! $arquivo_erro !!}<br />
 @endforeach
 <br />
-{{ $inscricao->selecao->email_inscricaoaprovacao_texto }}
+{{ $inscricao->selecao->email_inscricaomatriculaaprovacao_texto }}
 <br />
 @include('emails.rodape')

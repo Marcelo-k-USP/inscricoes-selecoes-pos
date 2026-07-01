@@ -20,7 +20,7 @@
             <div class="col-form-label col-sm-3">Disciplina(s)</div>
           </div>
           <div class="form-group row">
-            @foreach ($inscricao->disciplinas_sem_boleto as $disciplina)
+            @foreach ($objeto->disciplinas_sem_boleto as $disciplina)
               <div class="col-sm-12 d-flex align-items-center" style="gap: 10px;">
                 {{ html()->input('checkbox', 'disciplinas[' . $disciplina->sigla . ']')->checked(old('disciplinas[' . $disciplina->sigla . ']'))->class('form-control')->style('width: auto; margin: 0;') }}
                 {{ html()->label($disciplina->sigla . ' - ' . $disciplina->nome, 'disciplinas[' . $disciplina->sigla . ']')->style('margin: 0;') }}

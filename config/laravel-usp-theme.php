@@ -30,12 +30,12 @@ $matriculas = [
     [
         'text' => '<i class="far fa-plus-square"></i> Nova Matrícula',
         'url' => 'matriculas/create',
-        'can' => 'inscricoes.create',
+        'can' => 'matriculas.create',
     ],
     [
         'text' => '<i class="far fa-list-alt"></i> Minhas Matrículas',
         'url' => 'matriculas',
-        'can' => 'inscricoes.viewTheir',
+        'can' => 'matriculas.viewTheir',
     ],
 ];
 
@@ -119,17 +119,17 @@ $menu = [
     [
         'text' => '<i class="far fa-list-alt"></i> Inscrições',
         'url' => 'inscricoes',
-        'can' => 'inscricoes.viewAny_Inscricoes',    // necessário para conseguir diferenciar na policy se é o menu Inscrições ou Matrículas
+        'can' => 'inscricoes.viewAny',
     ],
     [
         'text' => '<i class="fa fa-user-cog" aria-hidden="true"></i> Matrículas',
         'submenu' => $matriculas,
-        'can' => 'inscricoes.create',
+        'can' => 'matriculas.create',
     ],
     [
         'text' => '<i class="far fa-list-alt"></i> Matrículas',
         'url' => 'matriculas',
-        'can' => 'inscricoes.viewAny_Matriculas',    // necessário para conseguir diferenciar na policy se é o menu Inscrições ou Matrículas
+        'can' => 'matriculas.viewAny',
     ],
     [
         'text' => '<i class="fas fa-tasks ml-2"></i> Seleções',

@@ -16,14 +16,12 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
     protected $solicitacaoisencaotaxa;
     protected $user;
 
-    // campos adicionais para 'envio'
+    // campos adicionais para 'envio - para candidato'
+
+    // campos adicionais para 'envio - para gestores'
     protected $servicoposgraduacao_nome;
 
-    // campos adicionais para 'aprovação'
-
-    // campos adicionais para 'rejeição'
-
-    // campos adicionais para 'aprovação após recurso'
+    // campos adicionais para 'aprovação', 'rejeição' e 'aprovação após recurso'
 
     /**
      * Create a new message instance.
@@ -38,18 +36,15 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
 
         switch ($this->passo) {
             case 'início':
+            case 'envio - para candidato':
                 break;
 
-            case 'envio':
+            case 'envio - para gestores':
                 $this->servicoposgraduacao_nome = $data['servicoposgraduacao_nome'];
                 break;
 
             case 'aprovação':
-                break;
-
             case 'rejeição':
-                break;
-
             case 'aprovação após recurso':
         }
     }
@@ -72,11 +67,21 @@ class SolicitacaoIsencaoTaxaMail extends Mailable
                         'user' => $this->user,
                     ]);
 
-            case 'envio':
+            case 'envio - para candidato':
                 return $this
                     ->subject('[' . config('app.name') . '] Isenção de Taxa Solicitada')
                     ->from(config('mail.from.address'), config('mail.from.name'))
-                    ->view('emails.solicitacaoisencaotaxa_envio')
+                    ->view('emails.solicitacaoisencaotaxa_envio_paracandidato')
+                    ->with([
+                        'solicitacaoisencaotaxa' => $this->solicitacaoisencaotaxa,
+                        'user' => $this->user,
+                    ]);
+
+            case 'envio - para gestores':
+                return $this
+                    ->subject('[' . config('app.name') . '] Isenção de Taxa Solicitada')
+                    ->from(config('mail.from.address'), config('mail.from.name'))
+                    ->view('emails.solicitacaoisencaotaxa_envio_paragestores')
                     ->with([
                         'solicitacaoisencaotaxa' => $this->solicitacaoisencaotaxa,
                         'servicoposgraduacao_nome' => $this->servicoposgraduacao_nome,

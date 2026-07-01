@@ -77,7 +77,7 @@ class SolicitacaoIsencaoTaxaController extends Controller
 
         \UspTheme::activeUrl('solicitacoesisencaotaxa/create');
         AtualizaStatusSelecoes::dispatch()->onConnection('sync');
-        $categorias = Selecao::listarSelecoesParaSolicitacaoIsencaoTaxa();          // obtém as seleções dentro das categorias
+        $categorias = Selecao::listarSelecoesParaNovaSolicitacaoIsencaoTaxa();          // obtém as seleções dentro das categorias
         return view('solicitacoesisencaotaxa.listaselecoesparasolicitacaoisencaotaxa', compact('categorias'));
     }
 
